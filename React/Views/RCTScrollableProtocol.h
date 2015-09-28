@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 /**
  * Contains any methods related to scrolling. Any `RCTView` that has scrolling
@@ -15,7 +15,7 @@
  */
 @protocol RCTScrollableProtocol
 
-@property (nonatomic, weak) NSObject<UIScrollViewDelegate> *nativeMainScrollDelegate;
+//@property (nonatomic, weak) NSObject<UIScrollViewDelegate> *nativeMainScrollDelegate;
 @property (nonatomic, readonly) CGSize contentSize;
 
 - (void)scrollToOffset:(CGPoint)offset;

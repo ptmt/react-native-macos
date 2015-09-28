@@ -14,7 +14,7 @@
 #import "RCTAssert.h"
 #import "RCTBridge.h"
 #import "RCTDefines.h"
-#import "RCTRedBox.h"
+//#import "RCTRedBox.h"
 
 @interface RCTBridge ()
 
@@ -212,7 +212,7 @@ void _RCTLogFormat(
 #if RCT_DEBUG // Red box is only available in debug mode
 
     // Log to red box
-    if ([UIApplication sharedApplication] && level >= RCTLOG_REDBOX_LEVEL) {
+    if (level >= RCTLOG_REDBOX_LEVEL) {
       NSArray *stackSymbols = [NSThread callStackSymbols];
       NSMutableArray *stack = [NSMutableArray arrayWithCapacity:(stackSymbols.count - 1)];
       [stackSymbols enumerateObjectsUsingBlock:^(NSString *frameSymbols, NSUInteger idx, __unused BOOL *stop) {
@@ -231,7 +231,7 @@ void _RCTLogFormat(
       dispatch_async(dispatch_get_main_queue(), ^{
         // red box is thread safe, but by deferring to main queue we avoid a startup
         // race condition that causes the module to be accessed before it has loaded
-        [[RCTBridge currentBridge].redBox showErrorMessage:message withStack:stack];
+       // [[RCTBridge currentBridge].redBox showErrorMessage:message withStack:stack];
       });
     }
 

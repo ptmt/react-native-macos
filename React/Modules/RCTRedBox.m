@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
+#import <AppKit/AppKit.h>
 
 #import "RCTRedBox.h"
 
@@ -16,12 +17,12 @@
 
 #if RCT_DEBUG
 
-@interface RCTRedBoxWindow : UIWindow <UITableViewDelegate, UITableViewDataSource>
+@interface RCTRedBoxWindow : NSView <NSTableViewDelegate, NSTableViewDataSource>
 @end
 
 @implementation RCTRedBoxWindow
 {
-  UITableView *_stackTraceTableView;
+  NSTableView *_stackTraceTableView;
   NSString *_lastErrorMessage;
   NSArray *_lastStackTrace;
 }
@@ -29,53 +30,53 @@
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if ((self = [super initWithFrame:frame])) {
-    self.windowLevel = UIWindowLevelAlert + 1000;
-    self.backgroundColor = [UIColor colorWithRed:0.8 green:0 blue:0 alpha:1];
-    self.hidden = YES;
+    //self.windowLevel = UIWindowLevelAlert + 1000;
+    //self.backgroundColor = [UIColor colorWithRed:0.8 green:0 blue:0 alpha:1];
+    //self.hidden = YES;
 
-    UIViewController *rootController = [UIViewController new];
-    self.rootViewController = rootController;
-    UIView *rootView = rootController.view;
-    rootView.backgroundColor = [UIColor clearColor];
+    NSViewController *rootController = [NSViewController new];
+    //self.rootViewController = rootController;
+//    NSView *rootView = rootController.view;
+//    rootView.backgroundColor = [UIColor clearColor];
 
     const CGFloat buttonHeight = 60;
 
-    CGRect detailsFrame = rootView.bounds;
-    detailsFrame.size.height -= buttonHeight;
+  //  CGRect detailsFrame = rootView.bounds;
+  //  detailsFrame.size.height -= buttonHeight;
 
-    _stackTraceTableView = [[UITableView alloc] initWithFrame:detailsFrame style:UITableViewStylePlain];
-    _stackTraceTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    //_stackTraceTableView = [[NSTableView alloc] initWithFrame:detailsFrame style:UITableViewStylePlain];
+   // _stackTraceTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _stackTraceTableView.delegate = self;
     _stackTraceTableView.dataSource = self;
-    _stackTraceTableView.backgroundColor = [UIColor clearColor];
-    _stackTraceTableView.separatorColor = [UIColor colorWithWhite:1 alpha:0.3];
-    _stackTraceTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    _stackTraceTableView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
-    [rootView addSubview:_stackTraceTableView];
+    _stackTraceTableView.backgroundColor = [NSColor clearColor];
+//    _stackTraceTableView.separatorColor = [NSColor colorWithWhite:1 alpha:0.3];
+//    _stackTraceTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+//    _stackTraceTableView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
+//    [rootView addSubview:_stackTraceTableView];
 
-    UIButton *dismissButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    dismissButton.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin;
-    dismissButton.accessibilityIdentifier = @"redbox-dismiss";
-    dismissButton.titleLabel.font = [UIFont systemFontOfSize:14];
-    [dismissButton setTitle:@"Dismiss (ESC)" forState:UIControlStateNormal];
-    [dismissButton setTitleColor:[UIColor colorWithWhite:1 alpha:0.5] forState:UIControlStateNormal];
-    [dismissButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-    [dismissButton addTarget:self action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
-
-    UIButton *reloadButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    reloadButton.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
-    reloadButton.accessibilityIdentifier = @"redbox-reload";
-    reloadButton.titleLabel.font = [UIFont systemFontOfSize:14];
-    [reloadButton setTitle:@"Reload JS (\u2318R)" forState:UIControlStateNormal];
-    [reloadButton setTitleColor:[UIColor colorWithWhite:1 alpha:0.5] forState:UIControlStateNormal];
-    [reloadButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-    [reloadButton addTarget:self action:@selector(reload) forControlEvents:UIControlEventTouchUpInside];
-
-    CGFloat buttonWidth = self.bounds.size.width / 2;
-    dismissButton.frame = CGRectMake(0, self.bounds.size.height - buttonHeight, buttonWidth, buttonHeight);
-    reloadButton.frame = CGRectMake(buttonWidth, self.bounds.size.height - buttonHeight, buttonWidth, buttonHeight);
-    [rootView addSubview:dismissButton];
-    [rootView addSubview:reloadButton];
+ //   NSButton *dismissButton = [NSButton alloc];
+   // dismissButton.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin;
+//    dismissButton.accessibilityIdentifier = @"redbox-dismiss";
+//    dismissButton.titleLabel.font = [UIFont systemFontOfSize:14];
+//    [dismissButton setTitle:@"Dismiss (ESC)" forState:UIControlStateNormal];
+//    [dismissButton setTitleColor:[UIColor colorWithWhite:1 alpha:0.5] forState:UIControlStateNormal];
+//    [dismissButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+//    [dismissButton addTarget:self action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
+//
+//    UIButton *reloadButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    reloadButton.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
+//    reloadButton.accessibilityIdentifier = @"redbox-reload";
+//    reloadButton.titleLabel.font = [UIFont systemFontOfSize:14];
+//    [reloadButton setTitle:@"Reload JS (\u2318R)" forState:UIControlStateNormal];
+//    [reloadButton setTitleColor:[UIColor colorWithWhite:1 alpha:0.5] forState:UIControlStateNormal];
+//    [reloadButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+//    [reloadButton addTarget:self action:@selector(reload) forControlEvents:UIControlEventTouchUpInside];
+//
+//    CGFloat buttonWidth = self.bounds.size.width / 2;
+//    dismissButton.frame = CGRectMake(0, self.bounds.size.height - buttonHeight, buttonWidth, buttonHeight);
+//    reloadButton.frame = CGRectMake(buttonWidth, self.bounds.size.height - buttonHeight, buttonWidth, buttonHeight);
+//    [rootView addSubview:dismissButton];
+//    [rootView addSubview:reloadButton];
   }
   return self;
 }
@@ -136,17 +137,17 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 #pragma mark - TableView
 
-- (NSInteger)numberOfSectionsInTableView:(__unused UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(__unused NSTableView *)tableView
 {
   return 2;
 }
 
-- (NSInteger)tableView:(__unused UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(__unused NSTableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
   return section == 0 ? 1 : _lastStackTrace.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(NSTableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
   if (indexPath.section == 0) {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"msg-cell"];
@@ -158,7 +159,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return [self reuseCell:cell forStackFrame:stackFrame];
 }
 
-- (UITableViewCell *)reuseCell:(UITableViewCell *)cell forErrorMessage:(NSString *)message
+- (UITableViewCell *)reuseCell:(NSTableViewCell *)cell forErrorMessage:(NSString *)message
 {
   if (!cell) {
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"msg-cell"];
@@ -177,7 +178,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return cell;
 }
 
-- (UITableViewCell *)reuseCell:(UITableViewCell *)cell forStackFrame:(NSDictionary *)stackFrame
+- (UITableViewCell *)reuseCell:(NSTableViewCell *)cell forStackFrame:(NSDictionary *)stackFrame
 {
   if (!cell) {
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
@@ -199,7 +200,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return cell;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(NSTableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
   if (indexPath.section == 0) {
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
@@ -214,7 +215,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(NSTableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
   if (indexPath.section == 1) {
     NSUInteger row = indexPath.row;

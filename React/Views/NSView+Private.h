@@ -7,17 +7,12 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import "AppKit/AppKit.h"
-#import "RCTViewManager.h"
-#import "RCTConvert.h"
+#import <AppKit/AppKit.h>
 
-@interface RCTConvert (NSScrollView)
+@interface NSView (RCTViewUnmounting)
 
-//+ (UIScrollViewKeyboardDismissMode)UIScrollViewKeyboardDismissMode:(id)json;
-
-@end
-
-@interface RCTScrollViewManager : RCTViewManager
+- (void)react_remountAllSubviews;
+- (void)react_updateClippedSubviewsWithClipRect:(CGRect)clipRect relativeToView:(NSView *)clipView;
+- (NSView *)react_findClipView;
 
 @end
-

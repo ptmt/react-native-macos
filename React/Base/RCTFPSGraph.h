@@ -7,16 +7,16 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 typedef NS_ENUM(NSUInteger, RCTFPSGraphPosition) {
   RCTFPSGraphPositionLeft = 1,
   RCTFPSGraphPositionRight = 2
 };
 
-@interface RCTFPSGraph : UIView
+@interface RCTFPSGraph : NSView
 
-- (instancetype)initWithFrame:(CGRect)frame graphPosition:(RCTFPSGraphPosition)position name:(NSString *)name color:(UIColor *)color NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithFrame:(CGRect)frame graphPosition:(RCTFPSGraphPosition)position name:(NSString *)name color:(NSColor *)color NS_DESIGNATED_INITIALIZER;
 
 - (void)onTick:(NSTimeInterval)timestamp;
 

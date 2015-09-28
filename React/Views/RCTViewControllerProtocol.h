@@ -14,7 +14,7 @@
  */
 @protocol RCTViewControllerProtocol <NSObject>
 
-@property (nonatomic, readonly, strong) id<UILayoutSupport> currentTopLayoutGuide;
-@property (nonatomic, readonly, strong) id<UILayoutSupport> currentBottomLayoutGuide;
+//@property (nonatomic, readonly, strong) id<UILayoutSupport> currentTopLayoutGuide;
+//@property (nonatomic, readonly, strong) id<UILayoutSupport> currentBottomLayoutGuide;
 
 @end

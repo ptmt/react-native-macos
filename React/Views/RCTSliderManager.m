@@ -12,19 +12,19 @@
 #import "RCTBridge.h"
 #import "RCTEventDispatcher.h"
 #import "RCTSlider.h"
-#import "UIView+React.h"
+#import "NSView+React.h"
 
 @implementation RCTSliderManager
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
+- (NSView *)view
 {
   RCTSlider *slider = [RCTSlider new];
-  [slider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
-  [slider addTarget:self action:@selector(sliderTouchEnd:) forControlEvents:(UIControlEventTouchUpInside |
-                                                                             UIControlEventTouchUpOutside |
-                                                                             UIControlEventTouchCancel)];
+//  [slider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
+//  [slider addTarget:self action:@selector(sliderTouchEnd:) forControlEvents:(UIControlEventTouchUpInside |
+//                                                                             UIControlEventTouchUpOutside |
+//                                                                             UIControlEventTouchCancel)];
   return slider;
 }
 
@@ -32,7 +32,7 @@ static void RCTSendSliderEvent(RCTSlider *sender, BOOL continuous)
 {
   if (sender.onChange) {
     sender.onChange(@{
-      @"value": @(sender.value),
+      @"value": @"1", // TODO: real value
       @"continuous": @(continuous),
     });
   }

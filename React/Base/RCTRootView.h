@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTBridge.h"
 
@@ -23,7 +23,7 @@ extern NSString *const RCTContentDidAppearNotification;
  * like any ordinary UIView. You can have multiple RCTRootViews on screen at
  * once, all controlled by the same JavaScript application.
  */
-@interface RCTRootView : UIView
+@interface RCTRootView : NSView
 
 /**
  * - Designated initializer -
@@ -74,19 +74,19 @@ extern NSString *const RCTContentDidAppearNotification;
 /**
  * The backing view controller of the root view.
  */
-@property (nonatomic, weak) UIViewController *reactViewController;
+@property (nonatomic, weak) NSViewController *reactViewController;
 
 /**
  * The React-managed contents view of the root view.
  */
-@property (nonatomic, strong, readonly) UIView *contentView;
+@property (nonatomic, strong, readonly) NSView *contentView;
 
 /**
  * A view to display while the JavaScript is loading, so users aren't presented
  * with a blank screen. By default this is nil, but you can override it with
  * (for example) a UIActivityIndicatorView or a placeholder image.
  */
-@property (nonatomic, strong) UIView *loadingView;
+@property (nonatomic, strong) NSView *loadingView;
 
 /**
  * Timings for hiding the loading view after the content has loaded. Both of

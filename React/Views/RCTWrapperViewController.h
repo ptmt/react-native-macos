@@ -7,26 +7,26 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTViewControllerProtocol.h"
 
-@class RCTNavItem;
+//@class RCTNavItem;
 @class RCTWrapperViewController;
 
 @protocol RCTWrapperViewControllerNavigationListener <NSObject>
 
-- (void)wrapperViewController:(RCTWrapperViewController *)wrapperViewController
-didMoveToNavigationController:(UINavigationController *)navigationController;
+//- (void)wrapperViewController:(RCTWrapperViewController *)wrapperViewController
+//  didMoveToNavigationController:(UINavigationController *)navigationController;
 
 @end
 
-@interface RCTWrapperViewController : UIViewController <RCTViewControllerProtocol>
+@interface RCTWrapperViewController : NSViewController <RCTViewControllerProtocol>
 
-- (instancetype)initWithContentView:(UIView *)contentView NS_DESIGNATED_INITIALIZER;
-- (instancetype)initWithNavItem:(RCTNavItem *)navItem;
+//- (instancetype)initWithContentView:(UIView *)contentView NS_DESIGNATED_INITIALIZER;
+//- (instancetype)initWithNavItem:(RCTNavItem *)navItem;
 
 @property (nonatomic, weak) id<RCTWrapperViewControllerNavigationListener> navigationListener;
-@property (nonatomic, strong) RCTNavItem *navItem;
+//@property (nonatomic, strong) RCTNavItem *navItem;
 
 @end

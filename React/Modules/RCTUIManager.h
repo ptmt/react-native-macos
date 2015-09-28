@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTBridge.h"
 #import "RCTBridgeModule.h"
@@ -55,29 +55,29 @@ RCT_EXTERN NSString *const RCTUIManagerRootViewKey;
  * Allows native environment code to respond to "the main scroll view" events.
  * see `RCTUIManager`'s `setMainScrollViewTag`.
  */
-@property (nonatomic, readwrite, weak) id<UIScrollViewDelegate> nativeMainScrollDelegate;
+//@property (nonatomic, readwrite, weak) id<UIScrollViewDelegate> nativeMainScrollDelegate;
 
 /**
  * Register a root view with the RCTUIManager.
  */
-- (void)registerRootView:(UIView *)rootView;
+- (void)registerRootView:(NSView *)rootView;
 
 /**
  * Gets the view associated with a reactTag.
  */
-- (UIView *)viewForReactTag:(NSNumber *)reactTag;
+- (NSView *)viewForReactTag:(NSNumber *)reactTag;
 
 /**
  * Update the frame of a view. This might be in response to a screen rotation
  * or some other layout event outside of the React-managed view hierarchy.
  */
-- (void)setFrame:(CGRect)frame forView:(UIView *)view;
+- (void)setFrame:(CGRect)frame forView:(NSView *)view;
 
 /**
  * Update the background color of a root view. This is usually triggered by
  * manually setting the background color of the root view with native code.
  */
-- (void)setBackgroundColor:(UIColor *)color forRootView:(UIView *)rootView;
+- (void)setBackgroundColor:(NSColor *)color forRootView:(NSView *)rootView;
 
 /**
  * Schedule a block to be executed on the UI thread. Useful if you need to execute
@@ -88,7 +88,7 @@ RCT_EXTERN NSString *const RCTUIManagerRootViewKey;
 /**
  * The view that is currently first responder, according to the JS context.
  */
-+ (UIView *)JSResponder;
++ (NSView *)JSResponder;
 
 @end
 

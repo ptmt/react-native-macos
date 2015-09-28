@@ -7,6 +7,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+#import <AppKit/AppKit.h>
+
 #import "RCTViewManager.h"
 
 #import "RCTBridge.h"
@@ -17,31 +19,31 @@
 #import "RCTUIManager.h"
 #import "RCTUtils.h"
 #import "RCTView.h"
-#import "UIView+React.h"
+#import "NSView+React.h"
 
-@implementation RCTConvert(UIAccessibilityTraits)
-
-RCT_MULTI_ENUM_CONVERTER(UIAccessibilityTraits, (@{
-  @"none": @(UIAccessibilityTraitNone),
-  @"button": @(UIAccessibilityTraitButton),
-  @"link": @(UIAccessibilityTraitLink),
-  @"header": @(UIAccessibilityTraitHeader),
-  @"search": @(UIAccessibilityTraitSearchField),
-  @"image": @(UIAccessibilityTraitImage),
-  @"selected": @(UIAccessibilityTraitSelected),
-  @"plays": @(UIAccessibilityTraitPlaysSound),
-  @"key": @(UIAccessibilityTraitKeyboardKey),
-  @"text": @(UIAccessibilityTraitStaticText),
-  @"summary": @(UIAccessibilityTraitSummaryElement),
-  @"disabled": @(UIAccessibilityTraitNotEnabled),
-  @"frequentUpdates": @(UIAccessibilityTraitUpdatesFrequently),
-  @"startsMedia": @(UIAccessibilityTraitStartsMediaSession),
-  @"adjustable": @(UIAccessibilityTraitAdjustable),
-  @"allowsDirectInteraction": @(UIAccessibilityTraitAllowsDirectInteraction),
-  @"pageTurn": @(UIAccessibilityTraitCausesPageTurn),
-}), UIAccessibilityTraitNone, unsignedLongLongValue)
-
-@end
+//@implementation RCTConvert(UIAccessibilityTraits)
+//
+//RCT_MULTI_ENUM_CONVERTER(UIAccessibilityTraits, (@{
+//  @"none": @(UIAccessibilityTraitNone),
+//  @"button": @(UIAccessibilityTraitButton),
+//  @"link": @(UIAccessibilityTraitLink),
+//  @"header": @(UIAccessibilityTraitHeader),
+//  @"search": @(UIAccessibilityTraitSearchField),
+//  @"image": @(UIAccessibilityTraitImage),
+//  @"selected": @(UIAccessibilityTraitSelected),
+//  @"plays": @(UIAccessibilityTraitPlaysSound),
+//  @"key": @(UIAccessibilityTraitKeyboardKey),
+//  @"text": @(UIAccessibilityTraitStaticText),
+//  @"summary": @(UIAccessibilityTraitSummaryElement),
+//  @"disabled": @(UIAccessibilityTraitNotEnabled),
+//  @"frequentUpdates": @(UIAccessibilityTraitUpdatesFrequently),
+//  @"startsMedia": @(UIAccessibilityTraitStartsMediaSession),
+//  @"adjustable": @(UIAccessibilityTraitAdjustable),
+//  @"allowsDirectInteraction": @(UIAccessibilityTraitAllowsDirectInteraction),
+//  @"pageTurn": @(UIAccessibilityTraitCausesPageTurn),
+//}), UIAccessibilityTraitNone, unsignedLongLongValue)
+//
+//@end
 
 @implementation RCTViewManager
 
@@ -54,12 +56,12 @@ RCT_EXPORT_MODULE()
   return _bridge.uiManager.methodQueue;
 }
 
-- (UIView *)viewWithProps:(__unused NSDictionary *)props
+- (NSView *)viewWithProps:(__unused NSDictionary *)props
 {
   return [self view];
 }
 
-- (UIView *)view
+- (NSView *)view
 {
   return [RCTView new];
 }
@@ -126,41 +128,41 @@ RCT_REMAP_VIEW_PROPERTY(overflow, clipsToBounds, css_clip_t)
 RCT_CUSTOM_VIEW_PROPERTY(shouldRasterizeIOS, BOOL, RCTView)
 {
   view.layer.shouldRasterize = json ? [RCTConvert BOOL:json] : defaultView.layer.shouldRasterize;
-  view.layer.rasterizationScale = view.layer.shouldRasterize ? [UIScreen mainScreen].scale : defaultView.layer.rasterizationScale;
+  view.layer.rasterizationScale = view.layer.shouldRasterize ? [NSScreen mainScreen].backingScaleFactor : defaultView.layer.rasterizationScale;
 }
-RCT_CUSTOM_VIEW_PROPERTY(transformMatrix, CATransform3D, RCTView)
-{
-  view.layer.transform = json ? [RCTConvert CATransform3D:json] : defaultView.layer.transform;
-  // TODO: Improve this by enabling edge antialiasing only for transforms with rotation or skewing
-  view.layer.allowsEdgeAntialiasing = !CATransform3DIsIdentity(view.layer.transform);
-}
-RCT_CUSTOM_VIEW_PROPERTY(pointerEvents, RCTPointerEvents, RCTView)
-{
-  if ([view respondsToSelector:@selector(setPointerEvents:)]) {
-    view.pointerEvents = json ? [RCTConvert RCTPointerEvents:json] : defaultView.pointerEvents;
-    return;
-  }
-
-  if (!json) {
-    view.userInteractionEnabled = defaultView.userInteractionEnabled;
-    return;
-  }
-
-  switch ([RCTConvert RCTPointerEvents:json]) {
-    case RCTPointerEventsUnspecified:
-      // Pointer events "unspecified" acts as if a stylesheet had not specified,
-      // which is different than "auto" in CSS (which cannot and will not be
-      // supported in `React`. "auto" may override a parent's "none".
-      // Unspecified values do not.
-      // This wouldn't override a container view's `userInteractionEnabled = NO`
-      view.userInteractionEnabled = YES;
-    case RCTPointerEventsNone:
-      view.userInteractionEnabled = NO;
-      break;
-    default:
-      RCTLogError(@"UIView base class does not support pointerEvent value: %@", json);
-  }
-}
+//RCT_CUSTOM_VIEW_PROPERTY(transformMatrix, CATransform3D, RCTView)
+//{
+//  view.layer.transform = json ? [RCTConvert CATransform3D:json] : defaultView.layer.transform;
+//  // TODO: Improve this by enabling edge antialiasing only for transforms with rotation or skewing
+//  view.layer.allowsEdgeAntialiasing = !CATransform3DIsIdentity(view.layer.transform);
+//}
+//RCT_CUSTOM_VIEW_PROPERTY(pointerEvents, RCTPointerEvents, RCTView)
+//{
+//  if ([view respondsToSelector:@selector(setPointerEvents:)]) {
+//    view.pointerEvents = json ? [RCTConvert RCTPointerEvents:json] : defaultView.pointerEvents;
+//    return;
+//  }
+//
+//  if (!json) {
+//    view.userInteractionEnabled = defaultView.userInteractionEnabled;
+//    return;
+//  }
+//
+//  switch ([RCTConvert RCTPointerEvents:json]) {
+//    case RCTPointerEventsUnspecified:
+//      // Pointer events "unspecified" acts as if a stylesheet had not specified,
+//      // which is different than "auto" in CSS (which cannot and will not be
+//      // supported in `React`. "auto" may override a parent's "none".
+//      // Unspecified values do not.
+//      // This wouldn't override a container view's `userInteractionEnabled = NO`
+//      view.userInteractionEnabled = YES;
+//    case RCTPointerEventsNone:
+//      view.userInteractionEnabled = NO;
+//      break;
+//    default:
+//      RCTLogError(@"UIView base class does not support pointerEvent value: %@", json);
+//  }
+//}
 RCT_CUSTOM_VIEW_PROPERTY(removeClippedSubviews, BOOL, RCTView)
 {
   if ([view respondsToSelector:@selector(setRemoveClippedSubviews:)]) {

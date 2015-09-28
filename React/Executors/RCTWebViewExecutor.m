@@ -7,6 +7,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+#import <WebKit/WebKit.h>
+
 #import "RCTDefines.h"
 
 #if RCT_DEV // Debug executors are only supported in dev mode
@@ -34,13 +36,13 @@ static void RCTReportError(RCTJavaScriptCallback callback, NSString *fmt, ...)
   va_end(args);
 }
 
-@interface RCTWebViewExecutor () <UIWebViewDelegate>
+@interface RCTWebViewExecutor () <WebResourceLoadDelegate>
 
 @end
 
 @implementation RCTWebViewExecutor
 {
-  UIWebView *_webView;
+  WebView *_webView;
   NSMutableDictionary *_objectsToInject;
   NSRegularExpression *_commentsRegex;
   NSRegularExpression *_scriptTagsRegex;
@@ -50,7 +52,7 @@ RCT_EXPORT_MODULE()
 
 @synthesize valid = _valid;
 
-- (instancetype)initWithWebView:(UIWebView *)webView
+- (instancetype)initWithWebView:(WebView *)webView
 {
   if ((self = [super init])) {
     _webView = webView;
@@ -67,8 +69,8 @@ RCT_EXPORT_MODULE()
 {
   if (!_webView) {
     [self executeBlockOnJavaScriptQueue:^{
-      _webView = [UIWebView new];
-      _webView.delegate = self;
+      _webView = [WebView new];
+     // _webView.delegate = self;
     }];
   }
 
@@ -80,13 +82,13 @@ RCT_EXPORT_MODULE()
 - (void)invalidate
 {
   _valid = NO;
-  _webView.delegate = nil;
+  //_webView.delegate = nil;
   _webView = nil;
 }
 
-- (UIWebView *)invalidateAndReclaimWebView
+- (WebView *)invalidateAndReclaimWebView
 {
-  UIWebView *webView = _webView;
+  WebView *webView = _webView;
   [self invalidate];
   return webView;
 }
@@ -181,7 +183,7 @@ RCT_EXPORT_MODULE()
       stringWithFormat:@"<html><head></head><body><script type='text/javascript'>%@</script></body></html>",
       script
     ];
-  [_webView loadHTMLString:runScript baseURL:url];
+  [[_webView mainFrame] loadHTMLString:runScript baseURL:url];
 }
 
 - (void)executeBlockOnJavaScriptQueue:(dispatch_block_t)block
@@ -202,7 +204,7 @@ RCT_EXPORT_MODULE()
 /**
  * `UIWebViewDelegate` methods. Handle application script load.
  */
-- (void)webViewDidFinishLoad:(__unused UIWebView *)webView
+- (void)webViewDidFinishLoad:(__unused WebView *)webView
 {
   RCTAssertMainThread();
   if (_onApplicationScriptLoaded) {

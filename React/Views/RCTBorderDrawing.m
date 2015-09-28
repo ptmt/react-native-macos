@@ -11,7 +11,7 @@
 
 static const CGFloat RCTViewBorderThreshold = 0.001;
 
-BOOL RCTBorderInsetsAreEqual(UIEdgeInsets borderInsets)
+BOOL RCTBorderInsetsAreEqual(NSEdgeInsets borderInsets)
 {
   return
   ABS(borderInsets.left - borderInsets.right) < RCTViewBorderThreshold &&
@@ -36,7 +36,7 @@ BOOL RCTBorderColorsAreEqual(RCTBorderColors borderColors)
 }
 
 RCTCornerInsets RCTGetCornerInsets(RCTCornerRadii cornerRadii,
-                                   UIEdgeInsets edgeInsets)
+                                   NSEdgeInsets edgeInsets)
 {
   return (RCTCornerInsets) {
     {
@@ -150,8 +150,97 @@ static void RCTEllipseGetIntersectionsWithLine(CGRect ellipseBounds,
   intersections[1] = (CGPoint){x2 + ellipseCenter.x, y2 + ellipseCenter.y};
 }
 
-UIImage *RCTGetBorderImage(RCTCornerRadii cornerRadii,
-                           UIEdgeInsets borderInsets,
+// Insets and returns the given NSRect by the given NSEdgeInsets.
+NS_INLINE CGRect NSEdgeInsetsInsetRect(NSRect rect, NSEdgeInsets insets) {
+  rect.origin.x	+= insets.left;
+  rect.origin.y	+= insets.top;
+  rect.size.width  -= (insets.left + insets.right);
+  rect.size.height -= (insets.top  + insets.bottom);
+  return rect;
+}
+
+static NSMutableArray *contextStack = nil;
+static NSMutableArray *imageContextStack = nil;
+
+
+static void UIGraphicsPushContext(CGContextRef ctx)
+{
+  if (!contextStack) {
+    contextStack = [[NSMutableArray alloc] initWithCapacity:1];
+  }
+
+  if ([NSGraphicsContext currentContext]) {
+    [contextStack addObject:[NSGraphicsContext currentContext]];
+  }
+
+  [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:(void *)ctx flipped:YES]];
+}
+
+static void UIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale)
+{
+  if (scale == 0.f) {
+    scale = [NSScreen mainScreen].backingScaleFactor ?: 1;
+  }
+
+  const size_t width = size.width * scale;
+  const size_t height = size.height * scale;
+
+  if (width > 0 && height > 0) {
+    if (!imageContextStack) {
+      imageContextStack = [[NSMutableArray alloc] initWithCapacity:1];
+    }
+
+    [imageContextStack addObject:[NSNumber numberWithFloat:scale]];
+
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef ctx = CGBitmapContextCreate(NULL, width, height, 8, 4*width, colorSpace, (opaque? kCGImageAlphaNoneSkipFirst : kCGImageAlphaPremultipliedFirst));
+    CGContextConcatCTM(ctx, CGAffineTransformMake(1, 0, 0, -1, 0, height));
+    CGContextScaleCTM(ctx, scale, scale);
+    CGColorSpaceRelease(colorSpace);
+    UIGraphicsPushContext(ctx);
+    CGContextRelease(ctx);
+  }
+}
+
+static CGContextRef UIGraphicsGetCurrentContext()
+{
+  return [[NSGraphicsContext currentContext] graphicsPort];
+}
+
+
+static NSImage *UIGraphicsGetImageFromCurrentImageContext()
+{
+  if ([imageContextStack lastObject]) {
+//    const CGFloat scale = [[imageContextStack lastObject] floatValue];
+    CGImageRef theCGImage = CGBitmapContextCreateImage(UIGraphicsGetCurrentContext());
+    NSImage *image = [[NSImage alloc] initWithCGImage:theCGImage size:NSZeroSize];
+    CGImageRelease(theCGImage);
+    return image;
+  } else {
+    return nil;
+  }
+}
+
+static void UIGraphicsPopContext()
+{
+  if ([contextStack lastObject]) {
+    [NSGraphicsContext setCurrentContext:[contextStack lastObject]];
+    [contextStack removeLastObject];
+  }
+}
+
+static void UIGraphicsEndImageContext()
+{
+  if ([imageContextStack lastObject]) {
+    [imageContextStack removeLastObject];
+    UIGraphicsPopContext();
+  }
+}
+
+
+
+NSImage *RCTGetBorderImage(RCTCornerRadii cornerRadii,
+                           NSEdgeInsets borderInsets,
                            RCTBorderColors borderColors,
                            CGColorRef backgroundColor,
                            BOOL drawToEdge)
@@ -164,7 +253,7 @@ UIImage *RCTGetBorderImage(RCTCornerRadii cornerRadii,
 
   const RCTCornerInsets cornerInsets = RCTGetCornerInsets(cornerRadii, borderInsets);
 
-  const UIEdgeInsets edgeInsets = (UIEdgeInsets){
+  const NSEdgeInsets edgeInsets = (NSEdgeInsets){
     borderInsets.top + MAX(cornerInsets.topLeft.height, cornerInsets.topRight.height),
     borderInsets.left + MAX(cornerInsets.topLeft.width, cornerInsets.bottomLeft.width),
     borderInsets.bottom + MAX(cornerInsets.bottomLeft.height, cornerInsets.bottomRight.height),
@@ -187,7 +276,7 @@ UIImage *RCTGetBorderImage(RCTCornerRadii cornerRadii,
   if (drawToEdge) {
     path = CGPathCreateWithRect(rect, NULL);
   } else {
-    path = RCTPathCreateWithRoundedRect(rect, RCTGetCornerInsets(cornerRadii, UIEdgeInsetsZero), NULL);
+    path = RCTPathCreateWithRoundedRect(rect, RCTGetCornerInsets(cornerRadii, NSEdgeInsetsZero), NULL);
   }
 
   if (backgroundColor) {
@@ -199,7 +288,8 @@ UIImage *RCTGetBorderImage(RCTCornerRadii cornerRadii,
   CGContextAddPath(ctx, path);
   CGPathRelease(path);
 
-  CGPathRef insetPath = RCTPathCreateWithRoundedRect(UIEdgeInsetsInsetRect(rect, borderInsets), cornerInsets, NULL);
+  CGPathRef insetPath = RCTPathCreateWithRoundedRect(
+                                                     NSEdgeInsetsInsetRect(rect, borderInsets), cornerInsets, NULL);
 
   CGContextAddPath(ctx, insetPath);
   CGContextEOClip(ctx);
@@ -324,8 +414,9 @@ UIImage *RCTGetBorderImage(RCTCornerRadii cornerRadii,
 
   CGPathRelease(insetPath);
 
-  UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+  NSImage *image = UIGraphicsGetImageFromCurrentImageContext();
   UIGraphicsEndImageContext();
 
-  return [image resizableImageWithCapInsets:edgeInsets];
+  return image;
+  //return nil;
 }

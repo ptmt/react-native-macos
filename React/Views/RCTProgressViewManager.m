@@ -13,10 +13,10 @@
 
 @implementation RCTConvert (RCTProgressViewManager)
 
-RCT_ENUM_CONVERTER(UIProgressViewStyle, (@{
-  @"default": @(UIProgressViewStyleDefault),
-  @"bar": @(UIProgressViewStyleBar),
-}), UIProgressViewStyleDefault, integerValue)
+//RCT_ENUM_CONVERTER(UIProgressViewStyle, (@{
+//  @"default": @(UIProgressViewStyleDefault),
+//  @"bar": @(UIProgressViewStyleBar),
+//}), UIProgressViewStyleDefault, integerValue)
 
 @end
 
@@ -24,12 +24,12 @@ RCT_ENUM_CONVERTER(UIProgressViewStyle, (@{
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
+- (NSView *)view
 {
-  return [UIProgressView new];
+  return [NSProgressIndicator new];
 }
 
-RCT_EXPORT_VIEW_PROPERTY(progressViewStyle, UIProgressViewStyle)
+//RCT_EXPORT_VIEW_PROPERTY(progressViewStyle, UIProgressViewStyle)
 RCT_EXPORT_VIEW_PROPERTY(progress, float)
 RCT_EXPORT_VIEW_PROPERTY(progressTintColor, UIColor)
 RCT_EXPORT_VIEW_PROPERTY(trackTintColor, UIColor)
@@ -38,7 +38,7 @@ RCT_EXPORT_VIEW_PROPERTY(trackImage, UIImage)
 
 - (NSDictionary *)constantsToExport
 {
-  UIProgressView *view = [UIProgressView new];
+  NSProgressIndicator *view = [NSProgressIndicator new];
   return @{
     @"ComponentHeight": @(view.intrinsicContentSize.height),
   };

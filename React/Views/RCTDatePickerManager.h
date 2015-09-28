@@ -10,9 +10,9 @@
 #import "RCTViewManager.h"
 #import "RCTConvert.h"
 
-@interface RCTConvert(UIDatePicker)
+@interface RCTConvert(NSDatePicker)
 
-+ (UIDatePickerMode)UIDatePickerMode:(id)json;
++ (NSDatePickerMode)NSDatePickerMode:(id)json;
 
 @end
 

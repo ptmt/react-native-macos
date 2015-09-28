@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTBridgeModule.h"
 #import "RCTConvert.h"
@@ -39,7 +39,7 @@ typedef void (^RCTViewManagerUIBlock)(RCTUIManager *uiManager, RCTSparseArray *v
  * return a fresh instance each time. The view module MUST NOT cache the returned
  * view and return the same instance for subsequent calls.
  */
-- (UIView<RCTComponent> *)view;
+- (NSView<RCTComponent> *)view;
 
 /**
  * This method instantiates a native view using the props passed into the component.
@@ -48,7 +48,7 @@ typedef void (^RCTViewManagerUIBlock)(RCTUIManager *uiManager, RCTSparseArray *v
  * still be set individually, after the view is created. Like the -view method,
  * -viewWithProps: should return a fresh instance each time it is called.
  */
-- (UIView *)viewWithProps:(NSDictionary *)props;
+- (NSView *)viewWithProps:(NSDictionary *)props;
 
 /**
  * This method instantiates a shadow view to be managed by the module. If omitted,

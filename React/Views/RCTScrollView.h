@@ -7,16 +7,18 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIScrollView.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTAutoInsetsProtocol.h"
 #import "RCTEventDispatcher.h"
 #import "RCTScrollableProtocol.h"
 #import "RCTView.h"
 
-@protocol UIScrollViewDelegate;
+//@protocol NSScrollViewDelegate;
 
-@interface RCTScrollView : RCTView <UIScrollViewDelegate, RCTScrollableProtocol, RCTAutoInsetsProtocol>
+// TODO: http://stackoverflow.com/questions/5169355/callbacks-when-an-nsscrollview-is-scrolled
+
+@interface RCTScrollView : RCTView <RCTScrollableProtocol, RCTAutoInsetsProtocol>
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
 
@@ -27,7 +29,7 @@
  * efficiently since it will have already been computed by the off-main-thread
  * layout system.
  */
-@property (nonatomic, readonly) UIView *contentView;
+@property (nonatomic, readonly) NSView *contentView;
 
 /**
  * If the `contentSize` is not specified (or is specified as {0, 0}, then the
@@ -38,9 +40,9 @@
 /**
  * The underlying scrollView (TODO: can we remove this?)
  */
-@property (nonatomic, readonly) UIScrollView *scrollView;
+@property (nonatomic, readonly) NSScrollView *scrollView;
 
-@property (nonatomic, assign) UIEdgeInsets contentInset;
+@property (nonatomic, assign) NSEdgeInsets contentInset;
 @property (nonatomic, assign) BOOL automaticallyAdjustContentInsets;
 @property (nonatomic, assign) NSTimeInterval scrollEventThrottle;
 @property (nonatomic, assign) BOOL centerContent;
@@ -58,7 +60,7 @@
  */
 - (void)sendScrollEventWithType:(RCTScrollEventType)type
                        reactTag:(NSNumber *)reactTag
-                     scrollView:(UIScrollView *)scrollView
+                     scrollView:(NSScrollView *)scrollView
                        userData:(NSDictionary *)userData;
 
 @end

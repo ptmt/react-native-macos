@@ -20,9 +20,9 @@ static NSString *RCTCurrentAppBackgroundState()
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     states = @{
-      @(UIApplicationStateActive): @"active",
-      @(UIApplicationStateBackground): @"background",
-      @(UIApplicationStateInactive): @"inactive"
+//      @(NSApplication): @"active",
+//      @(UIApplicationStateBackground): @"background",
+//      @(UIApplicationStateInactive): @"inactive"
     };
   });
 
@@ -30,7 +30,8 @@ static NSString *RCTCurrentAppBackgroundState()
     return @"extension";
   }
 
-  return states[@(RCTSharedApplication().applicationState)] ?: @"unknown";
+  //return states[@(RCTSharedApplication().applicationState)] ?: @"unknown";
+  return @"unknown";
 }
 
 @implementation RCTAppState
@@ -50,19 +51,19 @@ RCT_EXPORT_MODULE()
 
     _lastKnownState = RCTCurrentAppBackgroundState();
 
-    for (NSString *name in @[UIApplicationDidBecomeActiveNotification,
-                             UIApplicationDidEnterBackgroundNotification,
-                             UIApplicationDidFinishLaunchingNotification]) {
+    for (NSString *name in @[NSApplicationWillBecomeActiveNotification,
+                             NSApplicationDidHideNotification,
+                             NSApplicationDidFinishLaunchingNotification]) {
       [[NSNotificationCenter defaultCenter] addObserver:self
                                                selector:@selector(handleAppStateDidChange)
                                                    name:name
                                                  object:nil];
     }
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(handleMemoryWarning)
-                                                 name:UIApplicationDidReceiveMemoryWarningNotification
-                                               object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(handleMemoryWarning)
+//                                                 name:NSAppli
+//                                               object:nil];
   }
   return self;
 }

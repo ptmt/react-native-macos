@@ -7,11 +7,11 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTComponent.h"
 
-@interface RCTSlider : UISlider
+@interface RCTSlider : NSSlider
 
 @property (nonatomic, copy) RCTBubblingEventBlock onChange;
 

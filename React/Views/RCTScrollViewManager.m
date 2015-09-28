@@ -22,13 +22,13 @@
 
 @implementation RCTConvert (UIScrollView)
 
-RCT_ENUM_CONVERTER(UIScrollViewKeyboardDismissMode, (@{
-  @"none": @(UIScrollViewKeyboardDismissModeNone),
-  @"on-drag": @(UIScrollViewKeyboardDismissModeOnDrag),
-  @"interactive": @(UIScrollViewKeyboardDismissModeInteractive),
-  // Backwards compatibility
-  @"onDrag": @(UIScrollViewKeyboardDismissModeOnDrag),
-}), UIScrollViewKeyboardDismissModeNone, integerValue)
+//RCT_ENUM_CONVERTER(UIScrollViewKeyboardDismissMode, (@{
+//  @"none": @(UIScrollViewKeyboardDismissModeNone),
+//  @"on-drag": @(UIScrollViewKeyboardDismissModeOnDrag),
+//  @"interactive": @(UIScrollViewKeyboardDismissModeInteractive),
+//  // Backwards compatibility
+//  @"onDrag": @(UIScrollViewKeyboardDismissModeOnDrag),
+//}), UIScrollViewKeyboardDismissModeNone, integerValue)
 
 @end
 
@@ -36,7 +36,7 @@ RCT_ENUM_CONVERTER(UIScrollViewKeyboardDismissMode, (@{
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
+- (NSView *)view
 {
   return [[RCTScrollView alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
 }
@@ -67,23 +67,13 @@ RCT_EXPORT_VIEW_PROPERTY(snapToInterval, int)
 RCT_EXPORT_VIEW_PROPERTY(snapToAlignment, NSString)
 RCT_REMAP_VIEW_PROPERTY(contentOffset, scrollView.contentOffset, CGPoint)
 
-- (NSDictionary *)constantsToExport
-{
-  return @{
-    // TODO: unused - remove these?
-    @"DecelerationRate": @{
-      @"normal": @(UIScrollViewDecelerationRateNormal),
-      @"fast": @(UIScrollViewDecelerationRateFast),
-    },
-  };
-}
 
 RCT_EXPORT_METHOD(getContentSize:(nonnull NSNumber *)reactTag
                   callback:(RCTResponseSenderBlock)callback)
 {
   [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
 
-    UIView *view = viewRegistry[reactTag];
+    NSView *view = viewRegistry[reactTag];
     if (!view) {
       RCTLogError(@"Cannot find view with tag #%@", reactTag);
       return;
@@ -102,7 +92,7 @@ RCT_EXPORT_METHOD(calculateChildFrames:(nonnull NSNumber *)reactTag
 {
   [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
 
-    UIView *view = viewRegistry[reactTag];
+    NSView *view = viewRegistry[reactTag];
     if (!view) {
       RCTLogError(@"Cannot find view with tag #%@", reactTag);
       return;

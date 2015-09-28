@@ -7,8 +7,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
-@interface RCTDatePicker : UIDatePicker
+@interface RCTDatePicker : NSDatePicker
 
 @end

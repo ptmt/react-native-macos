@@ -18,12 +18,12 @@
 #import "RCTLog.h"
 #import "RCTPerformanceLogger.h"
 #import "RCTSourceCode.h"
-#import "RCTTouchHandler.h"
+//#import "RCTTouchHandler.h"
 #import "RCTUIManager.h"
 #import "RCTUtils.h"
 #import "RCTView.h"
 #import "RCTWebViewExecutor.h"
-#import "UIView+React.h"
+#import "NSView+React.h"
 
 NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotification";
 
@@ -65,7 +65,7 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 
   if ((self = [super initWithFrame:CGRectZero])) {
 
-    self.backgroundColor = [UIColor whiteColor];
+    self.backgroundColor = [NSColor whiteColor];
 
     _bridge = bridge;
     _moduleName = moduleName;
@@ -106,13 +106,22 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
+- (void)setBackgroundColor:(NSColor *)backgroundColor
 {
-  super.backgroundColor = backgroundColor;
-  _contentView.backgroundColor = backgroundColor;
+  CALayer *viewLayer = [CALayer layer];
+  [viewLayer setBackgroundColor:[backgroundColor CGColor]]; //RGB plus Alpha Channel
+  [super setWantsLayer:YES]; // view's backing store is using a Core Animation Layer
+  [super setLayer:viewLayer];
+
+  [_contentView setWantsLayer:YES];
+  [_contentView setLayer:viewLayer];
+
+ // super.backgroundColor = backgroundColor;
+  // TODO:
+  //_contentView.backgroundFilters = backgroundColor;
 }
 
-- (UIViewController *)reactViewController
+- (NSViewController *)reactViewController
 {
   return _reactViewController ?: [super reactViewController];
 }
@@ -122,7 +131,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return YES;
 }
 
-- (void)setLoadingView:(UIView *)loadingView
+- (void)setLoadingView:(NSView *)loadingView
 {
   _loadingView = loadingView;
   if (!_contentView.contentHasAppeared) {
@@ -145,14 +154,15 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(_loadingViewFadeDelay * NSEC_PER_SEC)),
                    dispatch_get_main_queue(), ^{
 
-      [UIView transitionWithView:self
-                        duration:_loadingViewFadeDuration
-                         options:UIViewAnimationOptionTransitionCrossDissolve
-                      animations:^{
-                        _loadingView.hidden = YES;
-                      } completion:^(__unused BOOL finished) {
-                        [_loadingView removeFromSuperview];
-                      }];
+//
+//      [NSView transitionWithView:self
+//                        duration:_loadingViewFadeDuration
+//                         options:UIViewAnimationOptionTransitionCrossDissolve
+//                      animations:^{
+//                        _loadingView.hidden = YES;
+//                      } completion:^(__unused BOOL finished) {
+//                        [_loadingView removeFromSuperview];
+//                      }];
     });
   }
 }
@@ -172,8 +182,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
   [_contentView removeFromSuperview];
   _contentView = [[RCTRootContentView alloc] initWithFrame:self.bounds bridge:bridge];
-  _contentView.backgroundColor = self.backgroundColor;
-  [self insertSubview:_contentView atIndex:0];
+  //_contentView.backgroundColor = self.backgroundColor;
+  [self addSubview:_contentView positioned:NSWindowAbove relativeTo:nil];
 
   NSString *moduleName = _moduleName ?: @"";
   NSDictionary *appParameters = @{
@@ -187,12 +197,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)layoutSubviews
 {
-  [super layoutSubviews];
-  _contentView.frame = self.bounds;
-  _loadingView.center = (CGPoint){
-    CGRectGetMidX(self.bounds),
-    CGRectGetMidY(self.bounds)
-  };
+//  [super layoutSubviews];
+//  _contentView.frame = self.bounds;
+//  _loadingView.center = (CGPoint){
+//    CGRectGetMidX(self.bounds),
+//    CGRectGetMidY(self.bounds)
+//  };
 }
 
 - (NSNumber *)reactTag
@@ -229,8 +239,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 @implementation RCTRootContentView
 {
   __weak RCTBridge *_bridge;
-  RCTTouchHandler *_touchHandler;
-  UIColor *_backgroundColor;
+ // RCTTouchHandler *_touchHandler;
+  NSColor *_backgroundColor;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -269,7 +279,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
   }
 }
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
+- (void)setBackgroundColor:(NSColor *)backgroundColor
 {
   _backgroundColor = backgroundColor;
   if (self.reactTag && _bridge.isValid) {
@@ -277,7 +287,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
   }
 }
 
-- (UIColor *)backgroundColor
+- (NSColor *)backgroundColor
 {
   return _backgroundColor;
 }
@@ -292,18 +302,18 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
    * the react tag is assigned every time we load new content.
    */
   self.reactTag = [_bridge.uiManager allocateRootTag];
-  [self addGestureRecognizer:[[RCTTouchHandler alloc] initWithBridge:_bridge]];
+ // [self addGestureRecognizer:[[RCTTouchHandler alloc] initWithBridge:_bridge]];
   [_bridge.uiManager registerRootView:self];
 }
 
 - (void)invalidate
 {
-  if (self.userInteractionEnabled) {
-    self.userInteractionEnabled = NO;
+  //if (self.userInteractionEnabled) {
+  //  self.userInteractionEnabled = NO;
     [(RCTRootView *)self.superview contentViewInvalidated];
     [_bridge enqueueJSCall:@"ReactNative.unmountComponentAtNodeAndRemoveContainer"
                       args:@[self.reactTag]];
-  }
+  //}
 }
 
 @end

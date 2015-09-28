@@ -9,18 +9,19 @@
 
 #import "RCTWebView.h"
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
+#import <WebKit/WebKit.h>
 
 #import "RCTAutoInsetsProtocol.h"
 #import "RCTEventDispatcher.h"
 #import "RCTLog.h"
 #import "RCTUtils.h"
 #import "RCTView.h"
-#import "UIView+React.h"
+#import "NSView+React.h"
 
 NSString *const RCTJSNavigationScheme = @"react-js-navigation";
 
-@interface RCTWebView () <UIWebViewDelegate, RCTAutoInsetsProtocol>
+@interface RCTWebView () <WebViewDelegate, RCTAutoInsetsProtocol>
 
 @property (nonatomic, copy) RCTDirectEventBlock onLoadingStart;
 @property (nonatomic, copy) RCTDirectEventBlock onLoadingFinish;
@@ -30,17 +31,20 @@ NSString *const RCTJSNavigationScheme = @"react-js-navigation";
 
 @implementation RCTWebView
 {
-  UIWebView *_webView;
+  WebView *_webView;
   NSString *_injectedJavaScript;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if ((self = [super initWithFrame:frame])) {
-    super.backgroundColor = [UIColor clearColor];
+    CALayer *viewLayer = [CALayer layer];
+    [viewLayer setBackgroundColor:[[NSColor clearColor] CGColor]]; //RGB plus Alpha Channel
+    [self setWantsLayer:YES]; // view's backing store is using a Core Animation Layer
+    [self setLayer:viewLayer];
     _automaticallyAdjustContentInsets = YES;
-    _contentInset = UIEdgeInsetsZero;
-    _webView = [[UIWebView alloc] initWithFrame:self.bounds];
+    _contentInset = NSEdgeInsetsZero;
+    _webView = [[WebView alloc] initWithFrame:self.bounds];
     _webView.delegate = self;
     [self addSubview:_webView];
   }

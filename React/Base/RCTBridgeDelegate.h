@@ -7,6 +7,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+#import <Foundation/Foundation.h>
+
 typedef void (^RCTSourceLoadBlock)(NSError *error, NSString *source);
 
 @class RCTBridge;

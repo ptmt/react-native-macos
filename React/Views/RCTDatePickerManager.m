@@ -12,16 +12,17 @@
 #import "RCTBridge.h"
 #import "RCTDatePicker.h"
 #import "RCTEventDispatcher.h"
-#import "UIView+React.h"
+#import "NSView+React.h"
 
-@implementation RCTConvert(UIDatePicker)
+@implementation RCTConvert(NSDatePicker)
 
-RCT_ENUM_CONVERTER(UIDatePickerMode, (@{
-  @"time": @(UIDatePickerModeTime),
-  @"date": @(UIDatePickerModeDate),
-  @"datetime": @(UIDatePickerModeDateAndTime),
-  @"countdown": @(UIDatePickerModeCountDownTimer), // not supported yet
-}), UIDatePickerModeTime, integerValue)
+// TODO:
+//RCT_ENUM_CONVERTER(NSDatePickerMode, (@{
+//  @"time": @(UIDatePickerModeTime),
+//  @"date": @(UIDatePickerModeDate),
+//  @"datetime": @(UIDatePickerModeDateAndTime),
+//  @"countdown": @(UIDatePickerModeCountDownTimer), // not supported yet
+//}), UIDatePickerModeTime, integerValue)
 
 @end
 
@@ -29,7 +30,7 @@ RCT_ENUM_CONVERTER(UIDatePickerMode, (@{
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
+- (NSView *)view
 {
   return [RCTDatePicker new];
 }
@@ -44,7 +45,7 @@ RCT_REMAP_VIEW_PROPERTY(timeZoneOffsetInMinutes, timeZone, NSTimeZone)
 
 - (NSDictionary *)constantsToExport
 {
-  UIDatePicker *view = [UIDatePicker new];
+  NSDatePicker *view = [NSDatePicker new];
   return @{
     @"ComponentHeight": @(view.intrinsicContentSize.height),
     @"ComponentWidth": @(view.intrinsicContentSize.width),

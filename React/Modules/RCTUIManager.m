@@ -30,7 +30,7 @@
 #import "RCTUtils.h"
 #import "RCTView.h"
 #import "RCTViewManager.h"
-#import "UIView+React.h"
+#import "NSView+React.h"
 
 static void RCTTraverseViewNodes(id<RCTComponent> view, void (^block)(id<RCTComponent>))
 {
@@ -60,25 +60,25 @@ NSString *const RCTUIManagerRootViewKey = @"RCTUIManagerRootViewKey";
 
 @implementation RCTAnimation
 
-static UIViewAnimationOptions UIViewAnimationOptionsFromRCTAnimationType(RCTAnimationType type)
-{
-  switch (type) {
-    case RCTAnimationTypeLinear:
-      return UIViewAnimationOptionCurveLinear;
-    case RCTAnimationTypeEaseIn:
-      return UIViewAnimationOptionCurveEaseIn;
-    case RCTAnimationTypeEaseOut:
-      return UIViewAnimationOptionCurveEaseOut;
-    case RCTAnimationTypeEaseInEaseOut:
-      return UIViewAnimationOptionCurveEaseInOut;
-    case RCTAnimationTypeKeyboard:
-      // http://stackoverflow.com/questions/18870447/how-to-use-the-default-ios7-uianimation-curve
-      return (UIViewAnimationOptions)(7 << 16);
-    default:
-      RCTLogError(@"Unsupported animation type %zd", type);
-      return UIViewAnimationOptionCurveEaseInOut;
-  }
-}
+//static NSViewAnimationOptions NSViewAnimationOptionsFromRCTAnimationType(RCTAnimationType type)
+//{
+//  switch (type) {
+//    case RCTAnimationTypeLinear:
+//      return NSViewAnimationOptionCurveLinear;
+//    case RCTAnimationTypeEaseIn:
+//      return NSViewAnimationOptionCurveEaseIn;
+//    case RCTAnimationTypeEaseOut:
+//      return NSViewAnimationOptionCurveEaseOut;
+//    case RCTAnimationTypeEaseInEaseOut:
+//      return NSViewAnimationOptionCurveEaseInOut;
+//    case RCTAnimationTypeKeyboard:
+//      // http://stackoverflow.com/questions/18870447/how-to-use-the-default-ios7-uianimation-curve
+//      return (NSViewAnimationOptions)(7 << 16);
+//    default:
+//      RCTLogError(@"Unsupported animation type %zd", type);
+//      return NSViewAnimationOptionCurveEaseInOut;
+//  }
+//}
 
 - (instancetype)initWithDuration:(NSTimeInterval)duration dictionary:(NSDictionary *)config
 {
@@ -103,8 +103,8 @@ static UIViewAnimationOptions UIViewAnimationOptionsFromRCTAnimationType(RCTAnim
 
     _animationType = [RCTConvert RCTAnimationType:config[@"type"]];
     if (_animationType == RCTAnimationTypeSpring) {
-      _springDamping = [RCTConvert CGFloat:config[@"springDamping"]];
-      _initialVelocity = [RCTConvert CGFloat:config[@"initialVelocity"]];
+//      _springDamping = [RCTConvert CGFloat:config[@"springDamping"]];
+//      _initialVelocity = [RCTConvert CGFloat:config[@"initialVelocity"]];
     }
     _fromValue = config[@"fromValue"];
     _toValue = config[@"toValue"];
@@ -115,27 +115,27 @@ static UIViewAnimationOptions UIViewAnimationOptionsFromRCTAnimationType(RCTAnim
 - (void)performAnimations:(void (^)(void))animations
       withCompletionBlock:(void (^)(BOOL completed))completionBlock
 {
-  if (_animationType == RCTAnimationTypeSpring) {
-
-    [UIView animateWithDuration:_duration
-                          delay:_delay
-         usingSpringWithDamping:_springDamping
-          initialSpringVelocity:_initialVelocity
-                        options:UIViewAnimationOptionBeginFromCurrentState
-                     animations:animations
-                     completion:completionBlock];
-
-  } else {
-
-    UIViewAnimationOptions options = UIViewAnimationOptionBeginFromCurrentState |
-      UIViewAnimationOptionsFromRCTAnimationType(_animationType);
-
-    [UIView animateWithDuration:_duration
-                          delay:_delay
-                        options:options
-                     animations:animations
-                     completion:completionBlock];
-  }
+//  if (_animationType == RCTAnimationTypeSpring) {
+//
+//    [NSView animateWithDuration:_duration
+//                          delay:_delay
+//         usingSpringWithDamping:_springDamping
+//          initialSpringVelocity:_initialVelocity
+//                        options:NSViewAnimationOptionBeginFromCurrentState
+//                     animations:animations
+//                     completion:completionBlock];
+//
+//  } else {
+//
+//    NSViewAnimationOptions options = NSViewAnimationOptionBeginFromCurrentState |
+//      NSViewAnimationOptionsFromRCTAnimationType(_animationType);
+//
+//    [NSView animateWithDuration:_duration
+//                          delay:_delay
+//                        options:options
+//                     animations:animations
+//                     completion:completionBlock];
+//  }
 }
 
 @end
@@ -230,10 +230,10 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
 
     _bridgeTransactionListeners = [NSMutableSet new];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didReceiveNewContentSizeMultiplier)
-                                                 name:RCTAccessibilityManagerDidUpdateMultiplierNotification
-                                               object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(didReceiveNewContentSizeMultiplier)
+//                                                 name:RCTAccessibilityManagerDidUpdateMultiplierNotification
+//                                               object:nil];
   }
   return self;
 }
@@ -303,7 +303,7 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
   return _shadowQueue;
 }
 
-- (void)registerRootView:(UIView *)rootView
+- (void)registerRootView:(NSView *)rootView
 {
   RCTAssertMainThread();
 
@@ -311,7 +311,7 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
   RCTAssert(RCTIsReactRootView(reactTag),
             @"View %@ with tag #%@ is not a root view", rootView, reactTag);
 
-  UIView *existingView = _viewRegistry[reactTag];
+  NSView *existingView = _viewRegistry[reactTag];
   RCTAssert(existingView == nil || existingView == rootView,
             @"Expect all root views to have unique tag. Added %@ twice", reactTag);
 
@@ -329,7 +329,7 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
     RCTShadowView *shadowView = [RCTShadowView new];
     shadowView.reactTag = reactTag;
     shadowView.frame = frame;
-    shadowView.backgroundColor = rootView.backgroundColor;
+    //shadowView.backgroundColor = rootView.backgroundColor;
     shadowView.viewName = NSStringFromClass([rootView class]);
     strongSelf->_shadowViewRegistry[shadowView.reactTag] = shadowView;
     [strongSelf->_rootViewTags addObject:reactTag];
@@ -340,13 +340,13 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
                                                     userInfo:@{ RCTUIManagerRootViewKey: rootView }];
 }
 
-- (UIView *)viewForReactTag:(NSNumber *)reactTag
+- (NSView *)viewForReactTag:(NSNumber *)reactTag
 {
   RCTAssertMainThread();
   return _viewRegistry[reactTag];
 }
 
-- (void)setFrame:(CGRect)frame forView:(UIView *)view
+- (void)setFrame:(CGRect)frame forView:(NSView *)view
 {
   RCTAssertMainThread();
 
@@ -361,7 +361,7 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
   });
 }
 
-- (void)setBackgroundColor:(UIColor *)color forRootView:(UIView *)rootView
+- (void)setBackgroundColor:(NSColor *)color forRootView:(NSView *)rootView
 {
   RCTAssertMainThread();
 
@@ -451,7 +451,7 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
 
   for (RCTShadowView *shadowView in viewsWithNewFrames) {
     [frameReactTags addObject:shadowView.reactTag];
-    [frames addObject:[NSValue valueWithCGRect:shadowView.frame]];
+    [frames addObject:[NSValue valueWithRect:shadowView.frame]];
     [areNew addObject:@(shadowView.isNewView)];
     [parentsAreNew addObject:@(shadowView.superview.isNewView)];
   }
@@ -496,7 +496,7 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
     __block NSUInteger completionsCalled = 0;
     for (NSUInteger ii = 0; ii < frames.count; ii++) {
       NSNumber *reactTag = frameReactTags[ii];
-      UIView *view = viewRegistry[reactTag];
+      NSView *view = viewRegistry[reactTag];
       CGRect frame = [frames[ii] CGRectValue];
 
       BOOL isNew = [areNew[ii] boolValue];
@@ -641,7 +641,7 @@ RCT_EXPORT_METHOD(removeRootView:(nonnull NSNumber *)rootReactTag)
 
   [self addUIBlock:^(RCTUIManager *uiManager, RCTSparseArray *viewRegistry){
     RCTAssertMainThread();
-    UIView *rootView = viewRegistry[rootReactTag];
+    NSView *rootView = viewRegistry[rootReactTag];
     [uiManager _purgeChildren:rootView.reactSubviews fromRegistry:viewRegistry];
     viewRegistry[rootReactTag] = nil;
 
@@ -755,12 +755,12 @@ RCT_EXPORT_METHOD(createView:(nonnull NSNumber *)reactTag
   // Shadow view is the source of truth for background color this is a little
   // bit counter-intuitive if people try to set background color when setting up
   // the view, but it's the only way that makes sense given our threading model
-  UIColor *backgroundColor = shadowView.backgroundColor;
+  NSColor *backgroundColor = shadowView.backgroundColor;
 
   [self addUIBlock:^(RCTUIManager *uiManager, RCTSparseArray *viewRegistry){
     id<RCTComponent> view = [componentData createViewWithTag:reactTag props:props];
     if ([view respondsToSelector:@selector(setBackgroundColor:)]) {
-      ((UIView *)view).backgroundColor = backgroundColor;
+      //((NSView *)view).backgroundColor = backgroundColor; TODO:
     }
     [componentData setProps:props forView:view];
     if ([view respondsToSelector:@selector(reactBridgeDidFinishTransaction)]) {
@@ -779,7 +779,7 @@ RCT_EXPORT_METHOD(updateView:(nonnull NSNumber *)reactTag
   [componentData setProps:props forShadowView:shadowView];
 
   [self addUIBlock:^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
-    UIView *view = viewRegistry[reactTag];
+    NSView *view = viewRegistry[reactTag];
     [componentData setProps:props forView:view];
   }];
 }
@@ -787,7 +787,7 @@ RCT_EXPORT_METHOD(updateView:(nonnull NSNumber *)reactTag
 RCT_EXPORT_METHOD(focus:(nonnull NSNumber *)reactTag)
 {
   [self addUIBlock:^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
-    UIView *newResponder = viewRegistry[reactTag];
+    NSView *newResponder = viewRegistry[reactTag];
     [newResponder reactWillMakeFirstResponder];
     [newResponder becomeFirstResponder];
     [newResponder reactDidMakeFirstResponder];
@@ -797,7 +797,7 @@ RCT_EXPORT_METHOD(focus:(nonnull NSNumber *)reactTag)
 RCT_EXPORT_METHOD(blur:(nonnull NSNumber *)reactTag)
 {
   [self addUIBlock:^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry){
-    UIView *currentResponder = viewRegistry[reactTag];
+    NSView *currentResponder = viewRegistry[reactTag];
     [currentResponder resignFirstResponder];
   }];
 }
@@ -805,21 +805,21 @@ RCT_EXPORT_METHOD(blur:(nonnull NSNumber *)reactTag)
 RCT_EXPORT_METHOD(findSubviewIn:(nonnull NSNumber *)reactTag atPoint:(CGPoint)point callback:(RCTResponseSenderBlock)callback)
 {
   [self addUIBlock:^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
-    UIView *view = viewRegistry[reactTag];
-    UIView *target = [view hitTest:point withEvent:nil];
-    CGRect frame = [target convertRect:target.bounds toView:view];
-
-    while (target.reactTag == nil && target.superview != nil) {
-      target = target.superview;
-    }
-
-    callback(@[
-      RCTNullIfNil(target.reactTag),
-      @(frame.origin.x),
-      @(frame.origin.y),
-      @(frame.size.width),
-      @(frame.size.height),
-    ]);
+    //NSView *view = viewRegistry[reactTag];
+    //NSView *target = [view hitTest:point withEvent:nil];
+//    CGRect frame = [target convertRect:target.bounds toView:view];
+//
+//    while (target.reactTag == nil && target.superview != nil) {
+//      target = target.superview;
+//    }
+//
+//    callback(@[
+//      RCTNullIfNil(target.reactTag),
+//      @(frame.origin.x),
+//      @(frame.origin.y),
+//      @(frame.size.width),
+//      @(frame.size.height),
+//    ]);
   }];
 }
 
@@ -896,7 +896,7 @@ RCT_EXPORT_METHOD(measure:(nonnull NSNumber *)reactTag
                   callback:(RCTResponseSenderBlock)callback)
 {
   [self addUIBlock:^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
-    UIView *view = viewRegistry[reactTag];
+    NSView *view = viewRegistry[reactTag];
     if (!view) {
       // this view was probably collapsed out
       RCTLogWarn(@"measure cannot find view with tag #%@", reactTag);
@@ -905,7 +905,7 @@ RCT_EXPORT_METHOD(measure:(nonnull NSNumber *)reactTag
     }
     CGRect frame = view.frame;
 
-    UIView *rootView = view;
+    NSView *rootView = view;
     while (rootView && ![rootView isReactRootView]) {
       rootView = rootView.superview;
     }
@@ -1047,13 +1047,13 @@ RCT_EXPORT_METHOD(setMainScrollViewTag:(nonnull NSNumber *)reactTag)
     // - The one designated main scroll view should have the one designated
     // `nativeMainScrollDelegate` set as its `nativeMainScrollDelegate`.
     if (uiManager.mainScrollView) {
-      uiManager.mainScrollView.nativeMainScrollDelegate = nil;
+      //uiManager.mainScrollView.nativeMainScrollDelegate = nil;
     }
     id view = viewRegistry[reactTag];
     if (view) {
       if ([view conformsToProtocol:@protocol(RCTScrollableProtocol)]) {
         uiManager.mainScrollView = (id<RCTScrollableProtocol>)view;
-        uiManager.mainScrollView.nativeMainScrollDelegate = uiManager.nativeMainScrollDelegate;
+       // uiManager.mainScrollView.nativeMainScrollDelegate = uiManager.nativeMainScrollDelegate;
       } else {
         RCTLogError(@"Tag #%@ does not conform to RCTScrollableProtocol", reactTag);
       }
@@ -1069,7 +1069,7 @@ RCT_EXPORT_METHOD(scrollTo:(nonnull NSNumber *)reactTag
                   offsetY:(CGFloat)offsetY)
 {
   [self addUIBlock:^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry){
-    UIView *view = viewRegistry[reactTag];
+    NSView *view = viewRegistry[reactTag];
     if ([view conformsToProtocol:@protocol(RCTScrollableProtocol)]) {
       [(id<RCTScrollableProtocol>)view scrollToOffset:(CGPoint){offsetX, offsetY} animated:YES];
     } else {
@@ -1084,7 +1084,7 @@ RCT_EXPORT_METHOD(scrollWithoutAnimationTo:(nonnull NSNumber *)reactTag
                   offsetY:(CGFloat)offsetY)
 {
     [self addUIBlock:^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry){
-        UIView *view = viewRegistry[reactTag];
+        NSView *view = viewRegistry[reactTag];
         if ([view conformsToProtocol:@protocol(RCTScrollableProtocol)]) {
             [(id<RCTScrollableProtocol>)view scrollToOffset:(CGPoint){offsetX, offsetY} animated:NO];
         } else {
@@ -1097,7 +1097,7 @@ RCT_EXPORT_METHOD(zoomToRect:(nonnull NSNumber *)reactTag
                   withRect:(CGRect)rect)
 {
   [self addUIBlock:^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry){
-    UIView *view = viewRegistry[reactTag];
+    NSView *view = viewRegistry[reactTag];
     if ([view conformsToProtocol:@protocol(RCTScrollableProtocol)]) {
       [(id<RCTScrollableProtocol>)view zoomToRect:rect animated:YES];
     } else {
@@ -1220,9 +1220,9 @@ RCT_EXPORT_METHOD(configureNextLayoutAnimation:(NSDictionary *)config
                                                                callback:callback];
 }
 
-static UIView *_jsResponder;
+static NSView *_jsResponder;
 
-+ (UIView *)JSResponder
++ (NSView *)JSResponder
 {
   return _jsResponder;
 }

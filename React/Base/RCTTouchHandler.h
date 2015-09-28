@@ -7,13 +7,13 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTFrameUpdate.h"
 
 @class RCTBridge;
 
-@interface RCTTouchHandler : UIGestureRecognizer
+@interface RCTTouchHandler : NSGestureRecognizer
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge NS_DESIGNATED_INITIALIZER;
 

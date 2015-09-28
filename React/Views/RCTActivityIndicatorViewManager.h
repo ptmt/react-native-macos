@@ -9,9 +9,9 @@
 
 #import "RCTViewManager.h"
 
-@interface RCTConvert (UIActivityIndicatorView)
+@interface RCTConvert (NSProgressIndicator)
 
-+ (UIActivityIndicatorViewStyle)UIActivityIndicatorViewStyle:(id)json;
+//+ (UIActivityIndicatorViewStyle)UIActivityIndicatorViewStyle:(id)json;
 
 @end
 

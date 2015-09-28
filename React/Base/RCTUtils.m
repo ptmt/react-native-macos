@@ -12,7 +12,7 @@
 #import <mach/mach_time.h>
 #import <objc/message.h>
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import <CommonCrypto/CommonCrypto.h>
 
@@ -186,16 +186,17 @@ NSString *RCTMD5Hash(NSString *string)
 CGFloat RCTScreenScale()
 {
   static CGFloat scale;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    if (![NSThread isMainThread]) {
-      dispatch_sync(dispatch_get_main_queue(), ^{
-        scale = [UIScreen mainScreen].scale;
-      });
-    } else {
-      scale = [UIScreen mainScreen].scale;
-    }
-  });
+  scale = 1;
+//  static dispatch_once_t onceToken;
+//  dispatch_once(&onceToken, ^{
+//    if (![NSThread isMainThread]) {
+//      dispatch_sync(dispatch_get_main_queue(), ^{
+//        scale = [NSScreen mainScreen].scale;
+//      });
+//    } else {
+//      scale = [NSScreen mainScreen].scale;
+//    }
+//  });
 
   return scale;
 }
@@ -207,10 +208,10 @@ CGSize RCTScreenSize()
   dispatch_once(&onceToken, ^{
     if (![NSThread isMainThread]) {
       dispatch_sync(dispatch_get_main_queue(), ^{
-        size = [UIScreen mainScreen].bounds.size;
+        size = [[NSScreen mainScreen] visibleFrame].size;
       });
     } else {
-      size = [UIScreen mainScreen].bounds.size;
+      size = [[NSScreen mainScreen] visibleFrame].size;
     }
   });
 
@@ -348,7 +349,7 @@ id RCTSharedApplication(void)
     return nil;
   }
   
-  return [[UIApplication class] performSelector:@selector(sharedApplication)];
+  return [[NSApplication class] performSelector:@selector(sharedApplication)];
 }
 
 id RCTAlertView(NSString *title, NSString *message, id delegate, NSString *cancelButtonTitle, NSArray *otherButtonTitles)
@@ -358,13 +359,12 @@ id RCTAlertView(NSString *title, NSString *message, id delegate, NSString *cance
     return nil;
   }
   
-  UIAlertView *alertView = [[UIAlertView alloc] init];
-  alertView.title = title;
-  alertView.message = message;
+  NSAlert *alertView = [[NSAlert alloc] init];
+  alertView.messageText = message;
   alertView.delegate = delegate;
   if (cancelButtonTitle != nil) {
     [alertView addButtonWithTitle:cancelButtonTitle];
-    alertView.cancelButtonIndex = 0;
+    //alertView.cancelButtonIndex = 0;
   }
   for (NSString *buttonTitle in otherButtonTitles)
   {

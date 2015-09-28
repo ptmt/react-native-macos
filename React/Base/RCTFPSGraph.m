@@ -7,6 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+#import "AppKit/AppKit.h"
 #import "RCTFPSGraph.h"
 
 #import "RCTAssert.h"
@@ -16,11 +17,11 @@
 
 @implementation RCTFPSGraph
 {
-  CAShapeLayer *_graph;
+  //CAShapeLayer *_graph;
   NSString *_name;
   NSTimeInterval _prevTime;
   RCTFPSGraphPosition _position;
-  UILabel *_label;
+  NSTextField *_label;
 
   float *_frames;
   int _frameCount;
@@ -31,7 +32,7 @@
   int _height;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame graphPosition:(RCTFPSGraphPosition)position name:(NSString *)name color:(UIColor *)color
+- (instancetype)initWithFrame:(CGRect)frame graphPosition:(RCTFPSGraphPosition)position name:(NSString *)name color:(NSColor *)color
 {
   if ((self = [super initWithFrame:frame])) {
     _margin = 2;
@@ -46,12 +47,12 @@
     _name = name ?: @"FPS";
     _position = position ?: RCTFPSGraphPositionLeft;
 
-    color = color ?: [UIColor greenColor];
-    _graph = [self createGraph:color];
-    _label = [self createLabel:color];
+    color = color ?: [NSColor greenColor];
+//    _graph = [self createGraph:color];
+//    _label = [self createLabel:color];
 
     [self addSubview:_label];
-    [self.layer addSublayer:_graph];
+    //[self.layer addSublayer:_graph];
   }
   return self;
 }
@@ -63,35 +64,35 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 {
   free(_frames);
 }
-
-- (void)layoutSubviews
-{
-  [super layoutSubviews];
-}
-
-- (CAShapeLayer *)createGraph:(UIColor *)color
-{
-  CGFloat left = _position & RCTFPSGraphPositionLeft ? 0 : _length;
-  CAShapeLayer *graph = [CAShapeLayer new];
-  graph.frame = CGRectMake(left, 0, 2 * _margin + _length, self.frame.size.height);
-  graph.backgroundColor = [color colorWithAlphaComponent:0.2].CGColor;
-  graph.fillColor = color.CGColor;
-  return graph;
-}
-
-- (UILabel *)createLabel:(UIColor *)color
-{
-  CGFloat left = _position & RCTFPSGraphPositionLeft ? 2 * _margin + _length : 0;
-  UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(left, 0, _length, self.frame.size.height)];
-  label.textColor = color;
-  label.font = [UIFont systemFontOfSize:9];
-  label.minimumScaleFactor = .5;
-  label.adjustsFontSizeToFitWidth = YES;
-  label.numberOfLines = 3;
-  label.lineBreakMode = NSLineBreakByWordWrapping;
-  label.textAlignment = NSTextAlignmentCenter;
-  return label;
-}
+//
+//- (void)layoutSubviews
+//{
+//  [super layoutSubviews];
+//}
+//
+//- (CAShapeLayer *)createGraph:(UIColor *)color
+//{
+//  CGFloat left = _position & RCTFPSGraphPositionLeft ? 0 : _length;
+//  CAShapeLayer *graph = [CAShapeLayer new];
+//  graph.frame = CGRectMake(left, 0, 2 * _margin + _length, self.frame.size.height);
+//  graph.backgroundColor = [color colorWithAlphaComponent:0.2].CGColor;
+//  graph.fillColor = color.CGColor;
+//  return graph;
+//}
+//
+//- (UILabel *)createLabel:(UIColor *)color
+//{
+//  CGFloat left = _position & RCTFPSGraphPositionLeft ? 2 * _margin + _length : 0;
+//  UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(left, 0, _length, self.frame.size.height)];
+//  label.textColor = color;
+//  label.font = [UIFont systemFontOfSize:9];
+//  label.minimumScaleFactor = .5;
+//  label.adjustsFontSizeToFitWidth = YES;
+//  label.numberOfLines = 3;
+//  label.lineBreakMode = NSLineBreakByWordWrapping;
+//  label.textAlignment = NSTextAlignmentCenter;
+//  return label;
+//}
 
 - (void)onTick:(NSTimeInterval)timestamp
 {
@@ -103,7 +104,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     _minFPS = MIN(_minFPS, fps);
     _maxFPS = MAX(_maxFPS, fps);
 
-    _label.text = [NSString stringWithFormat:@"%@\n%d FPS\n(%d - %d)", _name, (int)fps, _minFPS, _maxFPS];
+   // _label.text = [NSString stringWithFormat:@"%@\n%d FPS\n(%d - %d)", _name, (int)fps, _minFPS, _maxFPS];
 
     float scale = 60.0 / _height;
     for (int i = 0; i < _length - 1; i++) {
@@ -125,7 +126,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
       }
       CGPathAddLineToPoint(path, NULL, _margin, _margin + _height);
     }
-    _graph.path = path;
+   // _graph.path = path;
     CGPathRelease(path);
 
     _prevTime = timestamp;

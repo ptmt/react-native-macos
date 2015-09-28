@@ -9,7 +9,7 @@
 
 #import "RCTView.h"
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTComponent.h"
 #import "RCTPointerEvents.h"
@@ -18,7 +18,7 @@
 
 @class RCTView;
 
-@interface RCTView : UIView
+@interface RCTView : NSView
 
 /**
  * Accessibility event handlers
@@ -31,14 +31,14 @@
  */
 @property (nonatomic, assign) RCTPointerEvents pointerEvents;
 
-+ (void)autoAdjustInsetsForView:(UIView<RCTAutoInsetsProtocol> *)parentView
-                 withScrollView:(UIScrollView *)scrollView
++ (void)autoAdjustInsetsForView:(NSView<RCTAutoInsetsProtocol> *)parentView
+                 withScrollView:(NSScrollView *)scrollView
                    updateOffset:(BOOL)updateOffset;
 
 /**
  * Find the first view controller whose view, or any subview is the specified view.
  */
-+ (UIEdgeInsets)contentInsetsForView:(UIView *)curView;
++ (NSEdgeInsets)contentInsetsForView:(NSView *)curView;
 
 /**
  * This is an optimization used to improve performance

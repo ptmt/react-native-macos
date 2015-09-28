@@ -8,7 +8,7 @@
  */
 
 #import <QuartzCore/QuartzCore.h>
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "Layout.h"
 #import "RCTAnimationType.h"
@@ -59,38 +59,38 @@ typedef NSURL RCTFileURL;
 + (NSTextAlignment)NSTextAlignment:(id)json;
 + (NSUnderlineStyle)NSUnderlineStyle:(id)json;
 + (NSWritingDirection)NSWritingDirection:(id)json;
-+ (UITextAutocapitalizationType)UITextAutocapitalizationType:(id)json;
-+ (UITextFieldViewMode)UITextFieldViewMode:(id)json;
-+ (UIKeyboardType)UIKeyboardType:(id)json;
-+ (UIReturnKeyType)UIReturnKeyType:(id)json;
-
-+ (UIViewContentMode)UIViewContentMode:(id)json;
-+ (UIBarStyle)UIBarStyle:(id)json;
-
+//+ (UITextAutocapitalizationType)UITextAutocapitalizationType:(id)json;
+//+ (UITextFieldViewMode)UITextFieldViewMode:(id)json;
+//+ (UIKeyboardType)UIKeyboardType:(id)json;
+//+ (UIReturnKeyType)UIReturnKeyType:(id)json;
+//
+//+ (UIViewContentMode)UIViewContentMode:(id)json;
+//+ (UIBarStyle)UIBarStyle:(id)json;
+//
 + (CGFloat)CGFloat:(id)json;
 + (CGPoint)CGPoint:(id)json;
 + (CGSize)CGSize:(id)json;
 + (CGRect)CGRect:(id)json;
-+ (UIEdgeInsets)UIEdgeInsets:(id)json;
-
-+ (CGLineCap)CGLineCap:(id)json;
-+ (CGLineJoin)CGLineJoin:(id)json;
-
-+ (CATransform3D)CATransform3D:(id)json;
-+ (CGAffineTransform)CGAffineTransform:(id)json;
-
-+ (UIColor *)UIColor:(id)json;
++ (NSEdgeInsets)UIEdgeInsets:(id)json;
+//
+//+ (CGLineCap)CGLineCap:(id)json;
+//+ (CGLineJoin)CGLineJoin:(id)json;
+//
+//+ (CATransform3D)CATransform3D:(id)json;
+//+ (CGAffineTransform)CGAffineTransform:(id)json;
+//
++ (NSColor *)NSColor:(id)json;
 + (CGColorRef)CGColor:(id)json CF_RETURNS_NOT_RETAINED;
-
-+ (UIImage *)UIImage:(id)json;
-+ (CGImageRef)CGImage:(id)json CF_RETURNS_NOT_RETAINED;
-
-+ (UIFont *)UIFont:(id)json;
-+ (UIFont *)UIFont:(UIFont *)font withSize:(id)json;
-+ (UIFont *)UIFont:(UIFont *)font withWeight:(id)json;
-+ (UIFont *)UIFont:(UIFont *)font withStyle:(id)json;
-+ (UIFont *)UIFont:(UIFont *)font withFamily:(id)json;
-+ (UIFont *)UIFont:(UIFont *)font withFamily:(id)family
+//
+//+ (UIImage *)UIImage:(id)json;
+//+ (CGImageRef)CGImage:(id)json CF_RETURNS_NOT_RETAINED;
+//
++ (NSFont *)NSFont:(id)json;
++ (NSFont *)NSFont:(NSFont *)font withSize:(id)json;
++ (NSFont *)NSFont:(NSFont *)font withWeight:(id)json;
++ (NSFont *)NSFont:(NSFont *)font withStyle:(id)json;
++ (NSFont *)NSFont:(NSFont *)font withFamily:(id)json;
++ (NSFont *)NSFont:(NSFont *)font withFamily:(id)family
               size:(id)size weight:(id)weight style:(id)style
    scaleMultiplier:(CGFloat)scaleMultiplier;
 

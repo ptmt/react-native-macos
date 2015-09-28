@@ -13,7 +13,7 @@
 #import <objc/message.h>
 #import <objc/runtime.h>
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTAssert.h"
 #import "RCTBridge.h"
@@ -520,11 +520,18 @@ void RCTProfileSendResult(RCTBridge *bridge, NSString *route, NSData *data)
 
        if (message.length) {
          dispatch_async(dispatch_get_main_queue(), ^{
-           [[[UIAlertView alloc] initWithTitle:@"Profile"
-                                       message:message
-                                      delegate:nil
-                             cancelButtonTitle:@"OK"
-                             otherButtonTitles:nil] show];
+           NSAlert *alert = [[NSAlert alloc] init];
+           [alert addButtonWithTitle:@"OK"];
+           [alert setMessageText:message];
+           if ([alert runModal] == NSAlertFirstButtonReturn) {
+             //[alert ];
+           }
+
+//           [[[NSAlert alloc] initWithTitle:@"Profile"
+//                                       message:message
+//                                      delegate:nil
+//                             cancelButtonTitle:@"OK"
+//                             otherButtonTitles:nil] show];
          });
        }
      }

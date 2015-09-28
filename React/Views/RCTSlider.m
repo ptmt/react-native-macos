@@ -17,19 +17,19 @@
 - (void)setValue:(float)value
 {
   _unclippedValue = value;
-  super.value = value;
+  [self setDoubleValue:value];
 }
 
 - (void)setMinimumValue:(float)minimumValue
 {
-  super.minimumValue = minimumValue;
-  super.value = _unclippedValue;
+  self.minValue = minimumValue;
+  [self setDoubleValue:_unclippedValue];
 }
 
 - (void)setMaximumValue:(float)maximumValue
 {
-  super.maximumValue = maximumValue;
-  super.value = _unclippedValue;
+  self.maxValue = maximumValue;
+  [self setDoubleValue:_unclippedValue];
 }
 
 @end

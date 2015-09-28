@@ -16,10 +16,10 @@
 // NOTE: It's pointless to support UIActivityIndicatorViewStyleGray
 // as we can set the color to any arbitrary value that we want to
 
-RCT_ENUM_CONVERTER(UIActivityIndicatorViewStyle, (@{
-  @"large": @(UIActivityIndicatorViewStyleWhiteLarge),
-  @"small": @(UIActivityIndicatorViewStyleWhite),
-}), UIActivityIndicatorViewStyleWhiteLarge, integerValue)
+//RCT_ENUM_CONVERTER(UIActivityIndicatorViewStyle, (@{
+//  @"large": @(UIActivityIndicatorViewStyleWhiteLarge),
+//  @"small": @(UIActivityIndicatorViewStyleWhite),
+//}), UIActivityIndicatorViewStyleWhiteLarge, integerValue)
 
 @end
 
@@ -27,24 +27,29 @@ RCT_ENUM_CONVERTER(UIActivityIndicatorViewStyle, (@{
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
+- (NSView *)view
 {
-  return [UIActivityIndicatorView new];
+  NSProgressIndicator* indicator = [[NSProgressIndicator alloc] initWithFrame:NSMakeRect(20, 20, 30, 30)];
+  [indicator setStyle:NSProgressIndicatorSpinningStyle];
+  return indicator;
+  //return [UIActivityIndicatorView new];
 }
 
-RCT_EXPORT_VIEW_PROPERTY(color, UIColor)
+RCT_EXPORT_VIEW_PROPERTY(color, NSColor)
 RCT_EXPORT_VIEW_PROPERTY(hidesWhenStopped, BOOL)
 RCT_REMAP_VIEW_PROPERTY(size, activityIndicatorViewStyle, UIActivityIndicatorViewStyle)
-RCT_CUSTOM_VIEW_PROPERTY(animating, BOOL, UIActivityIndicatorView)
+RCT_CUSTOM_VIEW_PROPERTY(animating, BOOL, NSProgressIndicator)
 {
-  BOOL animating = json ? [RCTConvert BOOL:json] : [defaultView isAnimating];
-  if (animating != [view isAnimating]) {
-    if (animating) {
-      [view startAnimating];
-    } else {
-      [view stopAnimating];
-    }
-  }
+  //TODO: store animated property because NSProgressIndicator doesn't have a suitable method
+
+//  BOOL animating = json ? [RCTConvert BOOL:json] : YES;
+//  if (animating != [view animat]) {
+//    if (animating) {
+//      [view startAnimation];
+//    } else {
+//      [view stopAnimation];
+//    }
+//  }
 }
 
 @end

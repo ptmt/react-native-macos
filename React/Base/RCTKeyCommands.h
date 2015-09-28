@@ -7,29 +7,29 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 @interface RCTKeyCommands : NSObject
 
 + (instancetype)sharedInstance;
 
 /**
- * Register a keyboard command.
+ * Register a keyboard command. UIKeyModifierFlags
  */
-- (void)registerKeyCommandWithInput:(NSString *)input
-                      modifierFlags:(UIKeyModifierFlags)flags
-                             action:(void (^)(UIKeyCommand *command))block;
-
-/**
- * Unregister a keyboard command.
- */
-- (void)unregisterKeyCommandWithInput:(NSString *)input
-                        modifierFlags:(UIKeyModifierFlags)flags;
-
-/**
- * Check if a command is registered.
- */
-- (BOOL)isKeyCommandRegisteredForInput:(NSString *)input
-                         modifierFlags:(UIKeyModifierFlags)flags;
+//- (void)registerKeyCommandWithInput:(NSString *)input
+//             //         modifierFlags:(NSKeyM)flags
+//                             action:(void (^)(NS *command))block;
+//
+///**
+// * Unregister a keyboard command.
+// */
+//- (void)unregisterKeyCommandWithInput:(NSString *)input
+//                        modifierFlags:(UIKeyModifierFlags)flags;
+//
+///**
+// * Check if a command is registered.
+// */
+//- (BOOL)isKeyCommandRegisteredForInput:(NSString *)input
+//                         modifierFlags:(UIKeyModifierFlags)flags;
 
 @end

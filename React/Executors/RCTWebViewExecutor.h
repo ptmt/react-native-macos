@@ -11,7 +11,7 @@
 
 #if RCT_DEV // Debug executors are only supported in dev mode
 
-#import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h> //TODO:
 
 #import "RCTJavaScriptExecutor.h"
 
@@ -33,7 +33,7 @@
 /**
  * Instantiate with a specific webview instance
  */
-- (instancetype)initWithWebView:(UIWebView *)webView NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithWebView:(WebView *)webView NS_DESIGNATED_INITIALIZER;
 
 /**
  * Invoke this to reclaim the web view for reuse. This is necessary in order to
@@ -41,7 +41,7 @@
  * This guards against the web view being invalidated, and makes sure the
  * `delegate` is cleared first.
  */
-- (UIWebView *)invalidateAndReclaimWebView;
+- (WebView *)invalidateAndReclaimWebView;
 
 @end
 

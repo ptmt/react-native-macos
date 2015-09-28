@@ -20,7 +20,7 @@ extern NSString *const RCTJSNavigationScheme;
 @interface RCTWebView : RCTView
 
 @property (nonatomic, strong) NSURL *URL;
-@property (nonatomic, assign) UIEdgeInsets contentInset;
+@property (nonatomic, assign) NSEdgeInsets contentInset;
 @property (nonatomic, assign) BOOL automaticallyAdjustContentInsets;
 @property (nonatomic, copy) NSString *injectedJavaScript;
 

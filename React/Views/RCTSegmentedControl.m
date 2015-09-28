@@ -11,16 +11,17 @@
 
 #import "RCTConvert.h"
 #import "RCTEventDispatcher.h"
-#import "UIView+React.h"
+#import "NSView+React.h"
 
 @implementation RCTSegmentedControl
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if ((self = [super initWithFrame:frame])) {
-    _selectedIndex = self.selectedSegmentIndex;
-    [self addTarget:self action:@selector(didChange)
-               forControlEvents:UIControlEventValueChanged];
+    _selectedIndex = self.selectedIndex;
+    // TODO:
+//    [self addTarget:self action:@selector(didChange)
+//               forControlEvents:UIControlEventValueChanged];
   }
   return self;
 }
@@ -28,25 +29,26 @@
 - (void)setValues:(NSArray *)values
 {
   _values = [values copy];
-  [self removeAllSegments];
+  //[self removeSe];
   for (NSString *value in values) {
-    [self insertSegmentWithTitle:value atIndex:self.numberOfSegments animated:NO];
+    //[self insertSegmentWithTitle:value atIndex:self.numberOfSegments animated:NO];
+    [self setLabel:value forSegment:self.segmentCount];
   }
-  super.selectedSegmentIndex = _selectedIndex;
+  self.selectedIndex = _selectedIndex;
 }
 
 - (void)setSelectedIndex:(NSInteger)selectedIndex
 {
   _selectedIndex = selectedIndex;
-  super.selectedSegmentIndex = selectedIndex;
+  self.selectedIndex = selectedIndex;
 }
 
 - (void)didChange
 {
-  _selectedIndex = self.selectedSegmentIndex;
+  _selectedIndex = self.selectedIndex;
   if (_onChange) {
     _onChange(@{
-      @"value": [self titleForSegmentAtIndex:_selectedIndex],
+      @"value": [self labelForSegment:_selectedIndex],
       @"selectedSegmentIndex": @(_selectedIndex)
     });
   }

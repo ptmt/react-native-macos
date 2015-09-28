@@ -11,7 +11,6 @@
 
 #import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 
 #import "RCTAssert.h"
 #import "RCTDefines.h"
@@ -56,11 +55,11 @@ RCT_EXTERN BOOL RCTRunningInTestEnvironment(void);
 RCT_EXTERN BOOL RCTRunningInAppExtension(void);
 
 // Returns the shared UIApplication instance, or nil if running in an App Extension
-RCT_EXTERN UIApplication *RCTSharedApplication(void);
+//RCT_EXTERN UIApplication *RCTSharedApplication(void);
 
 // Return a UIAlertView initialized with the given values
 // or nil if running in an app extension
-RCT_EXTERN UIAlertView *RCTAlertView(NSString *title, NSString *message, id delegate, NSString *cancelButtonTitle, NSArray *otherButtonTitles);
+//RCT_EXTERN UIAlertView *RCTAlertView(NSString *title, NSString *message, id delegate, NSString *cancelButtonTitle, NSArray *otherButtonTitles);
 
 // Return YES if image has an alpha component
 RCT_EXTERN BOOL RCTImageHasAlpha(CGImageRef image);

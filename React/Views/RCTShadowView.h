@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "Layout.h"
 #import "RCTComponent.h"
@@ -37,7 +37,7 @@ typedef void (^RCTApplierBlock)(RCTSparseArray *viewRegistry);
 @property (nonatomic, weak, readonly) RCTShadowView *superview;
 @property (nonatomic, assign, readonly) css_node_t *cssNode;
 @property (nonatomic, copy) NSString *viewName;
-@property (nonatomic, strong) UIColor *backgroundColor; // Used to propagate to children
+@property (nonatomic, strong) NSColor *backgroundColor; // Used to propagate to children
 @property (nonatomic, assign) RCTUpdateLifecycle layoutLifecycle;
 @property (nonatomic, copy) RCTDirectEventBlock onLayout;
 
@@ -95,7 +95,7 @@ typedef void (^RCTApplierBlock)(RCTSparseArray *viewRegistry);
 @property (nonatomic, assign) CGFloat paddingBottom;
 @property (nonatomic, assign) CGFloat paddingRight;
 
-- (UIEdgeInsets)paddingAsInsets;
+- (NSEdgeInsets)paddingAsInsets;
 
 /**
  * Flexbox properties. All zero/disabled by default

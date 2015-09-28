@@ -17,7 +17,7 @@
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
+- (NSView *)view
 {
   return [RCTSegmentedControl new];
 }

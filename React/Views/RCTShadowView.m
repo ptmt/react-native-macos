@@ -13,7 +13,7 @@
 #import "RCTLog.h"
 #import "RCTSparseArray.h"
 #import "RCTUtils.h"
-#import "UIView+React.h"
+#import "NSView+React.h"
 
 typedef void (^RCTActionBlock)(RCTShadowView *shadowViewSelf, id value);
 typedef void (^RCTResetActionBlock)(RCTShadowView *shadowViewSelf);
@@ -179,20 +179,20 @@ static void RCTProcessMetaProps(const float metaProps[META_PROP_COUNT], float st
   // only update those.
 
   if (!_backgroundColor) {
-    UIColor *parentBackgroundColor = parentProperties[RCTBackgroundColorProp];
-    if (parentBackgroundColor) {
-      [applierBlocks addObject:^(RCTSparseArray *viewRegistry) {
-        UIView *view = viewRegistry[_reactTag];
-        [view reactSetInheritedBackgroundColor:parentBackgroundColor];
-      }];
-    }
+//    UIColor *parentBackgroundColor = parentProperties[RCTBackgroundColorProp];
+//    if (parentBackgroundColor) {
+//      [applierBlocks addObject:^(RCTSparseArray *viewRegistry) {
+//        UIView *view = viewRegistry[_reactTag];
+//        [view reactSetInheritedBackgroundColor:parentBackgroundColor];
+//      }];
+//    }
   } else {
     // Update parent properties for children
     NSMutableDictionary *properties = [NSMutableDictionary dictionaryWithDictionary:parentProperties];
     CGFloat alpha = CGColorGetAlpha(_backgroundColor.CGColor);
     if (alpha < 1.0) {
       // If bg is non-opaque, don't propagate further
-      properties[RCTBackgroundColorProp] = [UIColor clearColor];
+      properties[RCTBackgroundColorProp] = [NSColor clearColor];
     } else {
       properties[RCTBackgroundColorProp] = _backgroundColor;
     }
@@ -370,7 +370,9 @@ static void RCTProcessMetaProps(const float metaProps[META_PROP_COUNT], float st
 - (NSString *)description
 {
   NSString *description = super.description;
-  description = [[description substringToIndex:description.length - 1] stringByAppendingFormat:@"; viewName: %@; reactTag: %@; frame: %@>", self.viewName, self.reactTag, NSStringFromCGRect(self.frame)];
+  description = [[description substringToIndex:description.length - 1]
+                 stringByAppendingFormat:@"; viewName: %@; reactTag: %@; frame: %f; %f;>",
+                 self.viewName, self.reactTag, self.frame.size.height, self.frame.size.width];
   return description;
 }
 
@@ -437,9 +439,9 @@ RCT_PADDING_PROPERTY(Left, LEFT)
 RCT_PADDING_PROPERTY(Bottom, BOTTOM)
 RCT_PADDING_PROPERTY(Right, RIGHT)
 
-- (UIEdgeInsets)paddingAsInsets
+- (NSEdgeInsets)paddingAsInsets
 {
-  return (UIEdgeInsets){
+  return (NSEdgeInsets){
     _cssNode->style.padding[CSS_TOP],
     _cssNode->style.padding[CSS_LEFT],
     _cssNode->style.padding[CSS_BOTTOM],
@@ -544,7 +546,7 @@ RCT_STYLE_PROPERTY(AlignItems, alignItems, align_items, css_align_t)
 RCT_STYLE_PROPERTY(Position, position, position_type, css_position_type_t)
 RCT_STYLE_PROPERTY(FlexWrap, flexWrap, flex_wrap, css_wrap_type_t)
 
-- (void)setBackgroundColor:(UIColor *)color
+- (void)setBackgroundColor:(NSColor *)color
 {
   _backgroundColor = color;
   [self dirtyPropagation];

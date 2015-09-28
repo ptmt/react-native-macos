@@ -80,24 +80,24 @@ RCT_EXPORT_MODULE()
     _paused = YES;
     _timers = [RCTSparseArray new];
 
-    for (NSString *name in @[UIApplicationWillResignActiveNotification,
-                             UIApplicationDidEnterBackgroundNotification,
-                             UIApplicationWillTerminateNotification]) {
-
-      [[NSNotificationCenter defaultCenter] addObserver:self
-                                               selector:@selector(stopTimers)
-                                                   name:name
-                                                 object:nil];
-    }
-
-    for (NSString *name in @[UIApplicationDidBecomeActiveNotification,
-                             UIApplicationWillEnterForegroundNotification]) {
-
-      [[NSNotificationCenter defaultCenter] addObserver:self
-                                               selector:@selector(startTimers)
-                                                   name:name
-                                                 object:nil];
-    }
+//    for (NSString *name in @[UIApplicationWillResignActiveNotification,
+//                             UIApplicationDidEnterBackgroundNotification,
+//                             UIApplicationWillTerminateNotification]) {
+//
+//      [[NSNotificationCenter defaultCenter] addObserver:self
+//                                               selector:@selector(stopTimers)
+//                                                   name:name
+//                                                 object:nil];
+//    }
+//
+//    for (NSString *name in @[UIApplicationDidBecomeActiveNotification,
+//                             UIApplicationWillEnterForegroundNotification]) {
+//
+//      [[NSNotificationCenter defaultCenter] addObserver:self
+//                                               selector:@selector(startTimers)
+//                                                   name:name
+//                                                 object:nil];
+//    }
   }
   return self;
 }
