@@ -22,7 +22,7 @@
 #import "RCTPerformanceLogger.h"
 #import "RCTPerfStats.h"
 #import "RCTProfile.h"
-//#import "RCTRedBox.h"
+#import "RCTRedBox.h"
 #import "RCTSourceCode.h"
 #import "RCTSparseArray.h"
 #import "RCTUtils.h"
@@ -116,6 +116,7 @@ RCT_EXTERN NSArray *RCTGetModuleClasses(void);
 
 - (void)start
 {
+  NSLog(@"RCTBatchedBridge: start");
   dispatch_queue_t bridgeQueue = dispatch_queue_create("com.facebook.react.RCTBridgeQueue", DISPATCH_QUEUE_CONCURRENT);
 
   dispatch_group_t initModulesAndLoadSource = dispatch_group_create();
@@ -183,6 +184,8 @@ RCT_EXTERN NSArray *RCTGetModuleClasses(void);
 
 - (void)loadSource:(RCTSourceLoadBlock)_onSourceLoad
 {
+  NSLog(@"RCTBatchedBridge: loadSource");
+
   RCTPerformanceLoggerStart(RCTPLScriptDownload);
   int cookie = RCTProfileBeginAsyncEvent(0, @"JavaScript download", nil);
 
@@ -383,11 +386,11 @@ RCT_EXTERN NSArray *RCTGetModuleClasses(void);
 
   NSArray *stack = error.userInfo[@"stack"];
   if (stack) {
-    NSLog(@"Error: %@", error.localizedDescription);
-    //[self.redBox showErrorMessage:error.localizedDescription withStack:stack];
+    //NSLog(@"Error with stack: %@", error.localizedDescription);
+    [self.redBox showErrorMessage:error.localizedDescription withStack:stack];
   } else {
-     NSLog(@"Error: %@", error);
-    //[self.redBox showError:error];
+    NSLog(@"Error without the stack: %@", error);
+    [self.redBox showError:error];
   }
 
   NSDictionary *userInfo = @{@"bridge": self, @"error": error};
@@ -642,8 +645,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithBundleURL:(__unused NSURL *)bundleUR
 
   RCTJavaScriptCallback processResponse = ^(id json, NSError *error) {
     if (error) {
-      //[self.redBox showError:error];
-      NSLog(@"Error: %@", error);
+      [self.redBox showError:error];
+      //NSLog(@"Error: %@", error);
     }
 
     if (!self.isValid) {

@@ -74,8 +74,8 @@
   if (isnan(position.x) || isnan(position.y) ||
       isnan(bounds.origin.x) || isnan(bounds.origin.y) ||
       isnan(bounds.size.width) || isnan(bounds.size.height)) {
-    RCTLogError(@"Invalid layout for (%@)%@. position: %d. bounds: %d",
-                self.reactTag, self, NSStringFromCGPoint(position), NSStringFromCGRect(bounds));
+//    RCTLogError(@"Invalid layout for (%@)%@. position: %d. bounds: %d",
+//                self.reactTag, self, NSStringFromCGPoint(position), NSStringFromCGRect(bounds));
     return;
   }
 

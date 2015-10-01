@@ -1,25 +1,11 @@
 {
-  "name": "react-native",
-  "version": "0.8.0",
-  "description": "A framework for building native apps using React",
+  "name": "react-native-desktop",
+  "version": "0.1.0",
+  "description": "A framework for building desktop native apps using React",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
     "url": "git@github.com:facebook/react-native.git"
-  },
-  "jest": {
-    "scriptPreprocessor": "jestSupport/preprocessor.js",
-    "setupEnvScriptFile": "jestSupport/env.js",
-    "testPathIgnorePatterns": [
-      "/node_modules/"
-    ],
-    "testFileExtensions": [
-      "js"
-    ],
-    "unmockedModulePathPatterns": [
-      "promise",
-      "source-map"
-    ]
   },
   "main": "Libraries/react-native/react-native.js",
   "files": [

@@ -306,6 +306,7 @@ static void RCTInstallJSCProfiler(RCTBridge *bridge, JSContextRef context)
 
 - (void)setUp
 {
+  NSLog(@"RCTContextExecutor: setUp");
   __weak RCTContextExecutor *weakSelf = self;
   [self executeBlockOnJavaScriptQueue:^{
     RCTContextExecutor *strongSelf = weakSelf;
@@ -319,6 +320,7 @@ static void RCTInstallJSCProfiler(RCTBridge *bridge, JSContextRef context)
     [strongSelf _addNativeHook:RCTNativeLoggingHook withName:"nativeLoggingHook"];
     [strongSelf _addNativeHook:RCTNoop withName:"noop"];
 #if RCT_DEV
+
     [strongSelf _addNativeHook:RCTNativeTraceBeginSection withName:"nativeTraceBeginSection"];
     [strongSelf _addNativeHook:RCTNativeTraceEndSection withName:"nativeTraceEndSection"];
 

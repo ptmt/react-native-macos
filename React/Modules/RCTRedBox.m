@@ -30,29 +30,30 @@
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if ((self = [super initWithFrame:frame])) {
+    NSLog(@"RCTRedBox: initWithFame");
     //self.windowLevel = UIWindowLevelAlert + 1000;
     //self.backgroundColor = [UIColor colorWithRed:0.8 green:0 blue:0 alpha:1];
     //self.hidden = YES;
 
-    NSViewController *rootController = [NSViewController new];
-    //self.rootViewController = rootController;
-//    NSView *rootView = rootController.view;
+//    NSViewController *rootController = [NSViewController new];
+//    self.rootViewController = rootController;
+////    NSView *rootView = rootController.view;
 //    rootView.backgroundColor = [UIColor clearColor];
 
     const CGFloat buttonHeight = 60;
 
-  //  CGRect detailsFrame = rootView.bounds;
-  //  detailsFrame.size.height -= buttonHeight;
+    CGRect detailsFrame = self.frame;
+    detailsFrame.size.height -= buttonHeight;
 
-    //_stackTraceTableView = [[NSTableView alloc] initWithFrame:detailsFrame style:UITableViewStylePlain];
-   // _stackTraceTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _stackTraceTableView = [[NSTableView alloc] initWithFrame:detailsFrame];
+    //_stackTraceTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _stackTraceTableView.delegate = self;
     _stackTraceTableView.dataSource = self;
     _stackTraceTableView.backgroundColor = [NSColor clearColor];
 //    _stackTraceTableView.separatorColor = [NSColor colorWithWhite:1 alpha:0.3];
 //    _stackTraceTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 //    _stackTraceTableView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
-//    [rootView addSubview:_stackTraceTableView];
+     [self addSubview:_stackTraceTableView];
 
  //   NSButton *dismissButton = [NSButton alloc];
    // dismissButton.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin;
@@ -112,13 +113,13 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
     [_stackTraceTableView reloadData];
 
-    if (self.hidden) {
-      [_stackTraceTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-                                  atScrollPosition:UITableViewScrollPositionTop
-                                          animated:NO];
-    }
+//    if (self.hidden) {
+//      [_stackTraceTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+//                                  atScrollPosition:UITableViewScrollPositionTop
+//                                          animated:NO];
+//    }
 
-    [self makeKeyAndVisible];
+    //[self makeKeyAndVisible];
     [self becomeFirstResponder];
   }
 }
@@ -127,7 +128,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 {
   self.hidden = YES;
   [self resignFirstResponder];
-  [RCTSharedApplication().delegate.window makeKeyWindow];
+  //[RCTSharedApplication().delegate.window makeKeyWindow];
 }
 
 - (void)reload
@@ -147,58 +148,58 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return section == 0 ? 1 : _lastStackTrace.count;
 }
 
-- (UITableViewCell *)tableView:(NSTableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-  if (indexPath.section == 0) {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"msg-cell"];
-    return [self reuseCell:cell forErrorMessage:_lastErrorMessage];
-  }
-  UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-  NSUInteger index = indexPath.row;
-  NSDictionary *stackFrame = _lastStackTrace[index];
-  return [self reuseCell:cell forStackFrame:stackFrame];
-}
+//- (UITableViewCell *)tableView:(NSTableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//  if (indexPath.section == 0) {
+//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"msg-cell"];
+//    return [self reuseCell:cell forErrorMessage:_lastErrorMessage];
+//  }
+//  UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+//  NSUInteger index = indexPath.row;
+//  NSDictionary *stackFrame = _lastStackTrace[index];
+//  return [self reuseCell:cell forStackFrame:stackFrame];
+//}
+//
+//- (UITableViewCell *)reuseCell:(NSTableViewCell *)cell forErrorMessage:(NSString *)message
+//{
+//  if (!cell) {
+//    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"msg-cell"];
+//    cell.textLabel.accessibilityIdentifier = @"redbox-error";
+//    cell.textLabel.textColor = [UIColor whiteColor];
+//    cell.textLabel.font = [UIFont boldSystemFontOfSize:16];
+//    cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
+//    cell.textLabel.numberOfLines = 0;
+//    cell.detailTextLabel.textColor = [UIColor whiteColor];
+//    cell.backgroundColor = [UIColor clearColor];
+//    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//  }
 
-- (UITableViewCell *)reuseCell:(NSTableViewCell *)cell forErrorMessage:(NSString *)message
-{
-  if (!cell) {
-    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"msg-cell"];
-    cell.textLabel.accessibilityIdentifier = @"redbox-error";
-    cell.textLabel.textColor = [UIColor whiteColor];
-    cell.textLabel.font = [UIFont boldSystemFontOfSize:16];
-    cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    cell.textLabel.numberOfLines = 0;
-    cell.detailTextLabel.textColor = [UIColor whiteColor];
-    cell.backgroundColor = [UIColor clearColor];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-  }
-
-  cell.textLabel.text = message;
-
-  return cell;
-}
-
-- (UITableViewCell *)reuseCell:(NSTableViewCell *)cell forStackFrame:(NSDictionary *)stackFrame
-{
-  if (!cell) {
-    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
-    cell.textLabel.textColor = [UIColor colorWithWhite:1 alpha:0.9];
-    cell.textLabel.font = [UIFont fontWithName:@"Menlo-Regular" size:14];
-    cell.textLabel.numberOfLines = 2;
-    cell.detailTextLabel.textColor = [UIColor colorWithWhite:1 alpha:0.7];
-    cell.detailTextLabel.font = [UIFont fontWithName:@"Menlo-Regular" size:11];
-    cell.detailTextLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
-    cell.backgroundColor = [UIColor clearColor];
-    cell.selectedBackgroundView = [UIView new];
-    cell.selectedBackgroundView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
-  }
-
-  cell.textLabel.text = stackFrame[@"methodName"];
-
-  NSString *fileAndLine = [stackFrame[@"file"] lastPathComponent];
-  cell.detailTextLabel.text = fileAndLine ? [fileAndLine stringByAppendingFormat:@":%@", stackFrame[@"lineNumber"]] : nil;
-  return cell;
-}
+//  cell.textLabel.text = message;
+//
+//  return cell;
+//}
+//
+//- (UITableViewCell *)reuseCell:(NSTableViewCell *)cell forStackFrame:(NSDictionary *)stackFrame
+//{
+//  if (!cell) {
+//    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
+//    cell.textLabel.textColor = [UIColor colorWithWhite:1 alpha:0.9];
+//    cell.textLabel.font = [UIFont fontWithName:@"Menlo-Regular" size:14];
+//    cell.textLabel.numberOfLines = 2;
+//    cell.detailTextLabel.textColor = [UIColor colorWithWhite:1 alpha:0.7];
+//    cell.detailTextLabel.font = [UIFont fontWithName:@"Menlo-Regular" size:11];
+//    cell.detailTextLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
+//    cell.backgroundColor = [UIColor clearColor];
+//    cell.selectedBackgroundView = [UIView new];
+//    cell.selectedBackgroundView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
+//  }
+//
+//  cell.textLabel.text = stackFrame[@"methodName"];
+//
+//  NSString *fileAndLine = [stackFrame[@"file"] lastPathComponent];
+//  cell.detailTextLabel.text = fileAndLine ? [fileAndLine stringByAppendingFormat:@":%@", stackFrame[@"lineNumber"]] : nil;
+//  return cell;
+//}
 
 - (CGFloat)tableView:(NSTableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -206,7 +207,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
 
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:16],
+    NSDictionary *attributes = @{NSFontAttributeName: [NSFont boldSystemFontOfSize:16],
                                  NSParagraphStyleAttributeName: paragraphStyle};
     CGRect boundingRect = [_lastErrorMessage boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil];
     return ceil(boundingRect.size.height) + 40;
@@ -215,15 +216,24 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
-- (void)tableView:(NSTableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (int)numberOfRowsInTableView:(NSTableView *)tableView
 {
-  if (indexPath.section == 1) {
-    NSUInteger row = indexPath.row;
-    NSDictionary *stackFrame = _lastStackTrace[row];
-    [self openStackFrameInEditor:stackFrame];
-  }
-  [tableView deselectRowAtIndexPath:indexPath animated:YES];
+  return 10;
 }
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+{
+  return @"ASDF";
+}
+
+//- (void)tableView:(NSTableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//  if (indexPath.section == 1) {
+//    NSUInteger row = indexPath.row;
+//    NSDictionary *stackFrame = _lastStackTrace[row];
+//    [self openStackFrameInEditor:stackFrame];
+//  }
+//  [tableView deselectRowAtIndexPath:indexPath animated:YES];
+//}
 
 #pragma mark - Key commands
 
@@ -236,14 +246,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return @[
 
     // Dismiss red box
-    [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
-                        modifierFlags:0
-                               action:@selector(dismiss)],
-
-    // Reload
-    [UIKeyCommand keyCommandWithInput:@"r"
-                        modifierFlags:UIKeyModifierCommand
-                               action:@selector(reload)]
+//    [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
+//                        modifierFlags:0
+//                               action:@selector(dismiss)],
+//
+//    // Reload
+//    [UIKeyCommand keyCommandWithInput:@"r"
+//                        modifierFlags:UIKeyModifierCommand
+//                               action:@selector(reload)]
   ];
 }
 
@@ -297,7 +307,7 @@ RCT_EXPORT_MODULE()
 {
   dispatch_async(dispatch_get_main_queue(), ^{
     if (!_window) {
-      _window = [[RCTRedBoxWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+      _window = [[RCTRedBoxWindow alloc] initWithFrame:[NSScreen mainScreen].frame];
     }
     [_window showErrorMessage:message withStack:stack showIfHidden:shouldShow];
   });
@@ -321,6 +331,7 @@ RCT_EXPORT_MODULE()
 
 - (RCTRedBox *)redBox
 {
+  NSLog(@"RCTRedBox redbox");
   return self.modules[RCTBridgeModuleNameForClass([RCTRedBox class])];
 }
 

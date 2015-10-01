@@ -108,6 +108,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)setBackgroundColor:(NSColor *)backgroundColor
 {
+  NSLog(@"RCTRootView: setBackgroundColor");
   CALayer *viewLayer = [CALayer layer];
   [viewLayer setBackgroundColor:[backgroundColor CGColor]]; //RGB plus Alpha Channel
   [super setWantsLayer:YES]; // view's backing store is using a Core Animation Layer
@@ -115,10 +116,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
   [_contentView setWantsLayer:YES];
   [_contentView setLayer:viewLayer];
-
- // super.backgroundColor = backgroundColor;
-  // TODO:
-  //_contentView.backgroundFilters = backgroundColor;
 }
 
 - (NSViewController *)reactViewController
@@ -133,6 +130,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)setLoadingView:(NSView *)loadingView
 {
+  NSLog(@"RCTRootView: setLoadingView");
   _loadingView = loadingView;
   if (!_contentView.contentHasAppeared) {
     [self showLoadingView];
@@ -142,6 +140,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)showLoadingView
 {
   if (_loadingView && !_contentView.contentHasAppeared) {
+    NSLog(@"RCTRootView: showLoadingView");
     _loadingView.hidden = NO;
     [self addSubview:_loadingView];
   }

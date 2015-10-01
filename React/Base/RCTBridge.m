@@ -15,6 +15,7 @@
 #import "RCTKeyCommands.h"
 #import "RCTLog.h"
 #import "RCTPerformanceLogger.h"
+
 #import "RCTUtils.h"
 
 NSString *const RCTReloadNotification = @"RCTReloadNotification";
@@ -118,8 +119,10 @@ dispatch_queue_t RCTJSThread;
       Class superclass = cls;
       while (superclass)
       {
+
         if (class_conformsToProtocol(superclass, @protocol(RCTBridgeModule)))
         {
+          
           if (![RCTModuleClasses containsObject:cls]) {
             RCTLogWarn(@"Class %@ was not exported. Did you forget to use "
                        "RCT_EXPORT_MODULE()?", cls);
@@ -214,19 +217,18 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
                                                name:RCTReloadNotification
                                              object:nil];
 
-#if TARGET_IPHONE_SIMULATOR
-  RCTKeyCommands *commands = [RCTKeyCommands sharedInstance];
+// TODO: Add keboard listener to refresh it in debug
+ // RCTKeyCommands *commands = [RCTKeyCommands sharedInstance];
 
   // reload in current mode
-  [commands registerKeyCommandWithInput:@"r"
-                          modifierFlags:UIKeyModifierCommand
-                                 action:^(__unused UIKeyCommand *command) {
-                                    [[NSNotificationCenter defaultCenter] postNotificationName:RCTReloadNotification
-                                                                                        object:nil
-                                                                                      userInfo:nil];
-                                 }];
+//  [commands registerKeyCommandWithInput:@"r"
+//                          modifierFlags:UIKeyModifierCommand
+//                                 action:^(__unused UIKeyCommand *command) {
+//                                    [[NSNotificationCenter defaultCenter] postNotificationName:RCTReloadNotification
+//                                                                                        object:nil
+//                                                                                      userInfo:nil];
+//                                 }];
 
-#endif
 }
 
 - (RCTEventDispatcher *)eventDispatcher
@@ -248,7 +250,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 - (void)setUp
 {
   RCTAssertMainThread();
-
+  NSLog(@"RCTBridge setUp");
   _bundleURL = [self.delegate sourceURLForBridge:self] ?: _bundleURL;
   _batchedBridge = [[RCTBatchedBridge alloc] initWithParentBridge:self];
 }

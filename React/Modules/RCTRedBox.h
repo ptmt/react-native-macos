@@ -24,7 +24,7 @@
 
 @end
 
-/**
+/**RCTPerformanceLogger
  * This category makes the red box instance available via the RCTBridge, which
  * is useful for any class that needs to access the red box or error log.
  */

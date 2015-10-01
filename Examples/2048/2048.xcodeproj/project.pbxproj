@@ -7,18 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		032625AA1BBD2A51001C8FC1 /* LoadingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 032625A91BBD2A51001C8FC1 /* LoadingView.xib */; };
-		032799EE1BB6B4500015275D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 032799ED1BB6B4500015275D /* AppDelegate.m */; };
-		032799F11BB6B4500015275D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 032799F01BB6B4500015275D /* main.m */; };
-		032799F31BB6B4500015275D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 032799F21BB6B4500015275D /* Assets.xcassets */; };
-		03279A2C1BB8435E0015275D /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03279A121BB6B6ED0015275D /* libReact.a */; };
-		0372B5C81BBA3E7A00D83533 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0372B5C61BBA3E7A00D83533 /* MainMenu.xib */; };
+		0372B5D91BBA4AE100D83533 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0372B5D81BBA4AE100D83533 /* AppDelegate.m */; };
+		0372B5DC1BBA4AE100D83533 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0372B5DB1BBA4AE100D83533 /* main.m */; };
+		0372B5DE1BBA4AE100D83533 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0372B5DD1BBA4AE100D83533 /* Assets.xcassets */; };
+		0372B5E11BBA4AE100D83533 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0372B5DF1BBA4AE100D83533 /* MainMenu.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		03279A111BB6B6ED0015275D /* PBXContainerItemProxy */ = {
+		0372B5ED1BBA4B0600D83533 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 03279A0D1BB6B6ED0015275D /* React.xcodeproj */;
+			containerPortal = 0372B5E91BBA4B0600D83533 /* React.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
 			remoteInfo = React;
@@ -26,80 +24,77 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		032625A91BBD2A51001C8FC1 /* LoadingView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoadingView.xib; sourceTree = "<group>"; };
-		032799E91BB6B4500015275D /* Neutrino.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neutrino.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		032799EC1BB6B4500015275D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		032799ED1BB6B4500015275D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		032799F01BB6B4500015275D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		032799F21BB6B4500015275D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		032799F71BB6B4500015275D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		03279A0D1BB6B6ED0015275D /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = ../../React/React.xcodeproj; sourceTree = "<group>"; };
-		0372B5C71BBA3E7A00D83533 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		0372B5D41BBA4AE100D83533 /* 2048.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2048.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0372B5D71BBA4AE100D83533 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		0372B5D81BBA4AE100D83533 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		0372B5DB1BBA4AE100D83533 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		0372B5DD1BBA4AE100D83533 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		0372B5E01BBA4AE100D83533 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		0372B5E21BBA4AE100D83533 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0372B5E91BBA4B0600D83533 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = ../../React/React.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		032799E61BB6B4500015275D /* Frameworks */ = {
+		0372B5D11BBA4AE100D83533 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03279A2C1BB8435E0015275D /* libReact.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		032799E01BB6B4500015275D = {
+		0372B5CB1BBA4AE100D83533 = {
 			isa = PBXGroup;
 			children = (
-				032799EB1BB6B4500015275D /* Neutrino */,
-				032799EA1BB6B4500015275D /* Products */,
-				03279A001BB6B4F30015275D /* Libraries */,
+				0372B5E81BBA4AF300D83533 /* Libraries */,
+				0372B5D61BBA4AE100D83533 /* 2048 */,
+				0372B5D51BBA4AE100D83533 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		032799EA1BB6B4500015275D /* Products */ = {
+		0372B5D51BBA4AE100D83533 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				032799E91BB6B4500015275D /* Neutrino.app */,
+				0372B5D41BBA4AE100D83533 /* 2048.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		032799EB1BB6B4500015275D /* Neutrino */ = {
+		0372B5D61BBA4AE100D83533 /* 2048 */ = {
 			isa = PBXGroup;
 			children = (
-				0372B5C61BBA3E7A00D83533 /* MainMenu.xib */,
-				032799EC1BB6B4500015275D /* AppDelegate.h */,
-				032799ED1BB6B4500015275D /* AppDelegate.m */,
-				032799F21BB6B4500015275D /* Assets.xcassets */,
-				032799F71BB6B4500015275D /* Info.plist */,
-				032799EF1BB6B4500015275D /* Supporting Files */,
-				032625A91BBD2A51001C8FC1 /* LoadingView.xib */,
+				0372B5D71BBA4AE100D83533 /* AppDelegate.h */,
+				0372B5D81BBA4AE100D83533 /* AppDelegate.m */,
+				0372B5DD1BBA4AE100D83533 /* Assets.xcassets */,
+				0372B5DF1BBA4AE100D83533 /* MainMenu.xib */,
+				0372B5E21BBA4AE100D83533 /* Info.plist */,
+				0372B5DA1BBA4AE100D83533 /* Supporting Files */,
 			);
-			path = Neutrino;
+			path = 2048;
 			sourceTree = "<group>";
 		};
-		032799EF1BB6B4500015275D /* Supporting Files */ = {
+		0372B5DA1BBA4AE100D83533 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				032799F01BB6B4500015275D /* main.m */,
+				0372B5DB1BBA4AE100D83533 /* main.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		03279A001BB6B4F30015275D /* Libraries */ = {
+		0372B5E81BBA4AF300D83533 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				03279A0D1BB6B6ED0015275D /* React.xcodeproj */,
+				0372B5E91BBA4B0600D83533 /* React.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
 		};
-		03279A0E1BB6B6ED0015275D /* Products */ = {
+		0372B5EA1BBA4B0600D83533 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				03279A121BB6B6ED0015275D /* libReact.a */,
+				0372B5EE1BBA4B0600D83533 /* libReact.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -107,38 +102,38 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		032799E81BB6B4500015275D /* Neutrino */ = {
+		0372B5D31BBA4AE100D83533 /* 2048 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 032799FA1BB6B4500015275D /* Build configuration list for PBXNativeTarget "Neutrino" */;
+			buildConfigurationList = 0372B5E51BBA4AE100D83533 /* Build configuration list for PBXNativeTarget "2048" */;
 			buildPhases = (
-				032799E51BB6B4500015275D /* Sources */,
-				032799E61BB6B4500015275D /* Frameworks */,
-				032799E71BB6B4500015275D /* Resources */,
+				0372B5D01BBA4AE100D83533 /* Sources */,
+				0372B5D11BBA4AE100D83533 /* Frameworks */,
+				0372B5D21BBA4AE100D83533 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = Neutrino;
-			productName = Neutrino;
-			productReference = 032799E91BB6B4500015275D /* Neutrino.app */;
+			name = 2048;
+			productName = 2048;
+			productReference = 0372B5D41BBA4AE100D83533 /* 2048.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		032799E11BB6B4500015275D /* Project object */ = {
+		0372B5CC1BBA4AE100D83533 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = Elephant;
 				TargetAttributes = {
-					032799E81BB6B4500015275D = {
+					0372B5D31BBA4AE100D83533 = {
 						CreatedOnToolsVersion = 7.1;
 					};
 				};
 			};
-			buildConfigurationList = 032799E41BB6B4500015275D /* Build configuration list for PBXProject "Neutrino" */;
+			buildConfigurationList = 0372B5CF1BBA4AE100D83533 /* Build configuration list for PBXProject "2048" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -146,62 +141,61 @@
 				en,
 				Base,
 			);
-			mainGroup = 032799E01BB6B4500015275D;
-			productRefGroup = 032799EA1BB6B4500015275D /* Products */;
+			mainGroup = 0372B5CB1BBA4AE100D83533;
+			productRefGroup = 0372B5D51BBA4AE100D83533 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 03279A0E1BB6B6ED0015275D /* Products */;
-					ProjectRef = 03279A0D1BB6B6ED0015275D /* React.xcodeproj */;
+					ProductGroup = 0372B5EA1BBA4B0600D83533 /* Products */;
+					ProjectRef = 0372B5E91BBA4B0600D83533 /* React.xcodeproj */;
 				},
 			);
 			projectRoot = "";
 			targets = (
-				032799E81BB6B4500015275D /* Neutrino */,
+				0372B5D31BBA4AE100D83533 /* 2048 */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		03279A121BB6B6ED0015275D /* libReact.a */ = {
+		0372B5EE1BBA4B0600D83533 /* libReact.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libReact.a;
-			remoteRef = 03279A111BB6B6ED0015275D /* PBXContainerItemProxy */;
+			remoteRef = 0372B5ED1BBA4B0600D83533 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
-		032799E71BB6B4500015275D /* Resources */ = {
+		0372B5D21BBA4AE100D83533 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				032625AA1BBD2A51001C8FC1 /* LoadingView.xib in Resources */,
-				032799F31BB6B4500015275D /* Assets.xcassets in Resources */,
-				0372B5C81BBA3E7A00D83533 /* MainMenu.xib in Resources */,
+				0372B5DE1BBA4AE100D83533 /* Assets.xcassets in Resources */,
+				0372B5E11BBA4AE100D83533 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		032799E51BB6B4500015275D /* Sources */ = {
+		0372B5D01BBA4AE100D83533 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				032799F11BB6B4500015275D /* main.m in Sources */,
-				032799EE1BB6B4500015275D /* AppDelegate.m in Sources */,
+				0372B5DC1BBA4AE100D83533 /* main.m in Sources */,
+				0372B5D91BBA4AE100D83533 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		0372B5C61BBA3E7A00D83533 /* MainMenu.xib */ = {
+		0372B5DF1BBA4AE100D83533 /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				0372B5C71BBA3E7A00D83533 /* Base */,
+				0372B5E01BBA4AE100D83533 /* Base */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";
@@ -209,7 +203,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		032799F81BB6B4500015275D /* Debug */ = {
+		0372B5E31BBA4AE100D83533 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -245,19 +239,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../React/**",
-					"$(inherited)",
-				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
-		032799F91BB6B4500015275D /* Release */ = {
+		0372B5E41BBA4AE100D83533 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -287,37 +276,32 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../React/**",
-					"$(inherited)",
-				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = macosx;
 			};
 			name = Release;
 		};
-		032799FB1BB6B4500015275D /* Debug */ = {
+		0372B5E61BBA4AE100D83533 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = Neutrino/Info.plist;
+				INFOPLIST_FILE = 2048/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.elephant.Neutrino;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.elephant.-048";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
-		032799FC1BB6B4500015275D /* Release */ = {
+		0372B5E71BBA4AE100D83533 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = Neutrino/Info.plist;
+				INFOPLIST_FILE = 2048/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.elephant.Neutrino;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.elephant.-048";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -325,25 +309,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		032799E41BB6B4500015275D /* Build configuration list for PBXProject "Neutrino" */ = {
+		0372B5CF1BBA4AE100D83533 /* Build configuration list for PBXProject "2048" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				032799F81BB6B4500015275D /* Debug */,
-				032799F91BB6B4500015275D /* Release */,
+				0372B5E31BBA4AE100D83533 /* Debug */,
+				0372B5E41BBA4AE100D83533 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		032799FA1BB6B4500015275D /* Build configuration list for PBXNativeTarget "Neutrino" */ = {
+		0372B5E51BBA4AE100D83533 /* Build configuration list for PBXNativeTarget "2048" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				032799FB1BB6B4500015275D /* Debug */,
-				032799FC1BB6B4500015275D /* Release */,
+				0372B5E61BBA4AE100D83533 /* Debug */,
+				0372B5E71BBA4AE100D83533 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 032799E11BB6B4500015275D /* Project object */;
+	rootObject = 0372B5CC1BBA4AE100D83533 /* Project object */;
 }
