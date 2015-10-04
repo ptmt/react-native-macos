@@ -48,7 +48,6 @@
   if ((self = [super initWithContentRect:frame
                                styleMask:NSClosableWindowMask | NSResizableWindowMask
                                  backing:NSBackingStoreBuffered defer:NO])) {
-    NSLog(@"RCTRedBox: initWithFrame");
 
     RCTView *rootView = [[RCTView alloc] initWithFrame:frame];
 
@@ -76,14 +75,14 @@
     //[self.contentView addSubview:_stackTraceTableView];
 
 
-    _temporaryHeader = [[NSTextField alloc] initWithFrame: CGRectMake(0, 100, self.frame.size.width, self.frame.size.height - buttonHeight)];
+    _temporaryHeader = [[NSTextField alloc] initWithFrame: CGRectMake(20, 20, self.frame.size.width, self.frame.size.height - buttonHeight)];
     _temporaryHeader.textColor = [NSColor whiteColor];
     [_temporaryHeader setBackgroundColor:[NSColor colorWithRed:0.8 green:0 blue:0 alpha:1]];
-    _temporaryHeader.alignment = NSTextAlignmentCenter;
-    _temporaryHeader.font = [NSFont boldSystemFontOfSize:16];
+    //_temporaryHeader.alignment = NSTextAlignmentCenter;
+    _temporaryHeader.font = [NSFont boldSystemFontOfSize:14];
     _temporaryHeader.lineBreakMode = NSLineBreakByWordWrapping;
     _temporaryHeader.bordered = NO;
-    //cell.backgroundColor = [NSColor colorWithRed:0.8 green:0 blue:0 alpha:1];
+    _temporaryHeader.selectable = YES;
     _temporaryHeader.editable = false;
     [rootView addSubview:_temporaryHeader];
 
@@ -151,7 +150,16 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   if (shouldShow) {
     _lastStackTrace = stack;
     _lastErrorMessage = message;
-    [_temporaryHeader setStringValue:message];
+    NSMutableArray *result = [NSMutableArray arrayWithCapacity:stack.count];
+    [stack enumerateObjectsUsingBlock:^(id obj, __unused NSUInteger idx, __unused BOOL *stop) {
+      NSString *methodName = obj[@"methodName"];
+      NSString *fileAndLine = [obj[@"file"] lastPathComponent];
+      NSString *details = fileAndLine ? [fileAndLine stringByAppendingFormat:@":%@", obj[@"lineNumber"]] : nil;
+      [result addObject:[methodName stringByAppendingFormat:@"\t%@", details]];
+    }];
+
+
+    [_temporaryHeader setStringValue:[message stringByAppendingString:[result componentsJoinedByString:@"\n"]]];
 
     [_stackTraceTableView reloadData];
 
@@ -194,25 +202,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   NSDictionary *stackFrame = _lastStackTrace[row];
   return [self reuseCell:cell forStackFrame:stackFrame];
 }
-
-//- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-//  return [NSString stringWithFormat:@"%ld", row];
-//}
-
-//- (id)tableView:(NSTableView *)tableView
-//objectValueForTableColumn:(__unused NSTableColumn *)tableColumn
-//            row:(NSInteger)row {
-//  NSLog(@"RCTRedBox: viewForTableColumn %ld", (long)row);
-//
-//  if (row == 0) {
-//    NSTextField *cell = [tableView makeViewWithIdentifier:@"msg-cell" owner:self];
-//    return [self reuseCell:cell forErrorMessage:_lastErrorMessage];
-//  }
-//  NSTextField *cell = [tableView makeViewWithIdentifier:@"cell" owner:self];
-//  //NSUInteger index = indexPath.row;
-//  NSDictionary *stackFrame = _lastStackTrace[row];
-//  return [self reuseCell:cell forStackFrame:stackFrame];
-//}
 
 - (NSTextField *)reuseCell:(NSTextField *)cell forErrorMessage:(NSString *)message
 {

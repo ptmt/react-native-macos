@@ -1,7 +1,7 @@
 /* @flow */
 'use strict';
 
-var React = require('react-native');
+var React = require('react-native-desktop');
 
 class Neutrino extends React.Component {
   render() {

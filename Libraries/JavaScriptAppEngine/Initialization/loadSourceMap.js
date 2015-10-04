@@ -29,7 +29,7 @@ function fetchSourceMap(): Promise {
   if (global.RAW_SOURCE_MAP) {
     return Promise.resolve(global.RAW_SOURCE_MAP);
   }
-
+  console.log(RCTNetworking);
   if (!RCTSourceCode) {
     return Promise.reject(new Error('RCTSourceCode module is not available'));
   }
