@@ -348,7 +348,7 @@ id RCTSharedApplication(void)
   if (RCTRunningInAppExtension()) {
     return nil;
   }
-  
+
   return [[NSApplication class] performSelector:@selector(sharedApplication)];
 }
 

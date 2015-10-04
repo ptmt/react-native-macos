@@ -125,8 +125,8 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
     _borderBottomRightRadius = -1;
 
     CALayer *viewLayer = [CALayer layer];
-    [viewLayer setBackgroundColor:[_backgroundColor CGColor]]; //RGB plus Alpha Channel
-    [self setWantsLayer:YES]; // view's backing store is using a Core Animation Layer
+    [viewLayer setBackgroundColor:[_backgroundColor CGColor]];
+    [self setWantsLayer:YES];
     [self setLayer:viewLayer];
   }
 
@@ -141,6 +141,15 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
     return super.accessibilityLabel;
   }
   return RCTRecursiveAccessibilityLabel(self);
+}
+
+- (BOOL)isFlipped
+{
+  return YES;
+}
+- (BOOL) wantsDefaultClipping
+{
+  return NO;
 }
 
 - (void)setPointerEvents:(RCTPointerEvents)pointerEvents
