@@ -22,14 +22,16 @@ var RCTNetworking = NativeModules.Networking;
 
 function loadSourceMap(): Promise {
   return fetchSourceMap()
-    .then(map => new SourceMapConsumer(map));
+    .then(map => {
+      console.log('sourcemap', map);
+      return new SourceMapConsumer(map)
+    });
 }
 
 function fetchSourceMap(): Promise {
   if (global.RAW_SOURCE_MAP) {
     return Promise.resolve(global.RAW_SOURCE_MAP);
   }
-  console.log(RCTNetworking);
   if (!RCTSourceCode) {
     return Promise.reject(new Error('RCTSourceCode module is not available'));
   }
@@ -45,13 +47,16 @@ function fetchSourceMap(): Promise {
       if (url === null) {
         return Promise.reject(new Error('No source map URL found. May be running from bundled file.'));
       }
+      console.log('sourcemap url', url);
       return Promise.resolve(url);
     })
     .then(fetch)
     .then(response => response.text())
+    .catch(e => console.log(e))
 }
 
 function extractSourceMapURL({url, text, fullSourceMappingURL}): ?string {
+  console.log('sourcemap url', url);
   if (fullSourceMappingURL) {
     return fullSourceMappingURL;
   }

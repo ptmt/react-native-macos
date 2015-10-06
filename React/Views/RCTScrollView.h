@@ -18,7 +18,7 @@
 
 // TODO: http://stackoverflow.com/questions/5169355/callbacks-when-an-nsscrollview-is-scrolled
 
-@interface RCTScrollView : RCTView <RCTScrollableProtocol, RCTAutoInsetsProtocol>
+@interface RCTScrollView: RCTView <RCTScrollableProtocol, RCTAutoInsetsProtocol>
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
 

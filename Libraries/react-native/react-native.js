@@ -53,9 +53,9 @@ var ReactNative = Object.assign(Object.create(require('React')), {
   // AdSupportIOS: require('AdSupportIOS'),
   // AlertIOS: require('AlertIOS'),
   // Animated: require('Animated'),
-  // AppRegistry: require('AppRegistry'),
+  AppRegistry: require('AppRegistry'),
   // AppStateIOS: require('AppStateIOS'),
-  // AsyncStorage: require('AsyncStorage'),
+  AsyncStorage: require('AsyncStorage'),
   // BackAndroid: require('BackAndroid'),
   // CameraRoll: require('CameraRoll'),
   // Dimensions: require('Dimensions'),
@@ -74,28 +74,28 @@ var ReactNative = Object.assign(Object.create(require('React')), {
   // VibrationIOS: require('VibrationIOS'),
 
   // Plugins
-  // DeviceEventEmitter: require('RCTDeviceEventEmitter'),
-  // NativeAppEventEmitter: require('RCTNativeAppEventEmitter'),
+  DeviceEventEmitter: require('RCTDeviceEventEmitter'),
+  NativeAppEventEmitter: require('RCTNativeAppEventEmitter'),
   NativeModules: require('NativeModules'),
-  //Platform: require('Platform'),
-  //processColor: require('processColor'),
-  //requireNativeComponent: require('requireNativeComponent'),
+  Platform: require('Platform'),
+  processColor: require('processColor'),
+  requireNativeComponent: require('requireNativeComponent'),
 
   // Prop Types
-  // EdgeInsetsPropType: require('EdgeInsetsPropType'),
-  // PointPropType: require('PointPropType'),
+  EdgeInsetsPropType: require('EdgeInsetsPropType'),
+  PointPropType: require('PointPropType'),
 
-  // addons: {
-  //   LinkedStateMixin: require('LinkedStateMixin'),
-  //   Perf: undefined,
-  //   PureRenderMixin: require('ReactComponentWithPureRenderMixin'),
-  //   TestModule: require('NativeModules').TestModule,
-  //   TestUtils: undefined,
-  //   batchedUpdates: require('ReactUpdates').batchedUpdates,
-  //   cloneWithProps: require('cloneWithProps'),
-  //   createFragment: require('ReactFragment').create,
-  //   update: require('update'),
-  // },
+  addons: {
+    LinkedStateMixin: require('LinkedStateMixin'),
+    Perf: undefined,
+    PureRenderMixin: require('ReactComponentWithPureRenderMixin'),
+    TestModule: require('NativeModules').TestModule,
+    TestUtils: undefined,
+    batchedUpdates: require('ReactUpdates').batchedUpdates,
+    cloneWithProps: require('cloneWithProps'),
+    createFragment: require('ReactFragment').create,
+    update: require('update'),
+  },
 });
 
 if (__DEV__) {

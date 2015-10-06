@@ -10,6 +10,7 @@
 #import "RCTUIManager.h"
 
 #import <AVFoundation/AVFoundation.h>
+#import <Foundation/Foundation.h>
 
 #import "Layout.h"
 #import "RCTAccessibilityManager.h"
@@ -451,7 +452,10 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
 
   for (RCTShadowView *shadowView in viewsWithNewFrames) {
     [frameReactTags addObject:shadowView.reactTag];
-    [frames addObject:[NSValue valueWithRect:shadowView.frame]];
+    NSLog(@"frames addObject shadowView.frame %@", [NSValue valueWithRect:shadowView.frame]);
+    //[frames addObject:[NSValue valueWithRect:shadowView.frame]];
+    [frames addObject:NSStringFromRect(shadowView.frame)];
+
     [areNew addObject:@(shadowView.isNewView)];
     [parentsAreNew addObject:@(shadowView.superview.isNewView)];
   }
@@ -497,9 +501,10 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
     for (NSUInteger ii = 0; ii < frames.count; ii++) {
       NSNumber *reactTag = frameReactTags[ii];
       NSView *view = viewRegistry[reactTag];
-      CGRect frame = [frames[ii] CGRectValue];
+      CGRect frame = NSRectFromString([frames objectAtIndex:0]);// CGRectValue];
 
       BOOL isNew = [areNew[ii] boolValue];
+
       RCTAnimation *updateAnimation = isNew ? nil : _layoutAnimation.updateAnimation;
       BOOL shouldAnimateCreation = isNew && ![parentsAreNew[ii] boolValue];
       RCTAnimation *createAnimation = shouldAnimateCreation ? _layoutAnimation.createAnimation : nil;
@@ -878,14 +883,14 @@ RCT_EXPORT_METHOD(findSubviewIn:(nonnull NSNumber *)reactTag atPoint:(CGPoint)po
   dispatch_async(dispatch_get_main_queue(), ^{
     RCTProfileEndFlowEvent();
     RCTProfileBeginEvent(0, @"UIManager flushUIBlocks", nil);
-    @try {
+   // @try {
       for (dispatch_block_t block in previousPendingUIBlocks) {
         block();
       }
-    }
-    @catch (NSException *exception) {
-      RCTLogError(@"Exception thrown while executing UI block: %@", exception);
-    }
+   // }
+//    @catch (NSException *exception) {
+//      RCTLogError(@"Exception thrown while executing UI block: %@", exception);
+//    }
     RCTProfileEndEvent(0, @"objc_call", @{
       @"count": @(previousPendingUIBlocks.count),
     });

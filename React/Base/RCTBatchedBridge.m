@@ -116,7 +116,6 @@ RCT_EXTERN NSArray *RCTGetModuleClasses(void);
 
 - (void)start
 {
-  NSLog(@"RCTBatchedBridge: start");
   dispatch_queue_t bridgeQueue = dispatch_queue_create("com.facebook.react.RCTBridgeQueue", DISPATCH_QUEUE_CONCURRENT);
 
   dispatch_group_t initModulesAndLoadSource = dispatch_group_create();
@@ -386,10 +385,9 @@ RCT_EXTERN NSArray *RCTGetModuleClasses(void);
 
   NSArray *stack = error.userInfo[@"stack"];
   if (stack) {
-    //NSLog(@"Error with stack: %@", error.localizedDescription);
+    NSLog(@"Error with the stack: %@", error.localizedDescription);
     [self.redBox showErrorMessage:error.localizedDescription withStack:stack];
   } else {
-    NSLog(@"Error without the stack: %@", error);
     [self.redBox showError:error];
   }
 
@@ -646,7 +644,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithBundleURL:(__unused NSURL *)bundleUR
   RCTJavaScriptCallback processResponse = ^(id json, NSError *error) {
     if (error) {
       [self.redBox showError:error];
-      //NSLog(@"Error: %@", error);
     }
 
     if (!self.isValid) {

@@ -105,16 +105,13 @@
     [reloadButton setTitle:@"Reload JS"];
     [reloadButton setTarget:self];
     [reloadButton setAction:@selector(reload)];
-//
+
     CGFloat buttonWidth = self.frame.size.width / 2;
     dismissButton.frame = CGRectMake(0, self.frame.size.height - buttonHeight, buttonWidth, buttonHeight);
     reloadButton.frame = CGRectMake(buttonWidth, self.frame.size.height - buttonHeight, buttonWidth, buttonHeight);
     [rootView addSubview:dismissButton];
     [rootView addSubview:reloadButton];
     [self setContentView:rootView];
-
-
-    NSLog(@"subviews %lu", self.contentView.subviews.count);
   }
   return self;
 }
@@ -177,9 +174,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)dismiss
 {
-  [self close];
   [self resignFirstResponder];
   [[[NSApplication sharedApplication] mainWindow] makeKeyWindow];
+  //[self close]; // TODO: fix BAD_ACCESS when uncommented
 }
 
 - (void)reload
@@ -254,7 +251,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (NSInteger)numberOfRowsInTableView:(__unused NSTableView *)tableView
 {
   NSInteger count = (_lastStackTrace ? _lastStackTrace.count : 1);
-  NSLog(@"RCTRedBox: numberRowsInTableView %ld", (long)count);
   return _lastStackTrace ? _lastStackTrace.count : 1;
 }
 
