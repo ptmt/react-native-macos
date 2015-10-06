@@ -343,7 +343,7 @@ BOOL RCTRunningInAppExtension(void)
   return [[[[NSBundle mainBundle] bundlePath] pathExtension] isEqualToString:@"appex"];
 }
 
-id RCTSharedApplication(void)
+NSApplication * RCTSharedApplication(void)
 {
   if (RCTRunningInAppExtension()) {
     return nil;

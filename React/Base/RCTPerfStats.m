@@ -20,7 +20,7 @@
 
 @implementation RCTPerfStats
 {
-  UIView *_container;
+  NSView *_container;
 }
 
 RCT_EXPORT_MODULE()
@@ -30,12 +30,12 @@ RCT_EXPORT_MODULE()
   [self hide];
 }
 
-- (UIView *)container
+- (NSView *)container
 {
   if (!_container) {
-    _container = [UIView new];
-    _container.backgroundColor = [UIColor colorWithRed:0 green:0 blue:34/255.0 alpha:1];
-    _container.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
+    _container = [NSView new];
+//    _container.backgroundColor = [NSColor colorWithRed:0 green:0 blue:34/255.0 alpha:1];
+     _container.autoresizingMask = NSViewWidthSizable;// UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
   }
   return _container;
 }
@@ -43,12 +43,12 @@ RCT_EXPORT_MODULE()
 - (RCTFPSGraph *)jsGraph
 {
   if (!_jsGraph && _container) {
-    UIColor *jsColor = [UIColor colorWithRed:0 green:1 blue:0 alpha:1];
+    NSColor *jsColor = [NSColor colorWithRed:0 green:1 blue:0 alpha:1];
     _jsGraph = [[RCTFPSGraph alloc] initWithFrame:CGRectMake(2, 2, 124, 34)
                                     graphPosition:RCTFPSGraphPositionRight
                                              name:@"[ JS ]"
                                             color:jsColor];
-    _jsGraph.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+    _jsGraph.autoresizingMask = NSViewMaxXMargin;
   }
   return _jsGraph;
 }
@@ -56,7 +56,7 @@ RCT_EXPORT_MODULE()
 - (RCTFPSGraph *)uiGraph
 {
   if (!_uiGraph && _container) {
-    UIColor *uiColor = [UIColor colorWithRed:0 green:1 blue:1 alpha:1];
+    NSColor *uiColor = [NSColor colorWithRed:0 green:1 blue:1 alpha:1];
     _uiGraph = [[RCTFPSGraph alloc] initWithFrame:CGRectMake(2, 2, 124, 34)
                                     graphPosition:RCTFPSGraphPositionLeft
                                              name:@"[ UI ]"
@@ -71,7 +71,7 @@ RCT_EXPORT_MODULE()
     return;
   }
   
-  UIView *targetView = RCTSharedApplication().delegate.window.rootViewController.view;
+  NSView *targetView = [RCTSharedApplication() mainWindow].contentView;
 
   targetView.frame = (CGRect){
     targetView.frame.origin,
@@ -97,7 +97,7 @@ RCT_EXPORT_MODULE()
 
 - (void)hide
 {
-  UIView *targetView = _container.superview;
+  NSView *targetView = _container.superview;
 
   targetView.frame = (CGRect){
     targetView.frame.origin,

@@ -71,6 +71,9 @@ RCT_EXTERN NSArray *RCTGetModuleClasses(void);
   NSMutableSet *_frameUpdateObservers;
   NSMutableArray *_scheduledCalls;
   RCTSparseArray *_scheduledCallbacks;
+
+  NSTimer * _mainTimer;
+  NSTimer * _jsTimer;
 }
 
 - (instancetype)initWithParentBridge:(RCTBridge *)bridge
@@ -93,13 +96,24 @@ RCT_EXTERN NSArray *RCTGetModuleClasses(void);
     _frameUpdateObservers = [NSMutableSet new];
     _scheduledCalls = [NSMutableArray new];
     _scheduledCallbacks = [RCTSparseArray new];
-    CVDisplayLinkCreateWithCGDisplay(0, &_jsDisplayLink);
+    _jsTimer = [NSTimer timerWithTimeInterval:0.001 target:self selector:@selector(_jsThreadUpdate:) userInfo:nil repeats:YES];
+    //[[NSRunLoop mainRunLoop] addTimer:_jsTimer forMode:NSDefaultRunLoopMode];
+//    CVReturn error = kCVReturnSuccess;
+//    CVDisplayLinkCreateWithCGDisplay(0, &_jsDisplayLink);
+//    if (error)
+//    {
+//      NSLog(@"DisplayLink created with error:%d", error);
+//      _jsDisplayLink = NULL;
+//    }
     //_jsDisplayLink = [CVDisplayLink i]
     //_jsDisplayLink = [CVDisplayLink displayLinkWithTarget:self selector:@selector(_jsThreadUpdate:)];
 
     if (RCT_DEV) {
-      CVDisplayLinkCreateWithCGDisplay(CGMainDisplayID(), &_mainDisplayLink);
-      //_mainDisplayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(_mainThreadUpdate:)];
+      _mainTimer = [NSTimer timerWithTimeInterval:0.001 target:self selector:@selector(_mainThreadUpdate:) userInfo:nil repeats:YES];
+      [[NSRunLoop mainRunLoop] addTimer:_mainTimer forMode:NSRunLoopCommonModes];
+//      CVDisplayLinkCreateWithCGDisplay(CGMainDisplayID(), &_mainDisplayLink);
+//      CVDisplayLinkSetOutputCallback(_mainDisplayLink, self._, (__bridge void *)self);
+//      //_mainDisplayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(_mainThreadUpdate:)];
       //[_mainDisplayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
     }
 
@@ -358,9 +372,8 @@ RCT_EXTERN NSArray *RCTGetModuleClasses(void);
 
     // Register the display link to start sending js calls after everything is setup
     NSRunLoop *targetRunLoop = [_javaScriptExecutor isKindOfClass:[RCTContextExecutor class]] ? [NSRunLoop currentRunLoop] : [NSRunLoop mainRunLoop];
- //   [_jsDisplayLink addToRunLoop:targetRunLoop forMode:NSRunLoopCommonModes];
-//    CVDisplayLinkOutputCallback callback = 
-//    CVDisplayLinkSetOutputCallback (_jsDisplayLink, callback);
+    NSLog(@"start sending js calls");
+    [targetRunLoop addTimer:_jsTimer forMode:NSRunLoopCommonModes];
 
     // Perform the state update and notification on the main thread, so we can't run into
     // timing issues with RCTRootView
@@ -804,22 +817,22 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithBundleURL:(__unused NSURL *)bundleUR
   return YES;
 }
 
-- (void)_jsThreadUpdate:(CVDisplayLinkRef)displayLink
+- (void)_jsThreadUpdate:(__unused id)sender
 {
   RCTAssertJSThread();
   RCTProfileBeginEvent(0, @"DispatchFrameUpdate", nil);
 
-  RCTFrameUpdate *frameUpdate = [[RCTFrameUpdate alloc] initWithDisplayLink:displayLink];
+  //RCTFrameUpdate *frameUpdate = [[RCTFrameUpdate alloc] initWithDisplayLink:displayLink];
   for (RCTModuleData *moduleData in _frameUpdateObservers) {
     id<RCTFrameUpdateObserver> observer = (id<RCTFrameUpdateObserver>)moduleData.instance;
     if (![observer respondsToSelector:@selector(isPaused)] || !observer.paused) {
-      RCT_IF_DEV(NSString *name = [NSString stringWithFormat:@"[%@ didUpdateFrame:%f]", observer, CVDisplayLinkGetActualOutputVideoRefreshPeriod(displayLink)];)
+      //RCT_IF_DEV(NSString *name = [NSString stringWithFormat:@"[%@ didUpdateFrame:%f]", observer, CVDisplayLinkGetActualOutputVideoRefreshPeriod(displayLink)];)
       RCTProfileBeginFlowEvent();
 
       [moduleData dispatchBlock:^{
         RCTProfileEndFlowEvent();
-        RCTProfileBeginEvent(0, name, nil);
-        [observer didUpdateFrame:frameUpdate];
+        //RCTProfileBeginEvent(0, name, nil);
+        //[observer didUpdateFrame:frameUpdate];
         RCTProfileEndEvent(0, @"objc_call,fps", nil);
       }];
     }
@@ -847,18 +860,18 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithBundleURL:(__unused NSURL *)bundleUR
 
   RCT_IF_DEV(
     dispatch_async(dispatch_get_main_queue(), ^{
-      [self.perfStats.jsGraph onTick:CVDisplayLinkGetActualOutputVideoRefreshPeriod(displayLink)];
+      [self.perfStats.jsGraph onTick:_jsTimer.timeInterval];
     });
   )
 }
 
-- (void)_mainThreadUpdate:(CVDisplayLinkRef)displayLink
+- (void)_mainThreadUpdate:(__unused id)sender
 {
   RCTAssertMainThread();
 
   RCTProfileImmediateEvent(0, @"VSYNC", 'g');
 
-  _modulesByName == nil ?: [self.perfStats.uiGraph onTick:CVDisplayLinkGetActualOutputVideoRefreshPeriod(displayLink)];
+  _modulesByName == nil ?: [self.perfStats.uiGraph onTick:_mainTimer.timeInterval];
 }
 
 - (void)startProfiling

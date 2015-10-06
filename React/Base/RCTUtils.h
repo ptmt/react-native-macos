@@ -9,6 +9,8 @@
 
 #import <tgmath.h>
 
+#import <AppKit/AppKit.h>
+
 #import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
 
@@ -55,7 +57,7 @@ RCT_EXTERN BOOL RCTRunningInTestEnvironment(void);
 RCT_EXTERN BOOL RCTRunningInAppExtension(void);
 
 // Returns the shared UIApplication instance, or nil if running in an App Extension
-//RCT_EXTERN UIApplication *RCTSharedApplication(void);
+RCT_EXTERN NSApplication *RCTSharedApplication(void);
 
 // Return a UIAlertView initialized with the given values
 // or nil if running in an app extension
