@@ -14,6 +14,7 @@
 		03279A2C1BB8435E0015275D /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03279A121BB6B6ED0015275D /* libReact.a */; };
 		0372B5C81BBA3E7A00D83533 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0372B5C61BBA3E7A00D83533 /* MainMenu.xib */; };
 		03EAB5791BC184350051C6F1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03EAB5771BC181C10051C6F1 /* libRCTNetwork.a */; };
+		03EAB5831BC40F750051C6F1 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03EAB5821BC4043D0051C6F1 /* libRCTText.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +32,13 @@
 			remoteGlobalIDString = 58B511DB1A9E6C8500147676;
 			remoteInfo = RCTNetwork;
 		};
+		03EAB5811BC4043D0051C6F1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 03EAB57D1BC4043C0051C6F1 /* RCTText.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
+			remoteInfo = RCTText;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +52,7 @@
 		03279A0D1BB6B6ED0015275D /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = ../../React/React.xcodeproj; sourceTree = "<group>"; };
 		0372B5C71BBA3E7A00D83533 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		03EAB5721BC181C10051C6F1 /* RCTNetwork.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTNetwork.xcodeproj; path = ../../Libraries/Network/RCTNetwork.xcodeproj; sourceTree = "<group>"; };
+		03EAB57D1BC4043C0051C6F1 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = ../../Libraries/Text/RCTText.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03EAB5831BC40F750051C6F1 /* libRCTText.a in Frameworks */,
 				03EAB5791BC184350051C6F1 /* libRCTNetwork.a in Frameworks */,
 				03279A2C1BB8435E0015275D /* libReact.a in Frameworks */,
 			);
@@ -101,6 +111,7 @@
 		03279A001BB6B4F30015275D /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				03EAB57D1BC4043C0051C6F1 /* RCTText.xcodeproj */,
 				03EAB5721BC181C10051C6F1 /* RCTNetwork.xcodeproj */,
 				03279A0D1BB6B6ED0015275D /* React.xcodeproj */,
 			);
@@ -119,6 +130,14 @@
 			isa = PBXGroup;
 			children = (
 				03EAB5771BC181C10051C6F1 /* libRCTNetwork.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		03EAB57E1BC4043C0051C6F1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				03EAB5821BC4043D0051C6F1 /* libRCTText.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -174,6 +193,10 @@
 					ProjectRef = 03EAB5721BC181C10051C6F1 /* RCTNetwork.xcodeproj */;
 				},
 				{
+					ProductGroup = 03EAB57E1BC4043C0051C6F1 /* Products */;
+					ProjectRef = 03EAB57D1BC4043C0051C6F1 /* RCTText.xcodeproj */;
+				},
+				{
 					ProductGroup = 03279A0E1BB6B6ED0015275D /* Products */;
 					ProjectRef = 03279A0D1BB6B6ED0015275D /* React.xcodeproj */;
 				},
@@ -198,6 +221,13 @@
 			fileType = archive.ar;
 			path = libRCTNetwork.a;
 			remoteRef = 03EAB5761BC181C10051C6F1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		03EAB5821BC4043D0051C6F1 /* libRCTText.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTText.a;
+			remoteRef = 03EAB5811BC4043D0051C6F1 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

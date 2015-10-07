@@ -19,7 +19,7 @@
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
+- (NSView *)view
 {
   return [[RCTTextView alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
 }
@@ -39,26 +39,26 @@ RCT_REMAP_VIEW_PROPERTY(color, textColor, UIColor)
 RCT_REMAP_VIEW_PROPERTY(autoCapitalize, textView.autocapitalizationType, UITextAutocapitalizationType)
 RCT_CUSTOM_VIEW_PROPERTY(fontSize, CGFloat, RCTTextView)
 {
-  view.font = [RCTConvert UIFont:view.font withSize:json ?: @(defaultView.font.pointSize)];
+  view.font = [RCTConvert NSFont:view.font withSize:json ?: @(defaultView.font.pointSize)];
 }
 RCT_CUSTOM_VIEW_PROPERTY(fontWeight, NSString, RCTTextView)
 {
-  view.font = [RCTConvert UIFont:view.font withWeight:json]; // defaults to normal
+  view.font = [RCTConvert NSFont:view.font withWeight:json]; // defaults to normal
 }
 RCT_CUSTOM_VIEW_PROPERTY(fontStyle, NSString, RCTTextView)
 {
-  view.font = [RCTConvert UIFont:view.font withStyle:json]; // defaults to normal
+  view.font = [RCTConvert NSFont:view.font withStyle:json]; // defaults to normal
 }
 RCT_CUSTOM_VIEW_PROPERTY(fontFamily, NSString, RCTTextView)
 {
-  view.font = [RCTConvert UIFont:view.font withFamily:json ?: defaultView.font.familyName];
+  view.font = [RCTConvert NSFont:view.font withFamily:json ?: defaultView.font.familyName];
 }
 RCT_EXPORT_VIEW_PROPERTY(mostRecentEventCount, NSInteger)
 
 - (RCTViewManagerUIBlock)uiBlockToAmendWithShadowView:(RCTShadowView *)shadowView
 {
   NSNumber *reactTag = shadowView.reactTag;
-  UIEdgeInsets padding = shadowView.paddingAsInsets;
+  NSEdgeInsets padding = shadowView.paddingAsInsets;
   return ^(RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
     ((RCTTextView *)viewRegistry[reactTag]).contentInset = padding;
   };

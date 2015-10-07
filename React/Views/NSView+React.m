@@ -78,6 +78,7 @@
 //                self.reactTag, self, NSStringFromCGPoint(position), NSStringFromCGRect(bounds));
     return;
   }
+  self.frame = frame;
 
   self.layer.position = position;
   self.layer.bounds = bounds;
@@ -85,10 +86,13 @@
 
 - (void)reactSetInheritedBackgroundColor:(NSColor *)inheritedBackgroundColor
 {
-  CALayer *viewLayer = [CALayer layer];
-  [viewLayer setBackgroundColor:[inheritedBackgroundColor CGColor]];
-  [self setWantsLayer:YES]; // view's backing store is using a Core Animation Layer
-  [self setLayer:viewLayer];
+  if (![self wantsLayer]) {
+    CALayer *viewLayer = [CALayer layer];
+    [self setWantsLayer:YES];
+    [self setLayer:viewLayer];
+  }
+  [self.layer setBackgroundColor:[inheritedBackgroundColor CGColor]];
+
 }
 
 - (NSViewController *)reactViewController

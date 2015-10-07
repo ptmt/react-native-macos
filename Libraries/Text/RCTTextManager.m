@@ -17,13 +17,13 @@
 #import "RCTShadowText.h"
 #import "RCTSparseArray.h"
 #import "RCTText.h"
-#import "UIView+React.h"
+#import "NSView+React.h"
 
 @implementation RCTTextManager
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
+- (NSView *)view
 {
   return [RCTText new];
 }
@@ -71,7 +71,7 @@ RCT_EXPORT_SHADOW_PROPERTY(allowFontScaling, BOOL)
       RCTAssert([shadowView isTextDirty], @"Don't process any nodes that don't have dirty text");
 
       if ([shadowView isKindOfClass:[RCTShadowText class]]) {
-        ((RCTShadowText *)shadowView).fontSizeMultiplier = self.bridge.accessibilityManager.multiplier;
+        //((RCTShadowText *)shadowView).fontSizeMultiplier = self.bridge.accessibilityManager.multiplier;
         [(RCTShadowText *)shadowView recomputeText];
       } else if ([shadowView isKindOfClass:[RCTShadowRawText class]]) {
         RCTLogError(@"Raw text cannot be used outside of a <Text> tag. Not rendering string: '%@'",
@@ -94,7 +94,7 @@ RCT_EXPORT_SHADOW_PROPERTY(allowFontScaling, BOOL)
 - (RCTViewManagerUIBlock)uiBlockToAmendWithShadowView:(RCTShadowText *)shadowView
 {
   NSNumber *reactTag = shadowView.reactTag;
-  UIEdgeInsets padding = shadowView.paddingAsInsets;
+  NSEdgeInsets padding = shadowView.paddingAsInsets;
 
   return ^(RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
     RCTText *text = viewRegistry[reactTag];

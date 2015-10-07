@@ -7,21 +7,21 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 @class RCTEventDispatcher;
 
-@interface RCTTextField : UITextField
+@interface RCTTextField : NSTextField
 
 @property (nonatomic, assign) BOOL caretHidden;
 @property (nonatomic, assign) BOOL autoCorrect;
 @property (nonatomic, assign) BOOL selectTextOnFocus;
-@property (nonatomic, assign) UIEdgeInsets contentInset;
-@property (nonatomic, strong) UIColor *placeholderTextColor;
+@property (nonatomic, assign) NSEdgeInsets contentInset;
+@property (nonatomic, strong) NSColor *placeholderTextColor;
 @property (nonatomic, assign) NSInteger mostRecentEventCount;
 @property (nonatomic, strong) NSNumber *maxLength;
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
-- (void)textFieldDidChange;
+//- (void)textFieldDidChange;
 
 @end

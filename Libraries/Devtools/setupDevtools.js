@@ -14,6 +14,7 @@
 function setupDevtools() {
   var messageListeners = [];
   var closeListeners = [];
+  console.log('setup devtools');
   var ws = new window.WebSocket('ws://localhost:8081/devtools');
   // this is accessed by the eval'd backend code
   var FOR_BACKEND = { // eslint-disable-line no-unused-vars

@@ -7,24 +7,24 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTView.h"
-#import "UIView+React.h"
+#import "NSView+React.h"
 
 @class RCTEventDispatcher;
 
-@interface RCTTextView : RCTView <UITextViewDelegate>
+@interface RCTTextView : RCTView <NSTextViewDelegate>
 
 @property (nonatomic, assign) BOOL autoCorrect;
 @property (nonatomic, assign) BOOL clearTextOnFocus;
 @property (nonatomic, assign) BOOL selectTextOnFocus;
-@property (nonatomic, assign) UIEdgeInsets contentInset;
+@property (nonatomic, assign) NSEdgeInsets contentInset;
 @property (nonatomic, assign) BOOL automaticallyAdjustContentInsets;
 @property (nonatomic, copy) NSString *text;
-@property (nonatomic, strong) UIColor *textColor;
-@property (nonatomic, strong) UIColor *placeholderTextColor;
-@property (nonatomic, strong) UIFont *font;
+@property (nonatomic, strong) NSColor *textColor;
+@property (nonatomic, strong) NSColor *placeholderTextColor;
+@property (nonatomic, strong) NSFont *font;
 @property (nonatomic, assign) NSInteger mostRecentEventCount;
 @property (nonatomic, strong) NSNumber *maxLength;
 

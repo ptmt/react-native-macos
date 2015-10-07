@@ -1,6 +1,6 @@
 # React Native desktop
 
-React Native for OS X (Windows, Linux).
+React Native for OS X. Discuss on `#react-native-desktop` on Reactiflux.com
 
 ## Current stage
 

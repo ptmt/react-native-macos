@@ -37,7 +37,7 @@ var ReactNative = Object.assign(Object.create(require('React')), {
   // SwitchAndroid: require('SwitchAndroid'),
   // SwitchIOS: require('SwitchIOS'),
   // TabBarIOS: require('TabBarIOS'),
-  // Text: require('Text'),
+  Text: require('Text'),
   // TextInput: require('TextInput'),
   // ToastAndroid: require('ToastAndroid'),
   // ToolbarAndroid: require('ToolbarAndroid'),
@@ -45,7 +45,7 @@ var ReactNative = Object.assign(Object.create(require('React')), {
   // TouchableNativeFeedback: require('TouchableNativeFeedback'),
   // TouchableOpacity: require('TouchableOpacity'),
   // TouchableWithoutFeedback: require('TouchableWithoutFeedback'),
-  // View: require('View'),
+  View: require('View'),
   // WebView: require('WebView'),
 
   // APIs

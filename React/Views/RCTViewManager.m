@@ -115,8 +115,8 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_VIEW_PROPERTY(accessibilityLabel, NSString)
 RCT_EXPORT_VIEW_PROPERTY(accessibilityTraits, UIAccessibilityTraits)
-RCT_EXPORT_VIEW_PROPERTY(backgroundColor, UIColor)
-RCT_REMAP_VIEW_PROPERTY(accessible, isAccessibilityElement, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(backgroundColor, NSColor)
+//RCT_REMAP_VIEW_PROPERTY(accessible, isAccessibilityElement, BOOL)
 RCT_REMAP_VIEW_PROPERTY(testID, accessibilityIdentifier, NSString)
 RCT_REMAP_VIEW_PROPERTY(backfaceVisibility, layer.doubleSided, css_backface_visibility_t)
 RCT_REMAP_VIEW_PROPERTY(opacity, alpha, CGFloat)
@@ -229,7 +229,7 @@ RCT_VIEW_BORDER_RADIUS_PROPERTY(BottomRight)
 
 #pragma mark - ShadowView properties
 
-RCT_EXPORT_SHADOW_PROPERTY(backgroundColor, UIColor)
+RCT_EXPORT_SHADOW_PROPERTY(backgroundColor, NSColor)
 
 RCT_EXPORT_SHADOW_PROPERTY(top, CGFloat)
 RCT_EXPORT_SHADOW_PROPERTY(right, CGFloat)

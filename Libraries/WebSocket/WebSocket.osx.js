@@ -24,6 +24,7 @@ class WebSocket extends WebSocketBase {
 
   connectToSocketImpl(url: string): void {
     this._socketId = WebSocketId++;
+    console.log('connect to socket')
     RCTWebSocketManager.connect(url, this._socketId);
     this._registerEvents(this._socketId);
   }

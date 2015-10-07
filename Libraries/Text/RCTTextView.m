@@ -12,15 +12,15 @@
 #import "RCTConvert.h"
 #import "RCTEventDispatcher.h"
 #import "RCTUtils.h"
-#import "UIView+React.h"
+#import "NSView+React.h"
 
 @implementation RCTTextView
 {
   RCTEventDispatcher *_eventDispatcher;
   BOOL _jsRequestingFirstResponder;
   NSString *_placeholder;
-  UITextView *_placeholderView;
-  UITextView *_textView;
+  NSTextView *_placeholderView;
+  NSTextView *_textView;
   NSInteger _nativeEventCount;
 }
 
@@ -29,13 +29,13 @@
   RCTAssertParam(eventDispatcher);
 
   if ((self = [super initWithFrame:CGRectZero])) {
-    _contentInset = UIEdgeInsetsZero;
+    _contentInset = NSEdgeInsetsZero;
     _eventDispatcher = eventDispatcher;
     _placeholderTextColor = [self defaultPlaceholderTextColor];
 
-    _textView = [[UITextView alloc] initWithFrame:self.bounds];
-    _textView.backgroundColor = [UIColor clearColor];
-    _textView.scrollsToTop = NO;
+    _textView = [[NSTextView alloc] initWithFrame:self.bounds];
+    _textView.backgroundColor = [NSColor clearColor];
+    //_textView.scrollsToTop = NO;
     _textView.delegate = self;
     [self addSubview:_textView];
   }
@@ -54,19 +54,20 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   // We apply the left inset to the frame since a negative left text-container
   // inset mysteriously causes the text to be hidden until the text view is
   // first focused.
-  UIEdgeInsets adjustedFrameInset = UIEdgeInsetsZero;
+  NSEdgeInsets adjustedFrameInset = NSEdgeInsetsZero;
   adjustedFrameInset.left = _contentInset.left - 5;
   
-  UIEdgeInsets adjustedTextContainerInset = _contentInset;
+  NSEdgeInsets adjustedTextContainerInset = _contentInset;
   adjustedTextContainerInset.top += 5;
   adjustedTextContainerInset.left = 0;
   
-  CGRect frame = UIEdgeInsetsInsetRect(self.bounds, adjustedFrameInset);
+  CGRect frame = self.frame;// TODO: UIEdgeInsetsInsetRect(self.bounds, adjustedFrameInset);
   _textView.frame = frame;
   _placeholderView.frame = frame;
-  
-  _textView.textContainerInset = adjustedTextContainerInset;
-  _placeholderView.textContainerInset = adjustedTextContainerInset;
+
+  // TODO:
+ // _textView.textContainerInset = adjustedTextContainerInset;
+ // _placeholderView.textContainerInset = adjustedTextContainerInset;
 }
 
 - (void)updatePlaceholder
@@ -75,37 +76,37 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   _placeholderView = nil;
 
   if (_placeholder) {
-    _placeholderView = [[UITextView alloc] initWithFrame:self.bounds];
-    _placeholderView.backgroundColor = [UIColor clearColor];
-    _placeholderView.scrollEnabled = false;
-    _placeholderView.attributedText =
-    [[NSAttributedString alloc] initWithString:_placeholder attributes:@{
-      NSFontAttributeName : (_textView.font ? _textView.font : [self defaultPlaceholderFont]),
-      NSForegroundColorAttributeName : _placeholderTextColor
-    }];
+    _placeholderView = [[NSTextView alloc] initWithFrame:self.bounds];
+    _placeholderView.backgroundColor = [NSColor clearColor];
+//    _placeholderView.scrollEnabled = false;
+//    _placeholderView.attributedText =
+//    [[NSAttributedString alloc] initWithString:_placeholder attributes:@{
+//      NSFontAttributeName : (_textView.font ? _textView.font : [self defaultPlaceholderFont]),
+//      NSForegroundColorAttributeName : _placeholderTextColor
+//    }];
 
-    [self insertSubview:_placeholderView belowSubview:_textView];
+    [self addSubview:_placeholderView positioned:NSWindowAbove relativeTo:_textView]; // TODO: check this
     [self _setPlaceholderVisibility];
   }
 }
 
-- (UIFont *)font
+- (NSFont *)font
 {
   return _textView.font;
 }
 
-- (void)setFont:(UIFont *)font
+- (void)setFont:(NSFont *)font
 {
   _textView.font = font;
   [self updatePlaceholder];
 }
 
-- (UIColor *)textColor
+- (NSColor *)textColor
 {
   return _textView.textColor;
 }
 
-- (void)setTextColor:(UIColor *)textColor
+- (void)setTextColor:(NSColor *)textColor
 {
   _textView.textColor = textColor;
 }
@@ -116,7 +117,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   [self updatePlaceholder];
 }
 
-- (void)setPlaceholderTextColor:(UIColor *)placeholderTextColor
+- (void)setPlaceholderTextColor:(NSColor *)placeholderTextColor
 {
   if (placeholderTextColor) {
     _placeholderTextColor = placeholderTextColor;
@@ -126,7 +127,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   [self updatePlaceholder];
 }
 
-- (void)setContentInset:(UIEdgeInsets)contentInset
+- (void)setContentInset:(NSEdgeInsets)contentInset
 {
   _contentInset = contentInset;
   [self updateFrames];
@@ -134,42 +135,43 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (NSString *)text
 {
-  return _textView.text;
+  return [_textView string];
 }
 
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+- (BOOL)textView:(NSTextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
   if (_maxLength == nil) {
     return YES;
   }
-  NSUInteger allowedLength = _maxLength.integerValue - textView.text.length + range.length;
-  if (text.length > allowedLength) {
-    if (text.length > 1) {
-      // Truncate the input string so the result is exactly maxLength
-      NSString *limitedString = [text substringToIndex:allowedLength];
-      NSMutableString *newString = textView.text.mutableCopy;
-      [newString replaceCharactersInRange:range withString:limitedString];
-      textView.text = newString;
-      // Collapse selection at end of insert to match normal paste behavior
-      UITextPosition *insertEnd = [textView positionFromPosition:textView.beginningOfDocument
-                                                          offset:(range.location + allowedLength)];
-      textView.selectedTextRange = [textView textRangeFromPosition:insertEnd toPosition:insertEnd];
-      [self textViewDidChange:textView];
-    }
-    return NO;
-  } else {
-    return YES;
-  }
+  return NO;
+//  NSUInteger allowedLength = _maxLength.integerValue - textView.text.length + range.length;
+//  if (text.length > allowedLength) {
+//    if (text.length > 1) {
+//      // Truncate the input string so the result is exactly maxLength
+//      NSString *limitedString = [text substringToIndex:allowedLength];
+//      NSMutableString *newString = [textView string].mutableCopy;
+//      [newString replaceCharactersInRange:range withString:limitedString];
+//      [textView setString:newString];
+//      // Collapse selection at end of insert to match normal paste behavior
+////      UITextPosition *insertEnd = [textView positionFromPosition:textView.beginningOfDocument
+////                                                          offset:(range.location + allowedLength)];
+////      textView.selectedTextRange = [textView textRangeFromPosition:insertEnd toPosition:insertEnd];
+//      [self textViewDidChange:textView];
+//    }
+//    return NO;
+//  } else {
+//    return YES;
+//  }
 }
 
 - (void)setText:(NSString *)text
 {
   NSInteger eventLag = _nativeEventCount - _mostRecentEventCount;
-  if (eventLag == 0 && ![text isEqualToString:_textView.text]) {
-    UITextRange *selection = _textView.selectedTextRange;
-    _textView.text = text;
+  if (eventLag == 0 && ![text isEqualToString:[_textView string]]) {
+    //UITextRange *selection = _textView.selectedTextRange;
+    [_textView setString:text];
     [self _setPlaceholderVisibility];
-    _textView.selectedTextRange = selection; // maintain cursor position/selection - this is robust to out of bounds
+   // _textView.selectedTextRange = selection; // maintain cursor position/selection - this is robust to out of bounds
   } else if (eventLag > RCTTextUpdateLagWarningThreshold) {
     RCTLogWarn(@"Native TextInput(%@) is %zd events ahead of JS - try to make your JS faster.", self.text, eventLag);
   }
@@ -177,24 +179,24 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)_setPlaceholderVisibility
 {
-  if (_textView.text.length > 0) {
+  if ([_textView string].length > 0) {
     [_placeholderView setHidden:YES];
   } else {
     [_placeholderView setHidden:NO];
   }
 }
 
-- (void)setAutoCorrect:(BOOL)autoCorrect
-{
-  _textView.autocorrectionType = (autoCorrect ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo);
-}
+//- (void)setAutoCorrect:(BOOL)autoCorrect
+//{
+//  //_textView.autocorrectionType = (autoCorrect ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo);
+//}
 
-- (BOOL)autoCorrect
-{
-  return _textView.autocorrectionType == UITextAutocorrectionTypeYes;
-}
+//- (BOOL)autoCorrect
+//{
+//  return _textView.autocorrectionType == UITextAutocorrectionTypeYes;
+//}
 
-- (BOOL)textViewShouldBeginEditing:(UITextView *)textView
+- (BOOL)textViewShouldBeginEditing:(NSTextView *)textView
 {
   if (_selectTextOnFocus) {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -204,37 +206,37 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return YES;
 }
 
-- (void)textViewDidBeginEditing:(UITextView *)textView
-{
-  if (_clearTextOnFocus) {
-    _textView.text = @"";
-    [self _setPlaceholderVisibility];
-  }
-
-  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeFocus
-                                 reactTag:self.reactTag
-                                     text:textView.text
-                               eventCount:_nativeEventCount];
-}
-
-- (void)textViewDidChange:(UITextView *)textView
-{
-  [self _setPlaceholderVisibility];
-  _nativeEventCount++;
-  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeChange
-                                 reactTag:self.reactTag
-                                     text:textView.text
-                               eventCount:_nativeEventCount];
-
-}
-
-- (void)textViewDidEndEditing:(UITextView *)textView
-{
-  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeEnd
-                                 reactTag:self.reactTag
-                                     text:textView.text
-                               eventCount:_nativeEventCount];
-}
+//- (void)textViewDidBeginEditing:(NSTextView *)textView
+//{
+//  if (_clearTextOnFocus) {
+//    _textView.text = @"";
+//    [self _setPlaceholderVisibility];
+//  }
+//
+//  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeFocus
+//                                 reactTag:self.reactTag
+//                                     text:textView.text
+//                               eventCount:_nativeEventCount];
+//}
+//
+//- (void)textViewDidChange:(UITextView *)textView
+//{
+//  [self _setPlaceholderVisibility];
+//  _nativeEventCount++;
+//  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeChange
+//                                 reactTag:self.reactTag
+//                                     text:textView.text
+//                               eventCount:_nativeEventCount];
+//
+//}
+//
+//- (void)textViewDidEndEditing:(UITextView *)textView
+//{
+//  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeEnd
+//                                 reactTag:self.reactTag
+//                                     text:textView.text
+//                               eventCount:_nativeEventCount];
+//}
 
 - (BOOL)becomeFirstResponder
 {
@@ -251,15 +253,15 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   if (result) {
     [_eventDispatcher sendTextEventWithType:RCTTextEventTypeBlur
                                    reactTag:self.reactTag
-                                       text:_textView.text
+                                       text:[_textView string]
                                  eventCount:_nativeEventCount];
   }
   return result;
 }
 
-- (void)layoutSubviews
+- (void)layout
 {
-  [super layoutSubviews];
+  [super layout];
   [self updateFrames];
 }
 
@@ -268,14 +270,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return _jsRequestingFirstResponder;
 }
 
-- (UIFont *)defaultPlaceholderFont
+- (NSFont *)defaultPlaceholderFont
 {
-  return [UIFont systemFontOfSize:17];
+  return [NSFont systemFontOfSize:17];
 }
 
-- (UIColor *)defaultPlaceholderTextColor
+- (NSColor *)defaultPlaceholderTextColor
 {
-  return [UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.098/255.0 alpha:0.22];
+  return [NSColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.098/255.0 alpha:0.22];
 }
 
 @end

@@ -72,7 +72,7 @@ function renderApplication<D, P, S>(
   // not when debugging in chrome
   if (__DEV__ && !window.document) {
     var setupDevtools = require('setupDevtools');
-    setupDevtools();
+  //  setupDevtools();
   }
   React.render(
     <AppContainer rootTag={rootTag}>

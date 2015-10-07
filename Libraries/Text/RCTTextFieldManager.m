@@ -14,7 +14,7 @@
 #import "RCTSparseArray.h"
 #import "RCTTextField.h"
 
-@interface RCTTextFieldManager() <UITextFieldDelegate>
+@interface RCTTextFieldManager() <NSTextFieldDelegate>
 
 @end
 
@@ -22,7 +22,7 @@
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
+- (NSView *)view
 {
   RCTTextField *textField = [[RCTTextField alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
   textField.delegate = self;
@@ -34,24 +34,25 @@ RCT_EXPORT_MODULE()
   if (textField.maxLength == nil || [string isEqualToString:@"\n"]) {  // Make sure forms can be submitted via return
     return YES;
   }
-  NSUInteger allowedLength = textField.maxLength.integerValue - textField.text.length + range.length;
-  if (string.length > allowedLength) {
-    if (string.length > 1) {
-      // Truncate the input string so the result is exactly maxLength
-      NSString *limitedString = [string substringToIndex:allowedLength];
-      NSMutableString *newString = textField.text.mutableCopy;
-      [newString replaceCharactersInRange:range withString:limitedString];
-      textField.text = newString;
-      // Collapse selection at end of insert to match normal paste behavior
-      UITextPosition *insertEnd = [textField positionFromPosition:textField.beginningOfDocument
-                                                          offset:(range.location + allowedLength)];
-      textField.selectedTextRange = [textField textRangeFromPosition:insertEnd toPosition:insertEnd];
-      [textField textFieldDidChange];
-    }
-    return NO;
-  } else {
-    return YES;
-  }
+  return YES;
+//  NSUInteger allowedLength = textField.maxLength.integerValue - textField.text.length + range.length;
+//  if (string.length > allowedLength) {
+//    if (string.length > 1) {
+//      // Truncate the input string so the result is exactly maxLength
+//      NSString *limitedString = [string substringToIndex:allowedLength];
+//      NSMutableString *newString = textField.text.mutableCopy;
+//      [newString replaceCharactersInRange:range withString:limitedString];
+//      textField.text = newString;
+//      // Collapse selection at end of insert to match normal paste behavior
+//      NSTextPosition *insertEnd = [textField positionFromPosition:textField.beginningOfDocument
+//                                                          offset:(range.location + allowedLength)];
+//      textField.selectedTextRange = [textField textRangeFromPosition:insertEnd toPosition:insertEnd];
+//      [textField textFieldDidChange];
+//    }
+//    return NO;
+//  } else {
+//    return YES;
+//  }
 }
 
 RCT_EXPORT_VIEW_PROPERTY(caretHidden, BOOL)
@@ -74,26 +75,26 @@ RCT_REMAP_VIEW_PROPERTY(autoCapitalize, autocapitalizationType, UITextAutocapita
 RCT_REMAP_VIEW_PROPERTY(textAlign, textAlignment, NSTextAlignment)
 RCT_CUSTOM_VIEW_PROPERTY(fontSize, CGFloat, RCTTextField)
 {
-  view.font = [RCTConvert UIFont:view.font withSize:json ?: @(defaultView.font.pointSize)];
+  view.font = [RCTConvert NSFont:view.font withSize:json ?: @(defaultView.font.pointSize)];
 }
 RCT_CUSTOM_VIEW_PROPERTY(fontWeight, NSString, __unused RCTTextField)
 {
-  view.font = [RCTConvert UIFont:view.font withWeight:json]; // defaults to normal
+  view.font = [RCTConvert NSFont:view.font withWeight:json]; // defaults to normal
 }
 RCT_CUSTOM_VIEW_PROPERTY(fontStyle, NSString, __unused RCTTextField)
 {
-  view.font = [RCTConvert UIFont:view.font withStyle:json]; // defaults to normal
+  view.font = [RCTConvert NSFont:view.font withStyle:json]; // defaults to normal
 }
 RCT_CUSTOM_VIEW_PROPERTY(fontFamily, NSString, RCTTextField)
 {
-  view.font = [RCTConvert UIFont:view.font withFamily:json ?: defaultView.font.familyName];
+  view.font = [RCTConvert NSFont:view.font withFamily:json ?: defaultView.font.familyName];
 }
 RCT_EXPORT_VIEW_PROPERTY(mostRecentEventCount, NSInteger)
 
 - (RCTViewManagerUIBlock)uiBlockToAmendWithShadowView:(RCTShadowView *)shadowView
 {
   NSNumber *reactTag = shadowView.reactTag;
-  UIEdgeInsets padding = shadowView.paddingAsInsets;
+  NSEdgeInsets padding = shadowView.paddingAsInsets;
   return ^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
     ((RCTTextField *)viewRegistry[reactTag]).contentInset = padding;
   };

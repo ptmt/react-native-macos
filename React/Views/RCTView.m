@@ -124,10 +124,11 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
     _borderBottomLeftRadius = -1;
     _borderBottomRightRadius = -1;
 
-    CALayer *viewLayer = [CALayer layer];
-    [viewLayer setBackgroundColor:[_backgroundColor CGColor]];
-    [self setWantsLayer:YES];
-    [self setLayer:viewLayer];
+//    CALayer *viewLayer = [CALayer layer];
+//    //[viewLayer setBackgroundColor:[_backgroundColor CGColor]];
+//    [self setLayer:viewLayer];
+//    [self setWantsLayer:YES];
+
   }
 
   return self;
@@ -431,14 +432,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   }
 }
 
-- (void)layoutSubviews
+- (void)layout
 {
   // TODO (#5906496): this a nasty performance drain, but necessary
   // to prevent gaps appearing when the loading spinner disappears.
   // We might be able to fix this another way by triggering a call
   // to updateClippedSubviews manually after loading
 
- // [super layoutSubviews];
+  [super layout];
 
   if (_reactSubviews) {
     [self updateClippedSubviews];
@@ -454,13 +455,20 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)setBackgroundColor:(NSColor *)backgroundColor
 {
+  NSLog(@"setBackgroundColor");
   if ([_backgroundColor isEqual:backgroundColor]) {
     return;
   }
-  [self.layer setBackgroundColor:[backgroundColor CGColor]];
+  CALayer *viewLayer = [CALayer layer];
+  [viewLayer setBackgroundColor:[backgroundColor CGColor]];
+  [self setLayer:viewLayer];
+  [self setWantsLayer:YES];
 
-  _backgroundColor = backgroundColor;
+//  [self.layer setBackgroundColor:[backgroundColor CGColor]];
+//
+//  _backgroundColor = backgroundColor;
   [self.layer setNeedsDisplay];
+
 }
 
 - (NSEdgeInsets)bordersAsInsets

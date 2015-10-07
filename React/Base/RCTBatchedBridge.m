@@ -96,7 +96,7 @@ RCT_EXTERN NSArray *RCTGetModuleClasses(void);
     _frameUpdateObservers = [NSMutableSet new];
     _scheduledCalls = [NSMutableArray new];
     _scheduledCallbacks = [RCTSparseArray new];
-    _jsTimer = [NSTimer timerWithTimeInterval:0.001 target:self selector:@selector(_jsThreadUpdate:) userInfo:nil repeats:YES];
+    _jsTimer = [NSTimer timerWithTimeInterval:0.01 target:self selector:@selector(_jsThreadUpdate:) userInfo:nil repeats:YES];
     //[[NSRunLoop mainRunLoop] addTimer:_jsTimer forMode:NSDefaultRunLoopMode];
 //    CVReturn error = kCVReturnSuccess;
 //    CVDisplayLinkCreateWithCGDisplay(0, &_jsDisplayLink);
@@ -109,7 +109,7 @@ RCT_EXTERN NSArray *RCTGetModuleClasses(void);
     //_jsDisplayLink = [CVDisplayLink displayLinkWithTarget:self selector:@selector(_jsThreadUpdate:)];
 
     if (RCT_DEV) {
-      _mainTimer = [NSTimer timerWithTimeInterval:0.001 target:self selector:@selector(_mainThreadUpdate:) userInfo:nil repeats:YES];
+      _mainTimer = [NSTimer timerWithTimeInterval:0.01 target:self selector:@selector(_mainThreadUpdate:) userInfo:nil repeats:YES];
       [[NSRunLoop mainRunLoop] addTimer:_mainTimer forMode:NSRunLoopCommonModes];
 //      CVDisplayLinkCreateWithCGDisplay(CGMainDisplayID(), &_mainDisplayLink);
 //      CVDisplayLinkSetOutputCallback(_mainDisplayLink, self._, (__bridge void *)self);

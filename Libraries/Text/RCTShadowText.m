@@ -104,7 +104,7 @@ static css_dim_t RCTMeasure(void *context, float width)
 
 - (NSTextStorage *)buildTextStorageForWidth:(CGFloat)width
 {
-  UIEdgeInsets padding = self.paddingAsInsets;
+  NSEdgeInsets padding = self.paddingAsInsets;
   width -= (padding.left + padding.right);
 
   if (_cachedTextStorage && width == _cachedTextStorageWidth) {
@@ -208,7 +208,7 @@ static css_dim_t RCTMeasure(void *context, float width)
     [self _addAttribute:NSBackgroundColorAttributeName withValue:self.backgroundColor toAttributedString:attributedString];
   }
 
-  UIFont *font = [RCTConvert UIFont:nil withFamily:fontFamily
+  NSFont *font = [RCTConvert NSFont:nil withFamily:fontFamily
                                size:fontSize weight:fontWeight style:fontStyle
                     scaleMultiplier:(_allowFontScaling && _fontSizeMultiplier > 0.0 ? _fontSizeMultiplier : 1.0)];
   [self _addAttribute:NSFontAttributeName withValue:font toAttributedString:attributedString];
@@ -314,7 +314,7 @@ static css_dim_t RCTMeasure(void *context, float width)
   self.cssNode->children_count = 0;
 }
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
+- (void)setBackgroundColor:(NSColor *)backgroundColor
 {
   super.backgroundColor = backgroundColor;
   [self dirtyText];
@@ -327,7 +327,7 @@ static css_dim_t RCTMeasure(void *context, float width)
   [self dirtyText];                            \
 }
 
-RCT_TEXT_PROPERTY(Color, _color, UIColor *)
+RCT_TEXT_PROPERTY(Color, _color, NSColor *)
 RCT_TEXT_PROPERTY(FontFamily, _fontFamily, NSString *)
 RCT_TEXT_PROPERTY(FontSize, _fontSize, CGFloat)
 RCT_TEXT_PROPERTY(FontWeight, _fontWeight, NSString *)
@@ -338,7 +338,7 @@ RCT_TEXT_PROPERTY(LineHeight, _lineHeight, CGFloat)
 RCT_TEXT_PROPERTY(NumberOfLines, _numberOfLines, NSUInteger)
 RCT_TEXT_PROPERTY(ShadowOffset, _shadowOffset, CGSize)
 RCT_TEXT_PROPERTY(TextAlign, _textAlign, NSTextAlignment)
-RCT_TEXT_PROPERTY(TextDecorationColor, _textDecorationColor, UIColor *);
+RCT_TEXT_PROPERTY(TextDecorationColor, _textDecorationColor, NSColor *);
 RCT_TEXT_PROPERTY(TextDecorationLine, _textDecorationLine, RCTTextDecorationLineType);
 RCT_TEXT_PROPERTY(TextDecorationStyle, _textDecorationStyle, NSUnderlineStyle);
 RCT_TEXT_PROPERTY(WritingDirection, _writingDirection, NSWritingDirection)

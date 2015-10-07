@@ -452,8 +452,6 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
 
   for (RCTShadowView *shadowView in viewsWithNewFrames) {
     [frameReactTags addObject:shadowView.reactTag];
-    NSLog(@"frames addObject shadowView.frame %@", [NSValue valueWithRect:shadowView.frame]);
-    //[frames addObject:[NSValue valueWithRect:shadowView.frame]];
     [frames addObject:NSStringFromRect(shadowView.frame)];
 
     [areNew addObject:@(shadowView.isNewView)];
