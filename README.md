@@ -1,10 +1,12 @@
 # React Native desktop
 
-The fork of React Native for OS X. `#react-native-desktop` on Reactiflux.com
+React Native fork for OS X.
 
-## Current stage: early hacking
+If you have any questions join `#react-native-desktop`on Reactiflux.com
 
-![http://i.imgur.com/vRWMJhF.gif](http://i.imgur.com/vRWMJhF.gif)
+## Current stage: very early
+
+![https://i.imgur.com/vRWMJhF.gif](https://i.imgur.com/vRWMJhF.gif)
 
 ```js
 /* @flow */
