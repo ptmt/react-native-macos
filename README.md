@@ -6,7 +6,7 @@ If you have any questions join `#react-native-desktop`on Reactiflux.com
 
 ## Current stage: very early
 
-![https://i.imgur.com/vRWMJhF.gif](https://i.imgur.com/vRWMJhF.gif)
+Short Gifv: [Imgur](http://i.imgur.com/vRWMJhF.gifv)
 
 ```js
 /* @flow */
@@ -65,8 +65,6 @@ class Neutrino extends React.Component {
 AppRegistry.registerComponent('Neutrino', () => Neutrino);
 
 ```
-
-![http://i.imgur.com/BfOmTEE.png](http://i.imgur.com/BfOmTEE.png)
 
 ## Roadmap to 0.1.0
 
