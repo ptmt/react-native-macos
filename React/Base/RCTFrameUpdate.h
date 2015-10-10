@@ -9,6 +9,7 @@
 
 #import <Foundation/Foundation.h>
 #import <QuartzCore/CVDisplayLink.h>
+#import "AppKit/AppKit.h"
 
 //@class CVDisplayLink;
 
@@ -27,7 +28,8 @@
  */
 @property (nonatomic, readonly) CFTimeInterval deltaTime;
 
-- (instancetype)initWithDisplayLink:(CVDisplayLinkRef)displayLink NS_DESIGNATED_INITIALIZER;
+//- (instancetype)initWithDisplayLink:(CVDisplayLinkRef)displayLink NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithTimer:(NSTimer*)timer NS_DESIGNATED_INITIALIZER;
 
 @end
 

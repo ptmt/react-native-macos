@@ -709,7 +709,7 @@ RCT_EXPORT_METHOD(manageChildren:(nonnull NSNumber *)containerReactTag
                registry:(RCTSparseArray *)registry
 {
   id<RCTComponent> container = registry[containerReactTag];
-  RCTAssert(moveFromIndices.count == moveToIndices.count, @"moveFromIndices had size %tu, moveToIndices had size %tu", moveFromIndices.count, moveToIndices.count);
+   RCTAssert(moveFromIndices.count == moveToIndices.count, @"moveFromIndices had size %tu, moveToIndices had size %tu", moveFromIndices.count, moveToIndices.count);
   RCTAssert(addChildReactTags.count == addAtIndices.count, @"there should be at least one React child to add");
 
   // Removes (both permanent and temporary moves) are using "before" indices
@@ -733,7 +733,7 @@ RCT_EXPORT_METHOD(manageChildren:(nonnull NSNumber *)containerReactTag
       destinationsToChildrenToAdd[addAtIndices[index]] = view;
     }
   }
-
+  
   NSArray *sortedIndices = [destinationsToChildrenToAdd.allKeys sortedArrayUsingSelector:@selector(compare:)];
   for (NSNumber *reactIndex in sortedIndices) {
     [container insertReactSubview:destinationsToChildrenToAdd[reactIndex] atIndex:reactIndex.integerValue];
@@ -763,7 +763,7 @@ RCT_EXPORT_METHOD(createView:(nonnull NSNumber *)reactTag
   [self addUIBlock:^(RCTUIManager *uiManager, RCTSparseArray *viewRegistry){
     id<RCTComponent> view = [componentData createViewWithTag:reactTag props:props];
     if ([view respondsToSelector:@selector(setBackgroundColor:)]) {
-      //((NSView *)view).backgroundColor = backgroundColor; TODO:
+      [(RCTView *)view setBackgroundColor:backgroundColor]; //TODO:
     }
     [componentData setProps:props forView:view];
     if ([view respondsToSelector:@selector(reactBridgeDidFinishTransaction)]) {
@@ -808,8 +808,9 @@ RCT_EXPORT_METHOD(blur:(nonnull NSNumber *)reactTag)
 RCT_EXPORT_METHOD(findSubviewIn:(nonnull NSNumber *)reactTag atPoint:(CGPoint)point callback:(RCTResponseSenderBlock)callback)
 {
   [self addUIBlock:^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
-    //NSView *view = viewRegistry[reactTag];
-    //NSView *target = [view hitTest:point withEvent:nil];
+    NSView *view = viewRegistry[reactTag];
+    NSLog(@"findSubviewIn:%@", reactTag);
+//    NSView *target = [view hitTest:point withEvent:nil];
 //    CGRect frame = [target convertRect:target.bounds toView:view];
 //
 //    while (target.reactTag == nil && target.superview != nil) {
@@ -914,7 +915,7 @@ RCT_EXPORT_METHOD(measure:(nonnull NSNumber *)reactTag
     }
 
     // TODO: this doesn't work because sometimes view is inside a modal window
-    // RCTAssert([rootView isReactRootView], @"React view is not inside a React root view");
+    RCTAssert([rootView isReactRootView], @"React view is not inside a React root view");
 
     // By convention, all coordinates, whether they be touch coordinates, or
     // measurement coordinates are with respect to the root view.

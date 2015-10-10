@@ -49,6 +49,7 @@ static NSView *RCTViewHitTest(NSView *view, CGPoint point, NSEvent *event)
   // we do support clipsToBounds, so if that's enabled
   // we'll update the clipping
 
+  NSLog(@"react_updateClippedSubviewsWithClipRect");
 //  if (self.clipsToBounds && self.subviews.count > 0) {
 //    clipRect = [clipView convertRect:clipRect toView:self];
 //    clipRect = CGRectIntersection(clipRect, self.bounds);
@@ -69,7 +70,7 @@ static NSView *RCTViewHitTest(NSView *view, CGPoint point, NSEvent *event)
   NSView *testView = self;
   NSView *clipView = nil;
   CGRect clipRect = self.bounds;
-
+  NSLog(@"react_findClipView");
   while (testView) {
 //    if (testView.clipsToBounds) {
 //      if (clipView) {
@@ -123,12 +124,7 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
     _borderTopRightRadius = -1;
     _borderBottomLeftRadius = -1;
     _borderBottomRightRadius = -1;
-
-//    CALayer *viewLayer = [CALayer layer];
-//    //[viewLayer setBackgroundColor:[_backgroundColor CGColor]];
-//    [self setLayer:viewLayer];
-//    [self setWantsLayer:YES];
-
+    self.needsLayout = NO;
   }
 
   return self;
@@ -148,10 +144,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 {
   return YES;
 }
-- (BOOL) wantsDefaultClipping
-{
-  return NO;
-}
+
+//- (BOOL)wantsDefaultClipping
+//{
+//  return NO;
+//}
 
 - (void)setPointerEvents:(RCTPointerEvents)pointerEvents
 {
@@ -285,7 +282,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   NSInteger index = 0;
   for (NSView *subview in _reactSubviews) {
     if (subview == view) {
-      [self addSubview:view positioned:NSWindowAbove relativeTo:nil];
+      [self addSubview:view];
       break;
     }
     if (subview.superview) {
@@ -373,6 +370,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)setRemoveClippedSubviews:(BOOL)removeClippedSubviews
 {
+   NSLog(@"RCTView: removeCLippedSubviews %hhd ", removeClippedSubviews);
   if (removeClippedSubviews && !_reactSubviews) {
     _reactSubviews = [self.subviews mutableCopy];
   } else if (!removeClippedSubviews && _reactSubviews) {
@@ -387,10 +385,17 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 }
 
 - (void)insertReactSubview:(NSView *)view atIndex:(NSInteger)atIndex
-{
+{;
   if (_reactSubviews == nil) {
-    [self addSubview:view];
+    NSLog(@"RCTView: addSubview %@ ", view.className);
+    dispatch_async( dispatch_get_main_queue(), ^{
+      [self addSubview:view];
+      //[self setNeedsDisplay:YES];
+      [view setNeedsDisplay:YES];
+    });
+
   } else {
+    NSLog(@"RCTView: insertReactSubview %@ ", _reactSubviews);
     [_reactSubviews insertObject:view atIndex:atIndex];
 
     // Find a suitable view to use for clipping
@@ -419,7 +424,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   // The _reactSubviews array is only used when we have hidden
   // offscreen views. If _reactSubviews is nil, we can assume
   // that [self reactSubviews] and [self subviews] are the same
-
+  NSLog(@"subviews %lu", (unsigned long)self.subviews.count);
   return _reactSubviews ?: self.subviews;
 }
 
@@ -446,6 +451,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   }
 }
 
+
 #pragma mark - Borders
 
 - (NSColor *)backgroundColor
@@ -455,19 +461,20 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)setBackgroundColor:(NSColor *)backgroundColor
 {
-  NSLog(@"setBackgroundColor");
   if ([_backgroundColor isEqual:backgroundColor]) {
     return;
   }
-  CALayer *viewLayer = [CALayer layer];
-  [viewLayer setBackgroundColor:[backgroundColor CGColor]];
-  [self setLayer:viewLayer];
-  [self setWantsLayer:YES];
 
-//  [self.layer setBackgroundColor:[backgroundColor CGColor]];
-//
-//  _backgroundColor = backgroundColor;
+  if (![self wantsLayer]) {
+    CALayer *viewLayer = [CALayer layer];
+    [viewLayer setBackgroundColor:[backgroundColor CGColor]];
+    [self setLayer:viewLayer];
+    [self setWantsLayer:YES];
+  }
+  [self.layer setBackgroundColor:[backgroundColor CGColor]];
   [self.layer setNeedsDisplay];
+  [self setNeedsDisplay:YES];
+
 
 }
 
@@ -507,8 +514,23 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   };
 }
 
+- (void)updateLayer
+{
+  [super updateLayer];
+  NSLog(@"updateLayer %@", self.class);
+}
+
+- (void)viewWillDraw
+{
+  [super viewWillDraw];
+  //NSLog(@"viewWillDraw %@", self.class);
+}
+
+
 - (void)displayLayer:(CALayer *)layer
 {
+  NSLog(@"displayLayer %@", self.class);
+
   const RCTCornerRadii cornerRadii = [self cornerRadii];
   const NSEdgeInsets borderInsets = [self bordersAsInsets];
   const RCTBorderColors borderColors = [self borderColors];

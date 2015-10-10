@@ -8,20 +8,21 @@
  */
 
 #import <QuartzCore/CVDisplayLink.h>
-
+#import <Foundation/Foundation.h>
 #import "RCTFrameUpdate.h"
 
 #import "RCTUtils.h"
+#import "AppKit/AppKit.h"
 
 @implementation RCTFrameUpdate
 
 RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
-- (instancetype)initWithDisplayLink:(CVDisplayLinkRef)displayLink
+- (instancetype)initWithTimer:(NSTimer *)timer
 {
   if ((self = [super init])) {
-    _timestamp =  CVDisplayLinkGetActualOutputVideoRefreshPeriod(displayLink);
-//    _deltaTime = displayLink.duration;
+    _timestamp = timer.timeInterval;
+    _deltaTime = timer.tolerance; // TODO: real duration
   }
   return self;
 }

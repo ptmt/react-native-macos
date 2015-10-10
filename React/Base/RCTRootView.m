@@ -65,7 +65,9 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 
   if ((self = [super initWithFrame:CGRectZero])) {
 
-    self.backgroundColor = [NSColor whiteColor];
+    //self.backgroundColor = [NSColor whiteColor];
+    //[self setBackgroundColor:[NSColor redColor]];
+    [self setNeedsLayout:NO];
 
     _bridge = bridge;
     _moduleName = moduleName;
@@ -108,14 +110,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)setBackgroundColor:(NSColor *)backgroundColor
 {
-  NSLog(@"RCTRootView: setBackgroundColor");
-  CALayer *viewLayer = [CALayer layer];
-  [viewLayer setBackgroundColor:[backgroundColor CGColor]]; //RGB plus Alpha Channel
-  [super setWantsLayer:YES]; // view's backing store is using a Core Animation Layer
-  [super setLayer:viewLayer];
-
-  [_contentView setWantsLayer:YES];
-  [_contentView setLayer:viewLayer];
+  if (![super wantsLayer]) {
+    CALayer *viewLayer = [CALayer layer];
+    [super setWantsLayer:YES];
+    [super setLayer:viewLayer];
+  }
+  [super.layer setBackgroundColor:[backgroundColor CGColor]];
 }
 
 - (NSViewController *)reactViewController
@@ -126,6 +126,16 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (BOOL)canBecomeFirstResponder
 {
   return YES;
+}
+
+- (BOOL)isFlipped
+{
+  return YES;
+}
+
+- (BOOL)wantsDefaultClipping
+{
+  return NO;
 }
 
 - (void)setLoadingView:(NSView *)loadingView
@@ -149,10 +159,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)hideLoadingView
 {
   if (_loadingView.superview == self && _contentView.contentHasAppeared) {
-
+    NSLog(@"RCTRootView: hideLoadingView");
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(_loadingViewFadeDelay * NSEC_PER_SEC)),
                    dispatch_get_main_queue(), ^{
 
+      _loadingView.hidden = YES;
+      //[_loadingView removeFromSuperview];
 //
 //      [NSView transitionWithView:self
 //                        duration:_loadingViewFadeDuration
@@ -178,11 +190,17 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   if (!bridge.valid) {
     return;
   }
+  
 
   [_contentView removeFromSuperview];
   _contentView = [[RCTRootContentView alloc] initWithFrame:self.bounds bridge:bridge];
-  //_contentView.backgroundColor = self.backgroundColor;
-  [self addSubview:_contentView positioned:NSWindowAbove relativeTo:nil];
+  //[_contentView setBackgroundColor:[NSColor blueColor]];// TODO why?
+  [self addSubview:_contentView];
+
+//  RCTView *view = [[RCTView alloc] initWithFrame:self.bounds];
+//  [view setBackgroundColor:[NSColor blackColor]];
+//  [view removeFromSuperview];
+//  [_contentView addSubview:view];
 
   NSString *moduleName = _moduleName ?: @"";
   NSDictionary *appParameters = @{
@@ -194,11 +212,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
                    args:@[moduleName, appParameters]];
 }
 
-- (void)layoutSubviews
+- (void)layout
 {
-//  [super layoutSubviews];
-//  _contentView.frame = self.bounds;
-//  _loadingView.center = (CGPoint){
+  NSLog(@"RCTRootView: layout");
+  [super layout];
+  _contentView.frame = self.bounds;
+  // TODO: set center coordinates
+  //_loadingView.c = CGRectGetMidX(self.bounds);
+//  (CGPoint){
 //    CGRectGetMidX(self.bounds),
 //    CGRectGetMidY(self.bounds)
 //  };
@@ -260,6 +281,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
 - (void)insertReactSubview:(id<RCTComponent>)subview atIndex:(NSInteger)atIndex
 {
   [super insertReactSubview:subview atIndex:atIndex];
+  NSLog(@"RCTRootView.m insertReactSubview");
   RCTPerformanceLoggerEnd(RCTPLTTI);
   dispatch_async(dispatch_get_main_queue(), ^{
     if (!_contentHasAppeared) {

@@ -325,6 +325,7 @@ static void RCTProcessMetaProps(const float metaProps[META_PROP_COUNT], float st
 
 - (void)insertReactSubview:(RCTShadowView *)subview atIndex:(NSInteger)atIndex
 {
+  NSLog(@"RCTShadowView insertReactSubview");
   [_reactSubviews insertObject:subview atIndex:atIndex];
   _cssNode->children_count = (int)_reactSubviews.count;
   subview->_superview = self;

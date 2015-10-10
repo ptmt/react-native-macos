@@ -97,24 +97,10 @@ RCT_EXTERN NSArray *RCTGetModuleClasses(void);
     _scheduledCalls = [NSMutableArray new];
     _scheduledCallbacks = [RCTSparseArray new];
     _jsTimer = [NSTimer timerWithTimeInterval:0.01 target:self selector:@selector(_jsThreadUpdate:) userInfo:nil repeats:YES];
-    //[[NSRunLoop mainRunLoop] addTimer:_jsTimer forMode:NSDefaultRunLoopMode];
-//    CVReturn error = kCVReturnSuccess;
-//    CVDisplayLinkCreateWithCGDisplay(0, &_jsDisplayLink);
-//    if (error)
-//    {
-//      NSLog(@"DisplayLink created with error:%d", error);
-//      _jsDisplayLink = NULL;
-//    }
-    //_jsDisplayLink = [CVDisplayLink i]
-    //_jsDisplayLink = [CVDisplayLink displayLinkWithTarget:self selector:@selector(_jsThreadUpdate:)];
 
     if (RCT_DEV) {
       _mainTimer = [NSTimer timerWithTimeInterval:0.01 target:self selector:@selector(_mainThreadUpdate:) userInfo:nil repeats:YES];
       [[NSRunLoop mainRunLoop] addTimer:_mainTimer forMode:NSRunLoopCommonModes];
-//      CVDisplayLinkCreateWithCGDisplay(CGMainDisplayID(), &_mainDisplayLink);
-//      CVDisplayLinkSetOutputCallback(_mainDisplayLink, self._, (__bridge void *)self);
-//      //_mainDisplayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(_mainThreadUpdate:)];
-      //[_mainDisplayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
     }
 
     [RCTBridge setCurrentBridge:self];
@@ -730,6 +716,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithBundleURL:(__unused NSURL *)bundleUR
     [set addObject:@(i)];
   }
 
+
   for (id queue in buckets) {
     RCTProfileBeginFlowEvent();
 
@@ -822,17 +809,17 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithBundleURL:(__unused NSURL *)bundleUR
   RCTAssertJSThread();
   RCTProfileBeginEvent(0, @"DispatchFrameUpdate", nil);
 
-  //RCTFrameUpdate *frameUpdate = [[RCTFrameUpdate alloc] initWithDisplayLink:displayLink];
+  RCTFrameUpdate *frameUpdate = [[RCTFrameUpdate alloc] initWithTimer:_jsTimer];
   for (RCTModuleData *moduleData in _frameUpdateObservers) {
     id<RCTFrameUpdateObserver> observer = (id<RCTFrameUpdateObserver>)moduleData.instance;
     if (![observer respondsToSelector:@selector(isPaused)] || !observer.paused) {
-      //RCT_IF_DEV(NSString *name = [NSString stringWithFormat:@"[%@ didUpdateFrame:%f]", observer, CVDisplayLinkGetActualOutputVideoRefreshPeriod(displayLink)];)
+      RCT_IF_DEV(NSString *name = [NSString stringWithFormat:@"[%@ didUpdateFrame:%f]", observer, _jsTimer.tolerance];)
       RCTProfileBeginFlowEvent();
 
       [moduleData dispatchBlock:^{
         RCTProfileEndFlowEvent();
-        //RCTProfileBeginEvent(0, name, nil);
-        //[observer didUpdateFrame:frameUpdate];
+        RCTProfileBeginEvent(0, name, nil);
+        [observer didUpdateFrame:frameUpdate];
         RCTProfileEndEvent(0, @"objc_call,fps", nil);
       }];
     }

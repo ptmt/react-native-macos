@@ -12,12 +12,69 @@
 #import "RCTShadowText.h"
 #import "RCTUtils.h"
 #import "NSView+React.h"
+#import <QuartzCore/CAShapeLayer.h>
+
+@implementation NSBezierPath (BezierPathQuartzUtilities)
+// This method works only in OS X v10.2 and later.
+- (CGPathRef)quartzPath
+{
+  long i, numElements;
+
+  // Need to begin a path here.
+  CGPathRef           immutablePath = NULL;
+
+  // Then draw the path elements.
+  numElements = [self elementCount];
+  if (numElements > 0)
+  {
+    CGMutablePathRef    path = CGPathCreateMutable();
+    NSPoint             points[3];
+    BOOL                didClosePath = YES;
+
+    for (i = 0; i < numElements; i++)
+    {
+      switch ([self elementAtIndex:i associatedPoints:points])
+      {
+        case NSMoveToBezierPathElement:
+          CGPathMoveToPoint(path, NULL, points[0].x, points[0].y);
+          break;
+
+        case NSLineToBezierPathElement:
+          CGPathAddLineToPoint(path, NULL, points[0].x, points[0].y);
+          didClosePath = NO;
+          break;
+
+        case NSCurveToBezierPathElement:
+          CGPathAddCurveToPoint(path, NULL, points[0].x, points[0].y,
+                                points[1].x, points[1].y,
+                                points[2].x, points[2].y);
+          didClosePath = NO;
+          break;
+
+        case NSClosePathBezierPathElement:
+          CGPathCloseSubpath(path);
+          didClosePath = YES;
+          break;
+      }
+    }
+
+    // Be sure the path is closed or Quartz may not do valid hit detection.
+    if (!didClosePath)
+      CGPathCloseSubpath(path);
+
+    immutablePath = CGPathCreateCopy(path);
+    CGPathRelease(path);
+  }
+
+  return immutablePath;
+}
+@end
 
 @implementation RCTText
 {
   NSTextStorage *_textStorage;
   NSMutableArray *_reactSubviews;
-  //CAShapeLayer *_highlightLayer;
+  CAShapeLayer *_highlightLayer;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -25,14 +82,32 @@
   if ((self = [super initWithFrame:frame])) {
     _textStorage = [NSTextStorage new];
     _reactSubviews = [NSMutableArray array];
+//    CALayer *_rootLayer = [CALayer layer];
+//
+//    _rootLayer.shouldRasterize = YES;
+//
+//    self.layer = _rootLayer;
+//    [self setWantsLayer:YES];
+//    [self.layer setNeedsDisplay];
 
-    //self.isAccessibilityElement = YES;
-    //self.accessibilityTraits |= UIAccessibilityTraitStaticText;
+    //self.is = YES;
+   // self.accessibilityTraits |= NSAccessibilityStaticTextRole;
 
 //    self.opaque = NO;
-//    self.contentMode = UIViewContentModeRedraw;
+
+    //self.contentMode = UIViewContentModeRedraw;
   }
   return self;
+}
+
+- (BOOL)opaque
+{
+  return NO;
+}
+
+- (BOOL)isFlipped
+{
+  return YES;
 }
 
 - (NSString *)description
@@ -43,13 +118,22 @@
   return [superDescription stringByReplacingCharactersInRange:semicolonRange withString:replacement];
 }
 
+- (void)updateLayer
+{
+  NSLog(@"updateLayer");
+}
+- (void)viewWillDraw
+{
+  [super viewWillDraw];
+}
+
 - (void)reactSetFrame:(CGRect)frame
 {
   // Text looks super weird if its frame is animated.
   // This disables the frame animation, without affecting opacity, etc.
-//  [NSView performWithoutAnimation:^{
-//    [super reactSetFrame:frame];
-//  }];
+  //[NSView performWithoutAnimation:^{
+    [super reactSetFrame:frame];
+   // }];
 }
 
 - (void)insertReactSubview:(NSView *)subview atIndex:(NSInteger)atIndex
@@ -71,48 +155,59 @@
 {
   _textStorage = textStorage;
   [self setNeedsDisplay:YES];
+
+//  [self display]; // TODO:
 }
 
-- (void)drawRect:(CGRect)rect
+// https://github.com/BigZaphod/Chameleon/blob/84605ede274bd82b330d72dd6ac41e64eb925fd7/UIKit/Classes/UIGeometry.h
+static inline CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
+  rect.origin.x    += insets.left;
+  rect.origin.y    += insets.top;
+  rect.size.width  -= (insets.left + insets.right);
+  rect.size.height -= (insets.top  + insets.bottom);
+  return rect;
+}
+
+- (void)drawRect:(CGRect)dirtyRect
 {
-//  NSLayoutManager *layoutManager = _textStorage.layoutManagers.firstObject;
-  NSLog(@"RCTText:drawRect not implemented");
-//  NSTextContainer *textContainer = layoutManager.textContainers.firstObject;
-//  CGRect textFrame = NSEdgeInsetsInsetRect(self.bounds, _contentInset);
-//  NSRange glyphRange = [layoutManager glyphRangeForTextContainer:textContainer];
-//
-//  [layoutManager drawBackgroundForGlyphRange:glyphRange atPoint:textFrame.origin];
-//  [layoutManager drawGlyphsForGlyphRange:glyphRange atPoint:textFrame.origin];
-//
-//  __block UIBezierPath *highlightPath = nil;
-//  NSRange characterRange = [layoutManager characterRangeForGlyphRange:glyphRange actualGlyphRange:NULL];
-//  [layoutManager.textStorage enumerateAttribute:RCTIsHighlightedAttributeName inRange:characterRange options:0 usingBlock:^(NSNumber *value, NSRange range, BOOL *_) {
-//    if (!value.boolValue) {
-//      return;
-//    }
-//
-//    [layoutManager enumerateEnclosingRectsForGlyphRange:range withinSelectedGlyphRange:range inTextContainer:textContainer usingBlock:^(CGRect enclosingRect, __unused BOOL *__) {
-//      UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(enclosingRect, -2, -2) cornerRadius:2];
-//      if (highlightPath) {
-//        [highlightPath appendPath:path];
-//      } else {
-//        highlightPath = path;
-//      }
-//    }];
-//  }];
-//
-//  if (highlightPath) {
-//    if (!_highlightLayer) {
-//      _highlightLayer = [CAShapeLayer layer];
-//      _highlightLayer.fillColor = [UIColor colorWithWhite:0 alpha:0.25].CGColor;
-//      [self.layer addSublayer:_highlightLayer];
-//    }
-//    _highlightLayer.position = (CGPoint){_contentInset.left, _contentInset.top};
-//    _highlightLayer.path = highlightPath.CGPath;
-//  } else {
-//    [_highlightLayer removeFromSuperlayer];
-//    _highlightLayer = nil;
-//  }
+  NSLayoutManager *layoutManager = _textStorage.layoutManagers.firstObject;
+
+  NSTextContainer *textContainer = layoutManager.textContainers.firstObject;
+  CGRect textFrame = UIEdgeInsetsInsetRect(self.bounds, _contentInset);
+  NSRange glyphRange = [layoutManager glyphRangeForTextContainer:textContainer];
+
+  [layoutManager drawBackgroundForGlyphRange:glyphRange atPoint:textFrame.origin];
+  [layoutManager drawGlyphsForGlyphRange:glyphRange atPoint:textFrame.origin];
+
+  __block NSBezierPath *highlightPath = nil;
+  NSRange characterRange = [layoutManager characterRangeForGlyphRange:glyphRange actualGlyphRange:NULL];
+  [layoutManager.textStorage enumerateAttribute:RCTIsHighlightedAttributeName inRange:characterRange options:0 usingBlock:^(NSNumber *value, NSRange range, BOOL *_) {
+    if (!value.boolValue) {
+      return;
+    }
+
+    [layoutManager enumerateEnclosingRectsForGlyphRange:range withinSelectedGlyphRange:range inTextContainer:textContainer usingBlock:^(CGRect enclosingRect, __unused BOOL *__) {
+      NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:CGRectInset(enclosingRect, -2, -2) xRadius:-2 yRadius:-2];
+      if (highlightPath) {
+        [highlightPath appendBezierPath:path];
+      } else {
+        highlightPath = path;
+      }
+    }];
+  }];
+
+  if (highlightPath) {
+    if (!_highlightLayer) {
+      _highlightLayer = [CAShapeLayer layer];
+      _highlightLayer.fillColor = [NSColor colorWithWhite:0 alpha:0.25].CGColor;
+      [self.layer addSublayer:_highlightLayer];
+    }
+    _highlightLayer.position = (CGPoint){_contentInset.left, _contentInset.top};
+    _highlightLayer.path = highlightPath.quartzPath;
+  } else {
+    [_highlightLayer removeFromSuperlayer];
+    _highlightLayer = nil;
+  }
 }
 
 - (NSNumber *)reactTagAtPoint:(CGPoint)point
@@ -135,19 +230,19 @@
 }
 
 
-- (void)didMoveToWindow
+- (void)viewDidMoveToWindow
 {
- // [super didMoveToWindow];
+  [super viewDidMoveToWindow];
 
-//  if (!self.window) {
-//    self.layer.contents = nil;
+  if (!self.window) {
+    self.layer.contents = nil;
 //    if (_highlightLayer) {
 //      [_highlightLayer removeFromSuperlayer];
 //      _highlightLayer = nil;
 //    }
-//  } else if (_textStorage.length) {
-//    [self setNeedsDisplay];
-//  }
+  } else if (_textStorage.length) {
+    [self setNeedsDisplay:YES];
+  }
 }
 
 #pragma mark - Accessibility

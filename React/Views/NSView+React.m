@@ -9,6 +9,7 @@
 
 #import "NSView+React.h"
 #import <AppKit/AppKit.h>
+#import <Foundation/Foundation.h>
 
 #import <objc/runtime.h>
 
@@ -41,8 +42,9 @@
 //  return view.reactTag;
 //}
 
-- (void)insertReactSubview:(NSView *)subview atIndex:(NSInteger)atIndex
+- (void)insertReactSubview:(NSView *)subview atIndex:(__unused NSInteger)atIndex
 {
+  NSLog(@"NSView+React insertReactSubview %@", subview);
   [self addSubview:subview];
 }
 
@@ -74,8 +76,7 @@
   if (isnan(position.x) || isnan(position.y) ||
       isnan(bounds.origin.x) || isnan(bounds.origin.y) ||
       isnan(bounds.size.width) || isnan(bounds.size.height)) {
-//    RCTLogError(@"Invalid layout for (%@)%@. position: %d. bounds: %d",
-//                self.reactTag, self, NSStringFromCGPoint(position), NSStringFromCGRect(bounds));
+    RCTLogError(@"Invalid layout for (%@)%@", self.reactTag, self);
     return;
   }
   self.frame = frame;

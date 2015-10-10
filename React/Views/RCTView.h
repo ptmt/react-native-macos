@@ -40,6 +40,8 @@
  */
 + (NSEdgeInsets)contentInsetsForView:(NSView *)curView;
 
+- (void)setBackgroundColor:(NSColor *)backgroundColor;
+
 /**
  * This is an optimization used to improve performance
  * for large scrolling views with many subviews, such as a
