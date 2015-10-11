@@ -1,12 +1,12 @@
-# React Native desktop
+# React Native Desktop
 
 React Native fork for OS X.
 
-If you have any questions join `#react-native-desktop`on Reactiflux.com
+Say hello on `#react-native-desktop` on Reactiflux.com
 
-## Current stage: very early
+## Current stage: hacking prototype to build real desktop
 
-![Neutrino-hello-world](http://potomushto.com/images/2015/vRWMJhF.gif)
+![](http://i.imgur.com/5US3q5j.gif)
 
 ```js
 /* @flow */
@@ -65,8 +65,6 @@ class Neutrino extends React.Component {
 AppRegistry.registerComponent('Neutrino', () => Neutrino);
 
 ```
-
-![http://i.imgur.com/BfOmTEE.png](http://i.imgur.com/BfOmTEE.png)
 
 ## Roadmap to 0.1.0
 
