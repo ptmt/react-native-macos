@@ -66,7 +66,7 @@
     CGPathRelease(path);
   }
 
-  return immutablePath;
+  return immutablePath; // TODO: potential leak
 }
 @end
 

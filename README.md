@@ -6,7 +6,7 @@ If you have any questions join `#react-native-desktop`on Reactiflux.com
 
 ## Current stage: very early
 
-![https://i.imgur.com/vRWMJhF.gif](https://i.imgur.com/vRWMJhF.gif)
+![Neutrino-hello-world](http://potomushto.com/images/2015/vRWMJhF.gif)
 
 ```js
 /* @flow */

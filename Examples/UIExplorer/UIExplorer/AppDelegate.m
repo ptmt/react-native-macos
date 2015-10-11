@@ -17,6 +17,7 @@
 #import "RCTBridge.h"
 #import "RCTJavaScriptLoader.h"
 #import "RCTRootView.h"
+#import <AppKit/AppKit.h>
 
 @interface AppDelegate() <RCTBridgeDelegate>
 
@@ -24,21 +25,29 @@
 
 @implementation AppDelegate
 
-- (BOOL)application:(__unused UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+- (void)applicationDidFinishLaunching:(__unused NSNotification *)aNotification 
 {
+  NSRect contentSize = NSMakeRect(200, 500, 500, 500);
+
+  self.window = [[NSWindow alloc] initWithContentRect:contentSize
+                                            styleMask:NSTitledWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask
+                                              backing:NSBackingStoreBuffered
+                                                defer:NO];
+
+  [self.window setTitle:@"UIExplorerApp"];
+  [self.window makeKeyAndOrderFront:nil];
+
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self
-                                            launchOptions:launchOptions];
+                                            launchOptions:nil];
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"UIExplorerApp"
                                             initialProperties:nil];
 
-  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  UIViewController *rootViewController = [UIViewController new];
-  rootViewController.view = rootView;
-  self.window.rootViewController = rootViewController;
-  [self.window makeKeyAndVisible];
-  return YES;
+
+
+  [self.window setContentView:rootView];
+
 }
 
 - (NSURL *)sourceURLForBridge:(__unused RCTBridge *)bridge
@@ -59,7 +68,7 @@
      * on the same Wi-Fi network.
      */
 
-    sourceURL = [NSURL URLWithString:@"http://localhost:8081/Examples/UIExplorer/UIExplorerApp.ios.bundle?platform=ios&dev=true"];
+    sourceURL = [NSURL URLWithString:@"http://localhost:8081/Examples/UIExplorer/UIExplorerApp.osx.bundle?platform=osx&dev=true"];
 
     /**
      * OPTION 2
@@ -88,3 +97,4 @@
 }
 
 @end
+

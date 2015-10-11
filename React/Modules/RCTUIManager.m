@@ -499,8 +499,7 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
     for (NSUInteger ii = 0; ii < frames.count; ii++) {
       NSNumber *reactTag = frameReactTags[ii];
       NSView *view = viewRegistry[reactTag];
-      CGRect frame = NSRectFromString([frames objectAtIndex:0]);// CGRectValue];
-
+      CGRect frame = NSRectFromString([frames objectAtIndex:ii]);
       BOOL isNew = [areNew[ii] boolValue];
 
       RCTAnimation *updateAnimation = isNew ? nil : _layoutAnimation.updateAnimation;

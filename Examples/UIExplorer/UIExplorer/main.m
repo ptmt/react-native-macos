@@ -12,11 +12,15 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import <UIKit/UIKit.h>
+#import <Cocoa/Cocoa.h>
 #import "AppDelegate.h"
 
 int main(int argc, char * argv[]) {
   @autoreleasepool {
-    return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
+    NSApplication * application = [NSApplication sharedApplication];
+    AppDelegate * appDelegate = [[AppDelegate alloc] init];
+    [application setDelegate:appDelegate];
+    [application run];
+    return EXIT_SUCCESS;
   }
 }

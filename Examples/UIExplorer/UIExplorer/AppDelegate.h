@@ -12,11 +12,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import <UIKit/UIKit.h>
+#import <Cocoa/Cocoa.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate>
 
-@property (nonatomic, strong) UIWindow *window;
+@property (strong, nonatomic) NSWindow *window;
+@property(assign) Class<NSWindowRestoration> restorationClass;
 
 @end
 

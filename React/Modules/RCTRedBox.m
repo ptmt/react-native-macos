@@ -51,7 +51,7 @@
 
     RCTView *rootView = [[RCTView alloc] initWithFrame:frame];
 
-    [rootView.layer setBackgroundColor:[[NSColor colorWithRed:0.8 green:0 blue:0 alpha:1] CGColor]];
+    [rootView setBackgroundColor:[NSColor colorWithRed:0.8 green:0 blue:0 alpha:1]];
     rootView.autoresizesSubviews = true;
 
     const CGFloat buttonHeight = 60;

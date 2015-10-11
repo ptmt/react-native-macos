@@ -126,6 +126,7 @@ static void RCTProcessMetaProps(const float metaProps[META_PROP_COUNT], float st
       viewsWithNewFrame:(NSMutableSet *)viewsWithNewFrame
        absolutePosition:(CGPoint)absolutePosition
 {
+
   if (!node->layout.should_update) {
     return;
   }
@@ -424,6 +425,7 @@ RCT_MARGIN_PROPERTY(Right, RIGHT)
 #define RCT_PADDING_PROPERTY(prop, metaProp)       \
 - (void)setPadding##prop:(CGFloat)value            \
 {                                                  \
+  NSLog(@"setPadding %f", value); \
   _paddingMetaProps[META_PROP_##metaProp] = value; \
   _recomputePadding = YES;                         \
 }                                                  \

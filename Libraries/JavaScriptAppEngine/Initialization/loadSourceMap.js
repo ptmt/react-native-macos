@@ -22,10 +22,7 @@ var RCTNetworking = NativeModules.Networking;
 
 function loadSourceMap(): Promise {
   return fetchSourceMap()
-    .then(map => {
-      console.log('sourcemap', map);
-      return new SourceMapConsumer(map)
-    });
+    .then(map => new SourceMapConsumer(map));
 }
 
 function fetchSourceMap(): Promise {
@@ -47,7 +44,6 @@ function fetchSourceMap(): Promise {
       if (url === null) {
         return Promise.reject(new Error('No source map URL found. May be running from bundled file.'));
       }
-      console.log('sourcemap url', url);
       return Promise.resolve(url);
     })
     .then(fetch)
@@ -56,7 +52,6 @@ function fetchSourceMap(): Promise {
 }
 
 function extractSourceMapURL({url, text, fullSourceMappingURL}): ?string {
-  console.log('sourcemap url', url);
   if (fullSourceMappingURL) {
     return fullSourceMappingURL;
   }

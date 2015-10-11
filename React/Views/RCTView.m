@@ -523,7 +523,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 - (void)viewWillDraw
 {
   [super viewWillDraw];
-  //NSLog(@"viewWillDraw %@", self.class);
+}
+
+- (void)drawRect:(CGRect)dirtyRect
+{
+  NSLog(@"drawRect");
+ // [self displayLayer:self.layer];
 }
 
 
