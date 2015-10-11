@@ -6,7 +6,7 @@ If you have any questions join `#react-native-desktop`on Reactiflux.com
 
 ## Current stage: very early
 
-Short Gifv: [Imgur](http://i.imgur.com/vRWMJhF.gifv)
+![](http://i.imgur.com/5US3q5j.gif)
 
 ```js
 /* @flow */
