@@ -217,17 +217,17 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
                                                name:RCTReloadNotification
                                              object:nil];
 
-// TODO: Add keboard listener to refresh it in debug
- // RCTKeyCommands *commands = [RCTKeyCommands sharedInstance];
+  // TODO: Add keboard listener to refresh it in debug
+  RCTKeyCommands *commands = [RCTKeyCommands sharedInstance];
 
   // reload in current mode
-//  [commands registerKeyCommandWithInput:@"r"
-//                          modifierFlags:UIKeyModifierCommand
-//                                 action:^(__unused UIKeyCommand *command) {
-//                                    [[NSNotificationCenter defaultCenter] postNotificationName:RCTReloadNotification
-//                                                                                        object:nil
-//                                                                                      userInfo:nil];
-//                                 }];
+  [commands registerKeyCommandWithInput:@"r"
+                          modifierFlags:NSCommandKeyMask
+                                 action:^(__unused NSEvent *command) {
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:RCTReloadNotification
+                                                                                        object:nil
+                                                                                      userInfo:nil];
+                                 }];
 
 }
 

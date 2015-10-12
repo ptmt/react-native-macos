@@ -17,7 +17,7 @@
 'use strict';
 
 var React = require('react-native-desktop');
-var UIExplorerList = require('./UIExplorerList.osx');
+//var UIExplorerList = require('./UIExplorerList.osx');
 
 var {
   AppRegistry,
@@ -32,7 +32,7 @@ class UIExplorerApp extends React.Component {
     return (
       <View style={styles.container}>
         <View style={{width: 200, padding: 20, backgroundColor: '#333'}}>
-          <UIExplorerList />
+        
           <Text style={{color: 'white'}}>Components:</Text>
           <Text style={{color: 'white'}}>APIs</Text>
         </View>

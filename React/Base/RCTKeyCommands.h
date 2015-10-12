@@ -16,20 +16,20 @@
 /**
  * Register a keyboard command. UIKeyModifierFlags
  */
-//- (void)registerKeyCommandWithInput:(NSString *)input
-//             //         modifierFlags:(NSKeyM)flags
-//                             action:(void (^)(NS *command))block;
-//
-///**
-// * Unregister a keyboard command.
-// */
-//- (void)unregisterKeyCommandWithInput:(NSString *)input
-//                        modifierFlags:(UIKeyModifierFlags)flags;
-//
-///**
-// * Check if a command is registered.
-// */
-//- (BOOL)isKeyCommandRegisteredForInput:(NSString *)input
-//                         modifierFlags:(UIKeyModifierFlags)flags;
+- (void)registerKeyCommandWithInput:(NSString *)input
+                      modifierFlags:(NSEventModifierFlags)flags
+                             action:(void (^)(NSEvent *command))block;
+
+/**
+ * Unregister a keyboard command.
+ */
+- (void)unregisterKeyCommandWithInput:(NSString *)input
+                        modifierFlags:(NSEventModifierFlags)flags;
+
+/**
+ * Check if a command is registered.
+ */
+- (BOOL)isKeyCommandRegisteredForInput:(NSString *)input
+                         modifierFlags:(NSEventModifierFlags)flags;
 
 @end
