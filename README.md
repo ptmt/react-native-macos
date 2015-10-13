@@ -4,8 +4,9 @@ React Native fork for OS X.
 
 Say hello on `#react-native-desktop` on Reactiflux.com
 
-## Current stage: hacking prototype to build real desktop
+## Current stage: hacking an prototype
 
+![](http://i.imgur.com/QlhROpp.gif)
 ![](http://i.imgur.com/5US3q5j.gif)
 
 ```js
