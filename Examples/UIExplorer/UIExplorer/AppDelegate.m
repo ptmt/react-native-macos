@@ -27,7 +27,7 @@
 
 - (void)applicationDidFinishLaunching:(__unused NSNotification *)aNotification 
 {
-  NSRect contentSize = NSMakeRect(200, 500, 500, 500);
+  NSRect contentSize = NSMakeRect(200, 500, 1000, 500);
 
   self.window = [[NSWindow alloc] initWithContentRect:contentSize
                                             styleMask:NSTitledWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask

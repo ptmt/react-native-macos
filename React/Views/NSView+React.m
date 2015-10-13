@@ -33,18 +33,17 @@
   return RCTIsReactRootView(self.reactTag);
 }
 
-//- (NSNumber *)reactTagAtPoint:(CGPoint)point
-//{
-//  NSView *view = [self hitTest:point withEvent:nil];
-//  while (view && !view.reactTag) {
-//    view = view.superview;
-//  }
-//  return view.reactTag;
-//}
+- (NSNumber *)reactTagAtPoint:(CGPoint)point
+{
+  NSView *view = [self hitTest:point];
+  while (view && !view.reactTag) {
+    view = view.superview;
+  }
+  return view.reactTag;
+}
 
 - (void)insertReactSubview:(NSView *)subview atIndex:(__unused NSInteger)atIndex
 {
-  NSLog(@"NSView+React insertReactSubview %@", subview);
   [self addSubview:subview];
 }
 
@@ -129,9 +128,9 @@
  */
 - (void)reactWillMakeFirstResponder {};
 - (void)reactDidMakeFirstResponder {};
-//- (BOOL)reactRespondsToTouch:(__unused UITouch *)touch
-//{
-//  return YES;
-//}
+- (BOOL)reactRespondsToTouch:(__unused NSEvent *)touch
+{
+  return YES;
+}
 
 @end

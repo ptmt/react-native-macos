@@ -17,29 +17,48 @@
 
 var React = require('react-native-desktop');
 var {
-  ListView,
-  PixelRatio,
+  //ListView,
+  // PixelRatio,
   StyleSheet,
   Text,
-  TextInput,
+  // TextInput,
   TouchableHighlight,
   View,
 } = React;
 var createExamplePage = require('./createExamplePage');
 
-var ds = new ListView.DataSource({
-  rowHasChanged: (r1, r2) => r1 !== r2,
-  sectionHeaderHasChanged: (h1, h2) => h1 !== h2,
-});
+// var ds = new ListView.DataSource({
+//   rowHasChanged: (r1, r2) => r1 !== r2,
+//   sectionHeaderHasChanged: (h1, h2) => h1 !== h2,
+// });
+
+class ListView extends React.Component {
+    render() {
+      var componentRows = this.props.dataSource.components.map(c => this.props.renderRow(c));
+      var apiRows = this.props.dataSource.apis.map(c => this.props.renderRow(c));
+      return (
+        <View>
+          {this.props.renderSectionHeader(null, 'Components:')}
+          {componentRows}
+          {this.props.renderSectionHeader(null, 'APIs:')}
+          {apiRows}
+        </View>
+      );
+    }
+}
 
 class UIExplorerListBase extends React.Component {
   constructor(props: any) {
     super(props);
     this.state = {
-      dataSource: ds.cloneWithRowsAndSections({
+      // dataSource: ds.cloneWithRowsAndSections({
+      //   components: [],
+      //   apis: [],
+      // }),
+      dataSource: {
         components: [],
         apis: [],
-      }),
+      },
       searchText: this.props.searchText,
     };
   }
@@ -69,18 +88,23 @@ class UIExplorerListBase extends React.Component {
   }
 
   renderTextInput(searchTextInputStyle: any) {
+    // return (
+    //   <View style={styles.searchRow}>
+    //     <TextInput
+    //       autoCapitalize="none"
+    //       autoCorrect={false}
+    //       clearButtonMode="always"
+    //       onChangeText={this.search.bind(this)}
+    //       placeholder="Search..."
+    //       style={[styles.searchTextInput, searchTextInputStyle]}
+    //       testID="explorer_search"
+    //       value={this.state.searchText}
+    //     />
+    //   </View>
+    // );
     return (
       <View style={styles.searchRow}>
-        <TextInput
-          autoCapitalize="none"
-          autoCorrect={false}
-          clearButtonMode="always"
-          onChangeText={this.search.bind(this)}
-          placeholder="Search..."
-          style={[styles.searchTextInput, searchTextInputStyle]}
-          testID="explorer_search"
-          value={this.state.searchText}
-        />
+        <Text style={[styles.searchTextInput]}>Search...</Text>
       </View>
     );
   }
@@ -120,10 +144,14 @@ class UIExplorerListBase extends React.Component {
     var filter = (component) => regex.test(component.title);
 
     this.setState({
-      dataSource: ds.cloneWithRowsAndSections({
+      // dataSource: ds.cloneWithRowsAndSections({
+      //   components: this.props.components.filter(filter),
+      //   apis: this.props.apis.filter(filter),
+      // }),
+      dataSource: {
         components: this.props.components.filter(filter),
         apis: this.props.apis.filter(filter),
-      }),
+      },
       searchText: text,
     });
   }
@@ -155,6 +183,7 @@ var styles = StyleSheet.create({
   sectionHeaderTitle: {
     fontWeight: '500',
     fontSize: 11,
+    color: 'white'
   },
   row: {
     backgroundColor: 'white',
@@ -163,32 +192,30 @@ var styles = StyleSheet.create({
     paddingVertical: 8,
   },
   separator: {
-    height: 1 / PixelRatio.get(),
+    height: 1,//PixelRatio.get(),
     backgroundColor: '#bbbbbb',
     marginLeft: 15,
   },
   rowTitleText: {
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: '500',
   },
   rowDetailText: {
-    fontSize: 15,
+    fontSize: 12,
     color: '#888888',
     lineHeight: 20,
   },
   searchRow: {
-    backgroundColor: '#eeeeee',
-    paddingTop: 75,
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingBottom: 10,
-  },
-  searchTextInput: {
-    backgroundColor: 'white',
-    borderColor: '#cccccc',
+    backgroundColor: '#eee',
+    padding: 5,
+    borderColor: '#ccc',
     borderRadius: 3,
     borderWidth: 1,
-    paddingLeft: 8,
+  },
+  searchTextInput: {
+    fontWeight: '200',
+    fontSize: 12,
+    textAlign: 'center'
   },
 });
 

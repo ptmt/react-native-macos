@@ -44,6 +44,6 @@
  */
 - (void)reactWillMakeFirstResponder;
 - (void)reactDidMakeFirstResponder;
-- (BOOL)reactRespondsToTouch:(NSTouch *)touch;
+- (BOOL)reactRespondsToTouch:(NSEvent *)touch;
 
 @end

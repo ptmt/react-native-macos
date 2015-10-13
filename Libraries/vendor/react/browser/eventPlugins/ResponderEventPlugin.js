@@ -530,6 +530,7 @@ var ResponderEventPlugin = {
     // These multiple individual change touch events are are always bookended
     // by `onResponderGrant`, and one of
     // (`onResponderRelease/onResponderTerminate`).
+
     var isResponderTouchStart = responderID && isStartish(topLevelType);
     var isResponderTouchMove = responderID && isMoveish(topLevelType);
     var isResponderTouchEnd = responderID && isEndish(topLevelType);
@@ -538,7 +539,7 @@ var ResponderEventPlugin = {
       isResponderTouchMove ? eventTypes.responderMove :
       isResponderTouchEnd ? eventTypes.responderEnd :
       null;
-
+        
     if (incrementalTouch) {
       var gesture =
         ResponderSyntheticEvent.getPooled(

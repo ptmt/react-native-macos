@@ -326,7 +326,6 @@ static void RCTProcessMetaProps(const float metaProps[META_PROP_COUNT], float st
 
 - (void)insertReactSubview:(RCTShadowView *)subview atIndex:(NSInteger)atIndex
 {
-  NSLog(@"RCTShadowView insertReactSubview");
   [_reactSubviews insertObject:subview atIndex:atIndex];
   _cssNode->children_count = (int)_reactSubviews.count;
   subview->_superview = self;
@@ -425,7 +424,6 @@ RCT_MARGIN_PROPERTY(Right, RIGHT)
 #define RCT_PADDING_PROPERTY(prop, metaProp)       \
 - (void)setPadding##prop:(CGFloat)value            \
 {                                                  \
-  NSLog(@"setPadding %f", value); \
   _paddingMetaProps[META_PROP_##metaProp] = value; \
   _recomputePadding = YES;                         \
 }                                                  \

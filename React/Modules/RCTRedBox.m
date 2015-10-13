@@ -271,24 +271,16 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 #pragma mark - Key commands
 
-- (NSArray *)keyCommands
-{
-  // NOTE: We could use RCTKeyCommands for this, but since
-  // we control this window, we can use the standard, non-hacky
-  // mechanism instead
-
-  return @[
-
-    // Dismiss red box
-//    [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
-//                        modifierFlags:0
-//                               action:@selector(dismiss)],
-//
-//    // Reload
-//    [UIKeyCommand keyCommandWithInput:@"r"
-//                        modifierFlags:UIKeyModifierCommand
-//                               action:@selector(reload)]
-  ];
+- (void)keyDown:(NSEvent *)theEvent {
+  [super keyDown:theEvent];
+  if (theEvent.modifierFlags == (NSCommandKeyMask & NSDeviceIndependentModifierFlagsMask)
+      && [theEvent.characters isEqualToString:@"r"]) {
+    [self reload];
+  }
+  if (theEvent.keyCode == 53)
+  {
+    [self dismiss];
+  }
 }
 
 - (BOOL)canBecomeFirstResponder

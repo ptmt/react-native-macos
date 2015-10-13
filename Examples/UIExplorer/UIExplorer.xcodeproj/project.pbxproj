@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		038010341BCA7D2A00B1BE0C /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1341802B1AA91779003F314A /* libRCTNetwork.a */; };
+		038010671BCCAF2500B1BE0C /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 834C36D21AF8DA610019C93C /* libRCTSettings.a */; };
 		1300627F1B59179B0043FE5A /* RCTGzipTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1300627E1B59179B0043FE5A /* RCTGzipTests.m */; };
 		134180011AA9153C003F314A /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 13417FEF1AA914B8003F314A /* libRCTText.a */; };
 		138D6A171B53CD440074A87E /* RCTCacheTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 138D6A151B53CD440074A87E /* RCTCacheTests.m */; };
@@ -246,6 +247,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				038010671BCCAF2500B1BE0C /* libRCTSettings.a in Frameworks */,
 				038010341BCA7D2A00B1BE0C /* libRCTNetwork.a in Frameworks */,
 				14AADF051AC3DBB1002390C9 /* libReact.a in Frameworks */,
 				134180011AA9153C003F314A /* libRCTText.a in Frameworks */,

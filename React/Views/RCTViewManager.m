@@ -119,7 +119,7 @@ RCT_EXPORT_VIEW_PROPERTY(backgroundColor, NSColor)
 //RCT_REMAP_VIEW_PROPERTY(accessible, isAccessibilityElement, BOOL)
 RCT_REMAP_VIEW_PROPERTY(testID, accessibilityIdentifier, NSString)
 RCT_REMAP_VIEW_PROPERTY(backfaceVisibility, layer.doubleSided, css_backface_visibility_t)
-RCT_REMAP_VIEW_PROPERTY(opacity, alpha, CGFloat)
+//RCT_REMAP_VIEW_PROPERTY(opacity, alpha, CGFloat)
 RCT_REMAP_VIEW_PROPERTY(shadowColor, layer.shadowColor, CGColor);
 RCT_REMAP_VIEW_PROPERTY(shadowOffset, layer.shadowOffset, CGSize);
 RCT_REMAP_VIEW_PROPERTY(shadowOpacity, layer.shadowOpacity, float)
@@ -129,6 +129,10 @@ RCT_CUSTOM_VIEW_PROPERTY(shouldRasterizeIOS, BOOL, RCTView)
 {
   view.layer.shouldRasterize = json ? [RCTConvert BOOL:json] : defaultView.layer.shouldRasterize;
   view.layer.rasterizationScale = view.layer.shouldRasterize ? [NSScreen mainScreen].backingScaleFactor : defaultView.layer.rasterizationScale;
+}
+RCT_CUSTOM_VIEW_PROPERTY(opacity, float, RCTView)
+{
+  [view.layer setOpacity:[RCTConvert float:json]];
 }
 //RCT_CUSTOM_VIEW_PROPERTY(transformMatrix, CATransform3D, RCTView)
 //{

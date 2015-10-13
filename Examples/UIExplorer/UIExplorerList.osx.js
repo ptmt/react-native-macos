@@ -75,7 +75,7 @@ var APIS = [
   // require('./StatusBarIOSExample'),
   // require('./TimerExample'),
   // require('./VibrationIOSExample'),
-  require('./XHRExample.ios'),
+  require('./XHRExample.osx'),
   //require('./ImageEditingExample'),
 ];
 
@@ -132,21 +132,22 @@ class UIExplorerList extends React.Component {
     Settings.set({searchText: text});
   }
 
-  _openExample(example: any) {
-    if (example.external) {
-      this.props.onExternalExampleRequested(example);
-      return;
-    }
-
-    var Component = UIExplorerListBase.makeRenderable(example);
-    this.props.navigator.push({
-      title: Component.title,
-      component: Component,
-    });
-  }
+  // _openExample(example: any) {
+  //   if (example.external) {
+  //     this.props.onExternalExampleRequested(example);
+  //     return;
+  //   }
+  //
+  //   var Component = UIExplorerListBase.makeRenderable(example);
+  //   this.props.navigator.push({
+  //     title: Component.title,
+  //     component: Component,
+  //   });
+  // }
 
   onPressRow(example: any) {
-    this._openExample(example);
+    var Component = UIExplorerListBase.makeRenderable(example);
+    this.props.openExample(Component);
   }
 }
 

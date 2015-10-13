@@ -16,17 +16,17 @@
 #import "RCTUtils.h"
 #import "NSView+React.h"
 
-static NSView *RCTViewHitTest(NSView *view, CGPoint point, NSEvent *event)
+static NSView *RCTViewHitTest(NSView *view, CGPoint point)
 {
-//  for (NSView *subview in [view.subviews reverseObjectEnumerator]) {
-//    if (!subview.isHidden && subview.isUserInteractionEnabled && subview.alpha > 0) {
-//      CGPoint convertedPoint = [subview convertPoint:point fromView:view];
-//      NSView *subviewHitTestView = [subview hitTest:convertedPoint withEvent:event];
-//      if (subviewHitTestView != nil) {
-//        return subviewHitTestView;
-//      }
-//    }
-//  }
+  for (NSView *subview in [view.subviews reverseObjectEnumerator]) {
+    if (!subview.isHidden) { //subview.alpha > 0
+      CGPoint convertedPoint = [subview convertPoint:point fromView:view];
+      NSView *subviewHitTestView = [subview hitTest:convertedPoint];
+      if (subviewHitTestView != nil) {
+        return subviewHitTestView;
+      }
+    }
+  }
   return nil;
 }
 
@@ -150,17 +150,26 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 //  return NO;
 //}
 
+//- (void)mouseDown:(NSEvent *)theEvent {
+//  NSLog(@" mouseDown");
+//  [super mouseDown:theEvent];
+//  // let's fire the event
+//}
+
 - (void)setPointerEvents:(RCTPointerEvents)pointerEvents
 {
+   NSLog(@" setPointerEvents");
   _pointerEvents = pointerEvents;
+
 //  self.userInteractionEnabled = (pointerEvents != RCTPointerEventsNone);
 //  if (pointerEvents == RCTPointerEventsBoxNone) {
 //    self.accessibilityViewIsModal = NO;
 //  }
 }
 
-- (NSView *)hitTest:(CGPoint)point withEvent:(NSEvent *)event
+- (NSView *)hitTest:(CGPoint)point
 {
+  // TODO:
 //  switch (_pointerEvents) {
 //    case RCTPointerEventsNone:
 //      return nil;
@@ -174,7 +183,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 //      RCTLogError(@"Invalid pointer-events specified %zd on %@", _pointerEvents, self);
 //      return [super hitTest:point withEvent:event];
 //  }
-  return self;
+  return [super hitTest:point];
 }
 
 - (BOOL)accessibilityActivate
@@ -387,7 +396,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 - (void)insertReactSubview:(NSView *)view atIndex:(NSInteger)atIndex
 {;
   if (_reactSubviews == nil) {
-    NSLog(@"RCTView: addSubview %@ ", view.className);
     dispatch_async( dispatch_get_main_queue(), ^{
       [self addSubview:view];
       //[self setNeedsDisplay:YES];
@@ -395,7 +403,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
     });
 
   } else {
-    NSLog(@"RCTView: insertReactSubview %@ ", _reactSubviews);
     [_reactSubviews insertObject:view atIndex:atIndex];
 
     // Find a suitable view to use for clipping
@@ -424,7 +431,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   // The _reactSubviews array is only used when we have hidden
   // offscreen views. If _reactSubviews is nil, we can assume
   // that [self reactSubviews] and [self subviews] are the same
-  NSLog(@"subviews %lu", (unsigned long)self.subviews.count);
   return _reactSubviews ?: self.subviews;
 }
 

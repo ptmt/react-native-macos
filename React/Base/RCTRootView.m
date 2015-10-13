@@ -18,7 +18,7 @@
 #import "RCTLog.h"
 #import "RCTPerformanceLogger.h"
 #import "RCTSourceCode.h"
-//#import "RCTTouchHandler.h"
+#import "RCTTouchHandler.h"
 #import "RCTUIManager.h"
 #import "RCTUtils.h"
 #import "RCTView.h"
@@ -253,7 +253,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 @implementation RCTRootContentView
 {
   __weak RCTBridge *_bridge;
- // RCTTouchHandler *_touchHandler;
+  RCTTouchHandler *_touchHandler;
   NSColor *_backgroundColor;
 }
 
@@ -275,7 +275,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
 - (void)insertReactSubview:(id<RCTComponent>)subview atIndex:(NSInteger)atIndex
 {
   [super insertReactSubview:subview atIndex:atIndex];
-  NSLog(@"RCTRootView.m insertReactSubview");
   RCTPerformanceLoggerEnd(RCTPLTTI);
   dispatch_async(dispatch_get_main_queue(), ^{
     if (!_contentHasAppeared) {
@@ -317,7 +316,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
    * the react tag is assigned every time we load new content.
    */
   self.reactTag = [_bridge.uiManager allocateRootTag];
- // [self addGestureRecognizer:[[RCTTouchHandler alloc] initWithBridge:_bridge]];
+  [self addGestureRecognizer:[[RCTTouchHandler alloc] initWithBridge:_bridge]];
   [_bridge.uiManager registerRootView:self];
 }
 

@@ -16,7 +16,7 @@
 'use strict';
 
 var Platform = require('Platform');
-var React = require('react-native');
+var React = require('react-native-desktop');
 var {
   StyleSheet,
   Text,

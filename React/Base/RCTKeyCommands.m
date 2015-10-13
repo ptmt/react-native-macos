@@ -97,17 +97,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   }
  }
 
-//
-//// Required for iOS 8.x
-//- (BOOL)RCT_sendAction:(SEL)action to:(id)target from:(id)sender forEvent:(UIEvent *)event
-//{
-//  if (action == @selector(RCT_handleKeyCommand:)) {
-//    [self RCT_handleKeyCommand:sender];
-//    return YES;
-//  }
-//  return [self RCT_sendAction:action to:target from:sender forEvent:event];
-//}
-
 @end
 
 @implementation RCTKeyCommands
@@ -115,10 +104,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 + (void)initialize
 {
 
-//  RCTSwapInstanceMethods([NSApp class],
-//                           @selector(keyCommands),
-//                           @selector(RCT_keyCommands));
-//
 }
 
 + (instancetype)sharedInstance
