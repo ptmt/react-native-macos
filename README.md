@@ -1,8 +1,6 @@
 # React Native Desktop
 
-React Native fork for OS X.
-
-Say hello on `#react-native-desktop` on Reactiflux.com
+React Native fork for OS X. Codename "Lepton". 
 
 ## Current stage: hacking an prototype
 
