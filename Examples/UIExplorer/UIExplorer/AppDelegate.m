@@ -25,17 +25,32 @@
 
 @implementation AppDelegate
 
-- (void)applicationDidFinishLaunching:(__unused NSNotification *)aNotification 
+-(id)init
 {
-  NSRect contentSize = NSMakeRect(200, 500, 1000, 500);
+  if(self = [super init]) {
+    NSRect contentSize = NSMakeRect(200, 500, 1000, 500);
 
-  self.window = [[NSWindow alloc] initWithContentRect:contentSize
-                                            styleMask:NSTitledWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask
-                                              backing:NSBackingStoreBuffered
-                                                defer:NO];
+    self.window = [[NSWindow alloc] initWithContentRect:contentSize
+                                              styleMask:NSTitledWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask
+                                                backing:NSBackingStoreBuffered
+                                                  defer:NO];
+    NSWindowController *windowController = [[NSWindowController alloc] initWithWindow:self.window];
 
-  [self.window setTitle:@"UIExplorerApp"];
-  [self.window makeKeyAndOrderFront:nil];
+//
+    [self.window setTitle:@"UIExplorerApp"];
+//
+    [windowController setShouldCascadeWindows:NO];
+    [windowController setWindowFrameAutosaveName:@"UIExplorer"];
+
+    [windowController showWindow:self.window];
+//    [self.window makeKeyAndOrderFront:nil];
+
+  }
+  return self;
+}
+
+- (void)applicationDidFinishLaunching:(__unused NSNotification *)aNotification
+{
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self
                                             launchOptions:nil];
@@ -47,8 +62,8 @@
 
 
   [self.window setContentView:rootView];
-
 }
+
 
 - (NSURL *)sourceURLForBridge:(__unused RCTBridge *)bridge
 {

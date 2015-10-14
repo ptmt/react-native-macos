@@ -120,10 +120,11 @@ class UIExplorerListBase extends React.Component {
   }
 
   renderRow(example: any, i: number) {
+    var selected = this.state.selected === example.title ? styles.selectedRow : {};
     return (
       <View key={i}>
         <TouchableHighlight onPress={() => this.onPressRow(example)}>
-          <View style={styles.row}>
+          <View style={[styles.row, selected]}>
             <Text style={styles.rowTitleText}>
               {example.title}
             </Text>
@@ -157,6 +158,7 @@ class UIExplorerListBase extends React.Component {
   }
 
   onPressRow(example: any): void {
+    this.setState({selected: example.title});
     this.props.onPressRow && this.props.onPressRow(example);
   }
 
@@ -217,6 +219,9 @@ var styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center'
   },
+  selectedRow: {
+    backgroundColor: '#fffd7e'
+  }
 });
 
 module.exports = UIExplorerListBase;

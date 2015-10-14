@@ -23,8 +23,11 @@ var {
   AppRegistry,
   StyleSheet,
   View,
-  Text
+  Text,
+  Dimensions
 } = React;
+
+console.log(Dimensions.get('window'));
 
 class UIExplorerApp extends React.Component {
 
@@ -37,10 +40,10 @@ class UIExplorerApp extends React.Component {
     var Component = this.state.component;
     return (
       <View style={styles.container}>
-        <View style={{width: 300, backgroundColor: '#333'}}>
+        <View style={styles.leftPanel}>
           <UIExplorerList openExample={(component) => this.setState({component})}/>
         </View>
-        <View style={{width: 700}}>
+        <View style={styles.rightPanel}>
           {this.state.component && <Component />}
         </View>
       </View>
@@ -58,6 +61,15 @@ var styles = StyleSheet.create({
   itemWrapper: {
     backgroundColor: '#eaeaea',
   },
+  leftPanel: {
+    width: 300,
+    backgroundColor: '#333'
+  },
+  rightPanel: {
+    // left: 0,
+    // top: 0
+    width: Dimensions.get('window').width - 350
+  }
 });
 
 AppRegistry.registerComponent('UIExplorerApp', () => UIExplorerApp);

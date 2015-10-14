@@ -533,7 +533,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)drawRect:(CGRect)dirtyRect
 {
-  NSLog(@"drawRect");
+  NSLog(@"drawRect %@ rect: %f %f", self.className, dirtyRect.size.width, dirtyRect.size.height);
  // [self displayLayer:self.layer];
 }
 
