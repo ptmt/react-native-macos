@@ -1,13 +1,26 @@
-//
-//  main.m
-//  2048
-//
-//  Created by Dmitriy Loktev on 9/29/15.
-//  Copyright © 2015 Elephant. All rights reserved.
-//
+/**
+ * The examples provided by Facebook are for non-commercial testing and
+ * evaluation purposes only.
+ *
+ * Facebook reserves all rights not expressly granted.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
+ * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+ * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 #import <Cocoa/Cocoa.h>
+#import "AppDelegate.h"
 
-int main(int argc, const char * argv[]) {
-    return NSApplicationMain(argc, argv);
+int main(int argc, char * argv[]) {
+    @autoreleasepool {
+        NSApplication * application = [NSApplication sharedApplication];
+        AppDelegate * appDelegate = [[AppDelegate alloc] init];
+        [application setDelegate:appDelegate];
+        [application run];
+        return EXIT_SUCCESS;
+    }
 }

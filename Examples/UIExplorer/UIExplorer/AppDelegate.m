@@ -17,7 +17,7 @@
 #import "RCTBridge.h"
 #import "RCTJavaScriptLoader.h"
 #import "RCTRootView.h"
-#import <AppKit/AppKit.h>
+#import <Cocoa/Cocoa.h>
 
 @interface AppDelegate() <RCTBridgeDelegate>
 
@@ -37,8 +37,9 @@
     NSWindowController *windowController = [[NSWindowController alloc] initWithWindow:self.window];
 
 //
+
     [self.window setTitle:@"UIExplorerApp"];
-//
+    //
     [windowController setShouldCascadeWindows:NO];
     [windowController setWindowFrameAutosaveName:@"UIExplorer"];
 

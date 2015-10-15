@@ -9,8 +9,9 @@
 /* Begin PBXBuildFile section */
 		038010341BCA7D2A00B1BE0C /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1341802B1AA91779003F314A /* libRCTNetwork.a */; };
 		038010671BCCAF2500B1BE0C /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 834C36D21AF8DA610019C93C /* libRCTSettings.a */; };
+		03911C6C1BCFFCB7006809D1 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 14AADF041AC3DB95002390C9 /* libReact.a */; };
+		03911C6D1BCFFCBC006809D1 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 13417FEF1AA914B8003F314A /* libRCTText.a */; };
 		1300627F1B59179B0043FE5A /* RCTGzipTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1300627E1B59179B0043FE5A /* RCTGzipTests.m */; };
-		134180011AA9153C003F314A /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 13417FEF1AA914B8003F314A /* libRCTText.a */; };
 		138D6A171B53CD440074A87E /* RCTCacheTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 138D6A151B53CD440074A87E /* RCTCacheTests.m */; };
 		138D6A181B53CD440074A87E /* RCTShadowViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 138D6A161B53CD440074A87E /* RCTShadowViewTests.m */; };
 		1393D0381B68CD1300E1B601 /* RCTModuleMethodTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1393D0371B68CD1300E1B601 /* RCTModuleMethodTests.m */; };
@@ -29,7 +30,6 @@
 		1497CFB11B21F5E400C1F8F2 /* RCTEventDispatcherTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1497CFA91B21F5E400C1F8F2 /* RCTEventDispatcherTests.m */; };
 		1497CFB21B21F5E400C1F8F2 /* RCTSparseArrayTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1497CFAA1B21F5E400C1F8F2 /* RCTSparseArrayTests.m */; };
 		1497CFB31B21F5E400C1F8F2 /* RCTUIManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1497CFAB1B21F5E400C1F8F2 /* RCTUIManagerTests.m */; };
-		14AADF051AC3DBB1002390C9 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 14AADF041AC3DB95002390C9 /* libReact.a */; };
 		14B6DA821B276C5900BF4DD1 /* libRCTTest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58005BEE1ABA80530062E044 /* libRCTTest.a */; };
 		14D6D7111B220EB3001FB087 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 14D6D7101B220EB3001FB087 /* libOCMock.a */; };
 		14D6D71E1B2222EF001FB087 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 147CED4B1AB34F8C00DA3E4C /* libRCTActionSheet.a */; };
@@ -247,10 +247,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03911C6D1BCFFCBC006809D1 /* libRCTText.a in Frameworks */,
+				03911C6C1BCFFCB7006809D1 /* libReact.a in Frameworks */,
 				038010671BCCAF2500B1BE0C /* libRCTSettings.a in Frameworks */,
 				038010341BCA7D2A00B1BE0C /* libRCTNetwork.a in Frameworks */,
-				14AADF051AC3DBB1002390C9 /* libReact.a in Frameworks */,
-				134180011AA9153C003F314A /* libRCTText.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

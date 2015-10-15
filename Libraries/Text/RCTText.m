@@ -131,9 +131,9 @@
 {
   // Text looks super weird if its frame is animated.
   // This disables the frame animation, without affecting opacity, etc.
-  [NSView performWithoutAnimation:^{
+//  [NSView performWithoutAnimation:^{
     [super reactSetFrame:frame];
-  }];
+//  }];
 }
 
 - (void)insertReactSubview:(NSView *)subview atIndex:(NSInteger)atIndex

@@ -23,9 +23,6 @@
                                          defer:NO];
 
 
-    [self.window setRestorable:YES]; // TODO:
-    [self.window setRestorationClass:_restorationClass];
-
     [self.window setTitle:@"Neutrino"];
     [self.window setFrame:contentSize display:YES];
     [self.window makeKeyAndOrderFront:nil];
@@ -48,27 +45,7 @@
 //    [self.window setContentViewController:rootViewController];
 
     [self.window setContentView:rootView];// = rootViewController;
-   // [self playground];
-}
 
--(void)playground
-{
-    NSPoint point = {0, 0};
-    RCTView *rootView = [[RCTView alloc] initWithFrame:self.window.frame];
-    RCTView *wrapperView = [[RCTView alloc] initWithFrame:self.window.frame];
-    [wrapperView setFrameOrigin:point];
-    //[wrapperView removeFromSuperview];
-    [rootView addSubview:wrapperView];
-
-    RCTView *view = [[RCTView alloc] initWithFrame:self.window.frame];
-
-    [view setFrameOrigin:point];
-    [view setBackgroundColor:[NSColor blackColor]];
-    //[view removeFromSuperview];
-    [wrapperView addSubview:view];
-
-
-    [self.window setContentView:rootView];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
