@@ -131,9 +131,9 @@
 {
   // Text looks super weird if its frame is animated.
   // This disables the frame animation, without affecting opacity, etc.
-  //[NSView performWithoutAnimation:^{
+  [NSView performWithoutAnimation:^{
     [super reactSetFrame:frame];
-   // }];
+  }];
 }
 
 - (void)insertReactSubview:(NSView *)subview atIndex:(NSInteger)atIndex
@@ -155,8 +155,6 @@
 {
   _textStorage = textStorage;
   [self setNeedsDisplay:YES];
-
-//  [self display]; // TODO:
 }
 
 // https://github.com/BigZaphod/Chameleon/blob/84605ede274bd82b330d72dd6ac41e64eb925fd7/UIKit/Classes/UIGeometry.h
@@ -171,7 +169,7 @@ static inline CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
 - (void)drawRect:(CGRect)dirtyRect
 {
   NSLayoutManager *layoutManager = _textStorage.layoutManagers.firstObject;
-
+  
   NSTextContainer *textContainer = layoutManager.textContainers.firstObject;
   CGRect textFrame = UIEdgeInsetsInsetRect(self.bounds, _contentInset);
   NSRange glyphRange = [layoutManager glyphRangeForTextContainer:textContainer];
@@ -228,6 +226,13 @@ static inline CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
     reactTag = [_textStorage attribute:RCTReactTagAttributeName atIndex:characterIndex effectiveRange:NULL];
   }
   return reactTag;
+}
+
+- (void)viewDidChangeBackingProperties
+{
+  [super viewDidChangeBackingProperties];
+  [[self layer] setContentsScale:[[self window] backingScaleFactor]];
+  // Your code to provide content
 }
 
 

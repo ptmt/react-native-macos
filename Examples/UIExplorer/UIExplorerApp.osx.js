@@ -60,7 +60,7 @@ class Welcome extends React.Component {
     return (
       <View style={styles.welcomeWrapper}>
         <TouchableHighlight>
-          <Text style={styles.welcomeText}>Choose example on the left side</Text>
+          <Text style={styles.welcomeText}>Choose an example on the left side</Text>
         </TouchableHighlight>
       </View>
     );
@@ -90,7 +90,8 @@ var styles = StyleSheet.create({
   },
   welcomeText: {
     color: '#999',
-    fontSize: 25
+    fontSize: 50,
+    fontFamily: 'San Francisco'
   }
 });
 
