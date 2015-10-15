@@ -16,7 +16,7 @@
 
 #import "RCTSparseArray.h"
 #import "RCTUIManager.h"
-#import "UIView+React.h"
+#import "NSView+React.h"
 
 @interface RCTUIManager (Testing)
 

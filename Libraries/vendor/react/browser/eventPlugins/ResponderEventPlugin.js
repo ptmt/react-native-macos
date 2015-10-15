@@ -340,6 +340,7 @@ function setResponderAndExtractTransfer(
     topLevelTargetID :
     ReactInstanceHandles.getFirstCommonAncestorID(responderID, topLevelTargetID);
 
+
   // When capturing/bubbling the "shouldSet" event, we want to skip the target
   // (deepest ID) if it happens to be the current responder. The reasoning:
   // It's strange to get an `onMoveShouldSetResponder` when you're *already*
@@ -351,13 +352,17 @@ function setResponderAndExtractTransfer(
     nativeEvent,
     nativeEventTarget
   );
+
+
   shouldSetEvent.touchHistory = ResponderTouchHistoryStore.touchHistory;
+
   if (skipOverBubbleShouldSetFrom) {
     EventPropagators.accumulateTwoPhaseDispatchesSkipTarget(shouldSetEvent);
   } else {
     EventPropagators.accumulateTwoPhaseDispatches(shouldSetEvent);
   }
   var wantsResponderID = executeDispatchesInOrderStopAtTrue(shouldSetEvent);
+  console.log('wantsResponderID', wantsResponderID);
   if (!shouldSetEvent.isPersistent()) {
     shouldSetEvent.constructor.release(shouldSetEvent);
   }
@@ -539,7 +544,7 @@ var ResponderEventPlugin = {
       isResponderTouchMove ? eventTypes.responderMove :
       isResponderTouchEnd ? eventTypes.responderEnd :
       null;
-        
+
     if (incrementalTouch) {
       var gesture =
         ResponderSyntheticEvent.getPooled(

@@ -10,7 +10,7 @@
 		000E6CEB1AB0E980000CDF4D /* RCTSourceCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 000E6CEA1AB0E980000CDF4D /* RCTSourceCode.m */; };
 		032625A81BBCF725001C8FC1 /* RCTRedBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 032625A71BBCF725001C8FC1 /* RCTRedBox.m */; };
 		03279A2B1BB820010015275D /* RCTShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03279A2A1BB820010015275D /* RCTShadowView.m */; };
-		0380106A1BCCC65000B1BE0C /* RCTTouchHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 038010691BCCC65000B1BE0C /* RCTTouchHandler.m */; settings = {ASSET_TAGS = (); }; };
+		0380106A1BCCC65000B1BE0C /* RCTTouchHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 038010691BCCC65000B1BE0C /* RCTTouchHandler.m */; };
 		03EAB57C1BC3CAE30051C6F1 /* RCTPerfStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 03EAB57B1BC3CAE30051C6F1 /* RCTPerfStats.m */; };
 		131B6AF41AF1093D00FFC3E0 /* RCTSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 131B6AF11AF1093D00FFC3E0 /* RCTSegmentedControl.m */; };
 		131B6AF51AF1093D00FFC3E0 /* RCTSegmentedControlManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 131B6AF31AF1093D00FFC3E0 /* RCTSegmentedControlManager.m */; };
@@ -250,8 +250,9 @@
 		13B07FF31A6947C200A75B9A /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				03279A2A1BB820010015275D /* RCTShadowView.m */,
-				03279A291BB81FF70015275D /* RCTShadowView.h */,
+				83F15A171B7CC46900F10295 /* NSView+Private.h */,
+				13E067531A70F44B002CDEE1 /* NSView+React.h */,
+				13E067541A70F44B002CDEE1 /* NSView+React.m */,
 				13B080181A69489C00A75B9A /* RCTActivityIndicatorViewManager.h */,
 				13B080191A69489C00A75B9A /* RCTActivityIndicatorViewManager.m */,
 				13442BF21AA90E0B0037E5B0 /* RCTAnimationType.h */,
@@ -277,6 +278,8 @@
 				131B6AF11AF1093D00FFC3E0 /* RCTSegmentedControl.m */,
 				131B6AF21AF1093D00FFC3E0 /* RCTSegmentedControlManager.h */,
 				131B6AF31AF1093D00FFC3E0 /* RCTSegmentedControlManager.m */,
+				03279A291BB81FF70015275D /* RCTShadowView.h */,
+				03279A2A1BB820010015275D /* RCTShadowView.m */,
 				13AF20431AE707F8005F5298 /* RCTSlider.h */,
 				13AF20441AE707F9005F5298 /* RCTSlider.m */,
 				14F484541AABFCE100FDF6B9 /* RCTSliderManager.h */,
@@ -293,9 +296,6 @@
 				13E0674E1A70F44B002CDEE1 /* RCTViewManager.m */,
 				13B080231A694A8400A75B9A /* RCTWrapperViewController.h */,
 				13B080241A694A8400A75B9A /* RCTWrapperViewController.m */,
-				83F15A171B7CC46900F10295 /* NSView+Private.h */,
-				13E067531A70F44B002CDEE1 /* NSView+React.h */,
-				13E067541A70F44B002CDEE1 /* NSView+React.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -333,8 +333,6 @@
 		83CBBA491A601E3B00E9B192 /* Base */ = {
 			isa = PBXGroup;
 			children = (
-				038010681BCCC64F00B1BE0C /* RCTTouchHandler.h */,
-				038010691BCCC65000B1BE0C /* RCTTouchHandler.m */,
 				83CBBA4A1A601E3B00E9B192 /* RCTAssert.h */,
 				83CBBA4B1A601E3B00E9B192 /* RCTAssert.m */,
 				14C2CA771B3ACB0400E6CBB2 /* RCTBatchedBridge.m */,
@@ -377,6 +375,8 @@
 				830A229D1A66C68A008503DA /* RCTRootView.m */,
 				83BEE46C1A6D19BC00B5863B /* RCTSparseArray.h */,
 				83BEE46D1A6D19BC00B5863B /* RCTSparseArray.m */,
+				038010681BCCC64F00B1BE0C /* RCTTouchHandler.h */,
+				038010691BCCC65000B1BE0C /* RCTTouchHandler.m */,
 				1345A83A1B265A0E00583190 /* RCTURLRequestDelegate.h */,
 				1345A83B1B265A0E00583190 /* RCTURLRequestHandler.h */,
 				83CBBA4F1A601E3B00E9B192 /* RCTUtils.h */,

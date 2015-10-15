@@ -24,7 +24,9 @@ var {
   StyleSheet,
   View,
   Text,
-  Dimensions
+  Dimensions,
+  ScrollView,
+  TouchableHighlight
 } = React;
 
 console.log(Dimensions.get('window'));
@@ -33,7 +35,9 @@ class UIExplorerApp extends React.Component {
 
   constructor() {
     super();
-    this.state = {};
+    this.state = {
+      component: Welcome
+    };
   }
 
   render() {
@@ -44,12 +48,23 @@ class UIExplorerApp extends React.Component {
           <UIExplorerList openExample={(component) => this.setState({component})}/>
         </View>
         <View style={styles.rightPanel}>
-          {this.state.component && <Component />}
+            {this.state.component && <Component />}
         </View>
       </View>
     );
   }
+}
 
+class Welcome extends React.Component {
+  render() {
+    return (
+      <View style={styles.welcomeWrapper}>
+        <TouchableHighlight>
+          <Text style={styles.welcomeText}>Choose example on the left side</Text>
+        </TouchableHighlight>
+      </View>
+    );
+  }
 }
 
 var styles = StyleSheet.create({
@@ -66,9 +81,16 @@ var styles = StyleSheet.create({
     backgroundColor: '#333'
   },
   rightPanel: {
-    // left: 0,
-    // top: 0
-    width: Dimensions.get('window').width - 350
+    width: 1000,
+  },
+  welcomeWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  welcomeText: {
+    color: '#999',
+    fontSize: 25
   }
 });
 

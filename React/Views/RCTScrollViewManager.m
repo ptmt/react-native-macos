@@ -41,8 +41,6 @@ RCT_EXPORT_MODULE()
   return [[RCTScrollView alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
 }
 
-RCT_EXPORT_VIEW_PROPERTY(alwaysBounceHorizontal, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(alwaysBounceVertical, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(bounces, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(bouncesZoom, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(canCancelContentTouches, BOOL)
@@ -61,8 +59,8 @@ RCT_EXPORT_VIEW_PROPERTY(showsVerticalScrollIndicator, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(stickyHeaderIndices, NSIndexSet)
 RCT_EXPORT_VIEW_PROPERTY(scrollEventThrottle, NSTimeInterval)
 RCT_EXPORT_VIEW_PROPERTY(zoomScale, CGFloat)
-RCT_EXPORT_VIEW_PROPERTY(contentInset, UIEdgeInsets)
-RCT_EXPORT_VIEW_PROPERTY(scrollIndicatorInsets, UIEdgeInsets)
+RCT_EXPORT_VIEW_PROPERTY(contentInset, NSEdgeInsets)
+RCT_EXPORT_VIEW_PROPERTY(scrollIndicatorInsets, NSEdgeInsets)
 RCT_EXPORT_VIEW_PROPERTY(snapToInterval, int)
 RCT_EXPORT_VIEW_PROPERTY(snapToAlignment, NSString)
 RCT_REMAP_VIEW_PROPERTY(contentOffset, scrollView.contentOffset, CGPoint)
@@ -115,6 +113,18 @@ RCT_EXPORT_METHOD(calculateChildFrames:(nonnull NSNumber *)reactTag
     @"momentumScrollBegin",
     @"momentumScrollEnd",
   ];
+}
+
+@end
+
+
+@implementation RCTNativeScrollViewManager
+
+RCT_EXPORT_MODULE()
+
+- (NSView *)view
+{
+  return [[RCTNativeScrollView alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
 }
 
 @end

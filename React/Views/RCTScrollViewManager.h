@@ -21,3 +21,7 @@
 
 @end
 
+@interface RCTNativeScrollViewManager : RCTViewManager
+
+@end
+

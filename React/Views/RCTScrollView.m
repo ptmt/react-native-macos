@@ -152,13 +152,18 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
-//  if ((self = [super initWithFrame:frame])) {
-//    [self.panGestureRecognizer addTarget:self action:@selector(handleCustomPan:)];
-//  }
+  if ((self = [super initWithFrame:frame])) {
+    // TODO: At the moment app crashing without CALayer
+    CALayer *viewLayer = [CALayer layer];
+    [self setLayer:viewLayer];
+    [self setWantsLayer:YES];
+    // TODO: Do I realy need this
+    //[self.panGestureRecognizer addTarget:self action:@selector(handleCustomPan:)];
+  }
   return self;
 }
 
-- (NSView *)contentView
+- (NSView *)documentView
 {
   return ((RCTScrollView *)self.superview).contentView;
 }
@@ -338,22 +343,28 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 //  }
 }
 
-- (NSView *)hitTest:(CGPoint)point withEvent:(NSEvent *)event
+- (NSView *)hitTest:(CGPoint)point
 {
-  __block NSView *hitView;
-
+//  __block NSView *hitView;
+//
 //  [_stickyHeaderIndices enumerateIndexesWithOptions:0 usingBlock:^(NSUInteger idx, BOOL *stop) {
 //    NSView *stickyHeader = [self contentView].reactSubviews[idx];
 //    CGPoint convertedPoint = [stickyHeader convertPoint:point fromView:self];
-//    hitView = [stickyHeader hitTest:convertedPoint withEvent:event];
+//    hitView = [stickyHeader hitTest:convertedPoint];
 //    *stop = (hitView != nil);
 //  }];
+//
+//  return hitView ?: [super hitTest:point];
+  return [self.documentView hitTest:point];
+}
 
-  //return hitView ?: [super hitTest:point withEvent:event];
-  return hitView;
+- (BOOL)isFlipped
+{
+  return YES;
 }
 
 @end
+
 
 @implementation RCTScrollView
 {
@@ -375,7 +386,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   if ((self = [super initWithFrame:CGRectZero])) {
     _eventDispatcher = eventDispatcher;
     _scrollView = [[RCTCustomScrollView alloc] initWithFrame:CGRectZero];
- //   _scrollView.delegate = self;
+   // _scrollView.delegate = self;
   //  _scrollView.delaysContentTouches = NO;
     _automaticallyAdjustContentInsets = YES;
     _contentInset = NSEdgeInsetsZero;
@@ -403,7 +414,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 {
   RCTAssert(_contentView == nil, @"RCTScrollView may only contain a single subview");
   _contentView = view;
-  [_scrollView addSubview:view];
+  dispatch_async( dispatch_get_main_queue(), ^{
+    [_scrollView addSubview:view];
+    [view setNeedsDisplay:YES];
+  });
+
 }
 
 - (void)removeReactSubview:(NSView *)subview
@@ -420,12 +435,13 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (BOOL)centerContent
 {
-  return _scrollView.centerContent;
+  //return _scrollView.centerContent;
+  return YES;
 }
 
 - (void)setCenterContent:(BOOL)centerContent
 {
-  _scrollView.centerContent = centerContent;
+  //_scrollView.centerContent = centerContent;
 }
 
 - (NSIndexSet *)stickyHeaderIndices
@@ -451,15 +467,15 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   //_scrollView.delegate = nil;
 }
 
-- (void)layoutSubviews
+- (void)layout
 {
-  //[super layoutSubviews];
+  [super layout];
   RCTAssert(self.subviews.count == 1, @"we should only have exactly one subview");
   RCTAssert([self.subviews lastObject] == _scrollView, @"our only subview should be a scrollview");
 
   CGPoint originalOffset = _scrollView.documentVisibleRect.origin;
   _scrollView.frame = self.bounds;
-  _scrollView.contentOffset = originalOffset;
+  //_scrollView.contentOffset = originalOffset;
 
   [self updateClippedSubviews];
 }
@@ -522,15 +538,15 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)refreshContentInset
 {
-  [RCTView autoAdjustInsetsForView:self
-                    withScrollView:_scrollView
-                      updateOffset:YES];
+//  [RCTView autoAdjustInsetsForView:self
+//                    withScrollView:_scrollView
+//                      updateOffset:YES];
 }
 
 #pragma mark - ScrollView delegate
 
 #define RCT_SCROLL_EVENT_HANDLER(delegateMethod, eventName) \
-- (void)delegateMethod:(UIScrollView *)scrollView           \
+- (void)delegateMethod:(NSScrollView *)scrollView           \
 {                                                           \
   [_eventDispatcher sendScrollEventWithType:eventName reactTag:self.reactTag scrollView:scrollView userData:nil]; \
   if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
@@ -550,7 +566,7 @@ if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
 
 - (void)scrollViewDidScroll:(NSScrollView *)scrollView
 {
-  [_scrollView dockClosestSectionHeader];
+  //[_scrollView dockClosestSectionHeader];
   [self updateClippedSubviews];
 
   NSTimeInterval now = CACurrentMediaTime();
@@ -759,7 +775,7 @@ if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
 //
 //  // all other cases, offset doesn't change
 //  return newOffset;
-// }
+//}
 
 /**
  * Once you set the `contentSize`, to a nonzero value, it is assumed to be
@@ -794,7 +810,7 @@ if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
    // _scrollView.contentSize = contentSize;
    // _scrollView.contentOffset = newOffset;
   }
-  [_scrollView dockClosestSectionHeader];
+  //[_scrollView dockClosestSectionHeader];
 }
 
 // Note: setting several properties of UIScrollView has the effect of
@@ -860,5 +876,55 @@ if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
                                                             userData:userData];
   [self sendEvent:scrollEvent];
 }
+
+@end
+
+
+@implementation RCTNativeScrollView
+{
+  NSColor * _backgroundColor;
+}
+
+- (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
+{
+  if ((self = [super initWithFrame:CGRectZero])) {
+    _backgroundColor = [NSColor clearColor];
+  }
+  return self;
+}
+
+- (void)insertReactSubview:(NSView *)view atIndex:(__unused NSInteger)atIndex
+{
+  [self addSubview:view];
+}
+
+- (void)removeReactSubview:(NSView *)subview
+{
+  [subview removeFromSuperview];
+}
+
+
+- (BOOL)isFlipped
+{
+  return YES;
+}
+
+- (void)setBackgroundColor:(NSColor *)backgroundColor
+{
+  if ([_backgroundColor isEqual:backgroundColor]) {
+    return;
+  }
+
+  if (![self wantsLayer]) {
+    CALayer *viewLayer = [CALayer layer];
+    [viewLayer setBackgroundColor:[backgroundColor CGColor]];
+    [self setLayer:viewLayer];
+    [self setWantsLayer:YES];
+  }
+  [self.layer setBackgroundColor:[backgroundColor CGColor]];
+  [self.layer setNeedsDisplay];
+  [self setNeedsDisplay:YES];
+}
+
 
 @end

@@ -95,12 +95,12 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
       targetView = targetView.superview;
     }
 
-    // TODO: temporary solution
-    NSPoint touchLocation = [self.view convertPoint:[touch locationInWindow] fromView:nil];
+    // TODO: This is temporary workaround. Find out how to get right position
+    NSPoint touchLocation = [self.view.window.contentView convertPoint:[touch locationInWindow] fromView:nil];
 
-    NSNumber *reactTag =
-      [targetView reactTagAtPoint:CGPointMake(touchLocation.x, touchLocation.y)
-      ];
+    NSNumber *reactTag = [targetView reactTagAtPoint:CGPointMake(touchLocation.x, touchLocation.y)];
+
+    //NSLog(@"touchLocation: %f %f %@", touchLocation.x, touchLocation.y, reactTag);
 
     if (!reactTag) {// || !targetView.userInteractionEnabled) {
       return;
@@ -152,6 +152,7 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
 
 - (void)_updateReactTouchAtIndex:(NSInteger)touchIndex
 {
+  // TODO: actual coordinates
   NSEvent *nativeTouch = _nativeTouches[touchIndex];
  // CGPoint windowLocation = self.view.window.frame.origin;
   CGPoint rootViewLocation = [nativeTouch locationInWindow];//[self.view.window convertPoint:windowLocation toView:self.view];
@@ -257,6 +258,7 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
 
 - (void)mouseDown:(NSEvent *)event
 {
+  NSLog(@"mouseDown");
   [super mouseDown:event];
 
   // "start" has to record new touches before extracting the event.
@@ -270,17 +272,18 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
     self.state = NSGestureRecognizerStateBegan;
   }
 }
-//
-//- (void)touchesMoved:(NSSet *)touches withEvent:(NSEvent *)event
-//{
-//  [super touchesMoved:touches withEvent:event];
-//
-//  if (_dispatchedInitialTouches) {
-//    [self _updateAndDispatchTouches:touches eventName:@"touchMove" originatingTime:event.timestamp];
-//    self.state = NSGestureRecognizerStateChanged;
-//  }
-//}
-//
+
+- (void)mouseDragged:(NSEvent *)event
+{
+  [super mouseDragged:event];
+
+  NSSet *touches = [NSSet setWithObject:event];
+  if (_dispatchedInitialTouches) {
+    [self _updateAndDispatchTouches:touches eventName:@"touchMove" originatingTime:event.timestamp];
+    self.state = NSGestureRecognizerStateChanged;
+  }
+}
+
 - (void)mouseUp:(NSEvent *)event
 {
   [super mouseUp:event];
@@ -299,6 +302,8 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
   }
   [self _recordRemovedTouches:touches];
 }
+
+// Mouse move events https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/EventOverview/MouseTrackingEvents/MouseTrackingEvents.html
 
 //
 //- (void)touchesCancelled:(NSSet *)touches withEvent:(NSEvent *)event

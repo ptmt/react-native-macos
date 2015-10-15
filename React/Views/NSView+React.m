@@ -36,6 +36,7 @@
 - (NSNumber *)reactTagAtPoint:(CGPoint)point
 {
   NSView *view = [self hitTest:point];
+  NSLog(@"reactTagAtPoint %@", view.reactTag);
   while (view && !view.reactTag) {
     view = view.superview;
   }

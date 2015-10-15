@@ -56,6 +56,7 @@ var IOSNativeBridgeEventPlugin = {
     topLevelTargetID: string,
     nativeEvent: Event
   ): ?Object {
+
     var bubbleDispatchConfig = customBubblingEventTypes[topLevelType];
     var directDispatchConfig = customDirectEventTypes[topLevelType];
     var event = SyntheticEvent.getPooled(
@@ -63,6 +64,7 @@ var IOSNativeBridgeEventPlugin = {
       topLevelTargetID,
       nativeEvent
     );
+    console.log('topLevelType', topLevelTarget);
     if (bubbleDispatchConfig) {
       EventPropagators.accumulateTwoPhaseDispatches(event);
     } else if (directDispatchConfig) {

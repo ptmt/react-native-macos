@@ -23,6 +23,7 @@ var {
   Text,
   // TextInput,
   TouchableHighlight,
+  ScrollView,
   View,
 } = React;
 var createExamplePage = require('./createExamplePage');
@@ -37,12 +38,12 @@ class ListView extends React.Component {
       var componentRows = this.props.dataSource.components.map(c => this.props.renderRow(c));
       var apiRows = this.props.dataSource.apis.map(c => this.props.renderRow(c));
       return (
-        <View>
+        <ScrollView>
           {this.props.renderSectionHeader(null, 'Components:')}
           {componentRows}
           {this.props.renderSectionHeader(null, 'APIs:')}
           {apiRows}
-        </View>
+        </ScrollView>
       );
     }
 }
@@ -122,19 +123,16 @@ class UIExplorerListBase extends React.Component {
   renderRow(example: any, i: number) {
     var selected = this.state.selected === example.title ? styles.selectedRow : {};
     return (
-      <View key={i}>
-        <TouchableHighlight onPress={() => this.onPressRow(example)}>
-          <View style={[styles.row, selected]}>
-            <Text style={styles.rowTitleText}>
-              {example.title}
-            </Text>
-            <Text style={styles.rowDetailText}>
-              {example.description}
-            </Text>
-          </View>
-        </TouchableHighlight>
-        <View style={styles.separator} />
-      </View>
+      <TouchableHighlight onPress={() => this.onPressRow(example)} key={i} style={[styles.row, selected]}>
+        <View>
+          <Text style={styles.rowTitleText}>
+            {example.title}
+          </Text>
+          <Text style={styles.rowDetailText}>
+            {example.description}
+          </Text>
+        </View>
+      </TouchableHighlight>
     );
   }
 
@@ -192,6 +190,7 @@ var styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 15,
     paddingVertical: 8,
+    borderBottomColor: 'white'
   },
   separator: {
     height: 1,//PixelRatio.get(),

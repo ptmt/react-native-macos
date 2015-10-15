@@ -19,9 +19,11 @@
 static NSView *RCTViewHitTest(NSView *view, CGPoint point)
 {
   for (NSView *subview in [view.subviews reverseObjectEnumerator]) {
-    if (!subview.isHidden) { //subview.alpha > 0
-      CGPoint convertedPoint = [subview convertPoint:point fromView:view];
+    if (!subview.isHidden && subview.layer.opacity > 0) { //subview.alpha > 0
+      CGPoint convertedPoint = [subview convertPoint:point fromView:nil];
+
       NSView *subviewHitTestView = [subview hitTest:convertedPoint];
+      //NSLog(@"test %d from %lu reactTag: %@ convertedPoint %f %f", (subviewHitTestView != nil), (unsigned long)view.subviews.count, subviewHitTestView.reactTag, convertedPoint.x, convertedPoint.y);
       if (subviewHitTestView != nil) {
         return subviewHitTestView;
       }
@@ -140,6 +142,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   return RCTRecursiveAccessibilityLabel(self);
 }
 
+
 - (BOOL)isFlipped
 {
   return YES;
@@ -183,7 +186,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 //      RCTLogError(@"Invalid pointer-events specified %zd on %@", _pointerEvents, self);
 //      return [super hitTest:point withEvent:event];
 //  }
-  return [super hitTest:point];
+  return RCTViewHitTest(self, point) ?: [super hitTest:point]; // ;
 }
 
 - (BOOL)accessibilityActivate
@@ -528,7 +531,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)viewWillDraw
 {
-  [super viewWillDraw];
+  //[super viewWillDraw];
 }
 
 - (void)drawRect:(CGRect)dirtyRect

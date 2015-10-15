@@ -187,7 +187,8 @@ static inline CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
     }
 
     [layoutManager enumerateEnclosingRectsForGlyphRange:range withinSelectedGlyphRange:range inTextContainer:textContainer usingBlock:^(CGRect enclosingRect, __unused BOOL *__) {
-      NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:CGRectInset(enclosingRect, -2, -2) xRadius:-2 yRadius:-2];
+      //NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:CGRectInset(enclosingRect, -2, -2) xRadius:-2 yRadius:-2];
+      NSBezierPath *path = [NSBezierPath bezierPathWithRect:CGRectInset(enclosingRect, 0, 0)];
       if (highlightPath) {
         [highlightPath appendBezierPath:path];
       } else {

@@ -65,12 +65,12 @@ var ReactNative = Object.assign(Object.create(require('React')), {
   // LayoutAnimation: require('LayoutAnimation'),
   // LinkingIOS: require('LinkingIOS'),
   NetInfo: require('NetInfo'),
-  // PanResponder: require('PanResponder'),
-  // PixelRatio: require('PixelRatio'),
+  //PanResponder: require('PanResponder'),
+  PixelRatio: require('PixelRatio'),
   // PushNotificationIOS: require('PushNotificationIOS'),
   Settings: require('Settings'),
   // StatusBarIOS: require('StatusBarIOS'),
-   StyleSheet: require('StyleSheet'),
+  StyleSheet: require('StyleSheet'),
   // VibrationIOS: require('VibrationIOS'),
 
   // Plugins

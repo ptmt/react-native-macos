@@ -89,20 +89,7 @@ var ScrollView = React.createClass({
      * @platform ios
      */
     bouncesZoom: PropTypes.bool,
-    /**
-     * When true, the scroll view bounces horizontally when it reaches the end
-     * even if the content is smaller than the scroll view itself. The default
-     * value is true when `horizontal={true}` and false otherwise.
-     * @platform ios
-     */
-    alwaysBounceHorizontal: PropTypes.bool,
-    /**
-     * When true, the scroll view bounces vertically when it reaches the end
-     * even if the content is smaller than the scroll view itself. The default
-     * value is false when `horizontal={true}` and true otherwise.
-     * @platform ios
-     */
-    alwaysBounceVertical: PropTypes.bool,
+
     /**
      * When true, the scroll view automatically centers the content when the
      * content is smaller than the scroll view bounds; when the content is
@@ -363,41 +350,29 @@ var ScrollView = React.createClass({
         {this.props.children}
       </View>;
 
-    var alwaysBounceHorizontal =
-      this.props.alwaysBounceHorizontal !== undefined ?
-        this.props.alwaysBounceHorizontal :
-        this.props.horizontal;
-
-    var alwaysBounceVertical =
-      this.props.alwaysBounceVertical !== undefined ?
-        this.props.alwaysBounceVertical :
-        !this.props.horizontal;
-
     var props = {
       ...this.props,
-      alwaysBounceHorizontal,
-      alwaysBounceVertical,
       style: ([styles.base, this.props.style]: ?Array<any>),
-      onTouchStart: this.scrollResponderHandleTouchStart,
-      onTouchMove: this.scrollResponderHandleTouchMove,
-      onTouchEnd: this.scrollResponderHandleTouchEnd,
-      onScrollBeginDrag: this.scrollResponderHandleScrollBeginDrag,
-      onScrollEndDrag: this.scrollResponderHandleScrollEndDrag,
-      onMomentumScrollBegin: this.scrollResponderHandleMomentumScrollBegin,
-      onMomentumScrollEnd: this.scrollResponderHandleMomentumScrollEnd,
-      onStartShouldSetResponder: this.scrollResponderHandleStartShouldSetResponder,
-      onStartShouldSetResponderCapture: this.scrollResponderHandleStartShouldSetResponderCapture,
-      onScrollShouldSetResponder: this.scrollResponderHandleScrollShouldSetResponder,
-      onScroll: this.handleScroll,
-      onResponderGrant: this.scrollResponderHandleResponderGrant,
-      onResponderTerminationRequest: this.scrollResponderHandleTerminationRequest,
-      onResponderTerminate: this.scrollResponderHandleTerminate,
-      onResponderRelease: this.scrollResponderHandleResponderRelease,
-      onResponderReject: this.scrollResponderHandleResponderReject,
+      // onTouchStart: this.scrollResponderHandleTouchStart,
+      // onTouchMove: this.scrollResponderHandleTouchMove,
+      // onTouchEnd: this.scrollResponderHandleTouchEnd,
+      // onScrollBeginDrag: this.scrollResponderHandleScrollBeginDrag,
+      // onScrollEndDrag: this.scrollResponderHandleScrollEndDrag,
+      // onMomentumScrollBegin: this.scrollResponderHandleMomentumScrollBegin,
+      // onMomentumScrollEnd: this.scrollResponderHandleMomentumScrollEnd,
+      // onStartShouldSetResponder: this.scrollResponderHandleStartShouldSetResponder,
+      // onStartShouldSetResponderCapture: this.scrollResponderHandleStartShouldSetResponderCapture,
+      // onScrollShouldSetResponder: this.scrollResponderHandleScrollShouldSetResponder,
+      // onScroll: this.handleScroll,
+      // onResponderGrant: this.scrollResponderHandleResponderGrant,
+      // onResponderTerminationRequest: this.scrollResponderHandleTerminationRequest,
+      // onResponderTerminate: this.scrollResponderHandleTerminate,
+      // onResponderRelease: this.scrollResponderHandleResponderRelease,
+      // onResponderReject: this.scrollResponderHandleResponderReject,
     };
 
     var ScrollViewClass;
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === 'ios' || Platform.OS === 'osx') {
       ScrollViewClass = RCTScrollView;
     } else if (Platform.OS === 'android') {
       if (this.props.horizontal) {
@@ -431,8 +406,6 @@ var styles = StyleSheet.create({
 
 var validAttributes = {
   ...ReactNativeViewAttributes.UIView,
-  alwaysBounceHorizontal: true,
-  alwaysBounceVertical: true,
   automaticallyAdjustContentInsets: true,
   bounces: true,
   centerContent: true,
@@ -467,7 +440,7 @@ if (Platform.OS === 'android') {
     validAttributes: validAttributes,
     uiViewClassName: 'AndroidHorizontalScrollView',
   });
-} else if (Platform.OS === 'ios') {
+} else if (Platform.OS === 'ios' || Platform.OS === 'osx') {
   var RCTScrollView = requireNativeComponent('RCTScrollView', ScrollView);
 }
 

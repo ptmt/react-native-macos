@@ -276,7 +276,6 @@ ReactNativeBaseComponent.Mixin = {
       nativeTopRootID ? ReactNativeTagHandles.rootNodeIDToTag[nativeTopRootID] : null,
       updatePayload
     );
-
     this._registerListenersUponCreation(this._currentElement.props);
     this.initializeChildren(
       this._currentElement.props.children,
