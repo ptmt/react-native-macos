@@ -138,6 +138,27 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return NO;
 }
 
+- (void)viewDidMoveToWindow {
+  [self addTrackingRect:self.frame owner:self userData:nil assumeInside:YES];
+}
+
+- (void)mouseEntered:(__unused NSEvent *)theEvent {
+  [[self window] setAcceptsMouseMovedEvents:YES];
+  [[self window] makeFirstResponder:self];
+
+}
+
+- (void)mouseMoved:(NSEvent *)theEvent
+{
+  //TODO:
+  [((RCTTouchHandler *)self.gestureRecognizers.firstObject) mouseMoved:theEvent];
+}
+
+- (void)mouseExited:(__unused NSEvent *)theEvent
+{
+  [[self window] setAcceptsMouseMovedEvents:NO];
+}
+
 - (void)setLoadingView:(NSView *)loadingView
 {
   NSLog(@"RCTRootView: setLoadingView");
@@ -269,6 +290,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return self;
 }
 
+
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame:(CGRect)frame)
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
 
@@ -317,8 +339,13 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
    */
   self.reactTag = [_bridge.uiManager allocateRootTag];
   [self addGestureRecognizer:[[RCTTouchHandler alloc] initWithBridge:_bridge]];
+
   [_bridge.uiManager registerRootView:self];
 }
+
+
+//- mouseEntered:
+//- mouseExited:
 
 - (void)invalidate
 {

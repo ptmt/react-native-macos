@@ -64,7 +64,6 @@ var IOSNativeBridgeEventPlugin = {
       topLevelTargetID,
       nativeEvent
     );
-    console.log('topLevelType', topLevelTarget);
     if (bubbleDispatchConfig) {
       EventPropagators.accumulateTwoPhaseDispatches(event);
     } else if (directDispatchConfig) {

@@ -28,7 +28,7 @@
 -(id)init
 {
   if(self = [super init]) {
-    NSRect contentSize = NSMakeRect(200, 500, 1000, 500);
+    NSRect contentSize = NSMakeRect(200, 500, 1000, 500); // TODO: should not be hardcoded
 
     self.window = [[NSWindow alloc] initWithContentRect:contentSize
                                               styleMask:NSTitledWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask
@@ -36,15 +36,12 @@
                                                   defer:NO];
     NSWindowController *windowController = [[NSWindowController alloc] initWithWindow:self.window];
 
-//
+    [[self window] setTitle:@"UIExplorerApp"];
 
-    [self.window setTitle:@"UIExplorerApp"];
-    //
     [windowController setShouldCascadeWindows:NO];
     [windowController setWindowFrameAutosaveName:@"UIExplorer"];
 
     [windowController showWindow:self.window];
-//    [self.window makeKeyAndOrderFront:nil];
 
   }
   return self;

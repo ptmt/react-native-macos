@@ -90,8 +90,7 @@ var styles = StyleSheet.create({
   },
   welcomeText: {
     color: '#999',
-    fontSize: 50,
-    fontFamily: 'San Francisco'
+    fontSize: 30,
   }
 });
 

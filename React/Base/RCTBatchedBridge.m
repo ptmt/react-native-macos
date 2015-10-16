@@ -183,8 +183,6 @@ RCT_EXTERN NSArray *RCTGetModuleClasses(void);
 
 - (void)loadSource:(RCTSourceLoadBlock)_onSourceLoad
 {
-  NSLog(@"RCTBatchedBridge: loadSource");
-
   RCTPerformanceLoggerStart(RCTPLScriptDownload);
   int cookie = RCTProfileBeginAsyncEvent(0, @"JavaScript download", nil);
 
@@ -358,7 +356,6 @@ RCT_EXTERN NSArray *RCTGetModuleClasses(void);
 
     // Register the display link to start sending js calls after everything is setup
     NSRunLoop *targetRunLoop = [_javaScriptExecutor isKindOfClass:[RCTContextExecutor class]] ? [NSRunLoop currentRunLoop] : [NSRunLoop mainRunLoop];
-    NSLog(@"start sending js calls");
     [targetRunLoop addTimer:_jsTimer forMode:NSRunLoopCommonModes];
 
     // Perform the state update and notification on the main thread, so we can't run into

@@ -18,6 +18,7 @@
 //@property (nonatomic, weak) NSObject<NSScrollViewDelegate> *nativeMainScrollDelegate;
 @property (nonatomic, readonly) CGSize contentSize;
 
+- (void)scrollWheel:(NSEvent *)theEvent;
 - (void)scrollToOffset:(CGPoint)offset;
 - (void)scrollToOffset:(CGPoint)offset animated:(BOOL)animated;
 - (void)zoomToRect:(CGRect)rect animated:(BOOL)animated;

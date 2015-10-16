@@ -362,7 +362,6 @@ function setResponderAndExtractTransfer(
     EventPropagators.accumulateTwoPhaseDispatches(shouldSetEvent);
   }
   var wantsResponderID = executeDispatchesInOrderStopAtTrue(shouldSetEvent);
-  console.log('wantsResponderID', wantsResponderID);
   if (!shouldSetEvent.isPersistent()) {
     shouldSetEvent.constructor.release(shouldSetEvent);
   }

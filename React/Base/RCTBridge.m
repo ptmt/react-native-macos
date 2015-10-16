@@ -250,7 +250,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 - (void)setUp
 {
   RCTAssertMainThread();
-  NSLog(@"RCTBridge setUp");
   _bundleURL = [self.delegate sourceURLForBridge:self] ?: _bundleURL;
   _batchedBridge = [[RCTBatchedBridge alloc] initWithParentBridge:self];
 }

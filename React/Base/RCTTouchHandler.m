@@ -80,27 +80,30 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
     RCTAssert(![_nativeTouches containsObject:touch],
               @"Touch is already recorded. This is a critical bug.");
 
+    // TODO: This is a highly disgusting workaround. Need to find out how to get right position
+    // At the moment, because the view is flipped we compensate the header's height
+    NSPoint touchLocation = CGPointMake([touch locationInWindow].x, (self.view.window.frame.size.height - 25 - [touch locationInWindow].y));
+    //self.view convertPoint:[touch locationInWindow] fromView:nil];
+
+
     // Find closest React-managed touchable view
 
-    NSView *targetView = [self.view hitTest:touch.locationInWindow];
-    while (targetView) {
-//      if (targetView.reactTag && targetView.userInteractionEnabled &&
-//          [targetView reactRespondsToTouch:touch]) {
-//        break;
-//      }
-        if (targetView.reactTag && [targetView reactRespondsToTouch:touch]) {
-              break;
-        }
+    NSView *targetView = self.view;
+//    while (targetView) {
+////      if (targetView.reactTag && targetView.userInteractionEnabled &&
+////          [targetView reactRespondsToTouch:touch]) {
+////        break;
+////      }
+//        if (targetView.reactTag && [targetView reactRespondsToTouch:touch]) {
+//              break;
+//        }
+//
+//      targetView = targetView.superview;
+//    }
 
-      targetView = targetView.superview;
-    }
+    NSNumber *reactTag = [self.view reactTagAtPoint:CGPointMake(touchLocation.x, touchLocation.y)];
 
-    // TODO: This is temporary workaround. Find out how to get right position
-    NSPoint touchLocation = [self.view.window.contentView convertPoint:[touch locationInWindow] fromView:nil];
-
-    NSNumber *reactTag = [targetView reactTagAtPoint:CGPointMake(touchLocation.x, touchLocation.y)];
-
-    //NSLog(@"touchLocation: %f %f %@", touchLocation.x, touchLocation.y, reactTag);
+    NSLog(@"touchLocation: %f %f %@", touchLocation.x, touchLocation.y, reactTag);
 
     if (!reactTag) {// || !targetView.userInteractionEnabled) {
       return;
@@ -282,6 +285,12 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
     [self _updateAndDispatchTouches:touches eventName:@"touchMove" originatingTime:event.timestamp];
     self.state = NSGestureRecognizerStateChanged;
   }
+}
+
+- (void)mouseMoved:(NSEvent *)event
+{
+  NSSet *touches = [NSSet setWithObject:event];
+  [self _updateAndDispatchTouches:touches eventName:@"mouseMove" originatingTime:event.timestamp];
 }
 
 - (void)mouseUp:(NSEvent *)event

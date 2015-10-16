@@ -72,20 +72,20 @@ static NSView *RCTViewHitTest(NSView *view, CGPoint point)
   NSView *testView = self;
   NSView *clipView = nil;
   CGRect clipRect = self.bounds;
-  NSLog(@"react_findClipView");
+
   while (testView) {
-//    if (testView.clipsToBounds) {
-//      if (clipView) {
-//        CGRect testRect = [clipView convertRect:clipRect toView:testView];
-//        if (!CGRectContainsRect(testView.bounds, testRect)) {
-//          clipView = testView;
-//          clipRect = CGRectIntersection(testView.bounds, testRect);
-//        }
-//      } else {
-//        clipView = testView;
-//        clipRect = [self convertRect:self.bounds toView:clipView];
-//      }
-//    }
+    if (testView.wantsDefaultClipping) {
+      if (clipView) {
+        CGRect testRect = [clipView convertRect:clipRect toView:testView];
+        if (!CGRectContainsRect(testView.bounds, testRect)) {
+          clipView = testView;
+          clipRect = CGRectIntersection(testView.bounds, testRect);
+        }
+      } else {
+        clipView = testView;
+        clipRect = [self convertRect:self.bounds toView:clipView];
+      }
+    }
     testView = testView.superview;
   }
   return clipView ?: self.window;
@@ -153,12 +153,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 //  return NO;
 //}
 
-//- (void)mouseDown:(NSEvent *)theEvent {
-//  NSLog(@" mouseDown");
-//  [super mouseDown:theEvent];
-//  // let's fire the event
-//}
-
 - (void)setPointerEvents:(RCTPointerEvents)pointerEvents
 {
    NSLog(@" setPointerEvents");
@@ -172,7 +166,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (NSView *)hitTest:(CGPoint)point
 {
-  // TODO:
+  // TODO: pointerEvents
 //  switch (_pointerEvents) {
 //    case RCTPointerEventsNone:
 //      return nil;
@@ -186,7 +180,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 //      RCTLogError(@"Invalid pointer-events specified %zd on %@", _pointerEvents, self);
 //      return [super hitTest:point withEvent:event];
 //  }
-  return RCTViewHitTest(self, point) ?: [super hitTest:point]; // ;
+  return [super hitTest:point];
 }
 
 - (BOOL)accessibilityActivate
@@ -306,6 +300,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)mountOrUnmountSubview:(NSView *)view withClipRect:(CGRect)clipRect relativeToView:(NSView *)clipView
 {
+  NSLog(@"mountOrUnmounSubview isn't implemented yet");
 //  if (view.clipsToBounds) {
 //
 //    // View has cliping enabled, so we can easily test if it is partially
@@ -370,9 +365,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   // Convert clipping rect to local coordinates
   clipRect = [clipView convertRect:clipRect toView:self];
   clipView = self;
-//  if (self.clipsToBounds) {
-//    clipRect = CGRectIntersection(clipRect, self.bounds);
-//  }
+  if (self.wantsDefaultClipping) {
+    clipRect = CGRectIntersection(clipRect, self.bounds);
+  }
 
   // Mount / unmount views
   for (NSView *view in _reactSubviews) {
@@ -459,7 +454,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
     [self updateClippedSubviews];
   }
 }
-
 
 #pragma mark - Borders
 

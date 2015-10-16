@@ -440,7 +440,9 @@ if (Platform.OS === 'android') {
     validAttributes: validAttributes,
     uiViewClassName: 'AndroidHorizontalScrollView',
   });
-} else if (Platform.OS === 'ios' || Platform.OS === 'osx') {
+} else if (Platform.OS === 'ios') {
+  var RCTScrollView = requireNativeComponent('RCTScrollView', ScrollView);
+} else if (Platform.OS === 'osx') {
   var RCTScrollView = requireNativeComponent('RCTScrollView', ScrollView);
 }
 

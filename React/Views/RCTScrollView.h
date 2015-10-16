@@ -14,9 +14,9 @@
 #import "RCTScrollableProtocol.h"
 #import "RCTView.h"
 
-//@protocol NSScrollViewDelegate;
+@protocol NSScrollViewDelegate;
 
-// TODO: http://stackoverflow.com/questions/5169355/callbacks-when-an-nsscrollview-is-scrolled
+// http://stackoverflow.com/questions/5169355/callbacks-when-an-nsscrollview-is-scrolled
 
 @interface RCTScrollView: RCTView <RCTScrollableProtocol, RCTAutoInsetsProtocol>
 

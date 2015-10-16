@@ -17,4 +17,6 @@
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge NS_DESIGNATED_INITIALIZER;
 
+- (void)mouseMoved:(NSEvent *)theEvent;
+
 @end

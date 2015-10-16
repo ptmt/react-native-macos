@@ -18,7 +18,7 @@
 
 var React = require('react-native-desktop');
 var {
-  //ScrollView,
+  ScrollView,
   StyleSheet,
   View,
 } = React;
@@ -49,7 +49,7 @@ var UIExplorerPage = React.createClass({
       null;
     var spacer = this.props.noSpacer ? null : <View style={styles.spacer} />;
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         {title}
         <ContentWrapper
           style={styles.wrapper}
@@ -57,7 +57,7 @@ var UIExplorerPage = React.createClass({
             {this.props.children}
             {spacer}
         </ContentWrapper>
-      </View>
+      </ScrollView>
     );
   },
 });
