@@ -20,6 +20,7 @@
   NSMutableArray *_reactSubviews;
   BOOL _jsRequestingFirstResponder;
   NSInteger _nativeEventCount;
+  NSString * _placeholderString;
 }
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
@@ -31,6 +32,9 @@
 //    [self addTarget:self action:@selector(textFieldBeginEditing) forControlEvents:UIControlEventEditingDidBegin];
 //    [self addTarget:self action:@selector(textFieldEndEditing) forControlEvents:UIControlEventEditingDidEnd];
 //    [self addTarget:self action:@selector(textFieldSubmitEditing) forControlEvents:UIControlEventEditingDidEndOnExit];
+//    self.bezeled         = NO;
+//    self.editable        = NO;
+    self.drawsBackground = NO;
     _reactSubviews = [NSMutableArray new];
   }
   return self;
@@ -51,29 +55,32 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
-static void RCTUpdatePlaceholder(RCTTextField *self)
-{
-//  if (self.placeholder.length > 0 && self.placeholderTextColor) {
-//    self.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.placeholder
-//                                                                 attributes:@{
-//                                                                              NSForegroundColorAttributeName : self.placeholderTextColor
-//                                                                              }];
-//  } else if (self.placeholder.length) {
-//    self.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.placeholder];
-//  }
-}
 
 - (void)setPlaceholderTextColor:(NSColor *)placeholderTextColor
 {
-  _placeholderTextColor = placeholderTextColor;
-  RCTUpdatePlaceholder(self);
+  if (placeholderTextColor != nil && ![_placeholderTextColor isEqual:placeholderTextColor]) {
+    _placeholderTextColor = placeholderTextColor;
+    [self setNeedsDisplay:YES];
+  }
 }
 
 - (void)setPlaceholder:(NSString *)placeholder
 {
-  self.placeholder = placeholder;
-  RCTUpdatePlaceholder(self);
+  if (placeholder != nil && ![_placeholderString isEqual:placeholder]) {
+    _placeholderString = placeholder;
+    [self setPlaceholderString:placeholder];
+    [self setNeedsDisplay:YES];
+  }
 }
+
+//- (void)drawRect:(NSRect)rect
+//{
+//  [super drawRect:rect];
+//  if ([[self stringValue] isEqualToString:@""] && self != [[self window] firstResponder] && _placeholderTextColor != nil) {
+//    NSDictionary *txtDict = [NSDictionary dictionaryWithObjectsAndKeys:_placeholderTextColor, NSForegroundColorAttributeName, nil];
+//    [[[NSAttributedString alloc] initWithString:_placeholderString attributes:txtDict] drawAtPoint:NSMakePoint(0,0)];
+//  }
+//}
 
 - (NSArray *)reactSubviews
 {

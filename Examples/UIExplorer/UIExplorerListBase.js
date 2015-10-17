@@ -21,7 +21,7 @@ var {
   // PixelRatio,
   StyleSheet,
   Text,
-  // TextInput,
+  TextInput,
   TouchableHighlight,
   ScrollView,
   View,
@@ -89,23 +89,16 @@ class UIExplorerListBase extends React.Component {
   }
 
   renderTextInput(searchTextInputStyle: any) {
-    // return (
-    //   <View style={styles.searchRow}>
-    //     <TextInput
-    //       autoCapitalize="none"
-    //       autoCorrect={false}
-    //       clearButtonMode="always"
-    //       onChangeText={this.search.bind(this)}
-    //       placeholder="Search..."
-    //       style={[styles.searchTextInput, searchTextInputStyle]}
-    //       testID="explorer_search"
-    //       value={this.state.searchText}
-    //     />
-    //   </View>
-    // );
     return (
       <View style={styles.searchRow}>
-        <Text style={[styles.searchTextInput]}>Search...</Text>
+        <TextInput
+          clearButtonMode="always"
+          onChangeText={this.search.bind(this)}
+          placeholder="Search..."
+          placeholderTextColor={'#ccc'}
+          style={[styles.searchTextInput, searchTextInputStyle]}
+          testID="explorer_search"
+          value={this.state.searchText} />
       </View>
     );
   }
@@ -216,7 +209,7 @@ var styles = StyleSheet.create({
   searchTextInput: {
     fontWeight: '200',
     fontSize: 12,
-    textAlign: 'center'
+    //textAlign: 'center'
   },
   selectedRow: {
     backgroundColor: '#fffd7e'

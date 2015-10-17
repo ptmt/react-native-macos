@@ -443,7 +443,7 @@ if (Platform.OS === 'android') {
 } else if (Platform.OS === 'ios') {
   var RCTScrollView = requireNativeComponent('RCTScrollView', ScrollView);
 } else if (Platform.OS === 'osx') {
-  var RCTScrollView = requireNativeComponent('RCTScrollView', ScrollView);
+  var RCTScrollView = requireNativeComponent('RCTNativeScrollView', ScrollView);
 }
 
 module.exports = ScrollView;

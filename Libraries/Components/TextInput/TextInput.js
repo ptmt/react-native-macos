@@ -181,12 +181,6 @@ var TextInput = React.createClass({
      */
     numberOfLines: PropTypes.number,
     /**
-     * If true, the keyboard disables the return key when there is no text and
-     * automatically enables it when there is text. The default value is false.
-     * @platform ios
-     */
-    enablesReturnKeyAutomatically: PropTypes.bool,
-    /**
      * If true, the text input can be multiple lines.
      * The default value is false.
      */
@@ -296,7 +290,7 @@ var TextInput = React.createClass({
    */
   mixins: [NativeMethodsMixin, TimerMixin],
 
-  viewConfig: ((Platform.OS === 'ios' ? RCTTextField.viewConfig :
+  viewConfig: ((Platform.OS === 'ios' || Platform.OS === 'osx' ? RCTTextField.viewConfig :
     (Platform.OS === 'android' ? AndroidTextInput.viewConfig : {})) : Object),
 
   isFocused: function(): boolean {
@@ -359,7 +353,7 @@ var TextInput = React.createClass({
   },
 
   render: function() {
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === 'ios' || Platform.OS === 'osx') {
       return this._renderIOS();
     } else if (Platform.OS === 'android') {
       return this._renderAndroid();
@@ -374,7 +368,6 @@ var TextInput = React.createClass({
 
   _renderIOS: function() {
     var textContainer;
-
     var props = Object.assign({}, this.props);
     props.style = [styles.input, this.props.style];
     if (!props.multiline) {

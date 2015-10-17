@@ -25,11 +25,8 @@ var {
   View,
   Text,
   Dimensions,
-  ScrollView,
   TouchableHighlight
 } = React;
-
-console.log(Dimensions.get('window'));
 
 class UIExplorerApp extends React.Component {
 

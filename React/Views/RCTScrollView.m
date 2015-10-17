@@ -899,7 +899,7 @@ if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
 
 @implementation RCTNativeScrollView
 {
-  NSColor * _backgroundColor;
+  NSColor * _backgroundColor; // TODO: why?
 }
 
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
@@ -909,13 +909,20 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 {
   if ((self = [super initWithFrame:CGRectZero])) {
     _backgroundColor = [NSColor clearColor];
+    [self setDrawsBackground:NO];
+
   }
   return self;
 }
 
 - (void)insertReactSubview:(NSView *)view atIndex:(__unused NSInteger)atIndex
 {
-  [self addSubview:view];
+  [self setDocumentView:view];
+}
+
+- (BOOL)opaque
+{
+  return NO;
 }
 
 - (void)removeReactSubview:(NSView *)subview
@@ -934,14 +941,16 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   if ([_backgroundColor isEqual:backgroundColor]) {
     return;
   }
+  _backgroundColor = backgroundColor;
 
   if (![self wantsLayer]) {
     CALayer *viewLayer = [CALayer layer];
     [viewLayer setBackgroundColor:[backgroundColor CGColor]];
     [self setLayer:viewLayer];
     [self setWantsLayer:YES];
+  } else {
+    [self.layer setBackgroundColor:[backgroundColor CGColor]];
   }
-  [self.layer setBackgroundColor:[backgroundColor CGColor]];
   [self.layer setNeedsDisplay];
   [self setNeedsDisplay:YES];
 }

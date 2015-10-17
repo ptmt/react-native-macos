@@ -49,7 +49,7 @@ var COMPONENTS = [
   // require('./SwitchIOSExample'),
   // require('./TabBarIOSExample'),
   require('./TextExample.ios'),
-  //require('./TextInputExample.ios'),
+  require('./TextInputExample.osx'),
   //require('./TouchableExample'),
   require('./ViewExample'),
 //  require('./WebViewExample'),
