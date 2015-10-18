@@ -8,7 +8,7 @@
  */
 
 #import <QuartzCore/QuartzCore.h>
-
+#import <AppKit/AppKit.h>
 #import "RCTBridge.h"
 #import "RCTDevLoadingView.h"
 #import "RCTDefines.h"
@@ -20,8 +20,8 @@ static BOOL isEnabled = YES;
 
 @implementation RCTDevLoadingView
 {
-  UIWindow *_window;
-  UILabel *_label;
+  NSWindow *_window;
+  NSTextField *_label;
   NSDate *_showDate;
 }
 
@@ -72,18 +72,23 @@ RCT_EXPORT_MODULE()
 
     _showDate = [NSDate date];
     if (!_window && !RCTRunningInTestEnvironment()) {
-      CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
-      _window = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, screenWidth, 22)];
-      _window.backgroundColor = [UIColor blackColor];
-      _window.windowLevel = UIWindowLevelStatusBar + 1;
+      CGFloat screenWidth = [NSScreen mainScreen].frame.size.width;
+      _window = [[NSWindow alloc]
+                 initWithContentRect:CGRectMake(0, 0, screenWidth, 22)
+                 styleMask:0
+                 backing:NSBackingStoreBuffered
+                 defer:NO];
 
-      _label = [[UILabel alloc] initWithFrame:_window.bounds];
-      _label.font = [UIFont systemFontOfSize:12.0];
-      _label.textColor = [UIColor grayColor];
-      _label.textAlignment = NSTextAlignmentCenter;
+      _window.backgroundColor = [NSColor blackColor];
+      [_window setLevel:NSScreenSaverWindowLevel + 1];
 
-      [_window addSubview:_label];
-      [_window makeKeyAndVisible];
+      _label = [[NSTextField alloc] initWithFrame:_window.frame];
+      _label.font = [NSFont systemFontOfSize:12.0];
+      _label.textColor = [NSColor grayColor];
+      [_label setAlignment:NSCenterTextAlignment];
+
+      [_window setContentView:_label];
+      [_window makeKeyAndOrderFront:nil];
     }
 
     NSString *source;
@@ -93,8 +98,8 @@ RCT_EXPORT_MODULE()
       source = [NSString stringWithFormat:@"%@:%@", URL.host, URL.port];
     }
 
-    _label.text = [NSString stringWithFormat:@"Loading from %@...", source];
-    _window.hidden = NO;
+    [_label setStringValue:[NSString stringWithFormat:@"Loading from %@...", source]];
+    //_window.hidden = NO;
 
   });
 }
@@ -110,18 +115,16 @@ RCT_EXPORT_MODULE()
     const NSTimeInterval MIN_PRESENTED_TIME = 0.6;
     NSTimeInterval presentedTime = [[NSDate date] timeIntervalSinceDate:_showDate];
     NSTimeInterval delay = MAX(0, MIN_PRESENTED_TIME - presentedTime);
-
+    [NSThread sleepForTimeInterval:delay]; // blocking the thread
     CGRect windowFrame = _window.frame;
-    [UIView animateWithDuration:0.25
-                          delay:delay
-                        options:0
-                     animations:^{
-                       _window.frame = CGRectOffset(windowFrame, 0, -windowFrame.size.height);
-                     } completion:^(__unused BOOL finished) {
-                       _window.frame = windowFrame;
-                       _window.hidden = YES;
-                       _window = nil;
-                     }];
+
+    [NSAnimationContext beginGrouping];
+    [[NSAnimationContext currentContext] setDuration:0.25];
+    [_window setFrame: CGRectOffset(windowFrame, 0, -windowFrame.size.height) display:YES animate:YES];
+    [NSAnimationContext endGrouping];
+    [_window setFrame: windowFrame display:NO animate:YES];
+    _window = nil;
+
   });
 }
 

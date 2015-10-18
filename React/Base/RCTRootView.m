@@ -214,7 +214,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   
   [_contentView removeFromSuperview];
   _contentView = [[RCTRootContentView alloc] initWithFrame:self.bounds bridge:bridge];
-  //[_contentView setBackgroundColor:[NSColor blueColor]];// TODO why?
   [self addSubview:_contentView];
 
   NSString *moduleName = _moduleName ?: @"";

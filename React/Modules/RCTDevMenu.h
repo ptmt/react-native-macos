@@ -69,7 +69,7 @@
 /**
  * Developer menu item, used to expose additional functionality via the menu.
  */
-@interface RCTDevMenuItem : NSObject
+@interface RCTDevMenuItem : NSMenuItem
 
 /**
  * This creates an item with a simple push-button interface, used to trigger an

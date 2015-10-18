@@ -78,7 +78,7 @@ var styles = StyleSheet.create({
     backgroundColor: '#333'
   },
   rightPanel: {
-    width: 1000,
+    width: 450,
   },
   welcomeWrapper: {
     flex: 1,
@@ -87,7 +87,7 @@ var styles = StyleSheet.create({
   },
   welcomeText: {
     color: '#999',
-    fontSize: 30,
+    fontSize: 20,
   }
 });
 

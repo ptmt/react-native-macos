@@ -62,7 +62,8 @@ RCT_EXPORT_MODULE()
   [_socket setDelegateDispatchQueue:_jsQueue];
 
   NSURL *startDevToolsURL = [NSURL URLWithString:@"/launch-chrome-devtools" relativeToURL:_url];
-  [NSURLConnection connectionWithRequest:[NSURLRequest requestWithURL:startDevToolsURL] delegate:nil];
+  [[NSURLSession sharedSession] dataTaskWithRequest:[[NSURLRequest alloc] initWithURL:startDevToolsURL]];
+  //[NSURLConnection connectionWithRequest:[NSURLRequest requestWithURL:startDevToolsURL] delegate:nil];
 
   if (![self connectToProxy]) {
     RCTLogError(@"Connection to %@ timed out. Are you running node proxy? If \

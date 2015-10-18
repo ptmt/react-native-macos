@@ -217,7 +217,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
                                                name:RCTReloadNotification
                                              object:nil];
 
-  // TODO: Add keboard listener to refresh it in debug
   RCTKeyCommands *commands = [RCTKeyCommands sharedInstance];
 
   // reload in current mode

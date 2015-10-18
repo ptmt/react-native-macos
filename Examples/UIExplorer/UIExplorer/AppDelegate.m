@@ -42,7 +42,19 @@
     [windowController setWindowFrameAutosaveName:@"UIExplorer"];
 
     [windowController showWindow:self.window];
-
+//
+//    NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:@"Developer" action:nil keyEquivalent:@"d"];
+//    NSMenuItem *item2 = [[NSMenuItem alloc] initWithTitle:@"Developer2" action:nil keyEquivalent:@"d"];
+//    NSMenu *newMenu = [[NSMenu alloc] initWithTitle:@"Developer"];
+//    [newMenu addItem:item2];
+//    [item setSubmenu: newMenu];
+    NSMenu *mainMenu = [[NSMenu alloc] initWithTitle:@"" ];
+    NSMenuItem *containerItem = [[NSMenuItem alloc] init];
+    NSMenu *rootMenu = [[NSMenu alloc] initWithTitle:@"" ];
+    [containerItem setSubmenu:rootMenu];
+    [mainMenu addItem:containerItem];
+    [rootMenu addItemWithTitle:@"Quit UIExplorer" action:@selector((terminate)) keyEquivalent:@"Q"];
+    [NSApp setMainMenu:mainMenu];
   }
   return self;
 }

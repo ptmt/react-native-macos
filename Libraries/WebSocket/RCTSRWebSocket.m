@@ -17,7 +17,7 @@
 #import "RCTSRWebSocket.h"
 
 #import <Availability.h>
-#import <Endian.h>
+//#import <Endian.h>
 
 #import <Security/SecRandom.h>
 

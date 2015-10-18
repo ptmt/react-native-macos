@@ -8,7 +8,6 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <QuartzCore/CVDisplayLink.h>
 #import "AppKit/AppKit.h"
 
 //@class CVDisplayLink;

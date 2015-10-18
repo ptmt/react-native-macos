@@ -7,6 +7,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+#import <AppKit/AppKit.h>
+
 #import "RCTDevMenu.h"
 
 #import "RCTAssert.h"
@@ -33,16 +35,6 @@
 static NSString *const RCTShowDevMenuNotification = @"RCTShowDevMenuNotification";
 static NSString *const RCTDevMenuSettingsKey = @"RCTDevMenu";
 
-@implementation UIWindow (RCTDevMenu)
-
-- (void)RCT_motionEnded:(__unused UIEventSubtype)motion withEvent:(UIEvent *)event
-{
-  if (event.subtype == UIEventSubtypeMotionShake) {
-    [[NSNotificationCenter defaultCenter] postNotificationName:RCTShowDevMenuNotification object:nil];
-  }
-}
-
-@end
 
 typedef NS_ENUM(NSInteger, RCTDevMenuType) {
   RCTDevMenuTypeButton,
@@ -51,11 +43,13 @@ typedef NS_ENUM(NSInteger, RCTDevMenuType) {
 
 @interface RCTDevMenuItem ()
 
-@property (nonatomic, assign, readonly) RCTDevMenuType type;
+@property (nonatomic, assign, readonly) RCTDevMenuType itemType;
 @property (nonatomic, copy, readonly) NSString *key;
-@property (nonatomic, copy, readonly) NSString *title;
 @property (nonatomic, copy, readonly) NSString *selectedTitle;
 @property (nonatomic, copy) id value;
+@property (nonatomic, copy) NSString *hotKey;
+
+- (void)callHandler;
 
 @end
 
@@ -64,19 +58,22 @@ typedef NS_ENUM(NSInteger, RCTDevMenuType) {
   id _handler; // block
 }
 
-- (instancetype)initWithType:(RCTDevMenuType)type
+- (instancetype)initWithType:(RCTDevMenuType)itemType
                          key:(NSString *)key
                        title:(NSString *)title
                selectedTitle:(NSString *)selectedTitle
                      handler:(id /* block */)handler
 {
   if ((self = [super init])) {
-    _type = type;
+    _itemType = itemType;
     _key = [key copy];
-    _title = [title copy];
+    [self setTitle:title];
     _selectedTitle = [selectedTitle copy];
     _handler = [handler copy];
     _value = nil;
+    [self setAction:@selector(callHandler)];
+    [self setTarget:self];
+    // [self keyEquivalent:] TODO: key equeiavalent
   }
   return self;
 }
@@ -107,7 +104,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 - (void)callHandler
 {
-  switch (_type) {
+  switch (_itemType) {
     case RCTDevMenuTypeButton: {
       if (_handler) {
         ((void(^)())_handler)();
@@ -125,7 +122,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 @end
 
-@interface RCTDevMenu () <RCTBridgeModule, UIActionSheetDelegate, RCTInvalidating>
+@interface RCTDevMenu () <RCTBridgeModule, RCTInvalidating>
 
 @property (nonatomic, strong) Class executorClass;
 
@@ -133,7 +130,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 @implementation RCTDevMenu
 {
-  UIActionSheet *_actionSheet;
   NSUserDefaults *_defaults;
   NSMutableDictionary *_settings;
   NSURLSessionDataTask *_updateTask;
@@ -152,7 +148,7 @@ RCT_EXPORT_MODULE()
   // We're swizzling here because it's poor form to override methods in a category,
   // however UIWindow doesn't actually implement motionEnded:withEvent:, so there's
   // no need to call the original implementation.
-  RCTSwapInstanceMethods([UIWindow class], @selector(motionEnded:withEvent:), @selector(RCT_motionEnded:withEvent:));
+  //RCTSwapInstanceMethods([UIWindow class], @selector(motionEnded:withEvent:), @selector(RCT_motionEnded:withEvent:));
 }
 
 - (instancetype)init
@@ -160,11 +156,6 @@ RCT_EXPORT_MODULE()
   if ((self = [super init])) {
 
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-
-    [notificationCenter addObserver:self
-                           selector:@selector(showOnShake)
-                               name:RCTShowDevMenuNotification
-                             object:nil];
 
     [notificationCenter addObserver:self
                            selector:@selector(settingsDidChange)
@@ -211,21 +202,12 @@ RCT_EXPORT_MODULE()
       [weakSelf updateSettings:_settings];
     });
 
-#if TARGET_IPHONE_SIMULATOR
-
     RCTKeyCommands *commands = [RCTKeyCommands sharedInstance];
-
-    // Toggle debug menu
-    [commands registerKeyCommandWithInput:@"d"
-                            modifierFlags:UIKeyModifierCommand
-                                   action:^(__unused UIKeyCommand *command) {
-                                     [weakSelf toggle];
-                                   }];
 
     // Toggle element inspector
     [commands registerKeyCommandWithInput:@"i"
-                            modifierFlags:UIKeyModifierCommand
-                                   action:^(__unused UIKeyCommand *command) {
+                            modifierFlags:NSCommandKeyMask
+                                   action:^(__unused NSEvent *command) {
                                      [weakSelf.bridge.eventDispatcher
                                       sendDeviceEventWithName:@"toggleElementInspector"
                                       body:nil];
@@ -233,11 +215,12 @@ RCT_EXPORT_MODULE()
 
     // Reload in normal mode
     [commands registerKeyCommandWithInput:@"n"
-                            modifierFlags:UIKeyModifierCommand
-                                   action:^(__unused UIKeyCommand *command) {
+                            modifierFlags:NSCommandKeyMask
+                                   action:^(__unused NSEvent *command) {
                                      weakSelf.executorClass = Nil;
                                    }];
-#endif
+
+    [self show];
 
   }
   return self;
@@ -279,7 +262,6 @@ RCT_EXPORT_MODULE()
     }
   }
 
-  self.shakeToShow = [_settings[@"shakeToShow"] ?: @YES boolValue];
   self.profilingEnabled = [_settings[@"profilingEnabled"] ?: @NO boolValue];
   self.liveReloadEnabled = [_settings[@"liveReloadEnabled"] ?: @NO boolValue];
   self.showFPS = [_settings[@"showFPS"] ?: @NO boolValue];
@@ -358,7 +340,7 @@ RCT_EXPORT_MODULE()
 {
   _presentedItems = nil;
   [_updateTask cancel];
-  [_actionSheet dismissWithClickedButtonIndex:_actionSheet.cancelButtonIndex animated:YES];
+  //[_actionSheet dismissWithClickedButtonIndex:_actionSheet.cancelButtonIndex animated:YES];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -371,12 +353,13 @@ RCT_EXPORT_MODULE()
 
 - (void)toggle
 {
-  if (_actionSheet) {
-    [_actionSheet dismissWithClickedButtonIndex:_actionSheet.cancelButtonIndex animated:YES];
-    _actionSheet = nil;
-  } else {
-    [self show];
-  }
+//  if (_actionSheet) {
+////    [_actionSheet dismissWithClickedButtonIndex:_actionSheet.cancelButtonIndex animated:YES];
+////    _actionSheet = nil;
+//  } else {
+//    [self show];
+//  }
+  [self show];
 }
 
 - (void)addItem:(NSString *)title handler:(void(^)(void))handler
@@ -407,8 +390,8 @@ RCT_EXPORT_MODULE()
   Class chromeExecutorClass = NSClassFromString(@"RCTWebSocketExecutor");
   if (!chromeExecutorClass) {
     [items addObject:[RCTDevMenuItem buttonItemWithTitle:@"Chrome Debugger Unavailable" handler:^{
-      UIAlertView *alert = RCTAlertView(@"Chrome Debugger Unavailable", @"You need to include the RCTWebSocket library to enable Chrome debugging", nil, @"OK", nil);
-      [alert show];
+      NSAlert *alert = RCTAlertView(@"Chrome Debugger Unavailable", @"You need to include the RCTWebSocket library to enable Chrome debugging", nil, @"OK", nil);
+      [alert runModal];
     }]];
   } else {
     BOOL isDebuggingInChrome = _executorClass && _executorClass == chromeExecutorClass;
@@ -444,57 +427,22 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(show)
 {
-  if (_actionSheet || !_bridge || RCTRunningInAppExtension()) {
+  if ([NSApp mainMenu].itemArray.lastObject && [[NSApp mainMenu].itemArray.lastObject.submenu.title isEqualToString:@"Developer"]) {
     return;
   }
-
-  UIActionSheet *actionSheet = [UIActionSheet new];
-  actionSheet.title = @"React Native: Development";
-  actionSheet.delegate = self;
+  NSMenuItem *developerItemContainer = [[NSMenuItem alloc] init]; //WithTitle:@"Developer" action:nil keyEquivalent:@"d"
+  NSMenu *developerMenu = [[NSMenu alloc] initWithTitle:@"Developer"];
+  [developerItemContainer setSubmenu:developerMenu];
 
   NSArray *items = [self menuItems];
   for (RCTDevMenuItem *item in items) {
-    switch (item.type) {
-      case RCTDevMenuTypeButton: {
-        [actionSheet addButtonWithTitle:item.title];
-        break;
-      }
-      case RCTDevMenuTypeToggle: {
-        BOOL selected = [item.value boolValue];
-        [actionSheet addButtonWithTitle:selected? item.selectedTitle : item.title];
-        break;
-      }
-    }
+    [developerMenu addItem:item];
   }
 
-  [actionSheet addButtonWithTitle:@"Cancel"];
-  actionSheet.cancelButtonIndex = actionSheet.numberOfButtons - 1;
+  //TODO: update settings, update menu titles
 
-  actionSheet.actionSheetStyle = UIBarStyleBlack;
-  [actionSheet showInView:RCTSharedApplication().keyWindow.rootViewController.view];
-  _actionSheet = actionSheet;
-  _presentedItems = items;
-}
+  [[NSApp mainMenu] addItem:developerItemContainer];
 
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-  _actionSheet = nil;
-  if (buttonIndex == actionSheet.cancelButtonIndex) {
-    return;
-  }
-
-  RCTDevMenuItem *item = _presentedItems[buttonIndex];
-  switch (item.type) {
-    case RCTDevMenuTypeButton: {
-      [item callHandler];
-      break;
-    }
-    case RCTDevMenuTypeToggle: {
-      BOOL value = [_settings[item.key] boolValue];
-      [self updateSetting:item.key value:@(!value)]; // will call handler
-      break;
-    }
-  }
   return;
 }
 
@@ -503,12 +451,6 @@ RCT_EXPORT_METHOD(reload)
   _jsLoaded = NO;
   _liveReloadURL = nil;
   [_bridge reload];
-}
-
-- (void)setShakeToShow:(BOOL)shakeToShow
-{
-  _shakeToShow = shakeToShow;
-  [self updateSetting:@"shakeToShow" value:@(_shakeToShow)];
 }
 
 - (void)setProfilingEnabled:(BOOL)enabled

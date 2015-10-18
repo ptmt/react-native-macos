@@ -132,7 +132,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   RCTAssertMainThread();
 
   RCTKeyCommand *keyCommand = [[RCTKeyCommand alloc] initWithKeyCommand:input modifierFlags:flags block:block];
-  NSLog(@"registering %@", input);
   [_commands removeObject:keyCommand];
   [_commands addObject:keyCommand];
 }
@@ -175,14 +174,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 }
 
 - (void)registerKeyCommandWithInput:(NSString *)input
-                      modifierFlags:(UIKeyModifierFlags)flags
+                      modifierFlags:(NSKeyModifierFlags)flags
                              action:(void (^)(UIKeyCommand *))block {}
 
 - (void)unregisterKeyCommandWithInput:(NSString *)input
-                        modifierFlags:(UIKeyModifierFlags)flags {}
+                        modifierFlags:(NSKeyModifierFlags)flags {}
 
 - (BOOL)isKeyCommandRegisteredForInput:(NSString *)input
-                         modifierFlags:(UIKeyModifierFlags)flags
+                         modifierFlags:(NSKeyModifierFlags)flags
 {
   return NO;
 }
