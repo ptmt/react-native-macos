@@ -95,7 +95,7 @@ class UIExplorerListBase extends React.Component {
           clearButtonMode="always"
           onChangeText={this.search.bind(this)}
           placeholder="Search..."
-          placeholderTextColor={'#ccc'}
+          //placeholderTextColor={'#ccc'}
           style={[styles.searchTextInput, searchTextInputStyle]}
           testID="explorer_search"
           value={this.state.searchText} />

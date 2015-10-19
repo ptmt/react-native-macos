@@ -15,13 +15,10 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('react-native-desktop');
 var {
   AlertIOS,
   Platform,
-  Text,
-  ToastAndroid,
-  TouchableHighlight,
   View,
 } = React;
 var TimerMixin = require('react-timer-mixin');
@@ -75,10 +72,8 @@ var TimerTester = React.createClass({
       var msg = 'Finished ' + this._ii + ' ' + this.props.type + ' calls.\n' +
         'Elapsed time: ' + e + ' ms\n' + (e / this._ii) + ' ms / iter';
       console.log(msg);
-      if (Platform.OS === 'ios') {
+      if (Platform.OS === 'ios' || Platform.OS === 'osx') {
         AlertIOS.alert(msg);
-      } else if (Platform.OS === 'android') {
-        ToastAndroid.show(msg, ToastAndroid.SHORT);
       }
       this._start = 0;
       this.forceUpdate(() => { this._ii = 0; });

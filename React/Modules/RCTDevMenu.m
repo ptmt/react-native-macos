@@ -205,6 +205,13 @@ RCT_EXPORT_MODULE()
     RCTKeyCommands *commands = [RCTKeyCommands sharedInstance];
 
     // Toggle element inspector
+    [commands registerKeyCommandWithInput:@"d"
+                            modifierFlags:NSCommandKeyMask
+                                   action:^(__unused NSEvent *command) {
+                                     [self toggle];
+                                   }];
+
+    // Toggle element inspector
     [commands registerKeyCommandWithInput:@"i"
                             modifierFlags:NSCommandKeyMask
                                    action:^(__unused NSEvent *command) {
@@ -220,7 +227,6 @@ RCT_EXPORT_MODULE()
                                      weakSelf.executorClass = Nil;
                                    }];
 
-    [self show];
 
   }
   return self;
@@ -395,6 +401,7 @@ RCT_EXPORT_MODULE()
     }]];
   } else {
     BOOL isDebuggingInChrome = _executorClass && _executorClass == chromeExecutorClass;
+    NSLog(@"isDebuggingInChrome %hhd", isDebuggingInChrome);
     NSString *debugTitleChrome = isDebuggingInChrome ? @"Disable Chrome Debugging" : @"Debug in Chrome";
     [items addObject:[RCTDevMenuItem buttonItemWithTitle:debugTitleChrome handler:^{
       weakSelf.executorClass = isDebuggingInChrome ? Nil : chromeExecutorClass;

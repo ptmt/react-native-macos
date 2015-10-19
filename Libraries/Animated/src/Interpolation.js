@@ -22,7 +22,6 @@ var invariant = function(condition, message) {
 
 type ExtrapolateType = 'extend' | 'identity' | 'clamp';
 
-// $FlowFixMe D2163827
 export type InterpolationConfigType = {
   inputRange: Array<number>;
   outputRange: (Array<number> | Array<string>);
@@ -32,6 +31,7 @@ export type InterpolationConfigType = {
   extrapolateRight?: ExtrapolateType;
 };
 
+
 var linear = (t) => t;
 
 /**
@@ -39,6 +39,7 @@ var linear = (t) => t;
  * function and custom behavior outside of the ranges.
  */
 class Interpolation {
+  /* $FlowFixMe */
   static create(config: InterpolationConfigType): (input: number) => number | string {
 
     if (config.outputRange && typeof config.outputRange[0] === 'string') {

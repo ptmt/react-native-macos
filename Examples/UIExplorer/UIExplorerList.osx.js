@@ -48,7 +48,7 @@ var COMPONENTS = [
   // require('./SliderIOSExample'),
   // require('./SwitchIOSExample'),
   // require('./TabBarIOSExample'),
-  require('./TextExample.ios'),
+  require('./TextExample.osx'),
   require('./TextInputExample.osx'),
   //require('./TouchableExample'),
   require('./ViewExample'),
@@ -101,11 +101,7 @@ COMPONENTS.concat(APIS).forEach((Example) => {
 });
 
 type Props = {
-  navigator: {
-    navigationContext: NavigationContext,
-    push: (route: {title: string, component: ReactClass<any,any,any>}) => void,
-  },
-  onExternalExampleRequested: Function,
+  openExample: Function,
 };
 
 class UIExplorerList extends React.Component {
@@ -131,19 +127,6 @@ class UIExplorerList extends React.Component {
   search(text: mixed) {
     Settings.set({searchText: text});
   }
-
-  // _openExample(example: any) {
-  //   if (example.external) {
-  //     this.props.onExternalExampleRequested(example);
-  //     return;
-  //   }
-  //
-  //   var Component = UIExplorerListBase.makeRenderable(example);
-  //   this.props.navigator.push({
-  //     title: Component.title,
-  //     component: Component,
-  //   });
-  // }
 
   onPressRow(example: any) {
     var Component = UIExplorerListBase.makeRenderable(example);

@@ -16,7 +16,7 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('react-native-desktop');
 var TimerMixin = require('react-timer-mixin');
 var {
   NativeModules,
