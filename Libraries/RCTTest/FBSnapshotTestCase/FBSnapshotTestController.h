@@ -9,7 +9,7 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 typedef NS_ENUM(NSInteger, FBSnapshotTestControllerErrorCode) {
   FBSnapshotTestControllerErrorCodeUnknown,
@@ -77,7 +77,7 @@ extern NSString *const FBReferenceImageFilePathKey;
  @param error An error to log in an XCTAssert() macro if the method fails (missing reference image, images differ, etc).
  @returns YES if the comparison (or saving of the reference image) succeeded.
  */
-- (BOOL)compareSnapshotOfView:(UIView *)view
+- (BOOL)compareSnapshotOfView:(NSView *)view
                      selector:(SEL)selector
                    identifier:(NSString *)identifier
                         error:(NSError **)errorPtr;
@@ -108,7 +108,7 @@ extern NSString *const FBReferenceImageFilePathKey;
  @param error An error, if this methods returns nil, the error will be something useful.
  @returns An image.
  */
-- (UIImage *)referenceImageForSelector:(SEL)selector
+- (NSImage *)referenceImageForSelector:(SEL)selector
                             identifier:(NSString *)identifier
                                  error:(NSError **)error;
 
@@ -119,7 +119,7 @@ extern NSString *const FBReferenceImageFilePathKey;
  @param error An error, if this methods returns NO, the error will be something useful.
  @returns An image.
  */
-- (BOOL)saveReferenceImage:(UIImage *)image
+- (BOOL)saveReferenceImage:(NSImage *)image
                   selector:(SEL)selector
                 identifier:(NSString *)identifier
                      error:(NSError **)errorPtr;
@@ -131,8 +131,8 @@ extern NSString *const FBReferenceImageFilePathKey;
  @param error An error that indicates why the comparison failed if it does.
  @param YES if the comparison succeeded and the images are the same.
  */
-- (BOOL)compareReferenceImage:(UIImage *)referenceImage
-                      toImage:(UIImage *)image
+- (BOOL)compareReferenceImage:(NSImage *)referenceImage
+                      toImage:(NSImage *)image
                         error:(NSError **)errorPtr;
 
 /**
@@ -144,8 +144,8 @@ extern NSString *const FBReferenceImageFilePathKey;
  @param error An error that indicates why the comparison failed if it does.
  @param YES if the save succeeded.
  */
-- (BOOL)saveFailedReferenceImage:(UIImage *)referenceImage
-                       testImage:(UIImage *)testImage
+- (BOOL)saveFailedReferenceImage:(NSImage *)referenceImage
+                       testImage:(NSImage *)testImage
                         selector:(SEL)selector
                       identifier:(NSString *)identifier
                            error:(NSError **)errorPtr;

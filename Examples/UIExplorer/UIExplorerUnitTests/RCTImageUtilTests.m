@@ -14,7 +14,7 @@
 
 #import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
-#import <UIKit/UIView.h>
+#import <APpKit/NSView.h>
 #import <XCTest/XCTest.h>
 #import "RCTImageUtils.h"
 

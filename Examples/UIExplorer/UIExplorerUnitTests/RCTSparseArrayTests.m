@@ -15,7 +15,7 @@
 #import <XCTest/XCTest.h>
 
 #import "RCTSparseArray.h"
-#import "UIView+React.h"
+#import "NSView+React.h"
 
 @interface RCTSparseArrayTests : XCTestCase
 
@@ -25,10 +25,10 @@
 
 - (void)testDictionary
 {
-  id<RCTComponent> myView = [UIView new];
+  id<RCTComponent> myView = [NSView new];
   myView.reactTag = @4;
 
-  id<RCTComponent> myOtherView = [UIView new];
+  id<RCTComponent> myOtherView = [NSView new];
   myOtherView.reactTag = @5;
 
   RCTSparseArray *registry = [RCTSparseArray new];

@@ -86,7 +86,7 @@
   [parentView collectRootUpdatedFrames:nil parentConstraint:CGSizeZero];
 
   XCTAssertTrue(CGRectEqualToRect([parentView measureLayoutRelativeToAncestor:parentView], CGRectMake(0, 0, 440, 440)));
-  XCTAssertTrue(UIEdgeInsetsEqualToEdgeInsets([parentView paddingAsInsets], UIEdgeInsetsMake(10, 10, 10, 10)));
+  XCTAssertTrue(UIEdgeInsetsEqualToEdgeInsets([parentView paddingAsInsets], NSEdgeInsetsMake(10, 10, 10, 10)));
 
   XCTAssertTrue(CGRectEqualToRect([headerView measureLayoutRelativeToAncestor:parentView], CGRectMake(10, 10, 420, 100)));
   XCTAssertTrue(CGRectEqualToRect([mainView measureLayoutRelativeToAncestor:parentView], CGRectMake(10, 120, 420, 200)));
@@ -106,6 +106,11 @@
   shadowView.cssNode->style = style;
 
   return shadowView;
+}
+
+static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeInsets insets2) {
+  return CGRectEqualToRect(CGRectMake(insets1.left, insets1.top, insets1.right, insets1.bottom),
+                           CGRectMake(insets2.left, insets2.top, insets2.right, insets2.bottom));
 }
 
 @end

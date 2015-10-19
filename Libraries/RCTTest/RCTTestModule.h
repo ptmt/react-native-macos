@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTBridgeModule.h"
 #import "RCTDefines.h"
@@ -30,7 +30,7 @@ typedef NS_ENUM(NSInteger, RCTTestStatus) {
 /**
  * This is the view to be snapshotted.
  */
-@property (nonatomic, strong) UIView *view;
+@property (nonatomic, strong) NSView *view;
 
 /**
  * This is used to give meaningful names to snapshot image files.

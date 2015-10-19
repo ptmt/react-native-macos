@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0357AF971BD4DDF500CEDDCC /* UIImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 0357AF961BD4DDF500CEDDCC /* UIImageUtils.m */; settings = {ASSET_TAGS = (); }; };
 		585135371AB3C56F00882537 /* RCTTestModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 585135341AB3C56F00882537 /* RCTTestModule.m */; };
 		585135381AB3C57000882537 /* RCTTestRunner.m in Sources */ = {isa = PBXBuildFile; fileRef = 585135361AB3C56F00882537 /* RCTTestRunner.m */; };
 		585135391AB3C59A00882537 /* RCTTestRunner.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 585135351AB3C56F00882537 /* RCTTestRunner.h */; };
@@ -29,6 +30,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0357AF961BD4DDF500CEDDCC /* UIImageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageUtils.m; sourceTree = "<group>"; };
+		0357AF981BD4DF3000CEDDCC /* UIImageUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIImageUtils.h; sourceTree = "<group>"; };
 		580C376F1AB104AF0015E709 /* libRCTTest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTTest.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		585135331AB3C56F00882537 /* RCTTestModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTTestModule.h; sourceTree = "<group>"; };
 		585135341AB3C56F00882537 /* RCTTestModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTTestModule.m; sourceTree = "<group>"; };
@@ -58,6 +61,8 @@
 		580C37661AB104AF0015E709 = {
 			isa = PBXGroup;
 			children = (
+				0357AF981BD4DF3000CEDDCC /* UIImageUtils.h */,
+				0357AF961BD4DDF500CEDDCC /* UIImageUtils.m */,
 				58E64FE31AB964CD007446E2 /* FBSnapshotTestCase */,
 				585135331AB3C56F00882537 /* RCTTestModule.h */,
 				585135341AB3C56F00882537 /* RCTTestModule.m */,
@@ -149,6 +154,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				58E64FEE1AB964CD007446E2 /* UIImage+Compare.m in Sources */,
+				0357AF971BD4DDF500CEDDCC /* UIImageUtils.m in Sources */,
 				585135371AB3C56F00882537 /* RCTTestModule.m in Sources */,
 				58E64FEF1AB964CD007446E2 /* UIImage+Diff.m in Sources */,
 				58E64FED1AB964CD007446E2 /* FBSnapshotTestController.m in Sources */,
@@ -202,7 +208,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
+				SDKROOT = macosx;
 				WARNING_CFLAGS = (
 					"-Werror",
 					"-Wall",
@@ -246,7 +252,7 @@
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = iphoneos;
+				SDKROOT = macosx;
 				VALIDATE_PRODUCT = YES;
 				WARNING_CFLAGS = (
 					"-Werror",

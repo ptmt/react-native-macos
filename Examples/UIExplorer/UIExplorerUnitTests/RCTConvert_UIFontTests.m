@@ -16,11 +16,11 @@
 
 #import "RCTConvert.h"
 
-@interface RCTConvert_UIFontTests : XCTestCase
+@interface RCTConvert_NSFontTests : XCTestCase
 
 @end
 
-@implementation RCTConvert_UIFontTests
+@implementation RCTConvert_NSFontTests
 
 #define RCTAssertEqualFonts(font1, font2) { \
   XCTAssertEqualObjects(font1, font2); \
@@ -29,23 +29,23 @@
 - (void)testWeight
 {
   {
-    UIFont *expected = [UIFont systemFontOfSize:14 weight:UIFontWeightBold];
-    UIFont *result = [RCTConvert UIFont:@{@"fontWeight": @"bold"}];
+    NSFont *expected = [NSFont systemFontOfSize:14 weight:NSFontWeightBold];
+    NSFont *result = [RCTConvert NSFont:@{@"fontWeight": @"bold"}];
     RCTAssertEqualFonts(expected, result);
   }
   {
-    UIFont *expected = [UIFont systemFontOfSize:14 weight:UIFontWeightMedium];
-    UIFont *result = [RCTConvert UIFont:@{@"fontWeight": @"500"}];
+    NSFont *expected = [NSFont systemFontOfSize:14 weight:NSFontWeightMedium];
+    NSFont *result = [RCTConvert NSFont:@{@"fontWeight": @"500"}];
     RCTAssertEqualFonts(expected, result);
   }
   {
-    UIFont *expected = [UIFont systemFontOfSize:14 weight:UIFontWeightUltraLight];
-    UIFont *result = [RCTConvert UIFont:@{@"fontWeight": @"100"}];
+    NSFont *expected = [NSFont systemFontOfSize:14 weight:NSFontWeightUltraLight];
+    NSFont *result = [RCTConvert NSFont:@{@"fontWeight": @"100"}];
     RCTAssertEqualFonts(expected, result);
   }
   {
-    UIFont *expected = [UIFont systemFontOfSize:14 weight:UIFontWeightRegular];
-    UIFont *result = [RCTConvert UIFont:@{@"fontWeight": @"normal"}];
+    NSFont *expected = [NSFont systemFontOfSize:14 weight:NSFontWeightRegular];
+    NSFont *result = [RCTConvert NSFont:@{@"fontWeight": @"normal"}];
     RCTAssertEqualFonts(expected, result);
   }
 }
@@ -53,8 +53,8 @@
 - (void)testSize
 {
   {
-    UIFont *expected = [UIFont systemFontOfSize:18.5];
-    UIFont *result = [RCTConvert UIFont:@{@"fontSize": @18.5}];
+    NSFont *expected = [NSFont systemFontOfSize:18.5];
+    NSFont *result = [RCTConvert NSFont:@{@"fontSize": @18.5}];
     RCTAssertEqualFonts(expected, result);
   }
 }
@@ -62,18 +62,18 @@
 - (void)testFamily
 {
   {
-    UIFont *expected = [UIFont fontWithName:@"Cochin" size:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontFamily": @"Cochin"}];
+    NSFont *expected = [NSFont fontWithName:@"Cochin" size:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"Cochin"}];
     RCTAssertEqualFonts(expected, result);
   }
   {
-    UIFont *expected = [UIFont fontWithName:@"HelveticaNeue" size:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontFamily": @"Helvetica Neue"}];
+    NSFont *expected = [NSFont fontWithName:@"HelveticaNeue" size:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"Helvetica Neue"}];
     RCTAssertEqualFonts(expected, result);
   }
   {
-    UIFont *expected = [UIFont fontWithName:@"HelveticaNeue-Italic" size:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontFamily": @"HelveticaNeue-Italic"}];
+    NSFont *expected = [NSFont fontWithName:@"HelveticaNeue-Italic" size:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"HelveticaNeue-Italic"}];
     RCTAssertEqualFonts(expected, result);
   }
 }
@@ -81,18 +81,18 @@
 - (void)testStyle
 {
   {
-    UIFont *font = [UIFont systemFontOfSize:14];
-    UIFontDescriptor *fontDescriptor = [font fontDescriptor];
-    UIFontDescriptorSymbolicTraits symbolicTraits = fontDescriptor.symbolicTraits;
-    symbolicTraits |= UIFontDescriptorTraitItalic;
+    NSFont *font = [NSFont systemFontOfSize:14];
+    NSFontDescriptor *fontDescriptor = [font fontDescriptor];
+    NSFontSymbolicTraits symbolicTraits = fontDescriptor.symbolicTraits;
+    symbolicTraits |= NSFontItalicTrait;
     fontDescriptor = [fontDescriptor fontDescriptorWithSymbolicTraits:symbolicTraits];
-    UIFont *expected = [UIFont fontWithDescriptor:fontDescriptor size:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontStyle": @"italic"}];
+    NSFont *expected = [NSFont fontWithDescriptor:fontDescriptor size:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontStyle": @"italic"}];
     RCTAssertEqualFonts(expected, result);
   }
   {
-    UIFont *expected = [UIFont systemFontOfSize:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontStyle": @"normal"}];
+    NSFont *expected = [NSFont systemFontOfSize:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontStyle": @"normal"}];
     RCTAssertEqualFonts(expected, result);
   }
 }
@@ -100,23 +100,23 @@
 - (void)testStyleAndWeight
 {
   {
-    UIFont *font = [UIFont systemFontOfSize:14 weight:UIFontWeightUltraLight];
-    UIFontDescriptor *fontDescriptor = [font fontDescriptor];
-    UIFontDescriptorSymbolicTraits symbolicTraits = fontDescriptor.symbolicTraits;
-    symbolicTraits |= UIFontDescriptorTraitItalic;
+    NSFont *font = [NSFont systemFontOfSize:14 weight:NSFontWeightUltraLight];
+    NSFontDescriptor *fontDescriptor = [font fontDescriptor];
+    NSFontSymbolicTraits symbolicTraits = fontDescriptor.symbolicTraits;
+    symbolicTraits |= NSFontItalicTrait;
     fontDescriptor = [fontDescriptor fontDescriptorWithSymbolicTraits:symbolicTraits];
-    UIFont *expected = [UIFont fontWithDescriptor:fontDescriptor size:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontStyle": @"italic", @"fontWeight": @"100"}];
+    NSFont *expected = [NSFont fontWithDescriptor:fontDescriptor size:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontStyle": @"italic", @"fontWeight": @"100"}];
     RCTAssertEqualFonts(expected, result);
   }
   {
-    UIFont *font = [UIFont systemFontOfSize:14 weight:UIFontWeightBold];
-    UIFontDescriptor *fontDescriptor = [font fontDescriptor];
-    UIFontDescriptorSymbolicTraits symbolicTraits = fontDescriptor.symbolicTraits;
-    symbolicTraits |= UIFontDescriptorTraitItalic;
+    NSFont *font = [NSFont systemFontOfSize:14 weight:NSFontWeightBold];
+    NSFontDescriptor *fontDescriptor = [font fontDescriptor];
+    NSFontSymbolicTraits symbolicTraits = fontDescriptor.symbolicTraits;
+    symbolicTraits |= NSFontItalicTrait;
     fontDescriptor = [fontDescriptor fontDescriptorWithSymbolicTraits:symbolicTraits];
-    UIFont *expected = [UIFont fontWithDescriptor:fontDescriptor size:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontStyle": @"italic", @"fontWeight": @"bold"}];
+    NSFont *expected = [NSFont fontWithDescriptor:fontDescriptor size:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontStyle": @"italic", @"fontWeight": @"bold"}];
     RCTAssertEqualFonts(expected, result);
   }
 }
@@ -124,23 +124,23 @@
 - (void)testFamilyAndWeight
 {
   {
-    UIFont *expected = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontFamily": @"Helvetica Neue", @"fontWeight": @"bold"}];
+    NSFont *expected = [NSFont fontWithName:@"HelveticaNeue-Bold" size:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"Helvetica Neue", @"fontWeight": @"bold"}];
     RCTAssertEqualFonts(expected, result);
   }
   {
-    UIFont *expected = [UIFont fontWithName:@"HelveticaNeue" size:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontFamily": @"HelveticaNeue-Bold", @"fontWeight": @"normal"}];
+    NSFont *expected = [NSFont fontWithName:@"HelveticaNeue" size:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"HelveticaNeue-Bold", @"fontWeight": @"normal"}];
     RCTAssertEqualFonts(expected, result);
   }
   {
-    UIFont *expected = [UIFont fontWithName:@"Cochin-Bold" size:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontFamily": @"Cochin", @"fontWeight": @"700"}];
+    NSFont *expected = [NSFont fontWithName:@"Cochin-Bold" size:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"Cochin", @"fontWeight": @"700"}];
     RCTAssertEqualFonts(expected, result);
   }
   {
-    UIFont *expected = [UIFont fontWithName:@"Cochin" size:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontFamily": @"Cochin", @"fontWeight": @"100"}];
+    NSFont *expected = [NSFont fontWithName:@"Cochin" size:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"Cochin", @"fontWeight": @"100"}];
     RCTAssertEqualFonts(expected, result);
   }
 }
@@ -148,13 +148,13 @@
 - (void)testFamilyAndStyle
 {
   {
-    UIFont *expected = [UIFont fontWithName:@"HelveticaNeue-Italic" size:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontFamily": @"Helvetica Neue", @"fontStyle": @"italic"}];
+    NSFont *expected = [NSFont fontWithName:@"HelveticaNeue-Italic" size:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"Helvetica Neue", @"fontStyle": @"italic"}];
     RCTAssertEqualFonts(expected, result);
   }
   {
-    UIFont *expected = [UIFont fontWithName:@"HelveticaNeue" size:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontFamily": @"HelveticaNeue-Italic", @"fontStyle": @"normal"}];
+    NSFont *expected = [NSFont fontWithName:@"HelveticaNeue" size:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"HelveticaNeue-Italic", @"fontStyle": @"normal"}];
     RCTAssertEqualFonts(expected, result);
   }
 }
@@ -162,18 +162,18 @@
 - (void)testFamilyStyleAndWeight
 {
   {
-    UIFont *expected = [UIFont fontWithName:@"HelveticaNeue-LightItalic" size:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontFamily": @"Helvetica Neue", @"fontStyle": @"italic", @"fontWeight": @"300"}];
+    NSFont *expected = [NSFont fontWithName:@"HelveticaNeue-LightItalic" size:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"Helvetica Neue", @"fontStyle": @"italic", @"fontWeight": @"300"}];
     RCTAssertEqualFonts(expected, result);
   }
   {
-    UIFont *expected = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontFamily": @"HelveticaNeue-Italic", @"fontStyle": @"normal", @"fontWeight": @"bold"}];
+    NSFont *expected = [NSFont fontWithName:@"HelveticaNeue-Bold" size:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"HelveticaNeue-Italic", @"fontStyle": @"normal", @"fontWeight": @"bold"}];
     RCTAssertEqualFonts(expected, result);
   }
   {
-    UIFont *expected = [UIFont fontWithName:@"HelveticaNeue" size:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontFamily": @"HelveticaNeue-Italic", @"fontStyle": @"normal", @"fontWeight": @"normal"}];
+    NSFont *expected = [NSFont fontWithName:@"HelveticaNeue" size:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"HelveticaNeue-Italic", @"fontStyle": @"normal", @"fontWeight": @"normal"}];
     RCTAssertEqualFonts(expected, result);
   }
 }
@@ -181,13 +181,13 @@
 - (void)testInvalidFont
 {
   {
-    UIFont *expected = [UIFont systemFontOfSize:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontFamily": @"foobar"}];
+    NSFont *expected = [NSFont systemFontOfSize:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"foobar"}];
     RCTAssertEqualFonts(expected, result);
   }
   {
-    UIFont *expected = [UIFont systemFontOfSize:14 weight:UIFontWeightBold];
-    UIFont *result = [RCTConvert UIFont:@{@"fontFamily": @"foobar", @"fontWeight": @"bold"}];
+    NSFont *expected = [NSFont systemFontOfSize:14 weight:NSFontWeightBold];
+    NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"foobar", @"fontWeight": @"bold"}];
     RCTAssertEqualFonts(expected, result);
   }
 }
