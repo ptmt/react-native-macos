@@ -44,7 +44,10 @@
 
 - (void)insertReactSubview:(NSView *)subview atIndex:(__unused NSInteger)atIndex
 {
-  [self addSubview:subview];
+  // TODO: Do we really need ability to add subviews at any index?
+  NSMutableArray * array = [[NSMutableArray alloc] initWithArray:self.subviews];
+  [array insertObject:subview atIndex:atIndex];
+  self.subviews = array;
 }
 
 - (void)removeReactSubview:(NSView *)subview

@@ -420,6 +420,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)removeReactSubview:(NSView *)subview
 {
+  NSLog(@"removeObject subview");
   [_reactSubviews removeObject:subview];
   [subview removeFromSuperview];
 }

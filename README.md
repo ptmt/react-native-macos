@@ -1,8 +1,8 @@
 # React Native Desktop
 
-[![Build Status](https://travis-ci.org/ptmt/react-native-desktop.svg)](https://travis-ci.org/ptmt/tryflow)
+[![Build Status](https://travis-ci.org/ptmt/react-native-desktop.svg)](https://travis-ci.org/ptmt/react-native-desktop)
 
-React Native fork for OS X. Codename "Lepton". 
+React Native fork for OS X based on Cocoa. *Codename "Lepton"*.
 
 ## Current stage: hacking an prototype
 
