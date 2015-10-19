@@ -18,7 +18,7 @@
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
+- (NSView *)view
 {
   return [RCTWebView new];
 }
@@ -40,12 +40,12 @@ RCT_EXPORT_VIEW_PROPERTY(onLoadingError, RCTDirectEventBlock);
   return @{
     @"JSNavigationScheme": RCTJSNavigationScheme,
     @"NavigationType": @{
-      @"LinkClicked": @(UIWebViewNavigationTypeLinkClicked),
-      @"FormSubmitted": @(UIWebViewNavigationTypeFormSubmitted),
-      @"BackForward": @(UIWebViewNavigationTypeBackForward),
-      @"Reload": @(UIWebViewNavigationTypeReload),
-      @"FormResubmitted": @(UIWebViewNavigationTypeFormResubmitted),
-      @"Other": @(UIWebViewNavigationTypeOther)
+//      @"LinkClicked": @(UIWebViewNavigationTypeLinkClicked),
+//      @"FormSubmitted": @(UIWebViewNavigationTypeFormSubmitted),
+//      @"BackForward": @(UIWebViewNavigationTypeBackForward),
+//      @"Reload": @(UIWebViewNavigationTypeReload),
+//      @"FormResubmitted": @(UIWebViewNavigationTypeFormResubmitted),
+//      @"Other": @(UIWebViewNavigationTypeOther)
     },
   };
 }

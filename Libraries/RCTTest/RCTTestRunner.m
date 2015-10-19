@@ -44,7 +44,7 @@ static const NSTimeInterval kTestTeardownTimeoutSeconds = 30;
     _scriptURL = [[NSBundle bundleForClass:[RCTBridge class]] URLForResource:@"main" withExtension:@"jsbundle"];
     RCTAssert(_scriptURL != nil, @"Could not locate main.jsBundle");
 #else
-    _scriptURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://localhost:8081/%@.bundle?platform=ios&dev=true", app]];
+    _scriptURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://localhost:8081/%@.bundle?platform=osx&dev=true", app]];
 #endif
   }
   return self;
@@ -102,9 +102,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
     testModule.testSelector = test;
     testModule.view = rootView;
 
-    NSViewController *vc = [[NSApplication sharedApplication] mainWindow].contentViewController;
-    vc.view = [NSView new];
-    [vc.view addSubview:rootView]; // Add as subview so it doesn't get resized
+
+    NSView * vcView = [NSView new];
+    [vcView addSubview:rootView]; // Add as subview so it doesn't get resized
+    [[[NSApplication sharedApplication] mainWindow] setContentView:vcView];
 
     NSDate *date = [NSDate dateWithTimeIntervalSinceNow:kTestTimeoutSeconds];
     while (date.timeIntervalSinceNow > 0 && testModule.status == RCTTestStatusPending && error == nil) {
@@ -119,7 +120,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
     RCTSetLogFunction(RCTDefaultLogFunction);
 
-    NSArray *nonLayoutSubviews = [vc.view.subviews filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id subview, NSDictionary *bindings) {
+    NSArray *nonLayoutSubviews = [vcView.subviews filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id subview, NSDictionary *bindings) {
       return ![NSStringFromClass([subview class]) isEqualToString:@"_UILayoutGuide"];
     }]];
     RCTAssert(nonLayoutSubviews.count == 0, @"There shouldn't be any other views: %@", nonLayoutSubviews);

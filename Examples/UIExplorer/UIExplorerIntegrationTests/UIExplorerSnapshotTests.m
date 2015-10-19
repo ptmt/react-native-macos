@@ -34,8 +34,8 @@
 {
 
   NSOperatingSystemVersion version = [NSProcessInfo processInfo].operatingSystemVersion;
-  RCTAssert(version.majorVersion == 8 || version.minorVersion >= 3, @"Snapshot tests should be run on iOS 8.3+, found %zd.%zd.%zd", version.majorVersion, version.minorVersion, version.patchVersion);
-  _runner = RCTInitRunnerForApp(@"Examples/UIExplorer/UIExplorerApp.ios", nil);
+  RCTAssert(version.majorVersion == 10 || version.minorVersion >= 10, @"Snapshot tests should be run on OSX 10.10+, found %zd.%zd.%zd", version.majorVersion, version.minorVersion, version.patchVersion);
+  _runner = RCTInitRunnerForApp(@"Examples/UIExplorer/UIExplorerApp.osx", nil);
   _runner.recordMode = NO;
 }
 
@@ -45,12 +45,12 @@
   [_runner runTest:_cmd module:@#name]; \
 }
 
-RCT_TEST(ViewExample)
-RCT_TEST(LayoutExample)
-RCT_TEST(TextExample)
-RCT_TEST(SwitchExample)
-RCT_TEST(SliderExample)
-RCT_TEST(TabBarExample)
+//RCT_TEST(ViewExample) // Examples-UIExplorer-UIExplorerApp.ios/testViewExample_1@2x.png
+//RCT_TEST(LayoutExample)
+//RCT_TEST(TextExample)
+//RCT_TEST(SwitchExample)
+//RCT_TEST(SliderExample)
+//RCT_TEST(TabBarExample)
 
 - (void)testZZZNotInRecordMode
 {

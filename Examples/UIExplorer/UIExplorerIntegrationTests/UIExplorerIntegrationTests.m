@@ -57,7 +57,7 @@
 
 RCT_TEST(TimersTest)
 RCT_TEST(IntegrationTestHarnessTest)
-// RCT_TEST(AsyncStorageTest) -- Disabled until AsyncStorage will be complete
+// RCT_TEST(AsyncStorageTest) -- Disabled until AsyncStorage will be completed
 // RCT_TEST(LayoutEventsTest) -- Disabled: #8153468
 RCT_TEST(AppEventsTest)
 RCT_TEST(PromiseTest)

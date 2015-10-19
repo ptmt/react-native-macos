@@ -12,6 +12,8 @@
 		03279A2B1BB820010015275D /* RCTShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03279A2A1BB820010015275D /* RCTShadowView.m */; };
 		0357AF4A1BD2901200CEDDCC /* RCTDevLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0357AF471BD2901200CEDDCC /* RCTDevLoadingView.m */; settings = {ASSET_TAGS = (); }; };
 		0357AF4B1BD2901200CEDDCC /* RCTDevMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0357AF491BD2901200CEDDCC /* RCTDevMenu.m */; settings = {ASSET_TAGS = (); }; };
+		0357AF9D1BD5317D00CEDDCC /* RCTWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0357AF9A1BD5317D00CEDDCC /* RCTWebView.m */; settings = {ASSET_TAGS = (); }; };
+		0357AF9E1BD5317D00CEDDCC /* RCTWebViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0357AF9C1BD5317D00CEDDCC /* RCTWebViewManager.m */; settings = {ASSET_TAGS = (); }; };
 		0380106A1BCCC65000B1BE0C /* RCTTouchHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 038010691BCCC65000B1BE0C /* RCTTouchHandler.m */; };
 		03EAB57C1BC3CAE30051C6F1 /* RCTPerfStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 03EAB57B1BC3CAE30051C6F1 /* RCTPerfStats.m */; };
 		131B6AF41AF1093D00FFC3E0 /* RCTSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 131B6AF11AF1093D00FFC3E0 /* RCTSegmentedControl.m */; };
@@ -86,6 +88,10 @@
 		0357AF471BD2901200CEDDCC /* RCTDevLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTDevLoadingView.m; path = Modules/RCTDevLoadingView.m; sourceTree = SOURCE_ROOT; };
 		0357AF481BD2901200CEDDCC /* RCTDevMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTDevMenu.h; path = Modules/RCTDevMenu.h; sourceTree = SOURCE_ROOT; };
 		0357AF491BD2901200CEDDCC /* RCTDevMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTDevMenu.m; path = Modules/RCTDevMenu.m; sourceTree = SOURCE_ROOT; };
+		0357AF991BD5317D00CEDDCC /* RCTWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTWebView.h; sourceTree = "<group>"; };
+		0357AF9A1BD5317D00CEDDCC /* RCTWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTWebView.m; sourceTree = "<group>"; };
+		0357AF9B1BD5317D00CEDDCC /* RCTWebViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTWebViewManager.h; sourceTree = "<group>"; };
+		0357AF9C1BD5317D00CEDDCC /* RCTWebViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTWebViewManager.m; sourceTree = "<group>"; };
 		038010681BCCC64F00B1BE0C /* RCTTouchHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTTouchHandler.h; sourceTree = "<group>"; };
 		038010691BCCC65000B1BE0C /* RCTTouchHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTTouchHandler.m; sourceTree = "<group>"; };
 		03EAB57A1BC3CAE30051C6F1 /* RCTPerfStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTPerfStats.h; sourceTree = "<group>"; };
@@ -300,6 +306,10 @@
 				13442BF41AA90E0B0037E5B0 /* RCTViewControllerProtocol.h */,
 				13E0674D1A70F44B002CDEE1 /* RCTViewManager.h */,
 				13E0674E1A70F44B002CDEE1 /* RCTViewManager.m */,
+				0357AF991BD5317D00CEDDCC /* RCTWebView.h */,
+				0357AF9A1BD5317D00CEDDCC /* RCTWebView.m */,
+				0357AF9B1BD5317D00CEDDCC /* RCTWebViewManager.h */,
+				0357AF9C1BD5317D00CEDDCC /* RCTWebViewManager.m */,
 				13B080231A694A8400A75B9A /* RCTWrapperViewController.h */,
 				13B080241A694A8400A75B9A /* RCTWrapperViewController.m */,
 			);
@@ -497,6 +507,7 @@
 				13CC8A821B17642100940AE7 /* RCTBorderDrawing.m in Sources */,
 				83CBBA511A601E3B00E9B192 /* RCTAssert.m in Sources */,
 				13AF20451AE707F9005F5298 /* RCTSlider.m in Sources */,
+				0357AF9D1BD5317D00CEDDCC /* RCTWebView.m in Sources */,
 				832348161A77A5AA00B55238 /* Layout.c in Sources */,
 				14F4D38B1AE1B7E40049C042 /* RCTProfile.m in Sources */,
 				13513F3C1B1F43F400FCE529 /* RCTProgressViewManager.m in Sources */,
@@ -534,6 +545,7 @@
 				134FCB3E1A6E7F0800051CC8 /* RCTWebViewExecutor.m in Sources */,
 				1385D0341B665AAE000A309B /* RCTModuleMap.m in Sources */,
 				83CBBA691A601EF300E9B192 /* RCTEventDispatcher.m in Sources */,
+				0357AF9E1BD5317D00CEDDCC /* RCTWebViewManager.m in Sources */,
 				13E0674A1A70F434002CDEE1 /* RCTUIManager.m in Sources */,
 				13AB90C11B6FA36700713B4F /* RCTComponentData.m in Sources */,
 				138D6A141B53CD290074A87E /* RCTCache.m in Sources */,

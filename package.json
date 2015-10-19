@@ -7,6 +7,23 @@
     "type": "git",
     "url": "git@github.com:ptmt/react-native-desktop.git"
   },
+  "engines": {
+    "node": ">=4"
+  },
+  "jest": {
+    "scriptPreprocessor": "jestSupport/preprocessor.js",
+    "setupEnvScriptFile": "jestSupport/env.js",
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "testFileExtensions": [
+      "js"
+    ],
+    "unmockedModulePathPatterns": [
+      "promise",
+      "source-map"
+    ]
+  },
   "main": "Libraries/react-native/react-native.js",
   "files": [
     "React",

@@ -30,7 +30,7 @@ var UIExplorerListBase = require('./UIExplorerListBase');
 
 var COMPONENTS = [
   // require('./ActivityIndicatorIOSExample'),
-  // require('./DatePickerIOSExample'),
+  require('./DatePickerOSXExample'),
   // require('./ImageExample'),
   // require('./LayoutEventsExample'),
   // require('./ListViewExample'),
