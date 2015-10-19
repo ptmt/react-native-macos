@@ -1,5 +1,7 @@
 # React Native Desktop
 
+[![Build Status](https://travis-ci.org/ptmt/tryflow.svg)](https://travis-ci.org/ptmt/tryflow)
+
 React Native fork for OS X. Codename "Lepton". 
 
 ## Current stage: hacking an prototype
