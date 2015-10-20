@@ -4,7 +4,7 @@
 
 React Native fork for writing OS X applications, based on Cocoa. *Codename "Lepton"*.
 
-## Current stage: hacking an prototype
+## Current stage: hacking a prototype
 
 ![uiexplorer](https://cloud.githubusercontent.com/assets/1004115/10608147/311445b0-7757-11e5-9ef7-2e76107e4bb7.png)
 
