@@ -2,11 +2,11 @@
 
 [![Build Status](https://travis-ci.org/ptmt/react-native-desktop.svg)](https://travis-ci.org/ptmt/react-native-desktop)
 
-React Native fork for OS X based on Cocoa. *Codename "Lepton"*.
+React Native fork for writing OS X applications, based on Cocoa. *Codename "Lepton"*.
 
 ## Current stage: hacking an prototype
 
-![uiexplorer](https://cloud.githubusercontent.com/assets/1004115/10558069/1424bbb0-74dc-11e5-82c0-63b9371e7b97.png)
+![uiexplorer](https://cloud.githubusercontent.com/assets/1004115/10608147/311445b0-7757-11e5-9ef7-2e76107e4bb7.png)
 
 See `Examples/UIExplorer` [(gif)](http://i.imgur.com/ngju9d9.gifv)
 
