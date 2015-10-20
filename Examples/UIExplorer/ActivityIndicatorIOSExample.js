@@ -68,7 +68,7 @@ exports.examples = [
     render: function() {
       return (
         <ActivityIndicatorIOS
-          style={[styles.centering, styles.gray, {height: 40}]}
+          style={[styles.centering, styles.gray, {height: 20}]}
           color="white"
           />
       );

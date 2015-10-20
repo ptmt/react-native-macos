@@ -49,7 +49,7 @@ var ListViewSimpleExample = React.createClass({
   render: function() {
     return (
       <UIExplorerPage
-        title={this.props.navigator ? null : '<ListView> - Simple'}
+        title={'<ListView> - Simple'}
         noSpacer={true}
         noScroll={true}>
         <ListView

@@ -140,7 +140,6 @@ class Bundler {
     return this.getDependencies(main, isDev, platform).then((response) => {
       Activity.endEvent(findEventId);
       transformEventId = Activity.startEvent('transform');
-
       let bar;
       if (process.stdout.isTTY) {
         bar = new ProgressBar('transforming [:bar] :percent :current/:total', {

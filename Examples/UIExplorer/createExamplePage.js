@@ -63,9 +63,7 @@ var createExamplePage = function(title: ?string, exampleModule: ExampleModule)
         };
       var result = example.render(null);
       if (result) {
-        renderedComponent = React.cloneElement(result, {
-          navigator: this.props.navigator,
-        });
+        renderedComponent = React.cloneElement(result);
       }
       (React: Object).render = originalRender;
       (React: Object).renderComponent = originalRenderComponent;

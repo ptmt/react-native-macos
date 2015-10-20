@@ -11,7 +11,7 @@
 
 #import "RCTConvert.h"
 
-@implementation RCTConvert (UIActivityIndicatorView)
+@implementation RCTConvert (NSProgressIndicator)
 
 // NOTE: It's pointless to support UIActivityIndicatorViewStyleGray
 // as we can set the color to any arbitrary value that we want to
@@ -29,27 +29,27 @@ RCT_EXPORT_MODULE()
 
 - (NSView *)view
 {
-  NSProgressIndicator* indicator = [[NSProgressIndicator alloc] initWithFrame:NSMakeRect(20, 20, 30, 30)];
+  NSProgressIndicator* indicator = [[NSProgressIndicator alloc] initWithFrame:NSMakeRect(0, 0, 50, 50)];
   [indicator setStyle:NSProgressIndicatorSpinningStyle];
+  indicator.autoresizingMask = NSViewMinXMargin | NSViewMaxXMargin | NSViewMinYMargin | NSViewMaxYMargin;
   return indicator;
-  //return [UIActivityIndicatorView new];
 }
 
-RCT_EXPORT_VIEW_PROPERTY(color, NSColor)
-RCT_EXPORT_VIEW_PROPERTY(hidesWhenStopped, BOOL)
-RCT_REMAP_VIEW_PROPERTY(size, activityIndicatorViewStyle, UIActivityIndicatorViewStyle)
+//RCT_EXPORT_VIEW_PROPERTY(color, NSColor) // imlement drawRect
+//RCT_EXPORT_VIEW_PROPERTY(hidesWhenStopped, BOOL)
+//RCT_REMAP_VIEW_PROPERTY(size, activityIndicatorViewStyle, NSProgressIndicatorSpinningStyle)
 RCT_CUSTOM_VIEW_PROPERTY(animating, BOOL, NSProgressIndicator)
 {
   //TODO: store animated property because NSProgressIndicator doesn't have a suitable method
 
-//  BOOL animating = json ? [RCTConvert BOOL:json] : YES;
-//  if (animating != [view animat]) {
-//    if (animating) {
-//      [view startAnimation];
-//    } else {
-//      [view stopAnimation];
-//    }
-//  }
+  BOOL animating = json ? [RCTConvert BOOL:json] : YES;
+  if (animating) {
+    [view startAnimation:nil];
+  } else {
+    [view stopAnimation:nil];
+  }
 }
+
+
 
 @end

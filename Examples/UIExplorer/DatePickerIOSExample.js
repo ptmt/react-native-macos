@@ -74,24 +74,16 @@ var DatePickerExample = React.createClass({
         <Heading label="Date + time picker" />
         <DatePickerIOS
           date={this.state.date}
-          mode="datetime"
+          mode="single"
           timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
           onDateChange={this.onDateChange}
         />
-        <Heading label="Date picker" />
+        <Heading label="Range" />
         <DatePickerIOS
           date={this.state.date}
-          mode="date"
+          mode="range"
           timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
           onDateChange={this.onDateChange}
-        />
-        <Heading label="Time picker, 10-minute interval" />
-        <DatePickerIOS
-          date={this.state.date}
-          mode="time"
-          timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
-          onDateChange={this.onDateChange}
-          minuteInterval={10}
         />
       </View>
     );
