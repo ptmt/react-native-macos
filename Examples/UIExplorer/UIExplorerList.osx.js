@@ -38,8 +38,8 @@ var COMPONENTS = [
   // require('./ListViewPagingExample'),
   // require('./ModalExample'),
   // require('./PickerIOSExample'),
-  //require('./ProgressViewIOSExample'),
-  //require('./ScrollViewExample'),
+  require('./ProgressViewIOSExample'),
+  require('./ScrollViewExample'),
   require('./SegmentedControlIOSExample'),
   require('./SliderIOSExample'),
   require('./SwitchIOSExample'),
@@ -52,16 +52,12 @@ var COMPONENTS = [
 
 var APIS = [
   // require('./AccessibilityIOSExample'),
-  // require('./ActionSheetIOSExample'),
-  // require('./AdSupportIOSExample'),
   // require('./AlertIOSExample'),
   require('./AnimatedExample'),
   // require('./AnimatedGratuitousApp/AnExApp'),
   // require('./AppStateIOSExample'),
   // require('./AsyncStorageExample'),
   require('./BorderExample'),
-  // require('./CameraRollExample.ios'),
-  // require('./GeolocationExample'),
   require('./LayoutExample'),
   // require('./NetInfoExample'),
   // require('./PanResponderExample'),
@@ -71,7 +67,7 @@ var APIS = [
   // require('./TimerExample'),
   // require('./VibrationIOSExample'),
   require('./XHRExample.osx'),
-  //require('./ImageEditingExample'),
+
 ];
 
 // Register suitable examples for snapshot tests

@@ -51,8 +51,8 @@ static void RCTSendSliderEvent(RCTSlider *sender, BOOL continuous)
 RCT_EXPORT_VIEW_PROPERTY(value, float);
 RCT_EXPORT_VIEW_PROPERTY(minimumValue, float);
 RCT_EXPORT_VIEW_PROPERTY(maximumValue, float);
-RCT_EXPORT_VIEW_PROPERTY(minimumTrackTintColor, UIColor);
-RCT_EXPORT_VIEW_PROPERTY(maximumTrackTintColor, UIColor);
+RCT_EXPORT_VIEW_PROPERTY(minimumTrackTintColor, NSColor);
+RCT_EXPORT_VIEW_PROPERTY(maximumTrackTintColor, NSColor);
 RCT_EXPORT_VIEW_PROPERTY(onChange, RCTBubblingEventBlock);
 
 @end

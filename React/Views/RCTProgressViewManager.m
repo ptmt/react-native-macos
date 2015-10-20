@@ -26,15 +26,28 @@ RCT_EXPORT_MODULE()
 
 - (NSView *)view
 {
-  return [NSProgressIndicator new];
+  NSProgressIndicator *indicator = [NSProgressIndicator new];
+  [indicator setMinValue:0.0];
+  [indicator setMaxValue:1.0];
+  [indicator startAnimation:nil];
+  [indicator setIndeterminate:NO];
+  return indicator;
+
 }
 
-//RCT_EXPORT_VIEW_PROPERTY(progressViewStyle, UIProgressViewStyle)
-RCT_EXPORT_VIEW_PROPERTY(progress, float)
-RCT_EXPORT_VIEW_PROPERTY(progressTintColor, UIColor)
-RCT_EXPORT_VIEW_PROPERTY(trackTintColor, UIColor)
-RCT_EXPORT_VIEW_PROPERTY(progressImage, UIImage)
-RCT_EXPORT_VIEW_PROPERTY(trackImage, UIImage)
+//RCT_EXPORT_VIEW_PROPERTY(progressTintColor, NSColor)
+//RCT_EXPORT_VIEW_PROPERTY(trackTintColor, NSColor)
+//RCT_EXPORT_VIEW_PROPERTY(progressImage, NSImage)
+//RCT_EXPORT_VIEW_PROPERTY(trackImage, NSImage)
+RCT_CUSTOM_VIEW_PROPERTY(progress, BOOL, NSProgressIndicator)
+{
+  if (json) {
+    double progress = [json doubleValue];//NSNumber[RCTConvert double:json];
+    view.doubleValue = progress;
+  } else {
+    view.doubleValue = defaultView.doubleValue;
+  }
+}
 
 - (NSDictionary *)constantsToExport
 {
