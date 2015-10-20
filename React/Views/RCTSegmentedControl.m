@@ -19,7 +19,9 @@
 {
   if ((self = [super initWithFrame:frame])) {
     _selectedIndex = self.selectedIndex;
+    [self setSegmentStyle:NSSegmentStyleRounded];
     // TODO:
+
 //    [self addTarget:self action:@selector(didChange)
 //               forControlEvents:UIControlEventValueChanged];
   }
@@ -29,10 +31,10 @@
 - (void)setValues:(NSArray *)values
 {
   _values = [values copy];
-  //[self removeSe];
-  for (NSString *value in values) {
+  self.segmentCount = values.count;
+  for (NSUInteger i = 0; i < values.count; i++) {
     //[self insertSegmentWithTitle:value atIndex:self.numberOfSegments animated:NO];
-    [self setLabel:value forSegment:self.segmentCount];
+    [self setLabel:[values objectAtIndex:i] forSegment:i];
   }
   self.selectedIndex = _selectedIndex;
 }
@@ -40,7 +42,12 @@
 - (void)setSelectedIndex:(NSInteger)selectedIndex
 {
   _selectedIndex = selectedIndex;
-  self.selectedIndex = selectedIndex;
+  [super setSelectedSegment:selectedIndex];
+}
+
+- (BOOL)isFlipped
+{
+  return YES;
 }
 
 - (void)didChange

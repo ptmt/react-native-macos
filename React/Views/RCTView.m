@@ -155,7 +155,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)setPointerEvents:(RCTPointerEvents)pointerEvents
 {
-   NSLog(@" setPointerEvents");
+   NSLog(@" setPointerEvents not implemented");
   _pointerEvents = pointerEvents;
 
 //  self.userInteractionEnabled = (pointerEvents != RCTPointerEventsNone);

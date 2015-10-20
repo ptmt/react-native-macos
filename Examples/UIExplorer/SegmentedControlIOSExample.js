@@ -27,7 +27,7 @@ var BasicSegmentedControlExample = React.createClass({
   render() {
     return (
       <View>
-        <View style={{marginBottom: 10}}>
+        <View style={{marginBottom: 30}}>
           <SegmentedControlIOS values={['One', 'Two']} />
         </View>
         <View>
