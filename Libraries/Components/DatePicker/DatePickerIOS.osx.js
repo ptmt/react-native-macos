@@ -25,7 +25,7 @@ var requireNativeComponent = require('requireNativeComponent');
 var DATEPICKER = 'datepicker';
 
 type DefaultProps = {
-  mode: 'date' | 'time' | 'datetime';
+  mode: 'single' | 'range';
 };
 
 type Event = Object;
@@ -91,7 +91,7 @@ var DatePickerIOS = React.createClass({
 
   getDefaultProps: function(): DefaultProps {
     return {
-      mode: 'datetime',
+      mode: 'single',
     };
   },
 

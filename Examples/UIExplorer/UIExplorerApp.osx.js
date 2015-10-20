@@ -28,23 +28,26 @@ var {
   TouchableHighlight
 } = React;
 
+var defaultLayout = Dimensions.get('window');
+
 class UIExplorerApp extends React.Component {
 
   constructor() {
     super();
     this.state = {
-      component: Welcome
+      component: Welcome,
+      layout: defaultLayout
     };
   }
 
   render() {
     var Component = this.state.component;
     return (
-      <View style={styles.container}>
-        <View style={styles.leftPanel}>
+      <View style={styles.container} onLayout={(e) => this.setState({layout: e.nativeEvent.layout})}>
+        <View style={[styles.leftPanel, {width: 300}]}>
           <UIExplorerList openExample={(component) => this.setState({component})}/>
         </View>
-        <View style={styles.rightPanel}>
+        <View style={[styles.rightPanel, {width: this.state.layout.width - 300}]}>
             {this.state.component && <Component />}
         </View>
       </View>

@@ -306,6 +306,17 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
   });
 }
 
+//- (void) drawRect:(NSRect)rect
+//{
+//  [super drawRect:rect];
+//  [self setFrame:[RCTSharedApplication() mainWindow].contentView.frame];
+//}
+
+- (void)viewDidEndLiveResize
+{
+  [self setFrame:[RCTSharedApplication() mainWindow].contentView.frame];
+}
+
 - (void)setFrame:(CGRect)frame
 {
   super.frame = frame;

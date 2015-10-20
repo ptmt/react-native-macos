@@ -881,14 +881,14 @@ RCT_EXPORT_METHOD(findSubviewIn:(nonnull NSNumber *)reactTag atPoint:(CGPoint)po
   dispatch_async(dispatch_get_main_queue(), ^{
     RCTProfileEndFlowEvent();
     RCTProfileBeginEvent(0, @"UIManager flushUIBlocks", nil);
-   // @try {
+    @try {
       for (dispatch_block_t block in previousPendingUIBlocks) {
         block();
       }
-   // }
-//    @catch (NSException *exception) {
-//      RCTLogError(@"Exception thrown while executing UI block: %@", exception);
-//    }
+    }
+    @catch (NSException *exception) {
+      RCTLogError(@"Exception thrown while executing UI block: %@", exception);
+    }
     RCTProfileEndEvent(0, @"objc_call", @{
       @"count": @(previousPendingUIBlocks.count),
     });

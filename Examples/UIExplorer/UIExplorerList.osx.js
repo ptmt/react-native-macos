@@ -24,15 +24,13 @@ var {
 
 var { TestModule } = React.addons;
 
-import type { NavigationContext } from 'NavigationContext';
-
 var UIExplorerListBase = require('./UIExplorerListBase');
 
 var COMPONENTS = [
   require('./ActivityIndicatorIOSExample'),
   require('./DatePickerIOSExample'),
   // require('./ImageExample'),
-  //require('./LayoutEventsExample'),
+  require('./LayoutEventsExample'),
   //require('./ListViewExample'),
   // require('./ListViewGridLayoutExample'),
   // require('./ListViewPagingExample'),

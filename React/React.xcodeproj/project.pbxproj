@@ -10,10 +10,10 @@
 		000E6CEB1AB0E980000CDF4D /* RCTSourceCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 000E6CEA1AB0E980000CDF4D /* RCTSourceCode.m */; };
 		032625A81BBCF725001C8FC1 /* RCTRedBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 032625A71BBCF725001C8FC1 /* RCTRedBox.m */; };
 		03279A2B1BB820010015275D /* RCTShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03279A2A1BB820010015275D /* RCTShadowView.m */; };
-		0357AF4A1BD2901200CEDDCC /* RCTDevLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0357AF471BD2901200CEDDCC /* RCTDevLoadingView.m */; settings = {ASSET_TAGS = (); }; };
-		0357AF4B1BD2901200CEDDCC /* RCTDevMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0357AF491BD2901200CEDDCC /* RCTDevMenu.m */; settings = {ASSET_TAGS = (); }; };
-		0357AF9D1BD5317D00CEDDCC /* RCTWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0357AF9A1BD5317D00CEDDCC /* RCTWebView.m */; settings = {ASSET_TAGS = (); }; };
-		0357AF9E1BD5317D00CEDDCC /* RCTWebViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0357AF9C1BD5317D00CEDDCC /* RCTWebViewManager.m */; settings = {ASSET_TAGS = (); }; };
+		0357AF4A1BD2901200CEDDCC /* RCTDevLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0357AF471BD2901200CEDDCC /* RCTDevLoadingView.m */; };
+		0357AF4B1BD2901200CEDDCC /* RCTDevMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0357AF491BD2901200CEDDCC /* RCTDevMenu.m */; };
+		0357AF9D1BD5317D00CEDDCC /* RCTWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0357AF9A1BD5317D00CEDDCC /* RCTWebView.m */; };
+		0357AF9E1BD5317D00CEDDCC /* RCTWebViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0357AF9C1BD5317D00CEDDCC /* RCTWebViewManager.m */; };
 		0380106A1BCCC65000B1BE0C /* RCTTouchHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 038010691BCCC65000B1BE0C /* RCTTouchHandler.m */; };
 		03EAB57C1BC3CAE30051C6F1 /* RCTPerfStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 03EAB57B1BC3CAE30051C6F1 /* RCTPerfStats.m */; };
 		131B6AF41AF1093D00FFC3E0 /* RCTSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 131B6AF11AF1093D00FFC3E0 /* RCTSegmentedControl.m */; };

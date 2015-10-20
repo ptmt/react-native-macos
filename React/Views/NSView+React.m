@@ -82,8 +82,8 @@
     return;
   }
   self.frame = frame;
-
-  self.layer.position = position;
+  // TODO: why position matters? It's only produce bugs
+  //self.layer.position = position;
   self.layer.bounds = bounds;
 }
 

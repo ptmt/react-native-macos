@@ -524,18 +524,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   NSLog(@"updateLayer %@", self.class);
 }
 
-- (void)viewWillDraw
-{
-  //[super viewWillDraw];
-}
-
-- (void)drawRect:(CGRect)dirtyRect
-{
-  NSLog(@"drawRect %@ rect: %f %f", self.className, dirtyRect.size.width, dirtyRect.size.height);
- // [self displayLayer:self.layer];
-}
-
-
 - (void)displayLayer:(CALayer *)layer
 {
   NSLog(@"displayLayer %@", self.class);
