@@ -12,11 +12,23 @@
 #import "RCTEventDispatcher.h"
 #import "NSView+React.h"
 
-//@implementation RCTSwitch
-//
-//- (void)setOn:(BOOL)on animated:(BOOL)animated {
-//  _wasOn = on;
-//  [self setOn:on animated:animated];
-//}
-//
-//@end
+@implementation RCTSwitch
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+  if ((self = [super initWithFrame:frame])) {
+    [self setButtonType:NSSwitchButton];
+    [self setTitle:@""];
+    [self setControlSize:NSRegularControlSize];
+    [self setStringValue:@""];
+  }
+  return self;
+}
+
+- (void)setOn:(BOOL)on animated:(__unused BOOL)animated {
+  _wasOn = on;
+  [self setState:on ? 1 : 0];
+  //[self setOn:on animated:animated];
+}
+
+@end

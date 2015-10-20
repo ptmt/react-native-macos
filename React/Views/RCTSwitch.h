@@ -12,9 +12,9 @@
 
 #import "RCTComponent.h"
 
-//@interface RCTSwitch : NSCom
-//
-//@property (nonatomic, assign) BOOL wasOn;
-//@property (nonatomic, copy) RCTBubblingEventBlock onChange;
-//
-//@end
+@interface RCTSwitch : NSButton
+
+@property (nonatomic, assign) BOOL wasOn;
+@property (nonatomic, copy) RCTBubblingEventBlock onChange;
+
+@end

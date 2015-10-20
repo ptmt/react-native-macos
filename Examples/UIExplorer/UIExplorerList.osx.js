@@ -42,13 +42,12 @@ var COMPONENTS = [
   //require('./ScrollViewExample'),
   require('./SegmentedControlIOSExample'),
   require('./SliderIOSExample'),
-  // require('./SwitchIOSExample'),
-  // require('./TabBarIOSExample'),
+  require('./SwitchIOSExample'),
   require('./TextExample.osx'),
   require('./TextInputExample.osx'),
-  //require('./TouchableExample'),
+  require('./TouchableExample'),
   require('./ViewExample'),
-//  require('./WebViewExample'),
+  require('./WebViewExample'),
 ];
 
 var APIS = [
