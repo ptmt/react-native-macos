@@ -29,4 +29,6 @@ SERVER_PID=$!
 xctool \
   -project Examples/UIExplorer/UIExplorer.xcodeproj \
   -scheme UIExplorer \
+  -sdk macosx10.11 \
+  -destination 'platform=OS X,arch=x86_64' \
   test

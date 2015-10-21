@@ -77,17 +77,21 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
 {
   for (NSEvent *touch in touches) {
 
-    RCTAssert(![_nativeTouches containsObject:touch],
+    NSUInteger index = [_nativeTouches indexOfObjectPassingTest:^BOOL(id obj, __unused NSUInteger idx, __unused BOOL *stop) {
+      return touch.eventNumber == ((NSEvent *)obj).eventNumber;
+    }];
+    RCTAssert(index == NSNotFound,
               @"Touch is already recorded. This is a critical bug.");
+
+    if(index == NSNotFound) {
+      continue;
+    }
 
     // TODO: This is a highly disgusting workaround. Need to find out how to get right position
     // At the moment, because the view is flipped we compensate the header's height
     NSPoint touchLocation = CGPointMake([touch locationInWindow].x, (self.view.window.frame.size.height - 25 - [touch locationInWindow].y));
-    //self.view convertPoint:[touch locationInWindow] fromView:nil];
-
 
     // Find closest React-managed touchable view
-
     NSView *targetView = self.view;
 //    while (targetView) {
 ////      if (targetView.reactTag && targetView.userInteractionEnabled &&
@@ -261,7 +265,6 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
 
 - (void)mouseDown:(NSEvent *)event
 {
-  NSLog(@"mouseDown");
   [super mouseDown:event];
 
   // "start" has to record new touches before extracting the event.
@@ -303,33 +306,11 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
     [self _updateAndDispatchTouches:touches eventName:@"touchEnd" originatingTime:event.timestamp];
 
     self.state = NSGestureRecognizerStateEnded;
-//    if (RCTAllTouchesAreCancelledOrEnded(event.allTouches)) {
-//      self.state = NSGestureRecognizerStateEnded;
-//    } else if (RCTAnyTouchesChanged(event.allTouches)) {
-//      self.state = NSGestureRecognizerStateChanged;
-//    }
   }
   [self _recordRemovedTouches:touches];
 }
 
 // Mouse move events https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/EventOverview/MouseTrackingEvents/MouseTrackingEvents.html
-
-//
-//- (void)touchesCancelled:(NSSet *)touches withEvent:(NSEvent *)event
-//{
-//  [super touchesCancelled:touches withEvent:event];
-//
-//  if (_dispatchedInitialTouches) {
-//    [self _updateAndDispatchTouches:touches eventName:@"touchCancel" originatingTime:event.timestamp];
-//
-//    if (RCTAllTouchesAreCancelledOrEnded(event.allTouches)) {
-//      self.state = NSGestureRecognizerStateCancelled;
-//    } else if (RCTAnyTouchesChanged(event.allTouches)) {
-//      self.state = UIGestureRecognizerStateChanged;
-//    }
-//  }
-//  [self _recordRemovedTouches:touches];
-//}
 
 - (BOOL)canPreventGestureRecognizer:(__unused NSGestureRecognizer *)preventedGestureRecognizer
 {
