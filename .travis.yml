@@ -7,6 +7,10 @@ cache:
         - node_modules
         - .nvm
 
+before_install:
+  - brew update
+  - brew upgrade xctool
+  
 install:
   - brew reinstall nvm
   - mkdir -p .nvm

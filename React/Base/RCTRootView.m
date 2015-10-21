@@ -354,9 +354,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
 }
 
 
-//- mouseEntered:
-//- mouseExited:
-
 - (void)invalidate
 {
   //if (self.userInteractionEnabled) {

@@ -80,30 +80,23 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
     NSUInteger index = [_nativeTouches indexOfObjectPassingTest:^BOOL(id obj, __unused NSUInteger idx, __unused BOOL *stop) {
       return touch.eventNumber == ((NSEvent *)obj).eventNumber;
     }];
+
     RCTAssert(index == NSNotFound,
               @"Touch is already recorded. This is a critical bug.");
 
-    if(index == NSNotFound) {
-      continue;
-    }
-
-    // TODO: This is a highly disgusting workaround. Need to find out how to get right position
-    // At the moment, because the view is flipped we compensate the header's height
+    // TODO: This is a highly disgusting workaround. Need to find out how to get right position to make a hit test.
+    // At the moment, because the view is flipped we compensate the header's height manually.
     NSPoint touchLocation = CGPointMake([touch locationInWindow].x, (self.view.window.frame.size.height - 25 - [touch locationInWindow].y));
 
-    // Find closest React-managed touchable view
-    NSView *targetView = self.view;
-//    while (targetView) {
-////      if (targetView.reactTag && targetView.userInteractionEnabled &&
-////          [targetView reactRespondsToTouch:touch]) {
-////        break;
-////      }
-//        if (targetView.reactTag && [targetView reactRespondsToTouch:touch]) {
-//              break;
-//        }
-//
-//      targetView = targetView.superview;
-//    }
+    // TODO: fix hardcoded components name.
+    //
+    // Check if item is becoming first responder to delete touch
+    NSView *targetView = [self.view hitTest:touchLocation];
+
+    if (![targetView.className isEqualToString:@"RCTText"] && ![targetView.className isEqualToString:@"RCTView"]) {
+      self.state = NSGestureRecognizerStateEnded;
+      return;
+    }
 
     NSNumber *reactTag = [self.view reactTagAtPoint:CGPointMake(touchLocation.x, touchLocation.y)];
 
