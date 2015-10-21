@@ -26,7 +26,7 @@ trap cleanup EXIT
 
 node ./packager/packager.js --nonPersistent &
 SERVER_PID=$!
-xcodebuild \
+xctool \
   -project Examples/UIExplorer/UIExplorer.xcodeproj \
   -scheme UIExplorer \
   -sdk macosx10.11 \

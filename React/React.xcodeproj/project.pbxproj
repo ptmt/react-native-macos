@@ -15,6 +15,7 @@
 		0357AF9D1BD5317D00CEDDCC /* RCTWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0357AF9A1BD5317D00CEDDCC /* RCTWebView.m */; };
 		0357AF9E1BD5317D00CEDDCC /* RCTWebViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0357AF9C1BD5317D00CEDDCC /* RCTWebViewManager.m */; };
 		0380106A1BCCC65000B1BE0C /* RCTTouchHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 038010691BCCC65000B1BE0C /* RCTTouchHandler.m */; };
+		039780C41BD7947B00452D23 /* UIImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 039780C31BD7947B00452D23 /* UIImageUtils.m */; };
 		03EAB57C1BC3CAE30051C6F1 /* RCTPerfStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 03EAB57B1BC3CAE30051C6F1 /* RCTPerfStats.m */; };
 		131B6AF41AF1093D00FFC3E0 /* RCTSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 131B6AF11AF1093D00FFC3E0 /* RCTSegmentedControl.m */; };
 		131B6AF51AF1093D00FFC3E0 /* RCTSegmentedControlManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 131B6AF31AF1093D00FFC3E0 /* RCTSegmentedControlManager.m */; };
@@ -94,6 +95,8 @@
 		0357AF9C1BD5317D00CEDDCC /* RCTWebViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTWebViewManager.m; sourceTree = "<group>"; };
 		038010681BCCC64F00B1BE0C /* RCTTouchHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTTouchHandler.h; sourceTree = "<group>"; };
 		038010691BCCC65000B1BE0C /* RCTTouchHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTTouchHandler.m; sourceTree = "<group>"; };
+		039780C21BD7947B00452D23 /* UIImageUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageUtils.h; sourceTree = "<group>"; };
+		039780C31BD7947B00452D23 /* UIImageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageUtils.m; sourceTree = "<group>"; };
 		03EAB57A1BC3CAE30051C6F1 /* RCTPerfStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTPerfStats.h; sourceTree = "<group>"; };
 		03EAB57B1BC3CAE30051C6F1 /* RCTPerfStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTPerfStats.m; sourceTree = "<group>"; };
 		131B6AF01AF1093D00FFC3E0 /* RCTSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTSegmentedControl.h; sourceTree = "<group>"; };
@@ -349,6 +352,8 @@
 		83CBBA491A601E3B00E9B192 /* Base */ = {
 			isa = PBXGroup;
 			children = (
+				039780C21BD7947B00452D23 /* UIImageUtils.h */,
+				039780C31BD7947B00452D23 /* UIImageUtils.m */,
 				0357AF461BD2901200CEDDCC /* RCTDevLoadingView.h */,
 				0357AF471BD2901200CEDDCC /* RCTDevLoadingView.m */,
 				0357AF481BD2901200CEDDCC /* RCTDevMenu.h */,
@@ -545,6 +550,7 @@
 				134FCB3E1A6E7F0800051CC8 /* RCTWebViewExecutor.m in Sources */,
 				1385D0341B665AAE000A309B /* RCTModuleMap.m in Sources */,
 				83CBBA691A601EF300E9B192 /* RCTEventDispatcher.m in Sources */,
+				039780C41BD7947B00452D23 /* UIImageUtils.m in Sources */,
 				0357AF9E1BD5317D00CEDDCC /* RCTWebViewManager.m in Sources */,
 				13E0674A1A70F434002CDEE1 /* RCTUIManager.m in Sources */,
 				13AB90C11B6FA36700713B4F /* RCTComponentData.m in Sources */,

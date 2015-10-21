@@ -15,6 +15,7 @@
 #import "RCTLog.h"
 #import "RCTUtils.h"
 #import "NSView+React.h"
+#import "UIImageUtils.h"
 
 static NSView *RCTViewHitTest(NSView *view, CGPoint point)
 {
@@ -420,7 +421,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)removeReactSubview:(NSView *)subview
 {
-  NSLog(@"removeObject subview");
   [_reactSubviews removeObject:subview];
   [subview removeFromSuperview];
 }
@@ -474,9 +474,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
     [viewLayer setBackgroundColor:[backgroundColor CGColor]];
     [self setLayer:viewLayer];
     [self setWantsLayer:YES];
+    self.layer.delegate = self;
+  } else {
+    [self.layer setBackgroundColor:[backgroundColor CGColor]];
   }
-  [self.layer setBackgroundColor:[backgroundColor CGColor]];
-  [self.layer setNeedsDisplay];
   [self setNeedsDisplay:YES];
 
 
@@ -518,15 +519,15 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   };
 }
 
-- (void)updateLayer
+-(void) drawRect:(__unused NSRect)dirtyRect {}
+
+- (BOOL)wantsUpdateLayer
 {
-  [super updateLayer];
-  NSLog(@"updateLayer %@", self.class);
+  return YES;
 }
 
 - (void)displayLayer:(CALayer *)layer
 {
-  NSLog(@"displayLayer %@", self.class);
 
   const RCTCornerRadii cornerRadii = [self cornerRadii];
   const NSEdgeInsets borderInsets = [self bordersAsInsets];
@@ -542,7 +543,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   // the content. For this reason, only use iOS border drawing when clipping
   // or when the border is hidden.
 
-  (borderInsets.top == 0 || CGColorGetAlpha(borderColors.top) == 0);// || self.clipsToBounds);
+  (borderInsets.top == 0 || CGColorGetAlpha(borderColors.top) == 0 || self.wantsDefaultClipping);
 
   // iOS clips to the outside of the border, but CSS clips to the inside. To
   // solve this, we'll need to add a container view inside the main view to
@@ -552,7 +553,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
     layer.cornerRadius = cornerRadii.topLeft;
     layer.borderColor = borderColors.left;
     layer.borderWidth = borderInsets.left;
-    layer.backgroundColor = _backgroundColor.CGColor;
+    //layer.backgroundColor = _backgroundColor.CGColor;
     layer.contents = nil;
     layer.needsDisplayOnBoundsChange = NO;
     layer.mask = nil;
@@ -576,19 +577,19 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
     );
   });
 //
-//  if (RCTRunningInTestEnvironment()) {
-//    const CGSize size = self.bounds.size;
-//    UIGraphicsBeginImageContextWithOptions(size, NO, image.scale);
-//    [image drawInRect:(CGRect){CGPointZero, size}];
-//    image = UIGraphicsGetImageFromCurrentImageContext();
-//    UIGraphicsEndImageContext();
-//    contentsCenter = CGRectMake(0, 0, 1, 1);
-//  }
+  if (RCTRunningInTestEnvironment()) {
+    const CGSize size = self.bounds.size;
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0.0);
+    [image drawInRect:(CGRect){CGPointZero, size}];
+    image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    contentsCenter = CGRectMake(0, 0, 1, 1);
+  }
 
-  layer.backgroundColor = NULL;
-  //layer.contents = (id)image.CGImage;
+  //layer.backgroundColor = NULL;
+  layer.contents = (id)image;
   layer.contentsCenter = contentsCenter;
-  //layer.contentsScale = image.scale;
+  //layer.contentsScale = image.;
   layer.magnificationFilter = kCAFilterNearest;
   layer.needsDisplayOnBoundsChange = YES;
 
@@ -600,22 +601,22 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   CALayer *mask = nil;
   CGFloat cornerRadius = 0;
 
-//  if (self.clipsToBounds) {
-//
-//    const RCTCornerRadii cornerRadii = [self cornerRadii];
-//    if (RCTCornerRadiiAreEqual(cornerRadii)) {
-//
-//      cornerRadius = cornerRadii.topLeft;
-//
-//    } else {
-//
-//      CAShapeLayer *shapeLayer = [CAShapeLayer layer];
-//      CGPathRef path = RCTPathCreateWithRoundedRect(self.bounds, RCTGetCornerInsets(cornerRadii, NSEdgeInsetsZero), NULL);
-//      shapeLayer.path = path;
-//      CGPathRelease(path);
-//      mask = shapeLayer;
-//    }
-//  }
+  if (self.wantsDefaultClipping) {
+
+    const RCTCornerRadii cornerRadii = [self cornerRadii];
+    if (RCTCornerRadiiAreEqual(cornerRadii)) {
+
+      cornerRadius = cornerRadii.topLeft;
+
+    } else {
+
+      CAShapeLayer *shapeLayer = [CAShapeLayer layer];
+      CGPathRef path = RCTPathCreateWithRoundedRect(self.bounds, RCTGetCornerInsets(cornerRadii, NSEdgeInsetsZero), NULL);
+      shapeLayer.path = path;
+      CGPathRelease(path);
+      mask = shapeLayer;
+    }
+  }
 
   layer.cornerRadius = cornerRadius;
   layer.mask = mask;
@@ -626,6 +627,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 #define setBorderColor(side)                                \
   - (void)setBorder##side##Color:(CGColorRef)color          \
   {                                                         \
+    NSLog(@"setBorderColor"); \
     if (CGColorEqualToColor(_border##side##Color, color)) { \
       return;                                               \
     }                                                       \

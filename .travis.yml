@@ -8,8 +8,8 @@ cache:
         - .nvm
 
 before_install:
-  - brew remove --force xctool
-  - brew install xctool --HEAD
+  - brew update
+  - brew outdated xctool || brew upgrade xctool
 
 install:
   - brew reinstall nvm
@@ -23,6 +23,7 @@ install:
   - npm install
   - node --version
   - npm --version
+  - xcodebuild -showsdks # to debug travis
 
 script:
 - |
