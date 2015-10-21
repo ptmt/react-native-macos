@@ -8,9 +8,9 @@ cache:
         - .nvm
 
 before_install:
-  - brew update
-  - brew upgrade xctool
-  
+  - brew remove --force xctool
+  - brew install xctool --HEAD
+
 install:
   - brew reinstall nvm
   - mkdir -p .nvm
