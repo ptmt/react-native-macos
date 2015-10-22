@@ -6,7 +6,7 @@ Gmail Client via Google REST API.
 - Cmd-V doesn't work yet, authorization requires coping the code manually using a context menu;
 - Read-Only;
 - RefreshToken is not used at all, so you've got *3600 seconds* per session;
-- No Redux;
+- No predictable data managment;
 - No batching requests https://developers.google.com/gmail/api/guides/batch;
 - A lot of UI TODOS;
 
