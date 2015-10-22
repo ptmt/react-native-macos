@@ -46,7 +46,7 @@ var SliderExample = React.createClass({
 
 var styles = StyleSheet.create({
   slider: {
-    height: 10,
+    height: 16,
     margin: 10,
   },
   text: {
