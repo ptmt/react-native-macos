@@ -627,7 +627,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 #define setBorderColor(side)                                \
   - (void)setBorder##side##Color:(CGColorRef)color          \
   {                                                         \
-    NSLog(@"setBorderColor"); \
     if (CGColorEqualToColor(_border##side##Color, color)) { \
       return;                                               \
     }                                                       \
