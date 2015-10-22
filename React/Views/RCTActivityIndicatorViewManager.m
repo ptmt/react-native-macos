@@ -29,9 +29,11 @@ RCT_EXPORT_MODULE()
 
 - (NSView *)view
 {
-  NSProgressIndicator* indicator = [[NSProgressIndicator alloc] initWithFrame:NSMakeRect(0, 0, 50, 50)];
+  NSProgressIndicator* indicator = [[NSProgressIndicator alloc] init];
+  [indicator setControlSize:NSRegularControlSize];
   [indicator setStyle:NSProgressIndicatorSpinningStyle];
-  indicator.autoresizingMask = NSViewMinXMargin | NSViewMaxXMargin | NSViewMinYMargin | NSViewMaxYMargin;
+  [indicator setUsesThreadedAnimation:YES];
+  [indicator setHidden:YES];
   return indicator;
 }
 
@@ -41,12 +43,13 @@ RCT_EXPORT_MODULE()
 RCT_CUSTOM_VIEW_PROPERTY(animating, BOOL, NSProgressIndicator)
 {
   //TODO: store animated property because NSProgressIndicator doesn't have a suitable method
-
   BOOL animating = json ? [RCTConvert BOOL:json] : YES;
   if (animating) {
-    [view startAnimation:nil];
+    [view setHidden:NO];
+    [view startAnimation:self];
   } else {
-    [view stopAnimation:nil];
+    [view stopAnimation:self];
+    [view setHidden:YES];
   }
 }
 
