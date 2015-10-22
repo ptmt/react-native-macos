@@ -132,14 +132,19 @@ RCT_CUSTOM_VIEW_PROPERTY(shouldRasterizeIOS, BOOL, RCTView)
 }
 RCT_CUSTOM_VIEW_PROPERTY(opacity, float, RCTView)
 {
-  [view.layer setOpacity:[RCTConvert float:json]];
+  if (json) {
+    [view.layer setOpacity:[RCTConvert float:json]];
+  } else {
+    [view.layer setOpacity:defaultView.layer.opacity];
+  }
 }
-//RCT_CUSTOM_VIEW_PROPERTY(transformMatrix, CATransform3D, RCTView)
-//{
-//  view.layer.transform = json ? [RCTConvert CATransform3D:json] : defaultView.layer.transform;
-//  // TODO: Improve this by enabling edge antialiasing only for transforms with rotation or skewing
-//  view.layer.allowsEdgeAntialiasing = !CATransform3DIsIdentity(view.layer.transform);
-//}
+RCT_CUSTOM_VIEW_PROPERTY(transformMatrix, CATransform3D, RCTView)
+{
+  view.layer.transform = json ? [RCTConvert CATransform3D:json] : defaultView.layer.transform;
+  // TODO: Improve this by enabling edge antialiasing only for transforms with rotation or skewing
+  view.layer.edgeAntialiasingMask = !CATransform3DIsIdentity(view.layer.transform);
+}
+
 //RCT_CUSTOM_VIEW_PROPERTY(pointerEvents, RCTPointerEvents, RCTView)
 //{
 //  if ([view respondsToSelector:@selector(setPointerEvents:)]) {
@@ -206,7 +211,7 @@ RCT_CUSTOM_VIEW_PROPERTY(border##SIDE##Width, CGFloat, RCTView)         \
     view.border##SIDE##Width = json ? [RCTConvert CGFloat:json] : defaultView.border##SIDE##Width; \
   }                                                                     \
 }                                                                       \
-RCT_CUSTOM_VIEW_PROPERTY(border##SIDE##Color, UIColor, RCTView)         \
+RCT_CUSTOM_VIEW_PROPERTY(border##SIDE##Color, NSColor, RCTView)         \
 {                                                                       \
   if ([view respondsToSelector:@selector(setBorder##SIDE##Color:)]) {   \
     view.border##SIDE##Color = json ? [RCTConvert CGColor:json] : defaultView.border##SIDE##Color; \
