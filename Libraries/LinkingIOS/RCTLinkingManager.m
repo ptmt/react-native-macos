@@ -37,7 +37,7 @@ RCT_EXPORT_MODULE()
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-+ (BOOL)application:(UIApplication *)application
++ (BOOL)application:(NSApplication *)application
             openURL:(NSURL *)URL
   sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation
@@ -58,27 +58,29 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_METHOD(openURL:(NSURL *)URL)
 {
   // Doesn't really matter what thread we call this on since it exits the app
-  [RCTSharedApplication() openURL:URL];
+  [[NSWorkspace sharedWorkspace] openURL:URL];
 }
 
-RCT_EXPORT_METHOD(canOpenURL:(NSURL *)URL
-                  callback:(RCTResponseSenderBlock)callback)
-{
-  if (RCTRunningInAppExtension()) {
-    // Technically Today widgets can open urls, but supporting that would require
-    // a reference to the NSExtensionContext
-    callback(@[@(NO)]);
-  }
+//TODO: implement canOpenURL or add different apis such as open File, launchApplication
 
-  // This can be expensive, so we deliberately don't call on main thread
-  BOOL canOpen = [RCTSharedApplication() canOpenURL:URL];
-  callback(@[@(canOpen)]);
-}
+//RCT_EXPORT_METHOD(canOpenURL:(NSURL *)URL
+//                  callback:(RCTResponseSenderBlock)callback)
+//{
+//  if (RCTRunningInAppExtension()) {
+//    // Technically Today widgets can open urls, but supporting that would require
+//    // a reference to the NSExtensionContext
+//    callback(@[@(NO)]);
+//  }
+//
+//  // This can be expensive, so we deliberately don't call on main thread
+//  BOOL canOpen = [[NSWorkspace sharedWorkspace] can];
+//  callback(@[@(canOpen)]);
+//}
 
-- (NSDictionary *)constantsToExport
-{
-  NSURL *initialURL = _bridge.launchOptions[UIApplicationLaunchOptionsURLKey];
-  return @{@"initialURL": RCTNullIfNil(initialURL.absoluteString)};
-}
+//- (NSDictionary *)constantsToExport
+//{
+//  NSURL *initialURL = _bridge.launchOptions[UIApplicationLaunchOptionsURLKey];
+//  return @{@"initialURL": RCTNullIfNil(initialURL.absoluteString)};
+//}
 
 @end

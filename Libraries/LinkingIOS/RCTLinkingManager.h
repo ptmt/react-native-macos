@@ -7,13 +7,13 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTBridgeModule.h"
 
 @interface RCTLinkingManager : NSObject <RCTBridgeModule>
 
-+ (BOOL)application:(UIApplication *)application
++ (BOOL)application:(NSApplication *)application
             openURL:(NSURL *)URL
   sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation;
