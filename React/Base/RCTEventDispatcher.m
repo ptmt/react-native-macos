@@ -141,7 +141,6 @@ RCT_EXPORT_MODULE()
     @"submitEditing",
     @"endEditing",
   };
-
   [self sendInputEventWithName:events[type] body:text ? @{
     @"text": text,
     @"eventCount": @(eventCount),

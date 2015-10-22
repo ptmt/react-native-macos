@@ -28,6 +28,8 @@
   if ((self = [super initWithFrame:CGRectZero])) {
     RCTAssert(eventDispatcher, @"eventDispatcher is a required parameter");
     _eventDispatcher = eventDispatcher;
+    self.delegate = self;
+
 //    [self addTarget:self action:@selector(textFieldDidChange) forControlEvents:UIControlEventEditingChanged];
 //    [self addTarget:self action:@selector(textFieldBeginEditing) forControlEvents:UIControlEventEditingDidBegin];
 //    [self addTarget:self action:@selector(textFieldEndEditing) forControlEvents:UIControlEventEditingDidEnd];
@@ -135,22 +137,25 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 //  return self.autocorrectionType == UITextAutocorrectionTypeYes;
 //}
 
-//- (void)textFieldDidChange
-//{
-//  _nativeEventCount++;
-//  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeChange
-//                                 reactTag:self.reactTag
-//                                     text:self.text
-//                               eventCount:_nativeEventCount];
-//}
+- (void)textDidChange:(NSNotification *)aNotification
+{
+  _nativeEventCount++;
+  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeChange
+                                 reactTag:self.reactTag
+                                     text:[self stringValue]
+                               eventCount:_nativeEventCount];
+}
+
+- (void)textDidEndEditing:(NSNotification *)aNotification
+{
+  _nativeEventCount++;
+  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeEnd
+                                 reactTag:self.reactTag
+                                     text:[self stringValue]
+                               eventCount:_nativeEventCount];
+}
 //
-//- (void)textFieldEndEditing
-//{
-//  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeEnd
-//                                 reactTag:self.reactTag
-//                                     text:self.text
-//                               eventCount:_nativeEventCount];
-//}
+
 //- (void)textFieldSubmitEditing
 //{
 //  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeSubmit
@@ -159,18 +164,18 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 //                               eventCount:_nativeEventCount];
 //}
 //
-//- (void)textFieldBeginEditing
-//{
-//  if (_selectTextOnFocus) {
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//      [self selectAll:nil];
-//    });
-//  }
-//  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeFocus
-//                                 reactTag:self.reactTag
-//                                     text:self.text
-//                               eventCount:_nativeEventCount];
-//}
+- (void)textDidBeginEditing:(NSNotification *)aNotification
+{
+  if (_selectTextOnFocus) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self selectAll:nil];
+    });
+  }
+  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeFocus
+                                 reactTag:self.reactTag
+                                     text:[self stringValue]
+                               eventCount:_nativeEventCount];
+}
 
 - (BOOL)becomeFirstResponder
 {
