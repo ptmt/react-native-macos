@@ -226,10 +226,15 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     cell.backgroundColor = [NSColor clearColor];
     cell.editable = false;
   }
+
   NSString *methodName = stackFrame[@"methodName"];
   NSString *fileAndLine = [methodName stringByAppendingString: [stackFrame[@"file"] lastPathComponent]];
   NSString *details = fileAndLine ? [fileAndLine stringByAppendingFormat:@":%@", stackFrame[@"lineNumber"]] : nil;
   [cell setStringValue:details];
+
+//  cell.textLabel.text = stackFrame[@"methodName"];
+//  cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ @ %@:%@",
+//    [stackFrame[@"file"] lastPathComponent], stackFrame[@"lineNumber"], stackFrame[@"column"]];
   return cell;
 }
 

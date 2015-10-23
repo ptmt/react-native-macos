@@ -11,8 +11,8 @@
 
 #import <objc/message.h>
 
-#import "RCTCache.h"
 #import "RCTDefines.h"
+#import "RCTUtils.h"
 
 @implementation RCTConvert
 
@@ -101,9 +101,12 @@ RCT_CUSTOM_CONVERTER(NSData *, NSData, [json dataUsingEncoding:NSUTF8StringEncod
       path = path.stringByExpandingTildeInPath;
     } else if (!path.absolutePath) {
       // Assume it's a resource path
-      path = [[NSBundle mainBundle].resourcePath stringByAppendingPathComponent:path];
+      path = [[NSBundle bundleForClass:[self class]].resourcePath stringByAppendingPathComponent:path];
     }
-    return [NSURL fileURLWithPath:path];
+    if (!(URL = [NSURL fileURLWithPath:path])) {
+      RCTLogConvertError(json, @"a valid URL");
+    }
+    return URL;
   }
   @catch (__unused NSException *e) {
     RCTLogConvertError(json, @"a valid URL");
@@ -317,7 +320,7 @@ static void RCTConvertCGStructValue(const char *type, NSArray *fields, NSDiction
       for (NSString *alias in aliases) {
         NSString *key = aliases[alias];
         NSNumber *number = json[alias];
-        if (number) {
+        if (number != nil) {
           RCTLogWarn(@"Using deprecated '%@' property for '%s'. Use '%@' instead.", alias, type, key);
           ((NSMutableDictionary *)json)[key] = number;
         }
@@ -402,6 +405,7 @@ RCT_CGSTRUCT_CONVERTER(CGAffineTransform, (@[
 }
 
 + (NSImage *)NSImage:(id)json
+
 {
   // TODO: we might as well cache the result of these checks (and possibly the
   // image itself) so as to reduce overhead on subsequent checks of the same input
@@ -413,13 +417,18 @@ RCT_CGSTRUCT_CONVERTER(CGAffineTransform, (@[
   NSImage *image;
   NSString *path;
   CGFloat scale = 0.0;
+  BOOL isPackagerAsset = NO;
   if ([json isKindOfClass:[NSString class]]) {
     path = json;
   } else if ([json isKindOfClass:[NSDictionary class]]) {
-    path = [self NSString:json[@"uri"]];
+    if (!(path = [self NSString:json[@"uri"]])) {
+      return nil;
+    }
     scale = [self CGFloat:json[@"scale"]];
+    isPackagerAsset = [self BOOL:json[@"__packager_asset"]];
   } else {
     RCTLogConvertError(json, @"an image");
+    return nil;
   }
 
   NSURL *URL = [self NSURL:path];
@@ -451,12 +460,12 @@ RCT_CGSTRUCT_CONVERTER(CGAffineTransform, (@[
 
     if (!image) {
       // Attempt to load from the file system
-      if (path.pathExtension.length == 0) {
-        path = [path stringByAppendingPathExtension:@"png"];
+      NSString *filePath = URL.path;
+      if (filePath.pathExtension.length == 0) {
+        filePath = [filePath stringByAppendingPathExtension:@"png"];
       }
       image = [[NSImage alloc] initWithContentsOfFile:path];
     }
-
   } else if ([scheme isEqualToString:@"data"]) {
     image = [[NSImage alloc] initWithData:[NSData dataWithContentsOfURL:URL]];
   } else {

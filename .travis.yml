@@ -79,7 +79,6 @@ env:
   #  - TEST_TYPE=build_website
   #  - TEST_TYPE=e2e
   global:
-    - secure: "" # TODO:
 
 branches:
   only:

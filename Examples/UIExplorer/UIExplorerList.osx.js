@@ -19,6 +19,7 @@ var React = require('react-native-desktop');
 var {
   AppRegistry,
   Settings,
+  SnapshotViewIOS,
   StyleSheet,
 } = React;
 
@@ -72,17 +73,13 @@ var APIS = [
 COMPONENTS.concat(APIS).forEach((Example) => {
   if (Example.displayName) {
     var Snapshotter = React.createClass({
-      componentDidMount: function() {
-        // View is still blank after first RAF :\
-        global.requestAnimationFrame(() =>
-          global.requestAnimationFrame(() => TestModule.verifySnapshot(
-            TestModule.markTestPassed
-          )
-        ));
-      },
       render: function() {
         var Renderable = UIExplorerListBase.makeRenderable(Example);
-        return <Renderable />;
+        return (
+          <SnapshotViewIOS>
+            <Renderable />
+          </SnapshotViewIOS>
+        );
       },
     });
     AppRegistry.registerComponent(Example.displayName, () => Snapshotter);

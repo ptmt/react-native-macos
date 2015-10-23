@@ -43,12 +43,12 @@ RCT_CUSTOM_VIEW_PROPERTY(tintColor, NSColor, __unused RCTSegmentedControl)
   //[view.cell setControlTint:[RCTConvert NSColor:json]];
 }
 
-- (NSDictionary *)constantsToExport
-{
-  RCTSegmentedControl *view = [RCTSegmentedControl new];
-  return @{
-    @"ComponentHeight": @(view.intrinsicContentSize.height),
-  };
-}
+//- (NSDictionary *)constantsToExport
+//{
+//  RCTSegmentedControl *view = [RCTSegmentedControl new];
+//  return @{
+//    @"ComponentHeight": @(view.height),
+//  };
+//}
 
 @end

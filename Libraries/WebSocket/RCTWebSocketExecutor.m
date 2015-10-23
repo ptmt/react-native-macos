@@ -149,7 +149,7 @@ RCT_EXPORT_MODULE()
   });
 }
 
-- (void)executeApplicationScript:(NSString *)script sourceURL:(NSURL *)URL onComplete:(RCTJavaScriptCompleteBlock)onComplete
+- (void)executeApplicationScript:(NSData *)script sourceURL:(NSURL *)URL onComplete:(RCTJavaScriptCompleteBlock)onComplete
 {
   NSDictionary *message = @{
     @"method": @"executeApplicationScript",

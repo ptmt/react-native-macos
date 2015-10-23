@@ -17,6 +17,8 @@ var sharedBlacklist = [
   'node_modules/react-tools/src/renderers/shared/event/EventPropagators.js',
   'node_modules/react-tools/src/renderers/shared/event/eventPlugins/ResponderEventPlugin.js',
   'node_modules/react-tools/src/shared/vendor/core/ExecutionEnvironment.js',
+  'node_modules/react-tools/docs/js/react.js',
+  'node_modules/react-tools/src/package.json',  
 
   // Those conflicts with the ones in react-tools/. We need to blacklist the
   // internal version otherwise they won't work in open source.
@@ -36,6 +38,12 @@ var sharedBlacklist = [
   'downstream/core/createArrayFromMixed.js',
   'downstream/core/toArray.js',
   'downstream/core/dom/getActiveElement.js',
+  'downstream/core/dom/focusNode.js',
+  'downstream/core/dom/getUnboundedScrollPosition.js',
+  'downstream/core/createNodesFromMarkup.js',
+  'downstream/core/CSSCore.js',
+  'downstream/core/getMarkupWrap.js',
+  'downstream/core/hyphenateStyleName.js',
 ];
 
 // Raw unescaped patterns in case you need to use wildcards

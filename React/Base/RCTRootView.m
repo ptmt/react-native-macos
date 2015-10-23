@@ -185,17 +185,24 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
                    dispatch_get_main_queue(), ^{
 
       _loadingView.hidden = YES;
-      //[_loadingView removeFromSuperview];
+//    if (_loadingViewFadeDuration > 0) {
+//      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(_loadingViewFadeDelay * NSEC_PER_SEC)),
+//                     dispatch_get_main_queue(), ^{
 //
-//      [NSView transitionWithView:self
-//                        duration:_loadingViewFadeDuration
-//                         options:UIViewAnimationOptionTransitionCrossDissolve
-//                      animations:^{
-//                        _loadingView.hidden = YES;
-//                      } completion:^(__unused BOOL finished) {
-//                        [_loadingView removeFromSuperview];
-//                      }];
-    });
+//                       [UIView transitionWithView:self
+//                                         duration:_loadingViewFadeDuration
+//                                          options:UIViewAnimationOptionTransitionCrossDissolve
+//                                       animations:^{
+//                                         _loadingView.hidden = YES;
+//                                       } completion:^(__unused BOOL finished) {
+//                                         [_loadingView removeFromSuperview];
+//                                       }];
+//                     });
+//    } else {
+//      _loadingView.hidden = YES;
+//      [_loadingView removeFromSuperview];
+//    }
+                   });
   }
 }
 

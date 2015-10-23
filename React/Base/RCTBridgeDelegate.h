@@ -9,7 +9,8 @@
 
 #import <Foundation/Foundation.h>
 
-typedef void (^RCTSourceLoadBlock)(NSError *error, NSString *source);
+//typedef void (^RCTSourceLoadBlock)(NSError *error, NSString *source);
+typedef void (^RCTSourceLoadBlock)(NSError *error, NSData *source);
 
 @class RCTBridge;
 

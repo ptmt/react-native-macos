@@ -47,8 +47,7 @@ function fetchSourceMap(): Promise {
       return Promise.resolve(url);
     })
     .then(fetch)
-    .then(response => response.text())
-    .catch(e => console.log(e))
+    .then(response => response.text());
 }
 
 function extractSourceMapURL({url, text, fullSourceMappingURL}): ?string {

@@ -101,7 +101,7 @@ var SegmentedControlIOS = React.createClass({
 
 var styles = StyleSheet.create({
   segmentedControl: {
-    height: NativeModules.SegmentedControlManager.ComponentHeight
+    //height: NativeModules.SegmentedControlManager.ComponentHeight
   },
 });
 

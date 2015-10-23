@@ -235,13 +235,9 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
 //                                             selector:@selector(didReceiveNewContentSizeMultiplier)
 //                                                 name:RCTAccessibilityManagerDidUpdateMultiplierNotification
 //                                               object:nil];
+
   }
   return self;
-}
-
-- (void)dealloc
-{
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)didReceiveNewContentSizeMultiplier
@@ -277,6 +273,8 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
     [_pendingUIBlocksLock lock];
     _pendingUIBlocks = nil;
     [_pendingUIBlocksLock unlock];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
   });
 }
 
@@ -297,6 +295,11 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
   }
 
   _componentDataByName = [componentDataByName copy];
+
+//  [[NSNotificationCenter defaultCenter] addObserver:self
+//                                           selector:@selector(didReceiveNewContentSizeMultiplier)
+//                                               name:RCTAccessibilityManagerDidUpdateMultiplierNotification
+//                                             object:_bridge.accessibilityManager];
 }
 
 - (dispatch_queue_t)methodQueue
@@ -531,6 +534,8 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
 
       // Animate view creation
       if (createAnimation) {
+        CATransform3D finalTransform = view.layer.transform;
+        CGFloat finalOpacity = view.layer.opacity;
         if ([createAnimation.property isEqualToString:@"scaleXY"]) {
           view.layer.transform = CATransform3DMakeScale(0, 0, 0);
         } else if ([createAnimation.property isEqualToString:@"opacity"]) {
@@ -538,9 +543,9 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
         }
         [createAnimation performAnimations:^{
           if ([createAnimation.property isEqual:@"scaleXY"]) {
-            view.layer.transform = CATransform3DIdentity;
+            view.layer.transform = finalTransform;
           } else if ([createAnimation.property isEqual:@"opacity"]) {
-            view.layer.opacity = 1.0;
+            view.layer.opacity = finalOpacity;
           } else {
             RCTLogError(@"Unsupported layout animation createConfig property %@",
                         createAnimation.property);

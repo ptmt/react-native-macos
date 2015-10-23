@@ -86,6 +86,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 //    }];
 
     [self addSubview:_placeholderView positioned:NSWindowAbove relativeTo:_textView]; // TODO: check this
+
     [self _setPlaceholderVisibility];
   }
 }
