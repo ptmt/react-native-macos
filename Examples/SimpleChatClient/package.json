@@ -1,11 +1,13 @@
 {
-  "name": "neutrino",
+  "name": "discordclient",
   "version": "1.0.0",
-  "description": "React editor with lightweight renderer",
+  "description": "Stateless Gmail Client using REST API.",
   "main": "index.osx.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+  }
 }
