@@ -88,11 +88,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
     if ([command.keyCommand isEqualToString:theEvent.characters] &&
         command.modifierFlags == (theEvent.modifierFlags & NSDeviceIndependentModifierFlagsMask)) {
       if (command.block) {
-        NSLog(@"%@", theEvent.characters);
         command.block(theEvent);
       }
-    } else {
-      NSLog(@"%lu %lu", (unsigned long)command.modifierFlags, (unsigned long)theEvent.modifierFlags);
     }
   }
  }

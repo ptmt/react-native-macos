@@ -131,7 +131,6 @@ RCT_EXTERN NSArray *RCTGetModuleClasses(void);
         [weakSelf stopLoadingWithError:error];
       });
     }
-
     sourceCode = source;
     dispatch_group_leave(initModulesAndLoadSource);
   }];
@@ -685,7 +684,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithBundleURL:(__unused NSURL *)bundleUR
     [[NSNotificationCenter defaultCenter] postNotificationName:RCTDequeueNotification object:nil userInfo:nil];
     [self handleBuffer:json batchEnded:YES];
   };
-
   [_javaScriptExecutor executeJSCall:module
                               method:method
                            arguments:args

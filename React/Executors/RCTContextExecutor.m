@@ -423,6 +423,7 @@ static void RCTInstallJSCProfiler(RCTBridge *bridge, JSContextRef context)
   RCTAssert(onComplete != nil, @"onComplete block should not be nil");
   __weak RCTContextExecutor *weakSelf = self;
   [self executeBlockOnJavaScriptQueue:RCTProfileBlock((^{
+
     RCTContextExecutor *strongSelf = weakSelf;
     if (!strongSelf || !strongSelf.isValid) {
       return;

@@ -87,7 +87,7 @@ RCT_CUSTOM_CONVERTER(NSData *, NSData, [json dataUsingEncoding:NSUTF8StringEncod
 
     // Check if it has a scheme
     if ([path rangeOfString:@":"].location != NSNotFound) {
-      path = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+      path = [path stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]];
       URL = [NSURL URLWithString:path];
       if (URL) {
         return URL;
@@ -101,7 +101,7 @@ RCT_CUSTOM_CONVERTER(NSData *, NSData, [json dataUsingEncoding:NSUTF8StringEncod
       path = path.stringByExpandingTildeInPath;
     } else if (!path.absolutePath) {
       // Assume it's a resource path
-      path = [[NSBundle bundleForClass:[self class]].resourcePath stringByAppendingPathComponent:path];
+      path = [[NSBundle bundleForClass:[self class]].bundlePath stringByAppendingPathComponent:path];
     }
     if (!(URL = [NSURL fileURLWithPath:path])) {
       RCTLogConvertError(json, @"a valid URL");

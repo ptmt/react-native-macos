@@ -33,7 +33,7 @@
 {
 
   NSOperatingSystemVersion version = [NSProcessInfo processInfo].operatingSystemVersion;
-  RCTAssert((version.majorVersion == 8 && version.minorVersion >= 3) || version.majorVersion >= 9, @"Tests should be run on iOS 8.3+, found %zd.%zd.%zd", version.majorVersion, version.minorVersion, version.patchVersion);
+  RCTAssert((version.majorVersion == 10 && version.minorVersion >= 10), @"Tests should be run on OSX 10.10+, found %zd.%zd.%zd", version.majorVersion, version.minorVersion, version.patchVersion);
   _runner = RCTInitRunnerForApp(@"Examples/UIExplorer/UIExplorerIntegrationTests/js/IntegrationTestsApp", nil);
 }
 
@@ -58,11 +58,10 @@
 // This list should be kept in sync with IntegrationTestsApp.js
 RCT_TEST(IntegrationTestHarnessTest)
 // RCT_TEST(AsyncStorageTest) -- Disabled until AsyncStorage will be completed
-// RCT_TEST(LayoutEventsTest) -- Disabled: #8153468
 RCT_TEST(TimersTest)
 RCT_TEST(AppEventsTest)
-RCT_TEST(ImageSnapshotTest)
-RCT_TEST(SimpleSnapshotTest)
+// RCT_TEST(ImageSnapshotTest) --Disabled until Snapshot isn't ready
+// RCT_TEST(SimpleSnapshotTest)
 
 // Disable due to flakiness: #8686784
 //RCT_TEST(LayoutEventsTest)

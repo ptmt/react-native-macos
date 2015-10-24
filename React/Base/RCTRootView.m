@@ -65,8 +65,6 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 
   if ((self = [super initWithFrame:CGRectZero])) {
 
-    //self.backgroundColor = [NSColor whiteColor];
-    //[self setBackgroundColor:[NSColor redColor]];
     [self setNeedsLayout:NO];
 
     _bridge = bridge;
@@ -161,7 +159,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)setLoadingView:(NSView *)loadingView
 {
-  NSLog(@"RCTRootView: setLoadingView");
   _loadingView = loadingView;
   if (!_contentView.contentHasAppeared) {
     [self showLoadingView];

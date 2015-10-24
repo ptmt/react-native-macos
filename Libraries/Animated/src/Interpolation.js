@@ -41,7 +41,7 @@ var linear = (t) => t;
  * function and custom behavior outside of the ranges.
  */
 class Interpolation {
-  /* $FlowFixMe */
+  /* $FlowFixMe(>=17.0.0) - config */
   static create(config: InterpolationConfigType): (input: number) => number | string {
 
     if (config.outputRange && typeof config.outputRange[0] === 'string') {

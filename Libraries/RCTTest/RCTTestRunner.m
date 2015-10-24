@@ -107,6 +107,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
     NSView * vcView = [NSView new];
     [vcView addSubview:rootView]; // Add as subview so it doesn't get resized
     [[[NSApplication sharedApplication] mainWindow] setContentView:vcView];
+    //[[[NSApplication sharedApplication].windows objectAtIndex:0] setContentView:rootView];
+    //[[[NSApplication sharedApplication].windows objectAtIndex:0] makeKeyWindow];
 
     NSDate *date = [NSDate dateWithTimeIntervalSinceNow:kTestTimeoutSeconds];
     while (date.timeIntervalSinceNow > 0 && testModule.status == RCTTestStatusPending && error == nil) {

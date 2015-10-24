@@ -24,7 +24,6 @@ static NSView *RCTViewHitTest(NSView *view, CGPoint point)
       CGPoint convertedPoint = [subview convertPoint:point fromView:nil];
 
       NSView *subviewHitTestView = [subview hitTest:convertedPoint];
-      //NSLog(@"test %d from %lu reactTag: %@ convertedPoint %f %f", (subviewHitTestView != nil), (unsigned long)view.subviews.count, subviewHitTestView.reactTag, convertedPoint.x, convertedPoint.y);
       if (subviewHitTestView != nil) {
         return subviewHitTestView;
       }

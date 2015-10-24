@@ -179,6 +179,7 @@ void RCTParseObjCMethodName(NSString **objCMethodName, NSArray **arguments)
   CFBridgingRetain(value)
 
   __weak RCTModuleMethod *weakSelf = self;
+
   void (^addBlockArgument)(void) = ^{
     RCT_ARG_BLOCK(
 

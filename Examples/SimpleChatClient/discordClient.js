@@ -11,7 +11,7 @@ var ENDPOINTS = {
   CHANNELS : `${BASE}/api/channels`
 };
 
-export function login(email, password) {
+export function login(email: string, password: string): Promise {
   var request = new XMLHttpRequest();
   request.open("POST", ENDPOINTS.LOGIN, true);
   var formdata = new FormData();
@@ -33,7 +33,7 @@ export function login(email, password) {
   });
 }
 
-export function getGateway(token) {
+export function getGateway(token: string): Promise {
   return fetch(`${ENDPOINTS.API}/gateway`, {
     headers: {
       authorization: token
@@ -43,7 +43,7 @@ export function getGateway(token) {
   .then(r => r.url);
 }
 
-export function connect(token, gatewayUrl, setState) {
+export function connect(token: string, gatewayUrl: string, setState: Function): void {
   var websocket = new WebSocket(gatewayUrl);
   websocket.onopen = function () {
 			connnectionMessage.bind(this)(token); //try connecting
@@ -98,7 +98,7 @@ function keepAlive() {
 	}));
 }
 
-function connnectionMessage(token) {
+function connnectionMessage(token): void {
 	var data = {
 		op: 2,
 		d: {
@@ -116,7 +116,7 @@ function connnectionMessage(token) {
   this.send(JSON.stringify(data));
 }
 
-export function getMessages(token, channelID) {
+export function getMessages(token: string, channelID: string): Promise {
   return fetch(`${ENDPOINTS.CHANNELS}/${channelID}/messages?limit=100`, {
     headers: {
       authorization: token
