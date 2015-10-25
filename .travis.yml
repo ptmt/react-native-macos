@@ -23,7 +23,7 @@ install:
   - npm install
   - node --version
   - npm --version
-  - xcodebuild -showsdks # to debug travis
+  - cat /System/Library/Frameworks/CoreFoundation.framework/Versions/A/Resources/version.plist
 
 script:
 - |
