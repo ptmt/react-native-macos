@@ -10,9 +10,6 @@
   "engines": {
     "node": ">=4"
   },
-  "engines": {
-    "node": ">=4"
-  },
   "jest": {
     "scriptPreprocessor": "jestSupport/preprocessor.js",
     "setupEnvScriptFile": "jestSupport/env.js",
