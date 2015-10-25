@@ -51,6 +51,7 @@ const validateOpts = declareOpts({
     default: [
       'react-tools',
       'react-native',
+      'react-native-desktop',
       // Parse requires AsyncStorage. They will
       // change that to require('react-native') which
       // should work after this release and we can
