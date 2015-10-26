@@ -71,6 +71,7 @@ RCT_CUSTOM_CONVERTER(NSData *, NSData, [json dataUsingEncoding:NSUTF8StringEncod
   return indexSet;
 }
 
+
 + (NSURL *)NSURL:(id)json
 {
   NSString *path = [self NSString:json];
@@ -87,7 +88,7 @@ RCT_CUSTOM_CONVERTER(NSData *, NSData, [json dataUsingEncoding:NSUTF8StringEncod
 
     // Check if it has a scheme
     if ([path rangeOfString:@":"].location != NSNotFound) {
-      path = [path stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]];
+      path = [path stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
       URL = [NSURL URLWithString:path];
       if (URL) {
         return URL;

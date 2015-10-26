@@ -61,7 +61,6 @@ function run() {
     printUsage();
     return;
   }
-
   command[0](args, Config.get(__dirname, defaultConfig)).done();
 }
 
