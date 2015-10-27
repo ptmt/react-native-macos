@@ -12,30 +12,13 @@
 
 #import "RCTBridge.h"
 #import "RCTURLRequestHandler.h"
-
+#import "UIImageUtils.h"
 
 @class ALAssetsLibrary;
 
 typedef void (^RCTImageLoaderProgressBlock)(int64_t progress, int64_t total);
 typedef void (^RCTImageLoaderCompletionBlock)(NSError *error, NSImage *image);
 typedef void (^RCTImageLoaderCancellationBlock)(void);
-
-typedef NS_ENUM(NSInteger, UIViewContentMode) {
-  UIViewContentModeScaleToFill,
-  UIViewContentModeScaleAspectFit,
-  UIViewContentModeScaleAspectFill,
-  UIViewContentModeRedraw,
-  UIViewContentModeCenter,
-  UIViewContentModeTop,
-  UIViewContentModeBottom,
-  UIViewContentModeLeft,
-  UIViewContentModeRight,
-  UIViewContentModeTopLeft,
-  UIViewContentModeTopRight,
-  UIViewContentModeBottomLeft,
-  UIViewContentModeBottomRight,
-};
-
 
 @interface NSImage (React)
 

@@ -99,7 +99,7 @@ exports.examples = [
         <NetworkImageExample source={{uri: 'http://TYPO_ERROR_facebook.github.io/react/img/logo_og.png'}} />
       );
     },
-    platform: 'ios',
+    platform: 'osx',
   },
   {
     title: 'Image Download Progress',
@@ -108,7 +108,7 @@ exports.examples = [
         <NetworkImageExample source={{uri: 'http://facebook.github.io/origami/public/images/blog-hero.jpg?r=1'}}/>
       );
     },
-    platform: 'ios',
+    platform: 'osx',
   },
   {
     title: 'Border Color',
@@ -275,18 +275,18 @@ exports.examples = [
       );
     },
   },
-  {
-    title: 'Animated GIF',
-    render: function() {
-      return (
-        <Image
-          style={styles.gif}
-          source={{uri: 'http://38.media.tumblr.com/9e9bd08c6e2d10561dd1fb4197df4c4e/tumblr_mfqekpMktw1rn90umo1_500.gif'}}
-        />
-      );
-    },
-    platform: 'ios',
-  },
+  // {
+  //   title: 'Animated GIF',
+  //   render: function() {
+  //     return (
+  //       <Image
+  //         style={styles.gif}
+  //         source={{uri: 'http://38.media.tumblr.com/9e9bd08c6e2d10561dd1fb4197df4c4e/tumblr_mfqekpMktw1rn90umo1_500.gif'}}
+  //       />
+  //     );
+  //   },
+  //   platform: 'osx',
+  // },
   {
     title: 'Base64 image',
     render: function() {
@@ -297,20 +297,20 @@ exports.examples = [
         />
       );
     },
-    platform: 'ios',
+    platform: 'osx',
   },
-  {
-    title: 'Cap Insets',
-    description:
-      'When the image is resized, the corners of the size specified ' +
-      'by capInsets will stay a fixed size, but the center content and ' +
-      'borders of the image will be stretched. This is useful for creating ' +
-      'resizable rounded buttons, shadows, and other resizable assets.',
-    render: function() {
-      return <ImageCapInsetsExample />;
-    },
-    platform: 'ios',
-  },
+  // {
+  //   title: 'Cap Insets',
+  //   description:
+  //     'When the image is resized, the corners of the size specified ' +
+  //     'by capInsets will stay a fixed size, but the center content and ' +
+  //     'borders of the image will be stretched. This is useful for creating ' +
+  //     'resizable rounded buttons, shadows, and other resizable assets.',
+  //   render: function() {
+  //     return <ImageCapInsetsExample />;
+  //   },
+  //   platform: 'osx',
+  // },
 ];
 
 var fullImage = {uri: 'http://facebook.github.io/react/img/logo_og.png'};
@@ -343,7 +343,7 @@ var styles = StyleSheet.create({
     color: 'white'
   },
   resizeMode: {
-    width: 90,
+    width: 100,
     height: 60,
     borderWidth: 0.5,
     borderColor: 'black'

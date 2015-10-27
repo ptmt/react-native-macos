@@ -92,6 +92,7 @@
 		0316317A1BDF599D003A8A7A /* RCTPickerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTPickerManager.m; sourceTree = "<group>"; };
 		031631841BDF5E2E003A8A7A /* RCTAsyncLocalStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTAsyncLocalStorage.m; sourceTree = "<group>"; };
 		031631851BDF5E2E003A8A7A /* RCTAsyncLocalStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTAsyncLocalStorage.h; sourceTree = "<group>"; };
+		031631961BDF86AB003A8A7A /* RCTImageComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTImageComponent.h; sourceTree = "<group>"; };
 		032625A61BBCF725001C8FC1 /* RCTRedBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTRedBox.h; sourceTree = "<group>"; };
 		032625A71BBCF725001C8FC1 /* RCTRedBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTRedBox.m; sourceTree = "<group>"; };
 		03279A291BB81FF70015275D /* RCTShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTShadowView.h; sourceTree = "<group>"; };
@@ -280,10 +281,6 @@
 		13B07FF31A6947C200A75B9A /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				031631771BDF599D003A8A7A /* RCTPicker.h */,
-				031631781BDF599D003A8A7A /* RCTPicker.m */,
-				031631791BDF599D003A8A7A /* RCTPickerManager.h */,
-				0316317A1BDF599D003A8A7A /* RCTPickerManager.m */,
 				83F15A171B7CC46900F10295 /* NSView+Private.h */,
 				13E067531A70F44B002CDEE1 /* NSView+React.h */,
 				13E067541A70F44B002CDEE1 /* NSView+React.m */,
@@ -300,6 +297,11 @@
 				133CAE8D1B8E5CFD00F6AD92 /* RCTDatePicker.m */,
 				58C571C01AA56C1900CDF9C8 /* RCTDatePickerManager.h */,
 				58C571BF1AA56C1900CDF9C8 /* RCTDatePickerManager.m */,
+				031631961BDF86AB003A8A7A /* RCTImageComponent.h */,
+				031631771BDF599D003A8A7A /* RCTPicker.h */,
+				031631781BDF599D003A8A7A /* RCTPicker.m */,
+				031631791BDF599D003A8A7A /* RCTPickerManager.h */,
+				0316317A1BDF599D003A8A7A /* RCTPickerManager.m */,
 				13442BF31AA90E0B0037E5B0 /* RCTPointerEvents.h */,
 				13513F3A1B1F43F400FCE529 /* RCTProgressViewManager.h */,
 				13513F3B1B1F43F400FCE529 /* RCTProgressViewManager.m */,

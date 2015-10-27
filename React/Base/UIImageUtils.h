@@ -9,6 +9,23 @@
 #import <AppKit/AppKit.h>
 
 
+typedef NS_ENUM(NSInteger, UIViewContentMode) {
+  UIViewContentModeScaleToFill,
+  UIViewContentModeScaleAspectFit,
+  UIViewContentModeScaleAspectFill,
+  UIViewContentModeRedraw,
+  UIViewContentModeCenter,
+  UIViewContentModeTop,
+  UIViewContentModeBottom,
+  UIViewContentModeLeft,
+  UIViewContentModeRight,
+  UIViewContentModeTopLeft,
+  UIViewContentModeTopRight,
+  UIViewContentModeBottomLeft,
+  UIViewContentModeBottomRight,
+};
+
+
 NSData *UIImagePNGRepresentation(NSImage *image);
 NSData *UIImageJPEGRepresentation(NSImage *image);
 

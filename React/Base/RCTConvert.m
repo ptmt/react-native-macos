@@ -13,6 +13,7 @@
 
 #import "RCTDefines.h"
 #import "RCTUtils.h"
+#import "UIImageUtils.h"
 
 @implementation RCTConvert
 
@@ -278,25 +279,25 @@ RCT_ENUM_CONVERTER(NSWritingDirection, (@{
 //  @"emergency-call": @(UIReturnKeyEmergencyCall),
 //}), UIReturnKeyDefault, integerValue)
 //
-//RCT_ENUM_CONVERTER(UIViewContentMode, (@{
-//  @"scale-to-fill": @(UIViewContentModeScaleToFill),
-//  @"scale-aspect-fit": @(UIViewContentModeScaleAspectFit),
-//  @"scale-aspect-fill": @(UIViewContentModeScaleAspectFill),
-//  @"redraw": @(UIViewContentModeRedraw),
-//  @"center": @(UIViewContentModeCenter),
-//  @"top": @(UIViewContentModeTop),
-//  @"bottom": @(UIViewContentModeBottom),
-//  @"left": @(UIViewContentModeLeft),
-//  @"right": @(UIViewContentModeRight),
-//  @"top-left": @(UIViewContentModeTopLeft),
-//  @"top-right": @(UIViewContentModeTopRight),
-//  @"bottom-left": @(UIViewContentModeBottomLeft),
-//  @"bottom-right": @(UIViewContentModeBottomRight),
-//  // Cross-platform values
-//  @"cover": @(UIViewContentModeScaleAspectFill),
-//  @"contain": @(UIViewContentModeScaleAspectFit),
-//  @"stretch": @(UIViewContentModeScaleToFill),
-//}), UIViewContentModeScaleAspectFill, integerValue)
+RCT_ENUM_CONVERTER(UIViewContentMode, (@{
+  @"scale-to-fill": @(UIViewContentModeScaleToFill),
+  @"scale-aspect-fit": @(UIViewContentModeScaleAspectFit),
+  @"scale-aspect-fill": @(UIViewContentModeScaleAspectFill),
+  @"redraw": @(UIViewContentModeRedraw),
+  @"center": @(UIViewContentModeCenter),
+  @"top": @(UIViewContentModeTop),
+  @"bottom": @(UIViewContentModeBottom),
+  @"left": @(UIViewContentModeLeft),
+  @"right": @(UIViewContentModeRight),
+  @"top-left": @(UIViewContentModeTopLeft),
+  @"top-right": @(UIViewContentModeTopRight),
+  @"bottom-left": @(UIViewContentModeBottomLeft),
+  @"bottom-right": @(UIViewContentModeBottomRight),
+  // Cross-platform values
+  @"cover": @(UIViewContentModeScaleAspectFill),
+  @"contain": @(UIViewContentModeScaleAspectFit),
+  @"stretch": @(UIViewContentModeScaleToFill),
+}), UIViewContentModeScaleAspectFill, integerValue)
 //
 //RCT_ENUM_CONVERTER(UIBarStyle, (@{
 //  @"default": @(UIBarStyleDefault),
@@ -425,7 +426,7 @@ RCT_CGSTRUCT_CONVERTER(CGAffineTransform, (@[
     if (!(path = [self NSString:json[@"uri"]])) {
       return nil;
     }
-    scale = [self CGFloat:json[@"scale"]];
+    //scale = [self CGFloat:json[@"scale"]];
     isPackagerAsset = [self BOOL:json[@"__packager_asset"]];
   } else {
     RCTLogConvertError(json, @"an image");

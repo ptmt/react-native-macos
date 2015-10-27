@@ -15,6 +15,7 @@
 #import "RCTShadowView.h"
 #import "RCTUtils.h"
 #import "RCTViewManager.h"
+#import "UIImageUtils.h"
 
 typedef void (^RCTPropBlock)(id<RCTComponent> view, id json);
 

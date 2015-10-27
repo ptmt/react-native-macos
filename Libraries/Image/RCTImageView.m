@@ -12,7 +12,7 @@
 #import "RCTBridge.h"
 #import "RCTConvert.h"
 #import "RCTEventDispatcher.h"
-#import "RCTImageLoader.h"
+#import "UIImageUtils.h"
 #import "RCTImageUtils.h"
 #import "RCTUtils.h"
 
@@ -60,6 +60,7 @@ static BOOL RCTShouldReloadImageForSizeChange(CGSize currentSize, CGSize idealSi
 {
   if ((self = [super initWithFrame:NSZeroRect])) {
     _bridge = bridge;
+    [self setWantsLayer:YES];
   }
   return self;
 }
@@ -95,11 +96,18 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)coder)
 
 - (void)setImage:(NSImage *)image
 {
-  image = image ?: _defaultImage;
-  if (image != super.image) {
-    super.image = image;
-    [self updateImage];
-  }
+//  image = image ?: _defaultImage;
+//  if (image != super.image) {
+//    super.image = image;
+//    [self updateImage];
+//  }
+  CGFloat desiredScaleFactor = [[RCTSharedApplication() mainWindow] backingScaleFactor];
+  CGFloat actualScaleFactor = [image recommendedLayerContentsScale:desiredScaleFactor];
+
+  id layerContents = [image layerContentsForContentsScale:actualScaleFactor];
+
+  [self.layer setContents:layerContents];
+  [self.layer setContentsScale:actualScaleFactor];
 }
 
 // TODO: Replace it with proper mechanism
@@ -159,7 +167,11 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
 
         case UIViewContentModeScaleAspectFill:
           _layer.contentsGravity = kCAGravityResizeAspectFill;
-          _layer.needsDisplayOnBoundsChange = NO;
+          _layer.masksToBounds = YES;
+//          NSLog(@"bounds: %f %f", self.bounds.size.height,  self.bounds.size.width);
+//          NSLog(@"frame: %f %f", self.frame.size.height,  self.frame.size.width);
+
+          _layer.needsDisplayOnBoundsChange = YES;
           break;
 
         case UIViewContentModeRedraw:
@@ -274,6 +286,7 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
             _onLoad(nil);
           }
         }
+        NSLog(@"bounds: %f %f", self.layer.bounds.size.height,  self.layer.bounds.size.width);
         if (_onLoadEnd) {
            _onLoadEnd(nil);
         }
