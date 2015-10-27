@@ -10,7 +10,6 @@
 #import "RCTGIFImageDecoder.h"
 
 #import <ImageIO/ImageIO.h>
-#import <MobileCoreServices/MobileCoreServices.h>
 #import <QuartzCore/QuartzCore.h>
 
 #import "RCTUtils.h"
@@ -37,7 +36,7 @@ RCT_EXPORT_MODULE()
   NSDictionary *properties = (__bridge_transfer NSDictionary *)CGImageSourceCopyProperties(imageSource, NULL);
   NSUInteger loopCount = [properties[(id)kCGImagePropertyGIFDictionary][(id)kCGImagePropertyGIFLoopCount] unsignedIntegerValue];
 
-  UIImage *image = nil;
+  NSImage *image = nil;
   size_t imageCount = CGImageSourceGetCount(imageSource);
   if (imageCount > 1) {
 
@@ -48,7 +47,8 @@ RCT_EXPORT_MODULE()
 
       CGImageRef imageRef = CGImageSourceCreateImageAtIndex(imageSource, i, NULL);
       if (!image) {
-        image = [UIImage imageWithCGImage:imageRef scale:scale orientation:UIImageOrientationUp];
+        // TODO: Respect the scale
+        image = [[NSImage alloc] initWithCGImage:imageRef size:CGSizeMake(CGImageGetWidth(imageRef), CGImageGetHeight(imageRef)) ];
       }
 
       NSDictionary *frameProperties = (__bridge_transfer NSDictionary *)CGImageSourceCopyPropertiesAtIndex(imageSource, i, NULL);
@@ -98,7 +98,7 @@ RCT_EXPORT_MODULE()
     // Don't bother creating an animation
     CGImageRef imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
     if (imageRef) {
-      image = [UIImage imageWithCGImage:imageRef scale:scale orientation:UIImageOrientationUp];
+      image = [[NSImage alloc] initWithCGImage:imageRef size:CGSizeMake(CGImageGetWidth(imageRef), CGImageGetHeight(imageRef)) ];
       CFRelease(imageRef);
     }
     CFRelease(imageSource);

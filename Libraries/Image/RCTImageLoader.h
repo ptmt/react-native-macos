@@ -7,18 +7,37 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
+#import <QuartzCore/CAAnimation.h>
 
 #import "RCTBridge.h"
 #import "RCTURLRequestHandler.h"
 
+
 @class ALAssetsLibrary;
 
 typedef void (^RCTImageLoaderProgressBlock)(int64_t progress, int64_t total);
-typedef void (^RCTImageLoaderCompletionBlock)(NSError *error, UIImage *image);
+typedef void (^RCTImageLoaderCompletionBlock)(NSError *error, NSImage *image);
 typedef void (^RCTImageLoaderCancellationBlock)(void);
 
-@interface UIImage (React)
+typedef NS_ENUM(NSInteger, UIViewContentMode) {
+  UIViewContentModeScaleToFill,
+  UIViewContentModeScaleAspectFit,
+  UIViewContentModeScaleAspectFill,
+  UIViewContentModeRedraw,
+  UIViewContentModeCenter,
+  UIViewContentModeTop,
+  UIViewContentModeBottom,
+  UIViewContentModeLeft,
+  UIViewContentModeRight,
+  UIViewContentModeTopLeft,
+  UIViewContentModeTopRight,
+  UIViewContentModeBottomLeft,
+  UIViewContentModeBottomRight,
+};
+
+
+@interface NSImage (React)
 
 @property (nonatomic, copy) CAKeyframeAnimation *reactKeyframeAnimation;
 

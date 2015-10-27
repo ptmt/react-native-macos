@@ -12,6 +12,8 @@
 #import "RCTAssert.h"
 #import "RCTUtils.h"
 
+#import "UIImageUtils.h"
+
 @implementation RCTImageStoreManager
 {
   NSMutableDictionary *_store;
@@ -31,7 +33,7 @@ RCT_EXPORT_MODULE()
   return self;
 }
 
-- (NSString *)storeImage:(UIImage *)image
+- (NSString *)storeImage:(NSImage *)image
 {
   RCTAssertMainThread();
   NSString *tag = [NSString stringWithFormat:@"rct-image-store://%tu", _store.count];
@@ -39,13 +41,13 @@ RCT_EXPORT_MODULE()
   return tag;
 }
 
-- (UIImage *)imageForTag:(NSString *)imageTag
+- (NSImage *)imageForTag:(NSString *)imageTag
 {
   RCTAssertMainThread();
   return _store[imageTag];
 }
 
-- (void)storeImage:(UIImage *)image withBlock:(void (^)(NSString *imageTag))block
+- (void)storeImage:(NSImage *)image withBlock:(void (^)(NSString *imageTag))block
 {
   dispatch_async(dispatch_get_main_queue(), ^{
     NSString *imageTag = [self storeImage:image];
@@ -55,7 +57,7 @@ RCT_EXPORT_MODULE()
   });
 }
 
-- (void)getImageForTag:(NSString *)imageTag withBlock:(void (^)(UIImage *image))block
+- (void)getImageForTag:(NSString *)imageTag withBlock:(void (^)(NSImage *image))block
 {
   RCTAssert(block != nil, @"block must not be nil");
   dispatch_async(dispatch_get_main_queue(), ^{
@@ -68,13 +70,13 @@ RCT_EXPORT_METHOD(getBase64ForTag:(NSString *)imageTag
                   successCallback:(RCTResponseSenderBlock)successCallback
                   errorCallback:(RCTResponseErrorBlock)errorCallback)
 {
-  [self getImageForTag:imageTag withBlock:^(UIImage *image) {
+  [self getImageForTag:imageTag withBlock:^(NSImage *image) {
     if (!image) {
       errorCallback(RCTErrorWithMessage([NSString stringWithFormat:@"Invalid imageTag: %@", imageTag]));
       return;
     }
     dispatch_async(_methodQueue, ^{
-      NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
+      NSData *imageData = UIImageJPEGRepresentation(image);
       NSString *base64 = [imageData base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
       successCallback(@[[base64 stringByReplacingOccurrencesOfString:@"\n" withString:@""]]);
     });
@@ -88,7 +90,7 @@ RCT_EXPORT_METHOD(addImageFromBase64:(NSString *)base64String
 {
   NSData *imageData = [[NSData alloc] initWithBase64EncodedString:base64String options:0];
   if (imageData) {
-    UIImage *image = [[UIImage alloc] initWithData:imageData];
+    NSImage *image = [[NSImage alloc] initWithData:imageData];
     [self storeImage:image withBlock:^(NSString *imageTag) {
       successCallback(@[imageTag]);
     }];
@@ -107,7 +109,7 @@ RCT_EXPORT_METHOD(addImageFromBase64:(NSString *)base64String
 - (RCTImageLoaderCancellationBlock)loadImageForURL:(NSURL *)imageURL size:(CGSize)size scale:(CGFloat)scale resizeMode:(UIViewContentMode)resizeMode progressHandler:(RCTImageLoaderProgressBlock)progressHandler completionHandler:(RCTImageLoaderCompletionBlock)completionHandler
 {
   NSString *imageTag = imageURL.absoluteString;
-  [self getImageForTag:imageTag withBlock:^(UIImage *image) {
+  [self getImageForTag:imageTag withBlock:^(NSImage *image) {
     if (image) {
       completionHandler(nil, image);
     } else {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		031631951BDF81F4003A8A7A /* libRCTImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0316318C1BDF6FC2003A8A7A /* libRCTImage.a */; };
 		0357AF381BD28D1E00CEDDCC /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDED91B0651EA00C62182 /* libRCTWebSocket.a */; };
 		038010341BCA7D2A00B1BE0C /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1341802B1AA91779003F314A /* libRCTNetwork.a */; };
 		038010671BCCAF2500B1BE0C /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 834C36D21AF8DA610019C93C /* libRCTSettings.a */; };
@@ -42,6 +43,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		0316318B1BDF6FC2003A8A7A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 031631871BDF6FC1003A8A7A /* RCTImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 58B5115D1A9E6B3D00147676;
+			remoteInfo = RCTImage;
+		};
 		13417FEE1AA914B8003F314A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 13417FEA1AA914B8003F314A /* RCTText.xcodeproj */;
@@ -102,6 +110,7 @@
 
 /* Begin PBXFileReference section */
 		004D289E1AAF61C70097A701 /* UIExplorerUnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UIExplorerUnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		031631871BDF6FC1003A8A7A /* RCTImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTImage.xcodeproj; path = ../../Libraries/Image/RCTImage.xcodeproj; sourceTree = "<group>"; };
 		1300627E1B59179B0043FE5A /* RCTGzipTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTGzipTests.m; sourceTree = "<group>"; };
 		13417FEA1AA914B8003F314A /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = ../../Libraries/Text/RCTText.xcodeproj; sourceTree = "<group>"; };
 		134180261AA91779003F314A /* RCTNetwork.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTNetwork.xcodeproj; path = ../../Libraries/Network/RCTNetwork.xcodeproj; sourceTree = "<group>"; };
@@ -171,6 +180,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				031631951BDF81F4003A8A7A /* libRCTImage.a in Frameworks */,
 				0357AF381BD28D1E00CEDDCC /* libRCTWebSocket.a in Frameworks */,
 				03911C6D1BCFFCBC006809D1 /* libRCTText.a in Frameworks */,
 				03911C6C1BCFFCB7006809D1 /* libReact.a in Frameworks */,
@@ -190,11 +200,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		031631881BDF6FC1003A8A7A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0316318C1BDF6FC2003A8A7A /* libRCTImage.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		1316A21D1AA397F400C0188E /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
 				14AADEFF1AC3DB95002390C9 /* React.xcodeproj */,
 				357858F81B28D2C400341EDB /* RCTLinking.xcodeproj */,
+				031631871BDF6FC1003A8A7A /* RCTImage.xcodeproj */,
 				134180261AA91779003F314A /* RCTNetwork.xcodeproj */,
 				13CC9D481AEED2B90020D1C2 /* RCTSettings.xcodeproj */,
 				58005BE41ABA80530062E044 /* RCTTest.xcodeproj */,
@@ -469,6 +488,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 031631881BDF6FC1003A8A7A /* Products */;
+					ProjectRef = 031631871BDF6FC1003A8A7A /* RCTImage.xcodeproj */;
+				},
+				{
 					ProductGroup = 357858F91B28D2C400341EDB /* Products */;
 					ProjectRef = 357858F81B28D2C400341EDB /* RCTLinking.xcodeproj */;
 				},
@@ -507,6 +530,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		0316318C1BDF6FC2003A8A7A /* libRCTImage.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTImage.a;
+			remoteRef = 0316318B1BDF6FC2003A8A7A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		13417FEF1AA914B8003F314A /* libRCTText.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;

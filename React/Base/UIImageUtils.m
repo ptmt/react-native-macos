@@ -11,6 +11,18 @@
 
 NSData *UIImagePNGRepresentation(NSImage *image)
 {
+  CGImageSourceRef source = CGImageSourceCreateWithData((CFDataRef)[image TIFFRepresentation], NULL);
+  CGImageRef maskRef =  CGImageSourceCreateImageAtIndex(source, 0, NULL);
+
+  NSBitmapImageRep *newRep = [[NSBitmapImageRep alloc] initWithCGImage:maskRef];
+
+  NSData *pngData = [newRep representationUsingType:NSPNGFileType properties:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                              [NSNumber numberWithBool:YES], NSImageProgressive, nil]];
+  return pngData;
+}
+
+NSData *UIImageJPEGRepresentation(NSImage *image)
+{
   //  CFMutableDataRef data = CFDataCreateMutable(NULL, 0);
   //  CGImageDestinationRef dest = CGImageDestinationCreateWithData(data, kUTTypePNG, 1, NULL);
   //  CGImageDestinationAddImage(dest, image.CGImage, NULL);
@@ -21,10 +33,12 @@ NSData *UIImagePNGRepresentation(NSImage *image)
 
   NSBitmapImageRep *newRep = [[NSBitmapImageRep alloc] initWithCGImage:maskRef];
 
-  NSData *pngData = [newRep representationUsingType:NSPNGFileType properties:[NSDictionary dictionaryWithObjectsAndKeys:
+  NSData *jpgData = [newRep representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObjectsAndKeys:
                                                                               [NSNumber numberWithBool:YES], NSImageProgressive, nil]];
-  return pngData;
+  return jpgData;
 }
+
+
 
 static NSMutableArray *contextStack = nil;
 static NSMutableArray *imageContextStack = nil;

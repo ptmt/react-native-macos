@@ -11,9 +11,9 @@
 		1304D5AC1AA8C4A30002E2BE /* RCTImageViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1304D5AA1AA8C4A30002E2BE /* RCTImageViewManager.m */; };
 		1304D5B21AA8C50D0002E2BE /* RCTGIFImageDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1304D5B11AA8C50D0002E2BE /* RCTGIFImageDecoder.m */; };
 		134B00A21B54232B00EC8DFB /* RCTImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 134B00A11B54232B00EC8DFB /* RCTImageUtils.m */; };
-		13EF7F0B1BC42D4E003F47DD /* RCTShadowVirtualImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 13EF7F081BC42D4E003F47DD /* RCTShadowVirtualImage.m */; settings = {ASSET_TAGS = (); }; };
-		13EF7F0C1BC42D4E003F47DD /* RCTVirtualImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 13EF7F0A1BC42D4E003F47DD /* RCTVirtualImageManager.m */; settings = {ASSET_TAGS = (); }; };
-		13EF7F7F1BC825B1003F47DD /* RCTXCAssetImageLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 13EF7F7E1BC825B1003F47DD /* RCTXCAssetImageLoader.m */; settings = {ASSET_TAGS = (); }; };
+		13EF7F0B1BC42D4E003F47DD /* RCTShadowVirtualImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 13EF7F081BC42D4E003F47DD /* RCTShadowVirtualImage.m */; };
+		13EF7F0C1BC42D4E003F47DD /* RCTVirtualImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 13EF7F0A1BC42D4E003F47DD /* RCTVirtualImageManager.m */; };
+		13EF7F7F1BC825B1003F47DD /* RCTXCAssetImageLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 13EF7F7E1BC825B1003F47DD /* RCTXCAssetImageLoader.m */; };
 		143879381AAD32A300F088A5 /* RCTImageLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 143879371AAD32A300F088A5 /* RCTImageLoader.m */; };
 		35123E6B1B59C99D00EBAD80 /* RCTImageStoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 35123E6A1B59C99D00EBAD80 /* RCTImageStoreManager.m */; };
 		354631681B69857700AA0B86 /* RCTImageEditingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 354631671B69857700AA0B86 /* RCTImageEditingManager.m */; };
@@ -213,7 +213,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
+				SDKROOT = macosx10.11;
 				WARNING_CFLAGS = (
 					"-Werror",
 					"-Wall",
@@ -252,7 +252,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = iphoneos;
+				SDKROOT = macosx10.11;
 				VALIDATE_PRODUCT = YES;
 				WARNING_CFLAGS = (
 					"-Werror",

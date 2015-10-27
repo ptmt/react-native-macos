@@ -77,21 +77,21 @@ exports.examples = [
       );
     },
   },
-  {
-    title: 'Plain Static Image',
-    description: 'Static assets should be required by prefixing with `image!` ' +
-      'and are located in the app bundle.',
-    render: function() {
-      return (
-        <View style={styles.horizontal}>
-          <Image source={require('image!uie_thumb_normal')} style={styles.icon} />
-          <Image source={require('image!uie_thumb_selected')} style={styles.icon} />
-          <Image source={require('image!uie_comment_normal')} style={styles.icon} />
-          <Image source={require('image!uie_comment_highlighted')} style={styles.icon} />
-        </View>
-      );
-    },
-  },
+  // {
+  //   title: 'Plain Static Image',
+  //   description: 'Static assets should be required by prefixing with `image!` ' +
+  //     'and are located in the app bundle.',
+  //   render: function() {
+  //     return (
+  //       <View style={styles.horizontal}>
+  //         <Image source={require('image!uie_thumb_normal')} style={styles.icon} />
+  //         <Image source={require('image!uie_thumb_selected')} style={styles.icon} />
+  //         <Image source={require('image!uie_comment_normal')} style={styles.icon} />
+  //         <Image source={require('image!uie_comment_highlighted')} style={styles.icon} />
+  //       </View>
+  //     );
+  //   },
+  // },
   {
     title: 'Error Handler',
     render: function() {
@@ -235,56 +235,6 @@ exports.examples = [
     },
   },
   {
-    title: 'Tint Color',
-    description: 'The `tintColor` style prop changes all the non-alpha ' +
-      'pixels to the tint color.',
-    render: function() {
-      return (
-        <View>
-          <View style={styles.horizontal}>
-            <Image
-              source={require('image!uie_thumb_normal')}
-              style={[styles.icon, {borderRadius: 5, tintColor: '#5ac8fa' }]}
-            />
-            <Image
-              source={require('image!uie_thumb_normal')}
-              style={[styles.icon, styles.leftMargin, {borderRadius: 5, tintColor: '#4cd964' }]}
-            />
-            <Image
-              source={require('image!uie_thumb_normal')}
-              style={[styles.icon, styles.leftMargin, {borderRadius: 5, tintColor: '#ff2d55' }]}
-            />
-            <Image
-              source={require('image!uie_thumb_normal')}
-              style={[styles.icon, styles.leftMargin, {borderRadius: 5, tintColor: '#8e8e93' }]}
-            />
-          </View>
-          <Text style={styles.sectionText}>
-            It also works with downloaded images:
-          </Text>
-          <View style={styles.horizontal}>
-            <Image
-              source={smallImage}
-              style={[styles.base, {borderRadius: 5, tintColor: '#5ac8fa' }]}
-            />
-            <Image
-              source={smallImage}
-              style={[styles.base, styles.leftMargin, {borderRadius: 5, tintColor: '#4cd964' }]}
-            />
-            <Image
-              source={smallImage}
-              style={[styles.base, styles.leftMargin, {borderRadius: 5, tintColor: '#ff2d55' }]}
-            />
-            <Image
-              source={smallImage}
-              style={[styles.base, styles.leftMargin, {borderRadius: 5, tintColor: '#8e8e93' }]}
-            />
-          </View>
-        </View>
-      );
-    },
-  },
-  {
     title: 'Resize Mode',
     description: 'The `resizeMode` style prop controls how the image is ' +
       'rendered within the frame.',
@@ -368,8 +318,8 @@ var smallImage = {uri: 'http://facebook.github.io/react/img/logo_small_2x.png'};
 
 var styles = StyleSheet.create({
   base: {
-    width: 38,
-    height: 38,
+    width: 100,
+    height: 100,
   },
   progress: {
     flex: 1,

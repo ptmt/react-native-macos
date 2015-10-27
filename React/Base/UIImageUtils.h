@@ -10,6 +10,7 @@
 
 
 NSData *UIImagePNGRepresentation(NSImage *image);
+NSData *UIImageJPEGRepresentation(NSImage *image);
 
 void UIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale);
 

@@ -9,7 +9,7 @@
 
 #import "RCTImageViewManager.h"
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTConvert.h"
 #import "RCTImageView.h"
@@ -18,28 +18,28 @@
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
+- (NSView *)view
 {
   return [[RCTImageView alloc] initWithBridge:self.bridge];
 }
 
-RCT_EXPORT_VIEW_PROPERTY(capInsets, UIEdgeInsets)
-RCT_REMAP_VIEW_PROPERTY(defaultImageSrc, defaultImage, UIImage)
-RCT_REMAP_VIEW_PROPERTY(resizeMode, contentMode, UIViewContentMode)
+RCT_EXPORT_VIEW_PROPERTY(capInsets, MSEdgeInsets)
+RCT_REMAP_VIEW_PROPERTY(defaultImageSrc, defaultImage, NSImage)
+//RCT_REMAP_VIEW_PROPERTY(resizeMode, contentMode, UIViewContentMode)
 RCT_EXPORT_VIEW_PROPERTY(src, NSString)
 RCT_EXPORT_VIEW_PROPERTY(onLoadStart, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onProgress, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onError, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onLoad, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onLoadEnd, RCTDirectEventBlock)
-RCT_CUSTOM_VIEW_PROPERTY(tintColor, UIColor, RCTImageView)
+RCT_CUSTOM_VIEW_PROPERTY(tintColor, NSColor, RCTImageView)
 {
   if (json) {
-    view.renderingMode = UIImageRenderingModeAlwaysTemplate;
-    view.tintColor = [RCTConvert UIColor:json];
+    //view.renderingMode = UIImageRenderingModeAlwaysTemplate;
+    //view.tintColor = [RCTConvert UIColor:json];
   } else {
-    view.renderingMode = defaultView.renderingMode;
-    view.tintColor = defaultView.tintColor;
+    //view.renderingMode = defaultView.renderingMode;
+    //view.tintColor = defaultView.tintColor;
   }
 }
 

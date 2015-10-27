@@ -11,6 +11,7 @@
 #import <AppKit/AppKit.h>
 
 #import "RCTDefines.h"
+#import "RCTImageLoader.h"
 
 /**
  * This function takes an input content size (typically from an image), a target

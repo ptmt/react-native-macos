@@ -7,18 +7,20 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 #import "RCTImageComponent.h"
+#import "RCTImageLoader.h" // - for UIViewContentMode. TODO: move it to UIImageUtils
 
 @class RCTBridge;
 
-@interface RCTImageView : UIImageView <RCTImageComponent>
+@interface RCTImageView : NSImageView <RCTImageComponent>
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge NS_DESIGNATED_INITIALIZER;
 
-@property (nonatomic, assign) UIEdgeInsets capInsets;
-@property (nonatomic, strong) UIImage *defaultImage;
-@property (nonatomic, assign) UIImageRenderingMode renderingMode;
+@property (nonatomic, assign) NSEdgeInsets capInsets;
+@property (nonatomic, strong) NSImage *defaultImage;
+//@property (nonatomic, assign) NSImageRenderingMode renderingMode;
+@property (nonatomic, assign) UIViewContentMode contentMode;
 @property (nonatomic, copy) NSString *src;
 
 @end

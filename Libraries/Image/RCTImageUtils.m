@@ -10,6 +10,7 @@
 #import "RCTImageUtils.h"
 
 #import "RCTLog.h"
+#import "RCTImageLoader.h"
 
 static CGFloat RCTCeilValue(CGFloat value, CGFloat scale)
 {

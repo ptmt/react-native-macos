@@ -36,7 +36,7 @@ RCT_EXPORT_MODULE()
       return;
     }
     NSString *imageName = RCTBundlePathForURL(imageURL);
-    UIImage *image = [UIImage imageNamed:imageName];
+    NSImage *image = [NSImage imageNamed:imageName];
     if (image) {
       if (progressHandler) {
         progressHandler(1, 1);

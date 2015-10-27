@@ -9,7 +9,7 @@
 
 #import "RCTImageEditingManager.h"
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTConvert.h"
 #import "RCTLog.h"
@@ -17,6 +17,8 @@
 
 #import "RCTImageStoreManager.h"
 #import "RCTImageLoader.h"
+
+#import "UIImageUtils.h"
 
 @implementation RCTImageEditingManager
 
@@ -34,58 +36,58 @@ RCT_EXPORT_MODULE()
  *        be scaled down to `displaySize` rather than `size`.
  *        All units are in px (not points).
  */
-RCT_EXPORT_METHOD(cropImage:(NSString *)imageTag
-                  cropData:(NSDictionary *)cropData
-                  successCallback:(RCTResponseSenderBlock)successCallback
-                  errorCallback:(RCTResponseErrorBlock)errorCallback)
-{
-  NSDictionary *offset = cropData[@"offset"];
-  NSDictionary *size = cropData[@"size"];
-  NSDictionary *displaySize = cropData[@"displaySize"];
-  NSString *resizeMode = cropData[@"resizeMode"] ?: @"contain";
+//RCT_EXPORT_METHOD(cropImage:(NSString *)imageTag
+//                  cropData:(NSDictionary *)cropData
+//                  successCallback:(RCTResponseSenderBlock)successCallback
+//                  errorCallback:(RCTResponseErrorBlock)errorCallback)
+//{
+//  NSDictionary *offset = cropData[@"offset"];
+//  NSDictionary *size = cropData[@"size"];
+//  NSDictionary *displaySize = cropData[@"displaySize"];
+//  NSString *resizeMode = cropData[@"resizeMode"] ?: @"contain";
+//
+//  if (!offset[@"x"] || !offset[@"y"] || !size[@"width"] || !size[@"height"]) {
+//    NSString *errorMessage = [NSString stringWithFormat:@"Invalid cropData: %@", cropData];
+//    RCTLogError(@"%@", errorMessage);
+//    errorCallback(RCTErrorWithMessage(errorMessage));
+//    return;
+//  }
+//
+//  [_bridge.imageLoader loadImageWithTag:imageTag callback:^(NSError *error, UIImage *image) {
+//    if (error) {
+//      errorCallback(error);
+//      return;
+//    }
+//    CGRect rect = (CGRect){
+//      [RCTConvert CGPoint:offset],
+//      [RCTConvert CGSize:size]
+//    };
+//
+//    // Crop image
+//    CGRect rectToDrawIn = {{-rect.origin.x, -rect.origin.y}, image.size};
+//    UIGraphicsBeginImageContextWithOptions(rect.size, !RCTImageHasAlpha(image.CGImage), image.scale);
+//    [image drawInRect:rectToDrawIn];
+//    UIImage *croppedImage = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+//
+//    if (displaySize && displaySize[@"width"] && displaySize[@"height"]) {
+//      CGSize targetSize = [RCTConvert CGSize:displaySize];
+//      croppedImage = [self scaleImage:croppedImage targetSize:targetSize resizeMode:resizeMode];
+//    }
+//
+//    [_bridge.imageStoreManager storeImage:croppedImage withBlock:^(NSString *croppedImageTag) {
+//      if (!croppedImageTag) {
+//        NSString *errorMessage = @"Error storing cropped image in RCTImageStoreManager";
+//        RCTLogWarn(@"%@", errorMessage);
+//        errorCallback(RCTErrorWithMessage(errorMessage));
+//        return;
+//      }
+//      successCallback(@[croppedImageTag]);
+//    }];
+//  }];
+//}
 
-  if (!offset[@"x"] || !offset[@"y"] || !size[@"width"] || !size[@"height"]) {
-    NSString *errorMessage = [NSString stringWithFormat:@"Invalid cropData: %@", cropData];
-    RCTLogError(@"%@", errorMessage);
-    errorCallback(RCTErrorWithMessage(errorMessage));
-    return;
-  }
-
-  [_bridge.imageLoader loadImageWithTag:imageTag callback:^(NSError *error, UIImage *image) {
-    if (error) {
-      errorCallback(error);
-      return;
-    }
-    CGRect rect = (CGRect){
-      [RCTConvert CGPoint:offset],
-      [RCTConvert CGSize:size]
-    };
-
-    // Crop image
-    CGRect rectToDrawIn = {{-rect.origin.x, -rect.origin.y}, image.size};
-    UIGraphicsBeginImageContextWithOptions(rect.size, !RCTImageHasAlpha(image.CGImage), image.scale);
-    [image drawInRect:rectToDrawIn];
-    UIImage *croppedImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-
-    if (displaySize && displaySize[@"width"] && displaySize[@"height"]) {
-      CGSize targetSize = [RCTConvert CGSize:displaySize];
-      croppedImage = [self scaleImage:croppedImage targetSize:targetSize resizeMode:resizeMode];
-    }
-
-    [_bridge.imageStoreManager storeImage:croppedImage withBlock:^(NSString *croppedImageTag) {
-      if (!croppedImageTag) {
-        NSString *errorMessage = @"Error storing cropped image in RCTImageStoreManager";
-        RCTLogWarn(@"%@", errorMessage);
-        errorCallback(RCTErrorWithMessage(errorMessage));
-        return;
-      }
-      successCallback(@[croppedImageTag]);
-    }];
-  }];
-}
-
-- (UIImage *)scaleImage:(UIImage *)image targetSize:(CGSize)targetSize resizeMode:(NSString *)resizeMode
+- (NSImage *)scaleImage:(NSImage *)image targetSize:(CGSize)targetSize resizeMode:(NSString *)resizeMode
 {
   if (CGSizeEqualToSize(image.size, targetSize)) {
     return image;
@@ -124,7 +126,7 @@ RCT_EXPORT_METHOD(cropImage:(NSString *)imageTag
   // perform the scaling @1x because targetSize is in actual pixel width/height
   UIGraphicsBeginImageContextWithOptions(targetSize, NO, 1.0f);
   [image drawInRect:CGRectMake(0.f, 0.f, newWidth, newHeight)];
-  UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+  NSImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
   UIGraphicsEndImageContext();
 
   return scaledImage;

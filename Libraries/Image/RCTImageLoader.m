@@ -10,7 +10,7 @@
 #import "RCTImageLoader.h"
 
 #import <libkern/OSAtomic.h>
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTConvert.h"
 #import "RCTDefines.h"
@@ -18,8 +18,9 @@
 #import "RCTLog.h"
 #import "RCTNetworking.h"
 #import "RCTUtils.h"
+#import "UIImageUtils.h"
 
-@implementation UIImage (React)
+@implementation NSImage (React)
 
 - (CAKeyframeAnimation *)reactKeyframeAnimation
 {
@@ -183,7 +184,7 @@ RCT_EXPORT_MODULE()
   }
 
   __block volatile uint32_t cancelled = 0;
-  RCTImageLoaderCompletionBlock completionHandler = ^(NSError *error, UIImage *image) {
+  RCTImageLoaderCompletionBlock completionHandler = ^(NSError *error, NSImage *image) {
     if ([NSThread isMainThread]) {
 
       // Most loaders do not return on the main thread, so caller is probably not
@@ -320,7 +321,7 @@ RCT_EXPORT_MODULE()
       if (cancelled) {
         return;
       }
-      UIImage *image = [UIImage imageWithData:data scale:scale];
+      NSImage *image = [[NSImage alloc] initWithData:data];
       if (image) {
         completionHandler(nil, image);
       } else {
@@ -353,7 +354,7 @@ RCT_EXPORT_MODULE()
 - (id)sendRequest:(NSURLRequest *)request withDelegate:(id<RCTURLRequestDelegate>)delegate
 {
   __block RCTImageLoaderCancellationBlock requestToken;
-  requestToken = [self loadImageWithTag:request.URL.absoluteString callback:^(NSError *error, UIImage *image) {
+  requestToken = [self loadImageWithTag:request.URL.absoluteString callback:^(NSError *error, NSImage *image) {
     if (error) {
       [delegate URLRequest:requestToken didCompleteWithError:error];
       return;
@@ -361,12 +362,12 @@ RCT_EXPORT_MODULE()
 
     NSString *mimeType = nil;
     NSData *imageData = nil;
-    if (RCTImageHasAlpha(image.CGImage)) {
+    if (RCTImageHasAlpha([image CGImageForProposedRect:nil context:nil hints:nil])) {
       mimeType = @"image/png";
       imageData = UIImagePNGRepresentation(image);
     } else {
       mimeType = @"image/jpeg";
-      imageData = UIImageJPEGRepresentation(image, 1.0);
+      imageData = UIImageJPEGRepresentation(image);
     }
 
     NSURLResponse *response = [[NSURLResponse alloc] initWithURL:request.URL
