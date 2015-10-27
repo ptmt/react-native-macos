@@ -10,6 +10,7 @@
 		000E6CEB1AB0E980000CDF4D /* RCTSourceCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 000E6CEA1AB0E980000CDF4D /* RCTSourceCode.m */; };
 		0316317B1BDF599D003A8A7A /* RCTPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 031631781BDF599D003A8A7A /* RCTPicker.m */; };
 		0316317C1BDF599D003A8A7A /* RCTPickerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0316317A1BDF599D003A8A7A /* RCTPickerManager.m */; };
+		031631861BDF5E2E003A8A7A /* RCTAsyncLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 031631841BDF5E2E003A8A7A /* RCTAsyncLocalStorage.m */; };
 		032625A81BBCF725001C8FC1 /* RCTRedBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 032625A71BBCF725001C8FC1 /* RCTRedBox.m */; };
 		03279A2B1BB820010015275D /* RCTShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03279A2A1BB820010015275D /* RCTShadowView.m */; };
 		0357AF4A1BD2901200CEDDCC /* RCTDevLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0357AF471BD2901200CEDDCC /* RCTDevLoadingView.m */; };
@@ -89,6 +90,8 @@
 		031631781BDF599D003A8A7A /* RCTPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTPicker.m; sourceTree = "<group>"; };
 		031631791BDF599D003A8A7A /* RCTPickerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTPickerManager.h; sourceTree = "<group>"; };
 		0316317A1BDF599D003A8A7A /* RCTPickerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTPickerManager.m; sourceTree = "<group>"; };
+		031631841BDF5E2E003A8A7A /* RCTAsyncLocalStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTAsyncLocalStorage.m; sourceTree = "<group>"; };
+		031631851BDF5E2E003A8A7A /* RCTAsyncLocalStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTAsyncLocalStorage.h; sourceTree = "<group>"; };
 		032625A61BBCF725001C8FC1 /* RCTRedBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTRedBox.h; sourceTree = "<group>"; };
 		032625A71BBCF725001C8FC1 /* RCTRedBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTRedBox.m; sourceTree = "<group>"; };
 		03279A291BB81FF70015275D /* RCTShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTShadowView.h; sourceTree = "<group>"; };
@@ -252,6 +255,8 @@
 		13B07FE01A69315300A75B9A /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				031631841BDF5E2E003A8A7A /* RCTAsyncLocalStorage.m */,
+				031631851BDF5E2E003A8A7A /* RCTAsyncLocalStorage.h */,
 				032625A61BBCF725001C8FC1 /* RCTRedBox.h */,
 				032625A71BBCF725001C8FC1 /* RCTRedBox.m */,
 				13B07FE71A69327A00A75B9A /* RCTAlertManager.h */,
@@ -573,6 +578,7 @@
 				83CBBA531A601E3B00E9B192 /* RCTUtils.m in Sources */,
 				83CBBA601A601EAA00E9B192 /* RCTBridge.m in Sources */,
 				1450FF871BCFF28A00208362 /* RCTProfileTrampoline-arm.S in Sources */,
+				031631861BDF5E2E003A8A7A /* RCTAsyncLocalStorage.m in Sources */,
 				14435CE51AAC4AE100FC20F4 /* (null) in Sources */,
 				1450FF891BCFF28A00208362 /* RCTProfileTrampoline-x86.S in Sources */,
 				134FCB3E1A6E7F0800051CC8 /* RCTWebViewExecutor.m in Sources */,
