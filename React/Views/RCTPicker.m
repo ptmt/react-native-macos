@@ -10,9 +10,9 @@
 #import "RCTPicker.h"
 
 #import "RCTUtils.h"
-#import "UIView+React.h"
+#import "NSView+React.h"
 
-@interface RCTPicker() <UIPickerViewDataSource, UIPickerViewDelegate>
+@interface RCTPicker() <NSComboBoxDataSource, NSComboBoxDelegate>
 
 @property (nonatomic, copy) NSArray *items;
 @property (nonatomic, assign) NSInteger selectedIndex;
@@ -27,6 +27,8 @@
   if ((self = [super initWithFrame:frame])) {
     _selectedIndex = NSNotFound;
     self.delegate = self;
+    self.usesDataSource = YES;
+    [self setDataSource:self];
   }
   return self;
 }
@@ -36,60 +38,54 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)setItems:(NSArray *)items
 {
   _items = [items copy];
-  [self setNeedsLayout];
+  [self layout];
 }
 
-- (void)setSelectedIndex:(NSInteger)selectedIndex
+- (BOOL)usesDataSource
+{
+  return YES;
+}
+
+- (void)selectItemAt:(NSInteger)selectedIndex
 {
   if (_selectedIndex != selectedIndex) {
-    BOOL animated = _selectedIndex != NSNotFound; // Don't animate the initial value
+    //BOOL animated = _selectedIndex != NSNotFound; // Don't animate the initial value
     _selectedIndex = selectedIndex;
     dispatch_async(dispatch_get_main_queue(), ^{
-      [self selectRow:selectedIndex inComponent:0 animated:animated];
+      [self selectItemAtIndex:selectedIndex];
     });
   }
 }
 
-#pragma mark - UIPickerViewDataSource protocol
-
-- (NSInteger)numberOfComponentsInPickerView:(__unused UIPickerView *)pickerView
-{
-  return 1;
-}
-
-- (NSInteger)pickerView:(__unused UIPickerView *)pickerView
-numberOfRowsInComponent:(__unused NSInteger)component
+//#pragma mark - UIPickerViewDataSource protocol
+//
+- (NSInteger)numberOfItemsInComboBox:(__unused NSComboBox *)theComboBox
 {
   return _items.count;
 }
 
+- (id)comboBox:(__unused NSComboBox *)aComboBox
+objectValueForItemAtIndex:(NSInteger)index
+{
+  return _items[index][@"label"];
+}
+
 #pragma mark - UIPickerViewDelegate methods
 
-- (NSDictionary *)itemForRow:(NSInteger)row
-{
-  return _items[row];
-}
+//- (NSString *)pickerView:(__unused UIPickerView *)pickerView
+//             titleForRow:(NSInteger)row forComponent:(__unused NSInteger)component
+//{
+//  return [self itemForRow:row][@"label"];
+//}
 
-- (id)valueForRow:(NSInteger)row
+- (void)comboBoxSelectionDidChange:(__unused NSNotification *)notification
 {
-  return [self itemForRow:row][@"value"];
-}
-
-- (NSString *)pickerView:(__unused UIPickerView *)pickerView
-             titleForRow:(NSInteger)row forComponent:(__unused NSInteger)component
-{
-  return [self itemForRow:row][@"label"];
-}
-
-- (void)pickerView:(__unused UIPickerView *)pickerView
-      didSelectRow:(NSInteger)row inComponent:(__unused NSInteger)component
-{
-  _selectedIndex = row;
+  _selectedIndex = [self indexOfSelectedItem];
   if (_onChange) {
     _onChange(@{
-      @"newIndex": @(row),
-      @"newValue": [self valueForRow:row]
-    });
+                @"newIndex": @(_selectedIndex),
+                @"newValue": _items[_selectedIndex][@"value"]
+                });
   }
 }
 

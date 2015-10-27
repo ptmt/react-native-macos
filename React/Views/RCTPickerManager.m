@@ -17,7 +17,7 @@
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
+- (NSView *)view
 {
   return [RCTPicker new];
 }
@@ -28,7 +28,7 @@ RCT_EXPORT_VIEW_PROPERTY(onChange, RCTBubblingEventBlock)
 
 - (NSDictionary *)constantsToExport
 {
-  UIPickerView *view = [UIPickerView new];
+  NSComboBox *view = [NSComboBox new];
   return @{
     @"ComponentHeight": @(view.intrinsicContentSize.height),
     @"ComponentWidth": @(view.intrinsicContentSize.width)

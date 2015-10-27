@@ -23,7 +23,7 @@ var ReactNative = Object.assign(Object.create(require('React')), {
   DatePickerIOS: require('DatePickerIOS'),
   Image: require('Image'),
   ListView: require('ListView'),
-  // PickerIOS: require('PickerIOS'),
+  PickerIOS: require('PickerIOS'),
   ProgressViewIOS: require('ProgressViewIOS'),
   ScrollView: require('ScrollView'),
   SegmentedControlIOS: require('SegmentedControlIOS'),
