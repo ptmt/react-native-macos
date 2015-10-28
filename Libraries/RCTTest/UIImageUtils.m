@@ -9,8 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 
-// TODO: move it to the one place
-// https://github.com/BigZaphod/Chameleon/blob/84605ede274bd82b330d72dd6ac41e64eb925fd7/UIKit/Classes/UIImage.m
 NSData *UIImagePNGRepresentation(NSImage *image)
 {
   //  CFMutableDataRef data = CFDataCreateMutable(NULL, 0);

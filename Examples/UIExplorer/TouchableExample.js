@@ -41,14 +41,7 @@ exports.examples = [
     return (
       <View>
         <View style={styles.row}>
-          <TouchableHighlight
-            style={styles.wrapper}
-            onPress={() => console.log('stock THW image - highlight')}>
-            <Image
-              source={heartImage}
-              style={styles.image}
-            />
-          </TouchableHighlight>
+
           <TouchableHighlight
             style={styles.wrapper}
             activeOpacity={1}
@@ -65,19 +58,22 @@ exports.examples = [
       </View>
     );
   },
-}, {
+},
+{
   title: '<Text onPress={fn}> with highlight',
   render: function(): ReactElement {
     return <TextOnPressBox />;
   },
-}, {
+},
+{
   title: 'Touchable feedback events',
   description: '<Touchable*> components accept onPress, onPressIn, ' +
     'onPressOut, and onLongPress as props.',
   render: function(): ReactElement {
     return <TouchableFeedbackEvents />;
   },
-}, {
+},
+{
   title: 'Touchable delay for events',
   description: '<Touchable*> components also accept delayPressIn, ' +
     'delayPressOut, and delayLongPress as props. These props impact the ' +
@@ -85,7 +81,16 @@ exports.examples = [
   render: function(): ReactElement {
     return <TouchableDelayEvents />;
   },
-}];
+},
+{
+  title: 'Hover effects',
+  description: '<View> components also accept onMouseEnter, ' +
+    'onMouseLeave to simulate hover effect',
+  render: function(): ReactElement {
+    return <Hoverable />;
+  },
+}
+];
 
 var TextOnPressBox = React.createClass({
   getInitialState: function() {
@@ -118,6 +123,16 @@ var TextOnPressBox = React.createClass({
             {textLog}
           </Text>
         </View>
+      </View>
+    );
+  }
+});
+
+var Hoverable = React.createClass({
+  render: function() {
+    return (
+      <View onMouseEnter={() => console.log('asdf')} style={{backgroundColor: 'black'}}>
+        <Text>Hover this</Text>
       </View>
     );
   }
