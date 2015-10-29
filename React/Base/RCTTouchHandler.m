@@ -38,6 +38,11 @@
   BOOL _dispatchedInitialTouches;
   BOOL _recordingInteractionTiming;
   CFTimeInterval _mostRecentEnqueueJS;
+
+  /*
+   * Storing tag to dispatch mouseEnter and mouseLeave events
+   */
+  NSNumber *_currentMouseOverTag;
 }
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge
@@ -206,7 +211,6 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
   for (NSDictionary *touch in _reactTouches) {
     [reactTouches addObject:[touch copy]];
   }
-
   eventName = RCTNormalizeInputEventName(eventName);
   [_bridge enqueueJSCall:@"RCTEventEmitter.receiveTouches"
                     args:@[eventName, reactTouches, changedIndexes]];
@@ -285,8 +289,24 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
 
 - (void)mouseMoved:(NSEvent *)event
 {
-  NSSet *touches = [NSSet setWithObject:event];
-  [self _updateAndDispatchTouches:touches eventName:@"mouseMove" originatingTime:event.timestamp];
+  NSPoint touchLocation = CGPointMake([event locationInWindow].x, (self.view.window.frame.size.height - 25 - [event locationInWindow].y));
+  NSNumber *reactTag = [self.view reactTagAtPoint:CGPointMake(touchLocation.x, touchLocation.y)];
+  if (reactTag == nil) {
+    return;
+  }
+  if (_currentMouseOverTag != reactTag && _currentMouseOverTag > 0) {
+    NSLog(@"newTag %@ %@", _currentMouseOverTag, reactTag);
+    [_bridge enqueueJSCall:@"RCTEventEmitter.receiveEvent"
+                        args:@[_currentMouseOverTag, @"topMouseLeave"]];
+    [_bridge enqueueJSCall:@"RCTEventEmitter.receiveEvent"
+                      args:@[reactTag, @"topMouseEnter"]];
+    _currentMouseOverTag = reactTag;
+  } else if (_currentMouseOverTag == 0) {
+    [_bridge enqueueJSCall:@"RCTEventEmitter.receiveEvent"
+                      args:@[reactTag, @"topMouseEnter"]];
+    _currentMouseOverTag = reactTag;
+  }
+
 }
 
 - (void)mouseUp:(NSEvent *)event

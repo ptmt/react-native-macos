@@ -35,8 +35,8 @@ var createExamplePage = require('./createExamplePage');
 
 class ListView extends React.Component {
     render() {
-      var componentRows = this.props.dataSource.components.map(c => this.props.renderRow(c));
-      var apiRows = this.props.dataSource.apis.map(c => this.props.renderRow(c));
+      var componentRows = this.props.dataSource.components.map((c, i) => this.props.renderRow(c, i));
+      var apiRows = this.props.dataSource.apis.map((c, i) => this.props.renderRow(c, i));
       return (
         <ScrollView>
           {this.props.renderSectionHeader(null, 'Components:')}
@@ -115,8 +115,12 @@ class UIExplorerListBase extends React.Component {
 
   renderRow(example: any, i: number) {
     var selected = this.state.selected === example.title ? styles.selectedRow : {};
+    var hovered = this.state.hovered === example.title ? styles.hoveredRow : {};
     return (
-      <TouchableHighlight onPress={() => this.onPressRow(example)} key={i} style={[styles.row, selected]}>
+      <TouchableHighlight onPress={() => this.onPressRow(example)}
+      onMouseEnter={() => this.setState({hovered: example.title})}
+    //  onMouseLeave={() => this.setState({hovered: -1})}
+      key={i} style={[styles.row, hovered, selected]}>
         <View>
           <Text style={styles.rowTitleText}>
             {example.title}
@@ -213,6 +217,9 @@ var styles = StyleSheet.create({
   },
   selectedRow: {
     backgroundColor: '#fffd7e'
+  },
+  hoveredRow: {
+    backgroundColor: '#ddd'
   }
 });
 

@@ -84,6 +84,10 @@ var TouchableHighlight = React.createClass({
      * Called immediately after the underlay is hidden
      */
     onHideUnderlay: React.PropTypes.func,
+
+    // TODO: Do not repeat
+    onMouseEnter: React.PropTypes.func,
+    onMouseLeave: React.PropTypes.func,
   },
 
   mixins: [NativeMethodsMixin, TimerMixin, Touchable.Mixin],
@@ -223,7 +227,9 @@ var TouchableHighlight = React.createClass({
         onResponderMove={this.touchableHandleResponderMove}
         onResponderRelease={this.touchableHandleResponderRelease}
         onResponderTerminate={this.touchableHandleResponderTerminate}
-        testID={this.props.testID}>
+        testID={this.props.testID}
+        onMouseEnter={this.props.onMouseEnter}
+        onMouseLeave={this.props.onMouseLeave}>
         {cloneWithProps(
           onlyChild(this.props.children),
           {

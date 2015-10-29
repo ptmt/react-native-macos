@@ -136,27 +136,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return NO;
 }
 
-- (void)viewDidMoveToWindow {
-  [self addTrackingRect:self.frame owner:self userData:nil assumeInside:YES];
-}
-
-- (void)mouseEntered:(__unused NSEvent *)theEvent {
-  [[self window] setAcceptsMouseMovedEvents:YES];
-  [[self window] makeFirstResponder:self];
-
-}
-
-- (void)mouseMoved:(NSEvent *)theEvent
-{
-  //TODO:
-  [((RCTTouchHandler *)self.gestureRecognizers.firstObject) mouseMoved:theEvent];
-}
-
-- (void)mouseExited:(__unused NSEvent *)theEvent
-{
-  [[self window] setAcceptsMouseMovedEvents:NO];
-}
-
 - (void)setLoadingView:(NSView *)loadingView
 {
   _loadingView = loadingView;
@@ -310,11 +289,25 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
   });
 }
 
-//- (void) drawRect:(NSRect)rect
-//{
-//  [super drawRect:rect];
-//  [self setFrame:[RCTSharedApplication() mainWindow].contentView.frame];
-//}
+
+- (void)viewDidMoveToWindow {
+  [self addTrackingRect:self.frame owner:self userData:nil assumeInside:YES];
+}
+
+- (void)mouseEntered:(__unused NSEvent *)theEvent {
+  [[self window] setAcceptsMouseMovedEvents:YES];
+  [[self window] makeFirstResponder:self];
+}
+
+- (void)mouseMoved:(NSEvent *)theEvent
+{
+  [((RCTTouchHandler *)self.gestureRecognizers.firstObject) mouseMoved:theEvent];
+}
+
+- (void)mouseExited:(__unused NSEvent *)theEvent
+{
+  [[self window] setAcceptsMouseMovedEvents:NO];
+}
 
 - (void)viewDidEndLiveResize
 {

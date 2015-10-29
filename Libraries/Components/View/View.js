@@ -187,7 +187,8 @@ var View = React.createClass({
     onResponderTerminationRequest: PropTypes.func,
     onStartShouldSetResponder: PropTypes.func,
     onStartShouldSetResponderCapture: PropTypes.func,
-
+    onMouseEnter: PropTypes.func,
+    onMouseLeave: PropTypes.func,
     /**
      * Invoked on mount and layout changes with
      *

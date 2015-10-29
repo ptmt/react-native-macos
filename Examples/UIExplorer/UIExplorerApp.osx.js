@@ -56,10 +56,19 @@ class UIExplorerApp extends React.Component {
 }
 
 class Welcome extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      onHover: false
+    }
+  }
   render() {
+    var backgroundStyles = this.state.onHover ? { backgroundColor: 'black'} : {};
     return (
       <View style={styles.welcomeWrapper}>
-        <TouchableHighlight>
+        <TouchableHighlight style={backgroundStyles}
+        onMouseEnter={() => this.setState({onHover: true})}
+        onMouseLeave={() => this.setState({onHover: false})}>
           <Text style={styles.welcomeText}>Choose an example on the left side</Text>
         </TouchableHighlight>
       </View>

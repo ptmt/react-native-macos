@@ -88,6 +88,10 @@ RCT_EXPORT_MODULE()
     @"touchMove",
     @"touchCancel",
     @"touchEnd",
+
+    // Mouse events
+    @"mouseEnter",
+    @"mouseLeave",
   ];
 }
 

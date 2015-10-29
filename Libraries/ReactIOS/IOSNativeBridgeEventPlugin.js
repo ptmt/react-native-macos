@@ -56,7 +56,6 @@ var IOSNativeBridgeEventPlugin = {
     topLevelTargetID: string,
     nativeEvent: Event
   ): ?Object {
-
     var bubbleDispatchConfig = customBubblingEventTypes[topLevelType];
     var directDispatchConfig = customDirectEventTypes[topLevelType];
     var event = SyntheticEvent.getPooled(
