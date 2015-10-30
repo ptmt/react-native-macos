@@ -74,17 +74,20 @@ RCT_EXPORT_MODULE()
     if (!_window && !RCTRunningInTestEnvironment()) {
       CGFloat screenWidth = [NSScreen mainScreen].frame.size.width;
       _window = [[NSWindow alloc]
-                 initWithContentRect:CGRectMake(0, 0, screenWidth, 22)
+                 initWithContentRect:CGRectMake(0, 0, screenWidth, 50)
                  styleMask:0
                  backing:NSBackingStoreBuffered
                  defer:NO];
 
-      _window.backgroundColor = [NSColor blackColor];
+      [_window setOpaque:NO];
+      [_window setAlphaValue:0.5];
+      [_window setBackgroundColor:[NSColor blackColor]];
       [_window setLevel:NSScreenSaverWindowLevel + 1];
 
       _label = [[NSTextField alloc] initWithFrame:_window.frame];
-      _label.font = [NSFont systemFontOfSize:12.0];
-      _label.textColor = [NSColor grayColor];
+      _label.font = [NSFont systemFontOfSize:19.0];
+      _label.textColor = [NSColor blackColor];
+      [_label setBackgroundColor:[NSColor clearColor]];
       [_label setAlignment:NSCenterTextAlignment];
 
       [_window setContentView:_label];
