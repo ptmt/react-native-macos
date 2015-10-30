@@ -295,7 +295,6 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
     return;
   }
   if (_currentMouseOverTag != reactTag && _currentMouseOverTag > 0) {
-    NSLog(@"newTag %@ %@", _currentMouseOverTag, reactTag);
     [_bridge enqueueJSCall:@"RCTEventEmitter.receiveEvent"
                         args:@[_currentMouseOverTag, @"topMouseLeave"]];
     [_bridge enqueueJSCall:@"RCTEventEmitter.receiveEvent"

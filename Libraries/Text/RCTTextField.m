@@ -29,14 +29,8 @@
     RCTAssert(eventDispatcher, @"eventDispatcher is a required parameter");
     _eventDispatcher = eventDispatcher;
     self.delegate = self;
-
-//    [self addTarget:self action:@selector(textFieldDidChange) forControlEvents:UIControlEventEditingChanged];
-//    [self addTarget:self action:@selector(textFieldBeginEditing) forControlEvents:UIControlEventEditingDidBegin];
-//    [self addTarget:self action:@selector(textFieldEndEditing) forControlEvents:UIControlEventEditingDidEnd];
-//    [self addTarget:self action:@selector(textFieldSubmitEditing) forControlEvents:UIControlEventEditingDidEndOnExit];
-//    self.bezeled         = NO;
-//    self.editable        = NO;
     self.drawsBackground = NO;
+    self.bordered = NO;
     _reactSubviews = [NSMutableArray new];
   }
   return self;

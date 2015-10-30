@@ -510,7 +510,6 @@ var TextInput = React.createClass({
         mostRecentEventCount: event.nativeEvent.eventCount,
       });
     }
-    console.log('texteditor change')
     var text = event.nativeEvent.text;
     var eventCount = event.nativeEvent.eventCount;
     this.props.onChange && this.props.onChange(event);
