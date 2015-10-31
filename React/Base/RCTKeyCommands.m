@@ -171,14 +171,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 }
 
 - (void)registerKeyCommandWithInput:(NSString *)input
-                      modifierFlags:(NSKeyModifierFlags)flags
-                             action:(void (^)(UIKeyCommand *))block {}
+                      modifierFlags:(f)flags
+                             action:(void (^)(NSEvent *))block {}
 
 - (void)unregisterKeyCommandWithInput:(NSString *)input
-                        modifierFlags:(NSKeyModifierFlags)flags {}
+                        modifierFlags:(NSEventModifierFlags)flags {}
 
 - (BOOL)isKeyCommandRegisteredForInput:(NSString *)input
-                         modifierFlags:(NSKeyModifierFlags)flags
+                         modifierFlags:(NSEventModifierFlags)flags
 {
   return NO;
 }
