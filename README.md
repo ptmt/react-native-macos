@@ -1,4 +1,4 @@
-## React Native Desktop<sup>*Codename "Lepton"*.</sup>
+## React Native Desktop<sup>*Codename "Lepton"*</sup>
 
 Build OS X Cocoa-based desktop apps using React.
 
