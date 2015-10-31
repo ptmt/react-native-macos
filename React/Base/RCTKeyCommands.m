@@ -170,15 +170,15 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   return nil;
 }
 
-- (void)registerKeyCommandWithInput:(NSString *)input
-                      modifierFlags:(f)flags
-                             action:(void (^)(NSEvent *))block {}
+- (void)registerKeyCommandWithInput:(__unused NSString *)input
+                      modifierFlags:(__unused NSEventModifierFlags)flags
+                             action:(void (^)(__unused NSEvent *))block {}
 
-- (void)unregisterKeyCommandWithInput:(NSString *)input
-                        modifierFlags:(NSEventModifierFlags)flags {}
+- (void)unregisterKeyCommandWithInput:(__unused NSString *)input
+                        modifierFlags:(__unused NSEventModifierFlags)flags {}
 
-- (BOOL)isKeyCommandRegisteredForInput:(NSString *)input
-                         modifierFlags:(NSEventModifierFlags)flags
+- (BOOL)isKeyCommandRegisteredForInput:(__unused NSString *)input
+                         modifierFlags:(__unused NSEventModifierFlags)flags
 {
   return NO;
 }

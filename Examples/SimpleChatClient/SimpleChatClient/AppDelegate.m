@@ -98,12 +98,12 @@
      * Load from pre-bundled file on disk. To re-generate the static bundle, `cd`
      * to your Xcode project folder and run
      *
-     * $ curl 'http://localhost:8081/Examples/SimpleGmailClient/index.osx.bundle' -o main.jsbundle
+     * $ curl 'http://localhost:8081/Examples/SimpleChatClient/index.osx.bundle?platform=osx&dev=false&minify=true' -o SimpleChatClient/main.jsbundle
      *
      * then add the `main.jsbundle` file to your project and uncomment this line:
      */
 
-    //  sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+    sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 
 #if RUNNING_ON_CI
     sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
