@@ -35,10 +35,9 @@ class SigninForm extends React.Component {
       })
     ]).start();
   }
-  componentWillReceiveProps(nextProps) {
-
+  componentWillReceiveProps(nextProps: any) {
     if (nextProps.isLoading && !this.props.isLoading) {
-      this.pulse();
+      this.pulse(false);
     }
     if (nextProps.error) {
       this.onError();
@@ -77,7 +76,10 @@ class SigninForm extends React.Component {
     const toColors = [1, 2, 3].map(c => rand()).join(', ');
     const animatedColor = this.state.animatedColor.interpolate({
         inputRange: [0, 1],
-        outputRange: ['rgb(' + fromColors + ')','rgb(' + toColors + ')']
+        outputRange: [
+          'rgb(' + fromColors.toString() + ')',
+          'rgb(' + toColors.toString() + ')'
+        ]
     });
 
     return (

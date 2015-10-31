@@ -3,11 +3,14 @@ import { SIGNIN_REQUEST, SIGNIN_SUCCESS, SIGNIN_FAILURE } from './actions';
 import { LOAD, SAVE } from 'redux-storage';
 import { combineReducers } from 'redux';
 
-const defaultState = {
+type GlobalState = any;
 
+const defaultState: GlobalState = {
+  isLoading: false
 };
 
-export default function reducer(state = defaultState, action) {
+export default function reducer(state: GlobalState, action: any): GlobalState {
+  if (!state) { state = defaultState; } // Flow default parameter
   switch (action.type) {
     case SIGNIN_REQUEST:
       return {
@@ -39,25 +42,25 @@ export default function reducer(state = defaultState, action) {
   }
 }
 
-
-function byId(state = {}, action) {
-  switch (action.type) {
-    case RECEIVE_PRODUCTS:
-      return {
-        ...state,
-        ...action.products.reduce((obj, product) => {
-          obj[product.id] = product
-          return obj
-        }, {})
-      }
-    default:
-      const { productId } = action
-      if (productId) {
-        return {
-          ...state,
-          [productId]: products(state[productId], action)
-        }
-      }
-      return state
-  }
-}
+//
+// function byId(state = {}, action) {
+//   switch (action.type) {
+//     case RECEIVE_PRODUCTS:
+//       return {
+//         ...state,
+//         ...action.products.reduce((obj, product) => {
+//           obj[product.id] = product
+//           return obj
+//         }, {})
+//       }
+//     default:
+//       const { productId } = action
+//       if (productId) {
+//         return {
+//           ...state,
+//           [productId]: products(state[productId], action)
+//         }
+//       }
+//       return state
+//   }
+// }

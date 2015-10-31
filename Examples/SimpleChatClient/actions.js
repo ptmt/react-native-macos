@@ -5,7 +5,7 @@ export const SIGNIN_REQUEST = 'SIGNIN_REQUEST';
 export const SIGNIN_SUCCESS = 'SIGNIN_SUCCESS';
 export const SIGNIN_FAILURE = 'SIGNIN_FAILURE';
 
-export function login(email, password) {
+export function login(email: string, password: string): any {
   if (!email || !password) {
     return {
       type: SIGNIN_FAILURE,
@@ -26,7 +26,6 @@ export function login(email, password) {
         token
       });
     }).catch(e => {
-      console.error(e);
       return dispatch({
         type: SIGNIN_FAILURE,
         error: e
