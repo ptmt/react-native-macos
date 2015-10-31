@@ -9,89 +9,110 @@ var {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  LinkingIOS
+  TouchableHighlight,
+  LinkingIOS,
+  Image,
+  Dimensions
 } = React;
 
-// Yes this is my api credentials restricted only for Gmail API.
-var CLIENT_ID = '588257598045-mlcll7rfg8vud8glu411f8v92u560pbt.apps.googleusercontent.com';
-var CLIENT_SECRET = 'q6M4ZwP_qlZ5IqQoi4tGzLdQ';
-var AUTH_URL = 'https://accounts.google.com/o/oauth2/auth?scope=email%20profile%20https://www.googleapis.com/auth/gmail.readonly&redirect_uri=urn:ietf:wg:oauth:2.0:oob&response_type=code&client_id=' + CLIENT_ID;
+const AnimatedButton = Animated.createAnimatedComponent(TouchableHighlight);
 
 class SigninForm extends React.Component {
   constructor() {
     super();
     this.state = {
-      scale: new Animated.Value(0),
-      rotate: new Animated.Value(0.5)
+      scale: new Animated.Value(2.0),
+      rotate: new Animated.Value(0.5),
+      x: new Animated.Value(0),
+      animatedColor: new Animated.Value(0)
     };
   }
   componentDidMount() {
-    Animated.spring(this.state.scale, {
-      toValue: 1,
-      friction: 3
-    }).start();
+    Animated.sequence([
+      Animated.delay(400),
+      Animated.spring(this.state.scale, {
+        toValue: 1
+      })
+    ]).start();
   }
-  obtainToken(code: string) {
-    this.pulse(true);
-    var data = ['client_id=' + CLIENT_ID,
-      'client_secret=' + CLIENT_SECRET,
-      'code=' + code,
-      'grant_type=authorization_code',
-      'redirect_uri=urn:ietf:wg:oauth:2.0:oob'
-    ].join('&');
-    fetch('https://www.googleapis.com//oauth2/v3/token', {
-        method: 'POST',
-        body: data
-      })
-      .then(r => r.json())
-      .then(json => {
-        this.setState({
-          loading: false
-        });
-        this.props.onSignin(json);
-      })
-      .catch(e => console.log(e));
+  componentWillReceiveProps(nextProps) {
+
+    if (nextProps.isLoading && !this.props.isLoading) {
+      this.pulse();
+    }
+    if (nextProps.error) {
+      this.onError();
+    }
   }
   pulse(back: boolean) {
-    Animated.spring(this.state.scale, {
-      toValue: back ? 0.98 : 1
+    Animated.timing(this.state.animatedColor, {
+      toValue: back ? 0 : 1,
+      duration: 1000
     }).start(() => {
-      if (this.state.loading) {
+      if (this.props.isLoading) {
         setTimeout(() => this.pulse(!back), 500);
       }
     });
   }
-  hide() {
-    Animated.spring(this.state.scale, {
-      toValue: 0
-    }).start(() => this.props.onSignin(this.state.token));
+  onError() {
+    this.state.x.setValue(0)
+    Animated.spring(this.state.x, {
+      toValue: 1,
+      friction: 5,
+      tension: 300
+    }).start();
   }
   render() {
-    var animatedScale = {transform: [
+    const animatedScale = {transform: [
       {
-        scale: this.state.scale
+        scale: this.state.scale,
       }
-    ]};
+    ], left: this.state.x.interpolate({
+       inputRange: [0, 0.5, 1],
+       outputRange: [0, 20, 0]  // 0 : 150, 0.5 : 75, 1 : 0
+     })};
+
+    const rand = () => Math.floor(Math.random() * 255);
+    const fromColors = [1, 2, 3].map(c => rand()).join(', ');
+    const toColors = [1, 2, 3].map(c => rand()).join(', ');
+    const animatedColor = this.state.animatedColor.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['rgb(' + fromColors + ')','rgb(' + toColors + ')']
+    });
+
     return (
-      <View style={styles.container}>
+      <Image style={styles.container}
+        source={{uri: 'https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?dpr=2&fit=crop&fm=jpg&h=825&ixlib=rb-0.3.5&q=50&w=1450'}}
+        resizeMode={Image.resizeMode.cover}>
         <Animated.View style={[styles.form, animatedScale]}>
-          <Text style={styles.header}>Simple Gmail Client</Text>
-          <TouchableOpacity onPress={()=> LinkingIOS.openURL(AUTH_URL)}>
-          <Text>Click here to open Google Accounts</Text>
-          </TouchableOpacity>
-          <Text style={styles.content}>Then paste token from success page:</Text>
-          <View style={{marginTop: 30}}>
+          <Text style={styles.header}>Simple Chat Client</Text>
+          <View style={styles.input}>
+            <Text style={styles.placeholder}>EMAIL</Text>
             <TextInput
-              placeholder={'oAuth client token'}
               style={styles.textinput}
-              onChangeText={(code) => this.setState({code})}
+              multiline={false}
+              onChangeText={(username) => this.setState({username})}
             />
           </View>
-          <TouchableOpacity style={styles.button} onPress={() => this.obtainToken(this.state.code)}>
-            <Text style={styles.buttonCaption} multiline={false}>Sign in</Text>
-          </TouchableOpacity>
+          <View style={styles.input}>
+            <Text style={styles.placeholder}>PASSWORD</Text>
+            <TextInput
+              style={styles.textinput}
+              multiline={false}
+              onChangeText={(password) => this.setState({password})}
+            />
+          </View>
+          <AnimatedButton
+            style={[styles.button, this.props.isLoading ? {backgroundColor: animatedColor} : {}]}
+            onPress={() => this.props.login(this.state.username, this.state.password)}
+          >
+            <Text style={styles.buttonCaption}>Login</Text>
+          </AnimatedButton>
         </Animated.View>
-      </View>
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>This app used Discord unofficial APIs only for demonstration purposes.</Text>
+        </View>
+      </Image>
     );
   }
 
@@ -101,7 +122,7 @@ var styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    flex: 1
+    flex: 1,
   },
   content: {
     width: 300,
@@ -119,11 +140,11 @@ var styles = StyleSheet.create({
   },
   header: {
     fontSize: 30,
-    color: '#999',
-    marginBottom: 50
+    color: '#333',
+    marginBottom: 20
   },
   button: {
-    margin: 10,
+    marginVertical: 20,
     backgroundColor: '#009aff',
     paddingVertical: 10,
     width: 250,
@@ -131,11 +152,30 @@ var styles = StyleSheet.create({
   buttonCaption: {textAlign: 'center', color: 'white', fontSize: 20},
   textinput: {
     height: 30,
-    borderWidth: 0.5,
+    borderWidth: 0,
     borderColor: '#0f0f0f',
     width: 250,
-    fontSize: 10,
-    padding: 4,
+    fontSize: 16,
+    //padding: 6,
   },
+  input: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    marginBottom: 20
+  },
+  placeholder: {
+    color: '#999',
+    marginBottom: 5
+  },
+  footer: {
+    position: 'absolute',
+    flex: 1,
+    marginLeft: 50,
+    top: 10 //TODO: why so? weird
+  },
+  footerText: {
+    fontSize: 10,
+    color: 'white'
+  }
 });
 module.exports = SigninForm;

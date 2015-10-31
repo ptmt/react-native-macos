@@ -11,7 +11,7 @@ var ENDPOINTS = {
   CHANNELS : `${BASE}/api/channels`
 };
 
-export function login(email: string, password: string): Promise {
+export function discordLogin(email: string, password: string): Promise {
   var request = new XMLHttpRequest();
   request.open("POST", ENDPOINTS.LOGIN, true);
   var formdata = new FormData();
@@ -24,9 +24,9 @@ export function login(email: string, password: string): Promise {
         if (request.status === 200) {
           resolve(JSON.parse(request.responseText).token);
         } else if (request.status !== 0) {
-          reject();
+          reject(request.responseText);
         } else {
-          reject();
+          reject(request.responseText);
         }
       }
     };

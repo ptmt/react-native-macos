@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		038F30071BE377D1009A0F4C /* libRCTImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 038F30011BE3779A009A0F4C /* libRCTImage.a */; };
 		039780D31BD79C7000452D23 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 039780D21BD79C7000452D23 /* AppDelegate.m */; };
 		039780D61BD79C7000452D23 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 039780D51BD79C7000452D23 /* main.m */; };
 		039780D81BD79C7000452D23 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 039780D71BD79C7000452D23 /* Assets.xcassets */; };
@@ -18,6 +19,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		038F30001BE3779A009A0F4C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 038F2FFC1BE3779A009A0F4C /* RCTImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 58B5115D1A9E6B3D00147676;
+			remoteInfo = RCTImage;
+		};
 		039780ED1BD79E6200452D23 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 039780E91BD79E6200452D23 /* React.xcodeproj */;
@@ -56,6 +64,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		038F2FFC1BE3779A009A0F4C /* RCTImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTImage.xcodeproj; path = ../../Libraries/Image/RCTImage.xcodeproj; sourceTree = "<group>"; };
 		039780CE1BD79C7000452D23 /* SimpleChatClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleChatClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		039780D11BD79C7000452D23 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		039780D21BD79C7000452D23 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -74,6 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				038F30071BE377D1009A0F4C /* libRCTImage.a in Frameworks */,
 				0397810B1BD7C1BA00452D23 /* libRCTLinking.a in Frameworks */,
 				039781011BD79ECA00452D23 /* libRCTNetwork.a in Frameworks */,
 				039781021BD79ECA00452D23 /* libRCTText.a in Frameworks */,
@@ -85,6 +95,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		038F2FFD1BE3779A009A0F4C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				038F30011BE3779A009A0F4C /* libRCTImage.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		039780C51BD79C7000452D23 = {
 			isa = PBXGroup;
 			children = (
@@ -125,6 +143,7 @@
 		039780E21BD79C8400452D23 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				038F2FFC1BE3779A009A0F4C /* RCTImage.xcodeproj */,
 				039781051BD7BF3100452D23 /* RCTLinking.xcodeproj */,
 				039780FB1BD79EBA00452D23 /* RCTNetwork.xcodeproj */,
 				039780F51BD79E9E00452D23 /* RCTWebSocket.xcodeproj */,
@@ -221,6 +240,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 038F2FFD1BE3779A009A0F4C /* Products */;
+					ProjectRef = 038F2FFC1BE3779A009A0F4C /* RCTImage.xcodeproj */;
+				},
+				{
 					ProductGroup = 039781061BD7BF3100452D23 /* Products */;
 					ProjectRef = 039781051BD7BF3100452D23 /* RCTLinking.xcodeproj */;
 				},
@@ -249,6 +272,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		038F30011BE3779A009A0F4C /* libRCTImage.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTImage.a;
+			remoteRef = 038F30001BE3779A009A0F4C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		039780EE1BD79E6200452D23 /* libReact.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;

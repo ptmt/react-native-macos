@@ -53,13 +53,7 @@
         [windowController showWindow:self.window];
 
         // TODO: remove broilerplate
-        NSMenu *mainMenu = [[NSMenu alloc] initWithTitle:@"" ];
-        NSMenuItem *containerItem = [[NSMenuItem alloc] init];
-        NSMenu *rootMenu = [[NSMenu alloc] initWithTitle:@"" ];
-        [containerItem setSubmenu:rootMenu];
-        [mainMenu addItem:containerItem];
-        [rootMenu addItemWithTitle:@"Quit SimpleChatClient" action:@selector((terminate)) keyEquivalent:@"Q"];
-        [NSApp setMainMenu:mainMenu];
+        [self setUpApplicationMenu];
     }
     return self;
 }
@@ -73,7 +67,6 @@
     RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                      moduleName:@"SimpleChatClient"
                                               initialProperties:nil];
-
 
 
     [self.window setContentView:rootView];
@@ -124,6 +117,54 @@
 {
     [RCTJavaScriptLoader loadBundleAtURL:[self sourceURLForBridge:bridge]
                               onComplete:loadCallback];
+}
+
+
+- (void)setUpApplicationMenu
+{
+    NSMenu *mainMenu = [[NSMenu alloc] initWithTitle:@"" ];
+    NSMenuItem *containerItem = [[NSMenuItem alloc] init];
+    NSMenu *rootMenu = [[NSMenu alloc] initWithTitle:@"" ];
+    [containerItem setSubmenu:rootMenu];
+    [mainMenu addItem:containerItem];
+    [rootMenu addItemWithTitle:@"Quit SimpleChatClient" action:@selector(terminate) keyEquivalent:@"Q"];
+    [NSApp setMainMenu:mainMenu];
+
+    [self setUpEditMenu];
+}
+
+- (id)firstResponder
+{
+    return [self.window firstResponder];
+}
+
+- (void)setUpEditMenu
+{
+//
+//    416	  if (![[[NSApp keyWindow] firstResponder] tryToPerform:@selector(cut:) with:nil])
+//        417	    if (wbui->get_active_form() && wbui->get_active_form()->can_cut())
+    NSMenuItem *developerItemContainer = [[NSMenuItem alloc] init]; //WithTitle:@"Developer" action:nil keyEquivalent:@"d"
+    NSMenu *developerMenu = [[NSMenu alloc] initWithTitle:@"Edit"];
+    [developerItemContainer setSubmenu:developerMenu];
+    [developerMenu setAutoenablesItems:YES];
+    [developerMenu addItem:[self addEditMenuItem:@"Cut" action:@selector(cut:) key:@"x" ]];
+    [developerMenu addItem:[self addEditMenuItem:@"Copy" action:@selector(copy:) key:@"c" ]];
+    [developerMenu addItem:[self addEditMenuItem:@"Paste" action:@selector(paste:) key:@"v" ]];
+    [developerMenu addItem:[self addEditMenuItem:@"SelectAll" action:@selector(selectAll:) key:@"a" ]];
+    [[NSApp mainMenu] addItem:developerItemContainer];
+}
+
+- (NSMenuItem *)addEditMenuItem:(NSString *)title
+                         action:(SEL _Nullable)action
+                            key:(NSString *)key
+{
+    NSMenuItem * menuItem = [[NSMenuItem alloc] init];
+    [menuItem setTitle:title];
+    [menuItem setEnabled:YES];
+    //[menuItem setTarget:[self.window firstResponder]];
+    [menuItem setAction:action];
+    [menuItem setKeyEquivalent:key];
+    return menuItem;
 }
 
 @end

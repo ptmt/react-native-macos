@@ -1,61 +1,39 @@
 /* @flow */
 'use strict';
 
-// TODO: why import is not working?
-var React = require('react-native-desktop');
+import React, { Component, View, AppRegistry } from 'react-native-desktop';
+import { createStore, applyMiddleware, combineReducers } from 'redux'
+import { Provider } from 'react-redux/native';
+import logger from 'redux-logger';
+import thunk from 'redux-thunk';
+import storage from 'redux-storage';
+import createEngine from 'redux-storage/engines/reactNativeAsyncStorage';
 
-var {
-  View,
-  AppRegistry,
-} = React;
+import reducer from './reducers';
+import { SIGNIN_REQUEST, SIGNIN_FAILURE } from './actions';
+import App from './components/App';
 
-var discordClient = require('./discordClient');
-// var SigninForm = require('./components/SigninForm');
-var ChatLayout = require('./components/ChatLayout');
+const engine = createEngine('discord');
+const wrappedReducer = storage.reducer(reducer);
+const storageMiddleware = storage.createMiddleware(engine, [ SIGNIN_REQUEST, SIGNIN_FAILURE ]);
 
-class SimpleChatClient extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      token: 'MTAzNDE3Mzk3Mjg0NzI4ODMy.CQukiw.SqWM0JEgJGh9c5N9vp5xVGWYPZw'
-      // user: {
-      //   username: 'ptmt'
-      // },
-      // servers: [
-      //   {
-      //     name: 'reactiflux',
-      //     channels: [
-      //       {
-      //         name: 'channel',
-      //         id: 1,
-      //         topic: 'long description about channel'
-      //       }
-      //     ]
-      //  }
-      // ]
-    };
-  }
-  componentDidMount() {
-    //discordClient
-      //.login('muakacho@gmail.com', 'rtWCNeJK6Jwe7d')
-      //.then(token => this.setState({token}))
-      //.then(token => discordClient.getGateway(token));
-      //.then(gateway =>
-        discordClient.connect(this.state.token, 'wss://gateway-fafnir.discord.gg', (state) => this.setState(state))
-  }
-  onChannelSelect(channelId) {
-    this.setState({
-      selectedChanel: channelId
-    });
-    discordClient
-      .getMessages(this.state.token, channelId)
-      .then(messages => this.setState({messages}));
+const middleware = process.env.NODE_ENV === 'production' ?
+  [ thunk, storageMiddleware ] :
+  [ thunk, logger(), storageMiddleware ]
+
+const createStoreWithMiddleware = applyMiddleware(...middleware)(createStore)
+const store = createStoreWithMiddleware(wrappedReducer)
+
+class SimpleChatClient extends Component {
+  componentWillMount() {
+    const load = storage.createLoader(engine);
+    load(store);
   }
   render() {
     return (
-      <View style={{flex: 1}}>
-        <ChatLayout {...this.state} onChannelSelect={this.onChannelSelect.bind(this)}/>}
-      </View>
+      <Provider store={store}>
+        {() => <App />}
+      </Provider>
     );
   }
 }
