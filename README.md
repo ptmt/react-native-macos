@@ -1,7 +1,8 @@
-# React Native Desktop [![Build Status](https://travis-ci.org/ptmt/react-native-desktop.svg)](https://travis-ci.org/ptmt/react-native-desktop)
+## React Native Desktop<sup>*Codename "Lepton"*.</sup>
 
-Build OS X desktop apps using React Native. Based on Cocoa. <sub><sup>*Codename "Lepton"*.<sub><sup>
+Build OS X Cocoa-based desktop apps using React.
 
+[![Build Status](https://travis-ci.org/ptmt/react-native-desktop.svg)](https://travis-ci.org/ptmt/react-native-desktop)
 ## TL;DR
 
 **It's not production ready**: the lack of most important features, documentation is missing, there are no benchmarks and completed examples. It's also only for OS X at the moment. 
