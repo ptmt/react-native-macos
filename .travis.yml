@@ -23,7 +23,7 @@ install:
   - npm install
   - node --version
   - npm --version
-  - cd Examples/SimpleChatClient && npm install
+  - cd Examples/SimpleChatClient && npm install && cd ../..
 
 script:
 - |
