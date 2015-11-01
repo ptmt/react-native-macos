@@ -23,7 +23,7 @@ install:
   - npm install
   - node --version
   - npm --version
-  - cat /System/Library/Frameworks/CoreFoundation.framework/Versions/A/Resources/version.plist
+  - cd Examples/SimpleChatClient && npm install
 
 script:
 - |
