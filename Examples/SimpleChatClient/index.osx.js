@@ -13,7 +13,7 @@ import reducer from './reducers';
 import { SIGNIN_REQUEST, SIGNIN_FAILURE } from './actions';
 import App from './components/App';
 
-const engine = createEngine('discord');
+const engine = createEngine('chat');
 const wrappedReducer = storage.reducer(reducer);
 const storageMiddleware = storage.createMiddleware(engine, [ SIGNIN_REQUEST, SIGNIN_FAILURE ]);
 
