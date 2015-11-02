@@ -1,6 +1,7 @@
-## React Native Desktop<sup>*Codename "Lepton"*</sup>
+## React Native Desktop
+<sup>*Codename "Lepton"*</sup>
 
-Build OS X Cocoa-based desktop apps using React.
+Build OS X desktop apps using React Native
 
 [![Build Status](https://travis-ci.org/ptmt/react-native-desktop.svg)](https://travis-ci.org/ptmt/react-native-desktop)
 ## TL;DR
