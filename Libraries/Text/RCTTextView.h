@@ -14,7 +14,7 @@
 
 @class RCTEventDispatcher;
 
-@interface RCTTextView : RCTView <NSTextViewDelegate>
+@interface RCTTextView : RCTView <NSTextViewDelegate, NSTextDelegate>
 
 @property (nonatomic, assign) BOOL autoCorrect;
 @property (nonatomic, assign) BOOL clearTextOnFocus;

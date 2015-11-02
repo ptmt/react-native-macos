@@ -101,6 +101,7 @@ class SigninForm extends React.Component {
             <TextInput
               style={styles.textinput}
               multiline={false}
+              password={true}
               onChangeText={(password) => this.setState({password})}
             />
           </View>
@@ -112,7 +113,7 @@ class SigninForm extends React.Component {
           </AnimatedButton>
         </Animated.View>
         <View style={styles.footer}>
-          <Text style={styles.footerText}>This app used Discord unofficial APIs only for demonstration purposes.</Text>
+          <Text style={styles.footerText}>This app uses Discord unofficial APIs only for demonstration purposes.</Text>
         </View>
       </Image>
     );
@@ -153,7 +154,7 @@ var styles = StyleSheet.create({
   },
   buttonCaption: {textAlign: 'center', color: 'white', fontSize: 20},
   textinput: {
-    height: 30,
+    height: 25,
     borderWidth: 0,
     borderColor: '#0f0f0f',
     width: 250,

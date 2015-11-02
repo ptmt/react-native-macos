@@ -43,7 +43,7 @@ export function getGateway(token: string): Promise {
   .then(r => r.url);
 }
 
-export function connect(token: string, gatewayUrl: string, setState: Function): void {
+export function connect(token: string, gatewayUrl: string, onMessageRecieved: Function): void {
   var websocket = new WebSocket(gatewayUrl);
   websocket.onopen = function () {
 			connnectionMessage.bind(this)(token); //try connecting
@@ -73,7 +73,7 @@ export function connect(token: string, gatewayUrl: string, setState: Function): 
             channels: guild.channels
           }
         });
-        setState({
+        onMessageRecieved({
           user: data.d.user,
           servers
         });
@@ -83,7 +83,7 @@ export function connect(token: string, gatewayUrl: string, setState: Function): 
         break;
 
         case "MESSAGE_CREATE":
-					console.log('received message', data.d);
+					//console.log('received message', data.d);
 					break;
       }
   }

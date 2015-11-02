@@ -32,11 +32,12 @@
     _contentInset = NSEdgeInsetsZero;
     _eventDispatcher = eventDispatcher;
     _placeholderTextColor = [self defaultPlaceholderTextColor];
-
     _textView = [[NSTextView alloc] initWithFrame:self.bounds];
     _textView.backgroundColor = [NSColor clearColor];
     //_textView.scrollsToTop = NO;
+    _jsRequestingFirstResponder = YES;
     _textView.delegate = self;
+    _placeholderView.delegate = self;
     [self addSubview:_textView];
   }
   return self;
@@ -78,17 +79,23 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   if (_placeholder) {
     _placeholderView = [[NSTextView alloc] initWithFrame:self.bounds];
     _placeholderView.backgroundColor = [NSColor clearColor];
-//    _placeholderView.scrollEnabled = false;
-//    _placeholderView.attributedText =
-//    [[NSAttributedString alloc] initWithString:_placeholder attributes:@{
-//      NSFontAttributeName : (_textView.font ? _textView.font : [self defaultPlaceholderFont]),
-//      NSForegroundColorAttributeName : _placeholderTextColor
-//    }];
+    NSAttributedString* attrString =
+    [[NSAttributedString alloc] initWithString:_placeholder attributes:@{
+      NSFontAttributeName : (_textView.font ? _textView.font : [self defaultPlaceholderFont]),
+      NSForegroundColorAttributeName : _placeholderTextColor
+    }];
 
-    [self addSubview:_placeholderView positioned:NSWindowAbove relativeTo:_textView]; // TODO: check this
+    [[_placeholderView textStorage] setAttributedString:attrString];
+    _placeholderView.delegate = self;
+    [self addSubview:_placeholderView]; // TODO: check this
 
     [self _setPlaceholderVisibility];
   }
+}
+- (void)hidePlaceholder
+{
+  [_placeholderView removeFromSuperview];
+  _placeholderView = nil;
 }
 
 - (NSFont *)font
@@ -197,47 +204,38 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 //  return _textView.autocorrectionType == UITextAutocorrectionTypeYes;
 //}
 
-- (BOOL)textViewShouldBeginEditing:(NSTextView *)textView
+- (void)textDidChange:(NSNotification *)aNotification
 {
-  if (_selectTextOnFocus) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [textView selectAll:nil];
-    });
-  }
-  return YES;
+  [self _setPlaceholderVisibility];
+  _nativeEventCount++;
+  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeChange
+                                 reactTag:self.reactTag
+                                     text:[_textView string]
+                               eventCount:_nativeEventCount];
 }
 
-//- (void)textViewDidBeginEditing:(NSTextView *)textView
-//{
-//  if (_clearTextOnFocus) {
-//    _textView.text = @"";
-//    [self _setPlaceholderVisibility];
-//  }
-//
-//  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeFocus
-//                                 reactTag:self.reactTag
-//                                     text:textView.text
-//                               eventCount:_nativeEventCount];
-//}
-//
-//- (void)textViewDidChange:(UITextView *)textView
-//{
-//  [self _setPlaceholderVisibility];
-//  _nativeEventCount++;
-//  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeChange
-//                                 reactTag:self.reactTag
-//                                     text:textView.text
-//                               eventCount:_nativeEventCount];
-//
-//}
-//
-//- (void)textViewDidEndEditing:(UITextView *)textView
-//{
-//  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeEnd
-//                                 reactTag:self.reactTag
-//                                     text:textView.text
-//                               eventCount:_nativeEventCount];
-//}
+- (void)textDidEndEditing:(NSNotification *)aNotification
+{
+  _nativeEventCount++;
+  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeEnd
+                                 reactTag:self.reactTag
+                                     text:[_textView string]
+                               eventCount:_nativeEventCount];
+}
+
+
+- (void)textDidBeginEditing:(NSNotification *)aNotification
+{
+  [self hidePlaceholder];
+  if (_clearTextOnFocus) {
+    [_textView setString:@""];
+    [self _setPlaceholderVisibility];
+  }
+  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeFocus
+                                 reactTag:self.reactTag
+                                     text:[_textView string]
+                               eventCount:_nativeEventCount];
+}
 
 - (BOOL)becomeFirstResponder
 {

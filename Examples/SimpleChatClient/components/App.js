@@ -20,8 +20,8 @@ class App extends Component {
     const actions = bindActionCreators(Actions, this.props.dispatch);
     return (
       <View style={{flex: 1}}>
-        {!this.props.token && <SigninForm login={actions.login} {...this.props}/>}
-        {this.props.token && <ChatLayout {...this.props} />}
+        {!this.props.token && this.props.loaded && <SigninForm login={actions.login} {...this.props}/>}
+        {this.props.token && <ChatLayout {...this.props} actions={actions}/>}
       </View>
     );
   }

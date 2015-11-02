@@ -13,6 +13,7 @@ var {
   TextInput
 } = React;
 
+import LoadingIndicator from './LoadingIndicator';
 // React 0.14
 // var Channel = (props) => {
 //   <TouchableOpacity onPress={() => console.log(this.props.id)}>
@@ -43,8 +44,8 @@ class ChatLayout extends React.Component {
     };
   }
   componentDidMount() {
+    this.props.actions.init();
   }
-
   render() {
     var servers = this.props.servers && this.props.servers.map(server => {
       return (
@@ -73,21 +74,23 @@ class ChatLayout extends React.Component {
         </View>
         <View style={styles.channels}>
           <ScrollView style={{height: Dimensions.get('window').height}}>
-            {servers}
+            {servers || <LoadingIndicator style={styles.messageText}>Loading channels..</LoadingIndicator>}
           </ScrollView>
         </View>
         <View style={styles.messages}>
-          <ScrollView style={{height: Dimensions.get('window').height - 100}}>
-            {messages}
+          <ScrollView style={styles.messagesScrollContainer}>
+            {messages || <LoadingIndicator style={styles.messageLoader}>Loading messages..</LoadingIndicator>}
           </ScrollView>
-          {messages &&
-            <View style={styles.inputWrapper}>
-              <TextInput style={styles.input}/>
-              <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Send</Text>
-              </TouchableOpacity>
-            </View>
-          }
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              multiline={false}
+              placeholder={'Type message...'}
+            />
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonCaption}>Send</Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.spinner}>
           <Text>Loading...</Text>
@@ -103,6 +106,7 @@ var styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#333',
+    flexDirection: 'row'
   },
   user: {
     right: 30,
@@ -132,32 +136,52 @@ var styles = StyleSheet.create({
     color: '#ccc',
     fontSize: 10
   },
-  button: {
-    margin: 10,
-    backgroundColor: '#009aff',
-    paddingVertical: 10,
-    width: 250,
-  },
-  buttonCaption: {
-    textAlign: 'center', color: 'white', fontSize: 20
+  // ------- input
+  inputWrapper: {
+    position: 'absolute',
+    bottom: 0,
+    width: 500, // TODO: dynamic
+    backgroundColor: 'white',
+    borderRadius: 10,
+    marginLeft: 20,
+    height: 75,
+    flex: 1,
+    flexDirection: 'row'
   },
   input: {
-    height: 30,
-    borderWidth: 0.5,
-    borderColor: '#0f0f0f',
+    height: 70,
+    // borderWidth: 0.5,
+    // borderColor: '#0f0f0f',
     flex: 1,
     fontSize: 18,
-    padding: 4,
+    padding: 10,
+    color: '#666'
   },
-  // ---------------
+  button: {
+    margin: 10,
+    borderColor: '#009aff',
+    borderWidth: 1,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+    //flex: 1,
+  },
+  buttonCaption: {
+    textAlign: 'center',
+    color: '#009aff',
+    fontSize: 20,
+    padding: 0,
+    margin: 0
+  },
+  // --------- messages
   messages: {
-    position: 'absolute',
-    backgroundColor: '#555',
+    backgroundColor: '#eee',
     flex: 1,
-    top: 10,
-    left: 300,
-    height: Dimensions.get('window').height // TODO: dynamic
-    //backgroundColor: '#ccc'
+    top: 0,
+  },
+  messagesScrollContainer: {
+    flex: 1
   },
   messageText: {
     color: '#ddd',
@@ -177,6 +201,13 @@ var styles = StyleSheet.create({
   messageUsername: {
     color: '#ddd',
     fontWeight: '800'
+  },
+  messageLoader: {
+    fontSize: 20,
+    color: '#333',
+    //textAlign: 'center',
+    marginTop: 20,
+    marginLeft: 100
   },
   // -----------
   spinner: {

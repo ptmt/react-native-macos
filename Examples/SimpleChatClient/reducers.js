@@ -1,5 +1,9 @@
 /* @flow */
-import { SIGNIN_REQUEST, SIGNIN_SUCCESS, SIGNIN_FAILURE } from './actions';
+import {
+  SIGNIN_REQUEST, SIGNIN_SUCCESS, SIGNIN_FAILURE,
+  GOT_GATEWAY, GENERAL_ERROR, GOT_MESSAGE
+} from './actions';
+
 import { LOAD, SAVE } from 'redux-storage';
 import { combineReducers } from 'redux';
 
@@ -32,11 +36,25 @@ export default function reducer(state: GlobalState, action: any): GlobalState {
         error: action.error
       }
     case LOAD:
-      console.log(state, action);
       return { ...state, loaded: true };
-
     case SAVE:
       console.log('Written to disk!');
+
+    case GOT_GATEWAY:
+      return { ...state, gatewayUrl: action.gatewayUrl}
+
+    case GENERAL_ERROR:
+      return { ...state, error: action.error}
+
+    case GOT_MESSAGE:
+      //console.log(action.messagePayload);
+      if (action.messagePayload.servers) {
+        state = {...state, servers: action.messagePayload.servers} // TODO: smart merge
+      }
+      if (action.messagePayload.user) {
+        state = {...state, user: action.messagePayload.user};
+      }
+      return state;
     default:
       return state
   }
