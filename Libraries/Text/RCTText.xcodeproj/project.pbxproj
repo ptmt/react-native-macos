@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03EB62861BE7A5C300103EB0 /* RCTSecureTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 03EB62851BE7A5C300103EB0 /* RCTSecureTextField.m */; };
 		131B6AC01AF0CD0600FFC3E0 /* RCTTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 131B6ABD1AF0CD0600FFC3E0 /* RCTTextView.m */; };
 		131B6AC11AF0CD0600FFC3E0 /* RCTTextViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 131B6ABF1AF0CD0600FFC3E0 /* RCTTextViewManager.m */; };
 		1362F1001B4D51F400E06D8C /* RCTTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 1362F0FD1B4D51F400E06D8C /* RCTTextField.m */; };
@@ -31,6 +32,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		03EB62841BE7A5C300103EB0 /* RCTSecureTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTSecureTextField.h; sourceTree = "<group>"; };
+		03EB62851BE7A5C300103EB0 /* RCTSecureTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTSecureTextField.m; sourceTree = "<group>"; };
 		131B6ABC1AF0CD0600FFC3E0 /* RCTTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTTextView.h; sourceTree = "<group>"; };
 		131B6ABD1AF0CD0600FFC3E0 /* RCTTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTTextView.m; sourceTree = "<group>"; };
 		131B6ABE1AF0CD0600FFC3E0 /* RCTTextViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTTextViewManager.h; sourceTree = "<group>"; };
@@ -66,6 +69,8 @@
 		58B511921A9E6C1200147676 = {
 			isa = PBXGroup;
 			children = (
+				03EB62841BE7A5C300103EB0 /* RCTSecureTextField.h */,
+				03EB62851BE7A5C300103EB0 /* RCTSecureTextField.m */,
 				58B511C61A9E6C5C00147676 /* RCTRawTextManager.h */,
 				58B511C71A9E6C5C00147676 /* RCTRawTextManager.m */,
 				58B511C81A9E6C5C00147676 /* RCTShadowRawText.h */,
@@ -154,6 +159,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03EB62861BE7A5C300103EB0 /* RCTSecureTextField.m in Sources */,
 				58B511D11A9E6C5C00147676 /* RCTTextManager.m in Sources */,
 				131B6AC01AF0CD0600FFC3E0 /* RCTTextView.m in Sources */,
 				58B511CE1A9E6C5C00147676 /* RCTRawTextManager.m in Sources */,

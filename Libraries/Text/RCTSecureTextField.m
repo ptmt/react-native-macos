@@ -7,14 +7,14 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import "RCTTextField.h"
+#import "RCTSecureTextField.h"
 
 #import "RCTConvert.h"
 #import "RCTEventDispatcher.h"
 #import "RCTUtils.h"
 #import "NSView+React.h"
 
-@implementation RCTTextField
+@implementation RCTSecureTextField
 {
   RCTEventDispatcher *_eventDispatcher;
   NSMutableArray *_reactSubviews;
@@ -102,35 +102,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   [_reactSubviews insertObject:view atIndex:atIndex];
   [super addSubview:view];
 }
-
-//- (CGRect)caretRectForPosition:(NSTextPosition *)position
-//{
-//  if (_caretHidden) {
-//    return CGRectZero;
-//  }
-//  return [super selectText:(NSRange){position:position}];
-//}
-//
-//- (CGRect)textRectForBounds:(CGRect)bounds
-//{
-//  CGRect rect = [super textRectForBounds:bounds];
-//  return UIEdgeInsetsInsetRect(rect, _contentInset);
-//}
-//
-//- (CGRect)editingRectForBounds:(CGRect)bounds
-//{
-//  return [self textRectForBounds:bounds];
-//}
-//
-//- (void)setAutoCorrect:(BOOL)autoCorrect
-//{
-//  self.autocorrectionType = (autoCorrect ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo);
-//}
-//
-//- (BOOL)autoCorrect
-//{
-//  return self.autocorrectionType == UITextAutocorrectionTypeYes;
-//}
 
 - (void)textDidChange:(NSNotification *)aNotification
 {

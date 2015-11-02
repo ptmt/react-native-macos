@@ -45,6 +45,7 @@ if (Platform.OS === 'android') {
 } else if (Platform.OS === 'ios' || Platform.OS === 'osx') {
   var RCTTextView = requireNativeComponent('RCTTextView', null);
   var RCTTextField = requireNativeComponent('RCTTextField', null);
+  var RCTSecureTextField = requireNativeComponent('RCTSecureTextField', null);
 }
 
 type Event = Object;
@@ -379,8 +380,9 @@ var TextInput = React.createClass({
           );
         }
       }
+      var TextField = props.password ? RCTSecureTextField : RCTTextField;
       textContainer =
-        <RCTTextField
+        <TextField
           ref="input"
           {...props}
           onFocus={this._onFocus}

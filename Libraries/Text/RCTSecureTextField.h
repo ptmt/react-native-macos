@@ -11,7 +11,7 @@
 
 @class RCTEventDispatcher;
 
-@interface RCTTextField : NSTextField <NSTextFieldDelegate>
+@interface RCTSecureTextField : NSSecureTextField <NSTextFieldDelegate>
 
 @property (nonatomic, assign) BOOL caretHidden;
 @property (nonatomic, assign) BOOL autoCorrect;
@@ -24,5 +24,4 @@
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
 
 @end
-
 
