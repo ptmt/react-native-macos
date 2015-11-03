@@ -8,7 +8,7 @@ cache:
         - .nvm
 
 before_install:
-  - brew update
+  - brew update || brew update
   - brew outdated xctool || brew upgrade xctool
 
 install:
