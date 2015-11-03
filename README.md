@@ -4,7 +4,11 @@
 Build OS X desktop apps using React Native.
 
 [![Build Status](https://travis-ci.org/ptmt/react-native-desktop.svg)](https://travis-ci.org/ptmt/react-native-desktop)
+
 ## TL;DR
+
+<img width="914" alt="screenshot 2015-11-03 10 42 56" src="https://cloud.githubusercontent.com/assets/1004115/10905298/8c4e31bc-8219-11e5-8375-d43066e51c66.png">
+*(Here goes a nice video demonstrating effective and smooth updates of native NSView tree from JS thread)*
 
 **It's not production ready**: the lack of most important features, documentation is missing, there are no benchmarks and completed examples. It's also only for OS X at the moment.
 
@@ -24,6 +28,8 @@ Since it's a fork of React Native, you could follow the same steps to run Exampl
 **Can I help?**
 
 Sure! If you are into React.js please help to make examples looks clean and idiomatic. If you can give an advice on Windows or Linux bindings or just have an idea for an awesome app which you always wanted, please feel free to reach me out on `#react-native-desktop`.
+
+Current progress:
 
 ![uiexplorer](https://cloud.githubusercontent.com/assets/1004115/10608147/311445b0-7757-11e5-9ef7-2e76107e4bb7.png)
 
