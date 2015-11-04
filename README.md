@@ -4,6 +4,7 @@
 Build OS X desktop apps using React Native.
 
 [![Build Status](https://travis-ci.org/ptmt/react-native-desktop.svg)](https://travis-ci.org/ptmt/react-native-desktop)
+[![npm version](https://badge.fury.io/js/react-native-desktop.svg)](https://badge.fury.io/js/react-native-desktop)
 
 ## TL;DR
 

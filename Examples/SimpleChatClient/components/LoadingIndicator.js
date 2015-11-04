@@ -18,8 +18,9 @@ export default class LoadingIndicator extends React.Component {
   }
   pulse() {
     const replay = () => {
+      // to pass flow check
       const a = setTimeout(() => this.pulse(), 400);
-    } // to pass flow check
+    }
     this.state.scale.setValue(1);
     Animated.timing(this.state.scale, {
       toValue: 10

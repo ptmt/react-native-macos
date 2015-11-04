@@ -46,7 +46,7 @@ export function getGateway(token: string): Promise {
 export function connect(token: string, gatewayUrl: string, onMessageRecieved: Function): void {
   var websocket = new WebSocket(gatewayUrl);
   websocket.onopen = function () {
-			connnectionMessage.bind(this)(token); //try connecting
+		connnectionMessage.bind(this)(token); //try connecting
 	};
 
 	websocket.onclose = function () {
@@ -71,6 +71,8 @@ export function connect(token: string, gatewayUrl: string, onMessageRecieved: Fu
           return {
             name: guild.name,
             channels: guild.channels
+              .filter(c => c.type !== 'voice')
+              .sort((a, b) => a.position - b.position)
           }
         });
         onMessageRecieved({
@@ -117,18 +119,11 @@ function connnectionMessage(token): void {
 }
 
 export function getMessages(token: string, channelID: string): Promise {
-  return fetch(`${ENDPOINTS.CHANNELS}/${channelID}/messages?limit=100`, {
+  return fetch(`${ENDPOINTS.CHANNELS}/${channelID}/messages?limit=200`, {
     headers: {
       authorization: token
     }
   })
   .then(r => r.json())
-  .catch(e => console.log(e));
+  //.catch(e => console.log(e));
 }
-
-// export function getChannels() {
-//   self.getGateway().then(function (url) {
-// 								self.createws(url);
-// 								callback(null, self.token);
-// 								resolve(self.token);
-// }

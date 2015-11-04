@@ -105,8 +105,6 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
 
     NSNumber *reactTag = [self.view reactTagAtPoint:CGPointMake(touchLocation.x, touchLocation.y)];
 
-    NSLog(@"touchLocation: %f %f %@", touchLocation.x, touchLocation.y, reactTag);
-
     if (!reactTag) {// || !targetView.userInteractionEnabled) {
       return;
     }

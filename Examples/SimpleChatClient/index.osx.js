@@ -1,7 +1,7 @@
 /* @flow */
 'use strict';
 
-import React, { Component, View, AppRegistry } from 'react-native-desktop';
+import React from 'react-native-desktop';
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { Provider } from 'react-redux/native';
 import logger from 'redux-logger';
@@ -19,13 +19,14 @@ const storageMiddleware = storage.createMiddleware(engine, [ SIGNIN_REQUEST, SIG
 
 const middleware = process.env.NODE_ENV === 'production' ?
   [ thunk, storageMiddleware ] :
-  [ thunk, logger(), storageMiddleware ]
+  [ thunk, logger(), storageMiddleware ];
 
-const createStoreWithMiddleware = applyMiddleware(...middleware)(createStore)
-const store = createStoreWithMiddleware(wrappedReducer)
+const createStoreWithMiddleware = applyMiddleware(...middleware)(createStore);
+const store = createStoreWithMiddleware(wrappedReducer);
 
-class SimpleChatClient extends Component {
+class SimpleChatClient extends React.Component {
   componentWillMount() {
+    console.log('componentWillMount')
     const load = storage.createLoader(engine);
     load(store);
   }
@@ -39,4 +40,4 @@ class SimpleChatClient extends Component {
 }
 
 
-AppRegistry.registerComponent('SimpleChatClient', () => SimpleChatClient);
+React.AppRegistry.registerComponent('SimpleChatClient', () => SimpleChatClient);

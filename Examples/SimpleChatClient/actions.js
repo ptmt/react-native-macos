@@ -1,5 +1,5 @@
 /* @flow */
-import { discordLogin, getGateway, connect } from './discordClient';
+import { discordLogin, getGateway, connect, getMessages } from './discordClient';
 
 export const SIGNIN_REQUEST = 'SIGNIN_REQUEST';
 export const SIGNIN_SUCCESS = 'SIGNIN_SUCCESS';
@@ -8,6 +8,9 @@ export const SIGNIN_FAILURE = 'SIGNIN_FAILURE';
 export const GOT_GATEWAY = 'GOT_GATEWAY';
 export const GENERAL_ERROR = 'GENERAL_ERROR';
 export const GOT_MESSAGE = 'GOT_MESSAGE';
+
+export const CHANNEL_SELECTED = 'CHANNEL_SELECTED';
+export const MESSAGES_LOADED = 'MESSAGES_LOADED';
 
 export function login(email: string, password: string): any {
   if (!email || !password) {
@@ -57,6 +60,28 @@ export function init(): any {
       getState().gatewayUrl,
       (payload) => dispatch(onMessageRecieved(payload)))
     )
+    .catch(e => {
+      return dispatch({
+        type: GENERAL_ERROR,
+        error: e
+      })
+    })
+  }
+}
+
+export function onChannelSelect(channelId: string): any {
+  return (dispatch, getState) => {
+    dispatch({
+      type: CHANNEL_SELECTED,
+      selectedChannel: channelId,
+    });
+
+    getMessages(getState().token, channelId).then((messages) => {
+      return dispatch({
+        type: MESSAGES_LOADED,
+        messages
+      });
+    })
     .catch(e => {
       return dispatch({
         type: GENERAL_ERROR,

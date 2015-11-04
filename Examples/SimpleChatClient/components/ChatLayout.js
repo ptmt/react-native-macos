@@ -8,7 +8,6 @@ var {
   ScrollView,
   Dimensions,
   Text,
-  ActivityIndicatorIOS,
   TouchableOpacity,
   TextInput
 } = React;
@@ -39,28 +38,36 @@ class Channel extends React.Component {
 class ChatLayout extends React.Component {
   constructor() {
     super();
-    this.state = {
-      loading: true
-    };
+    this.state = {};
   }
   componentDidMount() {
     this.props.actions.init();
   }
+  render1() {
+    return <TextInput
+      style={styles.input}
+      multiline={false}
+      placeholder={'Type message...'}
+    />;
+  }
   render() {
-    var servers = this.props.servers && this.props.servers.map(server => {
+    const servers = this.props.servers && this.props.servers.map((server, serverKey) => {
       return (
-        <View>
+        <View key={serverKey}>
           <Text style={styles.serverText}>-- {server.name} --</Text>
           {server.channels.map(c => <Channel {...c}
-              isSelected={this.props.selectedChanel === c.id}
-              onSelect={() => this.props.onChannelSelect(c.id)} />)}
+              key={c.id}
+              isSelected={this.props.selectedChannel === c.id}
+              onSelect={() => this.props.actions.onChannelSelect(c.id)} />)}
         </View>
       );
     });
-    var messages = this.props.messages && this.props.messages.map(message => {
-      var time = new Date(message.timestamp).getHours() + ':' + new Date(message.timestamp).getMinutes();
+
+    const messages = this.props.messages && this.props.messages.map(message => {
+      const date = new Date(message.timestamp);
+      var time = date.getHours() + ':' +   ('0' + date.getMinutes()).slice(-2);
       return (
-        <View style={styles.message}>
+        <View style={styles.message} key={message.id}>
           <Text style={styles.messageTimestamp}>{time}</Text>
           <Text style={styles.messageUsername}>{message.author.username}</Text>
           <Text style={styles.messageText}>{message.content}</Text>
@@ -92,10 +99,6 @@ class ChatLayout extends React.Component {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.spinner}>
-          <Text>Loading...</Text>
-          <ActivityIndicatorIOS animating={!this.props.user} size={'large'}/>
-        </View>
       </View>
     );
   }
@@ -109,15 +112,16 @@ var styles = StyleSheet.create({
     flexDirection: 'row'
   },
   user: {
-    right: 30,
-    top: 10,
-    padding: 7,
+    position: 'absolute',
+    left: 10,
+    top: 5,
+    padding: 4,
     backgroundColor: '#777',
-    position: 'absolute'
   },
   userLabel: {
     color: 'white',
   },
+  // ------------ channels
   channels: {
     width: 300,
     padding: 30,
@@ -130,6 +134,7 @@ var styles = StyleSheet.create({
   channelText: {
     color: 'white',
     fontWeight: '300',
+    fontSize: 12,
     marginBottom: 8
   },
   channelTextDescription: {
@@ -184,7 +189,7 @@ var styles = StyleSheet.create({
     flex: 1
   },
   messageText: {
-    color: '#ddd',
+    color: '#777',
     marginLeft: 4,
     width: Dimensions.get('window').width - 400
   },
@@ -199,7 +204,7 @@ var styles = StyleSheet.create({
     marginRight: 10
   },
   messageUsername: {
-    color: '#ddd',
+    color: '#666',
     fontWeight: '800'
   },
   messageLoader: {
