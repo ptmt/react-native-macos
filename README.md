@@ -17,20 +17,20 @@ Since it's a fork of React Native, you could follow the same steps to run Exampl
 
 **Why not vanilla AppKit?**
 
-- "Learn once, run everywhere" (c). Write only low-level parts in Objective-C and use the power of React-ecosystem: React Router for navigation, Relay for data-fetching, AppHub for updates, etc.
+- "Learn once, write anywhere" (c). Write low-level parts in Objective-C and use the power of React ecosystem: React Router for navigation, Relay for data-fetching, AppHub for instant updates, etc.
 - ClojureScript, Elm, Whatever-to-js-compiles.
 - Developer experience: hot reloading, linters, static type checking, live tests coverage.
 
 **Why not Electron?**
 
-- RND's footprint is relatively small (only about 1.3MB for Examples/SimpleChatClient) and could be configured.
-- RND is just a small unstable subset of Electron: there is no DOM, CSS, browser APIs. Potentially it could be useful if you don't need a whole browser for you app. Until the new next-gen parallel browser engines become real.
+- RND's footprint is relatively small (about 1.3MB for Examples/SimpleChatClient) and could be configured.
+- RND is kind of a small unstable subset of Electron: there is no DOM, CSS, browser APIs. Potentially it could be useful if you don't need a whole browser for your app. Until the next-gen parallel browser engines become real.
 
-**Can I help?**
+**Contribute**
 
-Sure! If you are into React.js please help to make examples looks clean and idiomatic. If you can give an advice on Windows or Linux bindings or just have an idea for an awesome app which you always wanted, please feel free to reach me out on `#react-native-desktop`.
+If you are into React.js please help to make examples looks clean and idiomatic. If you can give an advice on Windows or Linux bindings or just have an idea for an awesome app which you always wanted, please feel free to reach me out on `#react-native-desktop`.
 
-Current progress:
+Some screenshots:
 
 ![uiexplorer](https://cloud.githubusercontent.com/assets/1004115/10608147/311445b0-7757-11e5-9ef7-2e76107e4bb7.png)
 
