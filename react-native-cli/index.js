@@ -181,7 +181,7 @@ function run(root, projectName) {
     if (e) {
       console.log(stdout);
       console.error(stderr);
-      console.error('`npm install --save react-native` failed');
+      console.error('`npm install --save react-native-desktop` failed');
       process.exit(1);
     }
 
@@ -191,7 +191,7 @@ function run(root, projectName) {
 }
 
 function runVerbose(root, projectName) {
-  var proc = spawn('npm', ['install', '--verbose', '--save', 'react-native'], {stdio: 'inherit'});
+  var proc = spawn('npm', ['install', '--verbose', '--save', 'react-native-desktop'], {stdio: 'inherit'});
   proc.on('close', function (code) {
     if (code !== 0) {
       console.error('`npm install --save react-native` failed');

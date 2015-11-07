@@ -1,5 +1,5 @@
 {
-  "name": "react-native-cli",
+  "name": "react-native-desktop-cli",
   "version": "0.1.4",
   "description": "The ReactNative cli tools",
   "main": "index.js",
@@ -7,7 +7,7 @@
     "test": "mocha"
   },
   "bin": {
-    "react-native": "index.js"
+    "react-native-desktop": "index.js"
   },
   "dependencies": {
     "prompt": "^0.2.14"

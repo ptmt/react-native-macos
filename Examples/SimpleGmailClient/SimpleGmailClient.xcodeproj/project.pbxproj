@@ -15,6 +15,7 @@
 		039781031BD79ECA00452D23 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 039780FA1BD79E9E00452D23 /* libRCTWebSocket.a */; };
 		039781041BD79ECA00452D23 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 039780EE1BD79E6200452D23 /* libReact.a */; };
 		0397810B1BD7C1BA00452D23 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0397810A1BD7BF3100452D23 /* libRCTLinking.a */; };
+		FCBB8AD31BED811D0004920B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = FCBB8AD21BED811D0004920B /* MainMenu.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 		039780F51BD79E9E00452D23 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = ../../Libraries/WebSocket/RCTWebSocket.xcodeproj; sourceTree = "<group>"; };
 		039780FB1BD79EBA00452D23 /* RCTNetwork.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTNetwork.xcodeproj; path = ../../Libraries/Network/RCTNetwork.xcodeproj; sourceTree = "<group>"; };
 		039781051BD7BF3100452D23 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = ../../Libraries/LinkingIOS/RCTLinking.xcodeproj; sourceTree = "<group>"; };
+		FCBB8AD21BED811D0004920B /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +112,7 @@
 				039780D71BD79C7000452D23 /* Assets.xcassets */,
 				039780DC1BD79C7000452D23 /* Info.plist */,
 				039780D41BD79C7000452D23 /* Supporting Files */,
+				FCBB8AD21BED811D0004920B /* MainMenu.xib */,
 			);
 			path = SimpleGmailClient;
 			sourceTree = "<group>";
@@ -292,6 +295,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				039780D81BD79C7000452D23 /* Assets.xcassets in Resources */,
+				FCBB8AD31BED811D0004920B /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
