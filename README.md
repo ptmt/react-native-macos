@@ -25,6 +25,7 @@ Since it's a fork of React Native, you could follow the same steps to run Exampl
 - In some ways RND is kind of a small unstable subset of Electron's features: there is no DOM, CSS, browser APIs. Potentially it could be useful if you don't need a whole browser for your app. Until the next-gen parallel browser engines become real.
 - RND's footprint is relatively small (about 1.3MB for Examples/SimpleChatClient) and could be configured.
 
+
 ****
 
 If you are into React.js please help to make examples look clean and idiomatic. If you can give an advice on Windows or Linux bindings or just have an idea for an awesome app which you always wanted, please feel free to reach me out on `#react-native-desktop`.

@@ -2,7 +2,7 @@
 'use strict';
 
 import React from 'react-native-desktop';
-import { createStore, applyMiddleware, combineReducers } from 'redux'
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux/native';
 import logger from 'redux-logger';
 import thunk from 'redux-thunk';
@@ -26,7 +26,6 @@ const store = createStoreWithMiddleware(wrappedReducer);
 
 class SimpleChatClient extends React.Component {
   componentWillMount() {
-    console.log('componentWillMount')
     const load = storage.createLoader(engine);
     load(store);
   }

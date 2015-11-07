@@ -400,7 +400,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   if ((self = [super initWithFrame:CGRectZero])) {
     _eventDispatcher = eventDispatcher;
     _scrollView = [[RCTCustomScrollView alloc] initWithFrame:CGRectZero];
-    _scrollView.delegate = self;
+    _scrollView.delegate = self;;
   //  _scrollView.delaysContentTouches = NO;
     _automaticallyAdjustContentInsets = YES;
     _contentInset = NSEdgeInsetsZero;
@@ -871,6 +871,12 @@ if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key
 {
   [_scrollView setValue:value forKey:key];
+}
+
+- (void)setShowsVerticalScrollIndicator:(BOOL)value
+{
+  _scrollView.autohidesScrollers = NO;
+  _scrollView.hasVerticalScroller = value;
 }
 
 - (id)valueForUndefinedKey:(NSString *)key

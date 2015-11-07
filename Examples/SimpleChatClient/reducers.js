@@ -4,7 +4,8 @@
 import {
   SIGNIN_REQUEST, SIGNIN_SUCCESS, SIGNIN_FAILURE,
   GOT_GATEWAY, GENERAL_ERROR, GOT_MESSAGE,
-  MESSAGES_LOADED, CHANNEL_SELECTED
+  MESSAGES_LOADED, CHANNEL_SELECTED,
+  MESSAGE_IS_SENDING
 } from './actions';
 
 import { LOAD, SAVE } from 'redux-storage';
@@ -68,6 +69,9 @@ export default function reducer(state: GlobalState, action: any): GlobalState {
 
     case MESSAGES_LOADED:
       return {...state, messages: action.messages};
+
+    case MESSAGE_IS_SENDING:
+      return {...state, sending: true};
 
     default:
       return state;

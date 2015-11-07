@@ -11,6 +11,8 @@ var ENDPOINTS = {
   CHANNELS : `${BASE}/api/channels`
 };
 
+
+
 export function discordLogin(email: string, password: string): Promise {
   var request = new XMLHttpRequest();
   request.open("POST", ENDPOINTS.LOGIN, true);
@@ -126,4 +128,37 @@ export function getMessages(token: string, channelID: string): Promise {
   })
   .then(r => r.json())
   //.catch(e => console.log(e));
+}
+
+export function sendMessageToChannel(token: string, channelID: string, text: string) {
+  var request = new XMLHttpRequest();
+  request.open('POST', `${ENDPOINTS.CHANNELS}/${channelID}/messages`, true);
+  var formdata = new FormData();
+  formdata.append('content', text);
+  //request.setRequestHeader('authorization', token).
+  request.send(formdata);
+  return new Promise((resolve, reject) => {
+    request.onreadystatechange = () => {
+      if (request.readyState === request.DONE) {
+        if (request.status === 200) {
+          resolve(JSON.parse(request.responseText));
+        } else if (request.status !== 0) {
+          reject(request.responseText);
+        } else {
+          reject(request.responseText);
+        }
+      }
+    };
+  });
+  //
+  // return fetch(`${ENDPOINTS.CHANNELS}/${channelID}/messages`, {
+  //   method: 'POST',
+  //   headers: {
+  //     authorization: token
+  //   },
+  //   body: {
+  //     content: content
+  //   },
+  // })
+  // .then(r => r.json())
 }

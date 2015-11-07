@@ -1,5 +1,7 @@
 /* @flow */
-import { discordLogin, getGateway, connect, getMessages } from './discordClient';
+'use strict';
+
+import { discordLogin, getGateway, connect, getMessages, sendMessageToChannel } from './discordClient';
 
 export const SIGNIN_REQUEST = 'SIGNIN_REQUEST';
 export const SIGNIN_SUCCESS = 'SIGNIN_SUCCESS';
@@ -12,12 +14,16 @@ export const GOT_MESSAGE = 'GOT_MESSAGE';
 export const CHANNEL_SELECTED = 'CHANNEL_SELECTED';
 export const MESSAGES_LOADED = 'MESSAGES_LOADED';
 
+export const MESSAGE_IS_SENDING = 'MESSAGE_IS_SENDING';
+export const MESSAGE_SENT = 'MESSAGE_SENT';
+
+
 export function login(email: string, password: string): any {
   if (!email || !password) {
     return {
       type: SIGNIN_FAILURE,
       error: 'These fields cannot be empty: email and password' // most stupid error message ever
-    }
+    };
   }
 
   return dispatch => {
@@ -64,9 +70,9 @@ export function init(): any {
       return dispatch({
         type: GENERAL_ERROR,
         error: e
-      })
-    })
-  }
+      });
+    });
+  };
 }
 
 export function onChannelSelect(channelId: string): any {
@@ -86,8 +92,26 @@ export function onChannelSelect(channelId: string): any {
       return dispatch({
         type: GENERAL_ERROR,
         error: e
-      })
-    })
-  }
+      });
+    });
+  };
 
+}
+
+export function sendMessage(text:string): any {
+  return (dispatch, getState) => {
+    dispatch({
+      type: MESSAGE_IS_SENDING
+    });
+
+    sendMessageToChannel(getState().token, getState().selectedChannel, text).then((res) => {
+      console.log(res);
+    })
+    .catch(e => {
+      return dispatch({
+        type: GENERAL_ERROR,
+        error: e
+      });
+    });
+  };
 }

@@ -1,4 +1,5 @@
 /* @flow */
+'use strict';
 
 import React, { Component, View } from 'react-native-desktop';
 import SigninForm from './SigninForm';
