@@ -130,7 +130,7 @@ export function getMessages(token: string, channelID: string): Promise {
   //.catch(e => console.log(e));
 }
 
-export function sendMessageToChannel(token: string, channelID: string, text: string) {
+export function sendMessageToChannel(token: string, channelID: string, text: string):any {
   var request = new XMLHttpRequest();
   request.open('POST', `${ENDPOINTS.CHANNELS}/${channelID}/messages`, true);
   var formdata = new FormData();
