@@ -127,38 +127,45 @@ export function getMessages(token: string, channelID: string): Promise {
     }
   })
   .then(r => r.json())
-  //.catch(e => console.log(e));
+  .then(m => m.sort((a, b) => a.id - b.id) );
 }
 
 export function sendMessageToChannel(token: string, channelID: string, text: string):any {
-  var request = new XMLHttpRequest();
-  request.open('POST', `${ENDPOINTS.CHANNELS}/${channelID}/messages`, true);
-  var formdata = new FormData();
-  formdata.append('content', text);
-  //request.setRequestHeader('authorization', token).
-  request.send(formdata);
-  return new Promise((resolve, reject) => {
-    request.onreadystatechange = () => {
-      if (request.readyState === request.DONE) {
-        if (request.status === 200) {
-          resolve(JSON.parse(request.responseText));
-        } else if (request.status !== 0) {
-          reject(request.responseText);
-        } else {
-          reject(request.responseText);
-        }
-      }
-    };
-  });
-  //
-  // return fetch(`${ENDPOINTS.CHANNELS}/${channelID}/messages`, {
-  //   method: 'POST',
-  //   headers: {
-  //     authorization: token
-  //   },
-  //   body: {
-  //     content: content
-  //   },
-  // })
-  // .then(r => r.json())
+  return fetch(`${ENDPOINTS.CHANNELS}/${channelID}/messages`, {
+    method: 'POST',
+    headers: {
+      authorization: token,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      content: text,
+      mentions: [],
+      tts: false,
+      nonce: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
+    })
+  })
+  .then(r => r.json())
+  // var request = new XMLHttpRequest();
+  // request.open('POST', `${ENDPOINTS.CHANNELS}/${channelID}/messages`, true);
+  // var formdata = new FormData();
+  // formdata.append('content', encodeURIComponent(text));
+  // var nonce = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+  // console.log(nonce, 'nonce')
+  // formdata.append('nonce', nonce);
+  // request.setRequestHeader('authorization', token);
+  // request.send(formdata);
+  // return new Promise((resolve, reject) => {
+  //   request.onreadystatechange = () => {
+  //     //console.log(request.status, request.responseText);
+  //     if (request.readyState === request.DONE) {
+  //       if (request.status === 200) {
+  //         resolve(JSON.parse(request.responseText));
+  //       } else if (request.status !== 0) {
+  //         reject(request.responseText);
+  //       } else {
+  //         reject(request.responseText);
+  //       }
+  //     }
+  //   };
+  // });
 }

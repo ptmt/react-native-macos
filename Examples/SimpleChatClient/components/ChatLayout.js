@@ -39,7 +39,7 @@ class Channel extends React.Component {
           this.props.isSelected ? {fontWeight: '800', color: 'white'} : {},
           this.state.isHovered && !this.props.isSelected ? {color: '#009aff'} : {}
         ]}>
-          <Text style={{color: '#999'}}>#</Text>{this.props.name.toLowerCase()}
+          <Text style={{color: '#666'}}>#</Text>{this.props.name.toLowerCase()}
         </Text>
       </TouchableHighlight>
     );
@@ -61,6 +61,13 @@ class ChatLayout extends React.Component {
       multiline={false}
       placeholder={'Type message...'}
     />;
+  }
+  sendMessage(text) {
+    if (!text) {
+      return;
+    }
+    this.props.actions.sendMessage(text);
+    this.setState({currentMessage: ''});
   }
   render() {
     const servers = this.props.servers && this.props.servers.map((server, serverKey) => {
@@ -106,8 +113,10 @@ class ChatLayout extends React.Component {
               style={styles.input}
               multiline={true}
               placeholder={'Type message...'}
+              onChangeText={(currentMessage) => this.setState({currentMessage})}
+              value={this.state.currentMessage}
             />
-            <TouchableOpacity style={styles.button} onPress={() => this.props.actions.sendMessage('Test message')}>
+            <TouchableOpacity style={styles.button} onPress={() => this.sendMessage(this.state.currentMessage)}>
               <Text style={styles.buttonCaption}>{this.props.sending ? 'Sending...' : 'Send (⌘+Enter)'}</Text>
             </TouchableOpacity>
           </View>
@@ -140,7 +149,6 @@ var styles = StyleSheet.create({
   channels: {
     width: 200,
     backgroundColor: '#eee',
-    height: Dimensions.get('window').height // TODO: dynamic
   },
   channelScroll: {
     height: Dimensions.get('window').height // TODO: dynamic
@@ -225,13 +233,14 @@ var styles = StyleSheet.create({
   messageTimestamp: {
     color: '#999',
     marginRight: 5,
+    fontFamily: 'Monaco'
     //fontSize: 12
   },
   messageUsername: {
     color: '#222',
     width: 150,
     textAlign: 'right',
-    fontWeight: '600'
+    fontWeight: '600',
   },
   messageText: {
     //position: 'absolute',

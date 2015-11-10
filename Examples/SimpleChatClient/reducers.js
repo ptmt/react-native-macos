@@ -5,7 +5,7 @@ import {
   SIGNIN_REQUEST, SIGNIN_SUCCESS, SIGNIN_FAILURE,
   GOT_GATEWAY, GENERAL_ERROR, GOT_MESSAGE,
   MESSAGES_LOADED, CHANNEL_SELECTED,
-  MESSAGE_IS_SENDING
+  MESSAGE_IS_SENDING, MESSAGE_SENT
 } from './actions';
 
 import { LOAD, SAVE } from 'redux-storage';
@@ -72,6 +72,18 @@ export default function reducer(state: GlobalState, action: any): GlobalState {
 
     case MESSAGE_IS_SENDING:
       return {...state, sending: true};
+
+    case MESSAGE_SENT:
+      return {
+        ...state,
+        sending: false,
+        messages: state.messages.concat({
+          author: state.user,
+          timestamp: new Date(),
+          content: action.res.content,
+          id: action.res.id
+        })
+      };
 
     default:
       return state;

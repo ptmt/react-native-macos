@@ -64,7 +64,10 @@ export function init(): any {
     }).then(() => connect(
       getState().token,
       getState().gatewayUrl,
-      (payload) => dispatch(onMessageRecieved(payload)))
+      (payload) => {
+        dispatch(onMessageRecieved(payload));
+        dispatch(onChannelSelect(payload.servers[0].channels[0].id));
+      })
     )
     .catch(e => {
       return dispatch({
@@ -105,7 +108,11 @@ export function sendMessage(text:string): any {
     });
 
     sendMessageToChannel(getState().token, getState().selectedChannel, text).then((res) => {
-      console.log(res);
+      return dispatch({
+        type: MESSAGE_SENT,
+        messageBody: text,
+        res: res
+      });
     })
     .catch(e => {
       return dispatch({
