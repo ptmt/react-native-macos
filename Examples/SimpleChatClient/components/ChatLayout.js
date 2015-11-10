@@ -62,7 +62,7 @@ class ChatLayout extends React.Component {
       placeholder={'Type message...'}
     />;
   }
-  sendMessage(text) {
+  sendMessage(text: string) {
     if (!text) {
       return;
     }
