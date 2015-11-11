@@ -6,8 +6,6 @@ Build OS X desktop apps using React Native.
 [![npm version](https://badge.fury.io/js/react-native-desktop.svg)](https://badge.fury.io/js/react-native-desktop)
 [![discord #react-native-desktop](https://img.shields.io/badge/discord-%23react--native--desktop-blue.svg)](https://discordapp.com/channels/102860784329052160/111514927801307136)
 
-## TL;DR
-
 <img width="914" alt="screenshot 2015-11-03 10 42 56" src="https://cloud.githubusercontent.com/assets/1004115/10905298/8c4e31bc-8219-11e5-8375-d43066e51c66.png">
 *(Placeholder for a nice video demonstrating smooth native UI updates from JS thread)*
 
