@@ -248,6 +248,7 @@
 					"$(SRCROOT)/../Image/**",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RCTNetwork;
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -266,6 +267,7 @@
 					"$(SRCROOT)/../Image/**",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RCTNetwork;
 				SKIP_INSTALL = YES;

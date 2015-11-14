@@ -221,6 +221,7 @@
 					"$(SRCROOT)/../../React/**",
 					"$(SRCROOT)/../SRWebSocket/",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -238,6 +239,7 @@
 					"$(SRCROOT)/../../React/**",
 					"$(SRCROOT)/../SRWebSocket/",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
