@@ -14,13 +14,25 @@
 #import "RCTUtils.h"
 #import "NSView+React.h"
 
+@implementation TextViewWithPlaceHolder
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+
+  if ((self = [super initWithFrame:frame])) {
+  }
+  return self;
+}
+
+
+@end
+
 @implementation RCTTextView
 {
   RCTEventDispatcher *_eventDispatcher;
   BOOL _jsRequestingFirstResponder;
   NSString *_placeholder;
-  NSTextView *_placeholderView;
-  NSTextView *_textView;
+  TextViewWithPlaceHolder *_textView;
   NSInteger _nativeEventCount;
 }
 
@@ -31,13 +43,12 @@
   if ((self = [super initWithFrame:CGRectZero])) {
     _contentInset = NSEdgeInsetsZero;
     _eventDispatcher = eventDispatcher;
+    _textView = [[TextViewWithPlaceHolder alloc] initWithFrame:self.bounds];
     _placeholderTextColor = [self defaultPlaceholderTextColor];
-    _textView = [[NSTextView alloc] initWithFrame:self.bounds];
     _textView.backgroundColor = [NSColor clearColor];
     //_textView.scrollsToTop = NO;
     _jsRequestingFirstResponder = YES;
     _textView.delegate = self;
-    _placeholderView.delegate = self;
     [self addSubview:_textView];
   }
   return self;
@@ -64,38 +75,24 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   
   CGRect frame = self.frame;// TODO: UIEdgeInsetsInsetRect(self.bounds, adjustedFrameInset);
   _textView.frame = frame;
-  _placeholderView.frame = frame;
 
   // TODO:
  // _textView.textContainerInset = adjustedTextContainerInset;
  // _placeholderView.textContainerInset = adjustedTextContainerInset;
 }
 
+
 - (void)updatePlaceholder
 {
-  [_placeholderView removeFromSuperview];
-  _placeholderView = nil;
-
   if (_placeholder) {
-    _placeholderView = [[NSTextView alloc] initWithFrame:self.bounds];
-    _placeholderView.backgroundColor = [NSColor clearColor];
     NSAttributedString* attrString =
     [[NSAttributedString alloc] initWithString:_placeholder attributes:@{
       NSFontAttributeName : (_textView.font ? _textView.font : [self defaultPlaceholderFont]),
       NSForegroundColorAttributeName : _placeholderTextColor
     }];
 
-    [[_placeholderView textStorage] setAttributedString:attrString];
-    _placeholderView.delegate = self;
-    [self addSubview:_placeholderView]; // TODO: check this
-
-    [self _setPlaceholderVisibility];
+    _textView.placeholderAttributedString = attrString;
   }
-}
-- (void)hidePlaceholder
-{
-  [_placeholderView removeFromSuperview];
-  _placeholderView = nil;
 }
 
 - (NSFont *)font
@@ -178,20 +175,21 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   if (eventLag == 0 && ![text isEqualToString:[_textView string]]) {
     //UITextRange *selection = _textView.selectedTextRange;
     [_textView setString:text];
-    [self _setPlaceholderVisibility];
+    //[self _setPlaceholderVisibility];
    // _textView.selectedTextRange = selection; // maintain cursor position/selection - this is robust to out of bounds
   } else if (eventLag > RCTTextUpdateLagWarningThreshold) {
     RCTLogWarn(@"Native TextInput(%@) is %zd events ahead of JS - try to make your JS faster.", self.text, eventLag);
   }
 }
 
-- (void)_setPlaceholderVisibility
+- (NSFont *)defaultPlaceholderFont
 {
-  if ([_textView string].length > 0) {
-    [_placeholderView setHidden:YES];
-  } else {
-    [_placeholderView setHidden:NO];
-  }
+  return [NSFont systemFontOfSize:17];
+}
+
+- (NSColor *)defaultPlaceholderTextColor
+{
+  return [NSColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.098/255.0 alpha:0.22];
 }
 
 //- (void)setAutoCorrect:(BOOL)autoCorrect
@@ -206,7 +204,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)textDidChange:(NSNotification *)aNotification
 {
-  [self _setPlaceholderVisibility];
+
   _nativeEventCount++;
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeChange
                                  reactTag:self.reactTag
@@ -226,10 +224,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)textDidBeginEditing:(NSNotification *)aNotification
 {
-  [self hidePlaceholder];
+  //[self hidePlaceholder];
   if (_clearTextOnFocus) {
     [_textView setString:@""];
-    [self _setPlaceholderVisibility];
+    //[self _setPlaceholderVisibility];
   }
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeFocus
                                  reactTag:self.reactTag
@@ -267,16 +265,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (BOOL)canBecomeFirstResponder
 {
   return _jsRequestingFirstResponder;
-}
-
-- (NSFont *)defaultPlaceholderFont
-{
-  return [NSFont systemFontOfSize:17];
-}
-
-- (NSColor *)defaultPlaceholderTextColor
-{
-  return [NSColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.098/255.0 alpha:0.22];
 }
 
 @end

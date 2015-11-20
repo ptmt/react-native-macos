@@ -14,6 +14,12 @@
 
 @class RCTEventDispatcher;
 
+@interface TextViewWithPlaceHolder : NSTextView
+
+@property (nonatomic, strong) NSAttributedString *placeholderAttributedString;
+
+@end
+
 @interface RCTTextView : RCTView <NSTextViewDelegate, NSTextDelegate>
 
 @property (nonatomic, assign) BOOL autoCorrect;
