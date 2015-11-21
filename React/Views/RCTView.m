@@ -464,10 +464,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)setBackgroundColor:(NSColor *)backgroundColor
 {
-  if ([_backgroundColor isEqual:backgroundColor]) {
+  if ([_backgroundColor isEqual:backgroundColor] || backgroundColor == NULL) {
     return;
   }
-
+  _backgroundColor = backgroundColor;
   if (![self wantsLayer]) {
     CALayer *viewLayer = [CALayer layer];
     [viewLayer setBackgroundColor:[backgroundColor CGColor]];
