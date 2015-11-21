@@ -34,6 +34,7 @@
   NSString *_placeholder;
   TextViewWithPlaceHolder *_textView;
   NSInteger _nativeEventCount;
+  CGFloat _padding;
 }
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
@@ -49,6 +50,7 @@
     //_textView.scrollsToTop = NO;
     _jsRequestingFirstResponder = YES;
     _textView.delegate = self;
+    _padding = 0;
     [self addSubview:_textView];
   }
   return self;
@@ -66,20 +68,22 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   // We apply the left inset to the frame since a negative left text-container
   // inset mysteriously causes the text to be hidden until the text view is
   // first focused.
-  NSEdgeInsets adjustedFrameInset = NSEdgeInsetsZero;
-  adjustedFrameInset.left = _contentInset.left - 5;
-  
-  NSEdgeInsets adjustedTextContainerInset = _contentInset;
-  adjustedTextContainerInset.top += 5;
-  adjustedTextContainerInset.left = 0;
-  
+//  NSEdgeInsets adjustedFrameInset = NSEdgeInsetsZero;
+//  adjustedFrameInset.left = _contentInset.left - 5;
+//  
+//  NSEdgeInsets adjustedTextContainerInset = _contentInset;
+//  adjustedTextContainerInset.top += 5;
+//  adjustedTextContainerInset.left = 0;
+//  
   CGRect frame = self.frame;// TODO: UIEdgeInsetsInsetRect(self.bounds, adjustedFrameInset);
   _textView.frame = frame;
 
   // TODO:
- // _textView.textContainerInset = adjustedTextContainerInset;
- // _placeholderView.textContainerInset = adjustedTextContainerInset;
+  [_textView setTextContainerInset:CGSizeMake(_padding, _padding)];
+  //_textView.textContainerInset = adjustedTextContainerInset;
+
 }
+
 
 
 - (void)updatePlaceholder
@@ -130,6 +134,13 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     _placeholderTextColor = [self defaultPlaceholderTextColor];
   }
   [self updatePlaceholder];
+}
+
+- (void)setPadding:(CGFloat )padding
+{
+ // NSLog(@"padding %@", padding);
+  _padding = padding;
+  [self updateFrames];
 }
 
 - (void)setContentInset:(NSEdgeInsets)contentInset
