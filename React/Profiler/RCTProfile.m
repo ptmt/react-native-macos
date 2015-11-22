@@ -319,14 +319,22 @@ NSString *RCTProfileEnd(RCTBridge *bridge)
 
     return @(systrace_buffer);
   } else {
-    RCTProfileLock(
-      NSString *log = RCTJSONStringify(RCTProfileInfo, NULL);
-      RCTProfileEventID = 0;
-      RCTProfileInfo = nil;
-      RCTProfileOngoingEvents = nil;
-    );
+    if (RCTProfileInfo != nil) {
+      NSLog(@"RCTProfileInfo is not nil");
 
-    return log;
+      RCTProfileLock(
+                     NSString *log = RCTJSONStringify(RCTProfileInfo, NULL);
+                     RCTProfileEventID = 0;
+                     RCTProfileInfo = nil;
+                     RCTProfileOngoingEvents = nil;
+                     );
+      
+      return log;
+    } else {
+      NSLog(@"RCTProfileInfo is nil");
+      return @"";
+    }
+
   }
 }
 
@@ -546,14 +554,7 @@ void RCTProfileSendResult(RCTBridge *bridge, NSString *route, NSData *data)
            [alert addButtonWithTitle:@"OK"];
            [alert setMessageText:message];
            if ([alert runModal] == NSAlertFirstButtonReturn) {
-             //[alert ];
            }
-
-//           [[[NSAlert alloc] initWithTitle:@"Profile"
-//                                       message:message
-//                                      delegate:nil
-//                             cancelButtonTitle:@"OK"
-//                             otherButtonTitles:nil] show];
          });
        }
      }
