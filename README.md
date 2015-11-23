@@ -9,11 +9,11 @@ Build OS X desktop apps using React Native.
 <img width="914" alt="screenshot 2015-11-03 10 42 56" src="https://cloud.githubusercontent.com/assets/1004115/10905298/8c4e31bc-8219-11e5-8375-d43066e51c66.png">
 *(Placeholder for a nice video demonstrating smooth native UI updates from JS thread)*
 
-**It's not production ready**: the lack of few important features, documentation is missing, there are no benchmarks and completed examples. It's also only for OS X at the moment.
+**It's not production ready**: the lack of few important APIs, documentation, benchmarks and completed examples (work in progress). It's also only for OS X at the moment.
 
 **Getting started**
 
-Since it's a fork of React Native, you can follow the same steps to run Examples or your own app. Feel free to ask anything on `#react-native-desktop` channel if you run into problems (and you probably will).
+Since it's simply a fork of React Native, you can follow the same steps to run Examples or create your own app. Feel free to ask anything on `#react-native-desktop` channel if you run into problems (and you probably will).
 
 **Why not vanilla AppKit?**
 
