@@ -70,11 +70,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
   id<RCTComponent> view = (id<RCTComponent>)(props ? [_manager viewWithProps:props] : [_manager view]);
   view.reactTag = tag;
-//  if ([view isKindOfClass:[UIView class]]) {
-//    ((UIView *)view).multipleTouchEnabled = YES;
-//    ((UIView *)view).userInteractionEnabled = YES; // required for touch handling
-//    ((UIView *)view).layer.allowsGroupOpacity = YES; // required for touch handling
-//  }
   return view;
 }
 

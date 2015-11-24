@@ -87,4 +87,10 @@
 @property (nonatomic, assign) CGFloat borderLeftWidth;
 @property (nonatomic, assign) CGFloat borderWidth;
 
+/**
+ * Initial tranformation for a view which is not rendered yet
+ */
+@property (nonatomic, assign) CATransform3D transform;
+@property (nonatomic, assign) bool shouldBeTransformed;
+
 @end

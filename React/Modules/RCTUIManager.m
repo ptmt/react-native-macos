@@ -813,7 +813,7 @@ RCT_EXPORT_METHOD(findSubviewIn:(nonnull NSNumber *)reactTag atPoint:(CGPoint)po
 {
   [self addUIBlock:^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
     NSView *view = viewRegistry[reactTag];
-    NSLog(@"findSubviewIn:%@", reactTag);
+    NSLog(@"findSubviewIn:%@ is not implemented", reactTag);
 //    NSView *target = [view hitTest:point withEvent:nil];
 //    CGRect frame = [target convertRect:target.bounds toView:view];
 //

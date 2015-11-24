@@ -63,7 +63,7 @@ var APIS = [
   // require('./PushNotificationIOSExample'),
   // require('./StatusBarIOSExample'),
   // require('./TimerExample'),
-  // require('./VibrationIOSExample'),
+  require('./TransformExample'),
   require('./XHRExample.osx'),
 
 ];
@@ -121,7 +121,7 @@ class UIExplorerList extends React.Component {
 
 var styles = StyleSheet.create({
   searchTextInput: {
-    height: 30,
+    height: 20,
   },
 });
 

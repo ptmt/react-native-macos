@@ -123,7 +123,6 @@ RCT_EXPORT_VIEW_PROPERTY(backgroundColor, NSColor)
 //RCT_REMAP_VIEW_PROPERTY(accessible, isAccessibilityElement, BOOL)
 RCT_REMAP_VIEW_PROPERTY(testID, accessibilityIdentifier, NSString)
 RCT_REMAP_VIEW_PROPERTY(backfaceVisibility, layer.doubleSided, css_backface_visibility_t)
-//RCT_REMAP_VIEW_PROPERTY(opacity, alpha, CGFloat)
 RCT_REMAP_VIEW_PROPERTY(shadowColor, layer.shadowColor, CGColor);
 RCT_REMAP_VIEW_PROPERTY(shadowOffset, layer.shadowOffset, CGSize);
 RCT_REMAP_VIEW_PROPERTY(shadowOpacity, layer.shadowOpacity, float)
@@ -144,7 +143,14 @@ RCT_CUSTOM_VIEW_PROPERTY(opacity, float, RCTView)
 }
 RCT_CUSTOM_VIEW_PROPERTY(transformMatrix, CATransform3D, RCTView)
 {
-  view.layer.transform = json ? [RCTConvert CATransform3D:json] : defaultView.layer.transform;
+  NSLog(@"superview %@", view.superview);
+  if (!view.superview) {
+    view.shouldBeTransformed = YES;
+    view.transform = json ? [RCTConvert CATransform3D:json] : defaultView.layer.transform;
+  } else {
+    view.layer.transform = json ? [RCTConvert CATransform3D:json] : defaultView.layer.transform;
+  }
+
   // TODO: Improve this by enabling edge antialiasing only for transforms with rotation or skewing
   view.layer.edgeAntialiasingMask = !CATransform3DIsIdentity(view.layer.transform);
 }

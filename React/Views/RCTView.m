@@ -155,7 +155,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)setPointerEvents:(RCTPointerEvents)pointerEvents
 {
-   NSLog(@" setPointerEvents not implemented");
+   NSLog(@" setPointerEvents is not implemented");
   _pointerEvents = pointerEvents;
 
 //  self.userInteractionEnabled = (pointerEvents != RCTPointerEventsNone);
@@ -396,7 +396,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   if (_reactSubviews == nil) {
     dispatch_async( dispatch_get_main_queue(), ^{
       [self addSubview:view];
-      //[self setNeedsDisplay:YES];
       [view setNeedsDisplay:YES];
     });
 
@@ -450,9 +449,15 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
   [super layout];
 
+  if (self.shouldBeTransformed && self.layer) {
+    self.layer.transform = self.transform;
+    self.shouldBeTransformed = NO;
+  }
+
   if (_reactSubviews) {
     [self updateClippedSubviews];
   }
+
 }
 
 #pragma mark - Borders
@@ -467,8 +472,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   if ([_backgroundColor isEqual:backgroundColor] || backgroundColor == NULL) {
     return;
   }
-  _backgroundColor = backgroundColor;
-  if (![self wantsLayer]) {
+  if (![self wantsLayer] || self.layer == NULL) {
     CALayer *viewLayer = [CALayer layer];
     [viewLayer setBackgroundColor:[backgroundColor CGColor]];
     [self setLayer:viewLayer];
@@ -478,8 +482,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
     [self.layer setBackgroundColor:[backgroundColor CGColor]];
   }
   [self setNeedsDisplay:YES];
-
-
+  //_backgroundColor = backgroundColor; // TODO: why does it stop working when color is constantly changing
 }
 
 - (NSEdgeInsets)bordersAsInsets
@@ -527,7 +530,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)displayLayer:(CALayer *)layer
 {
-
   const RCTCornerRadii cornerRadii = [self cornerRadii];
   const NSEdgeInsets borderInsets = [self bordersAsInsets];
   const RCTBorderColors borderColors = [self borderColors];

@@ -277,6 +277,13 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   //super.contentOffset = contentOffset;
 }
 
+- (void)scrollToBottom
+{
+  [self setContentOffset:NSMakePoint(0, NSMaxY([[self documentView] frame]) -
+                                     [[self contentView] bounds].size.height)];
+}
+
+
 - (void)dockClosestSectionHeader
 {
 //  NSView *contentView = [self contentView];
