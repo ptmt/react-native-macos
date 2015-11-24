@@ -912,7 +912,8 @@ if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
 
 @implementation RCTNativeScrollView
 {
-  NSColor * _backgroundColor; // TODO: why?
+  NSColor * _backgroundColor;
+  RCTEventDispatcher *_eventDispatcher;
 }
 
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
@@ -922,6 +923,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 {
   if ((self = [super initWithFrame:CGRectZero])) {
     _backgroundColor = [NSColor clearColor];
+    _eventDispatcher = eventDispatcher;
     [self setDrawsBackground:NO];
 
   }
@@ -936,6 +938,16 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (BOOL)opaque
 {
   return NO;
+}
+
+- (void)setShowsVerticalScrollIndicator:(BOOL)value
+{
+  self.hasVerticalScroller = value;
+}
+
+- (void)setShowsHorizontalScrollIndicator:(BOOL)value
+{
+  self.hasHorizontalScroller = value;
 }
 
 - (void)removeReactSubview:(NSView *)subview
@@ -964,7 +976,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   } else {
     [self.layer setBackgroundColor:[backgroundColor CGColor]];
   }
-  [self.layer setNeedsDisplay];
   [self setNeedsDisplay:YES];
 }
 

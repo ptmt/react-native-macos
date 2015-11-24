@@ -168,9 +168,6 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
         case UIViewContentModeScaleAspectFill:
           _layer.contentsGravity = kCAGravityResizeAspectFill;
           _layer.masksToBounds = YES;
-//          NSLog(@"bounds: %f %f", self.bounds.size.height,  self.bounds.size.width);
-//          NSLog(@"frame: %f %f", self.frame.size.height,  self.frame.size.width);
-
           _layer.needsDisplayOnBoundsChange = YES;
           break;
 
@@ -286,7 +283,6 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
             _onLoad(nil);
           }
         }
-        NSLog(@"bounds: %f %f", self.layer.bounds.size.height,  self.layer.bounds.size.width);
         if (_onLoadEnd) {
            _onLoadEnd(nil);
         }

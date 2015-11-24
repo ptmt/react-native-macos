@@ -143,16 +143,16 @@ RCT_CUSTOM_VIEW_PROPERTY(opacity, float, RCTView)
 }
 RCT_CUSTOM_VIEW_PROPERTY(transformMatrix, CATransform3D, RCTView)
 {
-  NSLog(@"superview %@", view.superview);
+  CATransform3D transform = json ? [RCTConvert CATransform3D:json] : defaultView.layer.transform;
   if (!view.superview) {
     view.shouldBeTransformed = YES;
-    view.transform = json ? [RCTConvert CATransform3D:json] : defaultView.layer.transform;
+    view.transform = transform;
   } else {
-    view.layer.transform = json ? [RCTConvert CATransform3D:json] : defaultView.layer.transform;
+    view.layer.transform = transform;
   }
 
   // TODO: Improve this by enabling edge antialiasing only for transforms with rotation or skewing
-  view.layer.edgeAntialiasingMask = !CATransform3DIsIdentity(view.layer.transform);
+  view.layer.edgeAntialiasingMask = !CATransform3DIsIdentity(transform);
 }
 
 //RCT_CUSTOM_VIEW_PROPERTY(pointerEvents, RCTPointerEvents, RCTView)

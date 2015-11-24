@@ -127,4 +127,7 @@ RCT_EXPORT_MODULE()
   return [[RCTNativeScrollView alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
 }
 
+RCT_EXPORT_VIEW_PROPERTY(showsHorizontalScrollIndicator, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(showsVerticalScrollIndicator, BOOL)
+
 @end
