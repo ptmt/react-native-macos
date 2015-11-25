@@ -66,6 +66,7 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
   if ((self = [super initWithFrame:CGRectZero])) {
 
     [self setNeedsLayout:NO];
+    [self setMaterial:NSVisualEffectMaterialLight]; 
 
     _bridge = bridge;
     _moduleName = moduleName;

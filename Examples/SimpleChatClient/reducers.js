@@ -47,7 +47,6 @@ export default function reducer(state: GlobalState, action: any): GlobalState {
       }
       return { ...state, loaded: !state.loaded};
     case SAVE:
-      console.log('Written to disk!');
       return state;
     case GOT_GATEWAY:
       return { ...state, gatewayUrl: action.gatewayUrl };

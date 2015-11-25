@@ -21,7 +21,7 @@ class SigninForm extends React.Component {
   constructor() {
     super();
     this.state = {
-      scale: new Animated.Value(2.0),
+      width: new Animated.Value(0),
       rotate: new Animated.Value(0.5),
       x: new Animated.Value(0),
       animatedColor: new Animated.Value(0)
@@ -30,7 +30,7 @@ class SigninForm extends React.Component {
   componentDidMount() {
     Animated.sequence([
       Animated.delay(400),
-      Animated.spring(this.state.scale, {
+      Animated.spring(this.state.width, {
         toValue: 1
       })
     ]).start();
@@ -62,11 +62,9 @@ class SigninForm extends React.Component {
     }).start();
   }
   render() {
-    const animatedScale = {transform: [
-      {
-        scale: this.state.scale,
-      }
-    ], left: this.state.x.interpolate({
+    const animatedStyles = {
+      width: this.state.width,
+      left: this.state.x.interpolate({
        inputRange: [0, 0.5, 1],
        outputRange: [0, 20, 0]  // 0 : 150, 0.5 : 75, 1 : 0
      })};
@@ -86,7 +84,7 @@ class SigninForm extends React.Component {
       <Image style={styles.container}
         source={{uri: 'https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?dpr=2&fit=crop&fm=jpg&h=825&ixlib=rb-0.3.5&q=50&w=1450'}}
         resizeMode={Image.resizeMode.cover}>
-        <Animated.View style={[styles.form, animatedScale]}>
+        <Animated.View style={[styles.form, animatedStyles]}>
           <Text style={styles.header}>Simple Chat Client</Text>
           <View style={styles.input}>
             <Text style={styles.placeholder}>EMAIL</Text>

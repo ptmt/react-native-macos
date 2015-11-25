@@ -4,9 +4,11 @@
 import React, { Component, View } from 'react-native-desktop';
 import SigninForm from './SigninForm';
 import ChatLayout from './ChatLayout';
+import Header from './Header';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux/native';
 import * as Actions from '../actions';
+
 
 class App extends Component {
   render() {
@@ -14,7 +16,9 @@ class App extends Component {
     return (
       <View style={{flex: 1}}>
         {!this.props.token && this.props.loaded && <SigninForm login={actions.login} {...this.props}/>}
-        {this.props.token && <ChatLayout {...this.props} actions={actions}/>}
+        {this.props.token && <Header user={this.props.user}/> }
+        {this.props.token &&
+          <ChatLayout {...this.props} actions={actions}/>}
       </View>
     );
   }

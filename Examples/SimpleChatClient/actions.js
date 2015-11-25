@@ -66,7 +66,9 @@ export function init(): any {
       getState().gatewayUrl,
       (payload) => {
         dispatch(onMessageRecieved(payload));
-        dispatch(onChannelSelect(payload.servers[0].channels[0].id));
+        if (!getState().selectedChannel) {
+          dispatch(onChannelSelect(payload.servers[0].channels[0].id));
+        }
       })
     )
     .catch(e => {

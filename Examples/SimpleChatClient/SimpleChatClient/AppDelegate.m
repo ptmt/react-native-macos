@@ -39,13 +39,15 @@
         NSRect contentSize = NSMakeRect(200, 500, 1000, 500); // TODO: should not be hardcoded
 
         self.window = [[NSWindow alloc] initWithContentRect:contentSize
-                                                  styleMask:NSTitledWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask
+                                                  styleMask:NSTitledWindowMask | NSResizableWindowMask | NSFullSizeContentViewWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask
                                                     backing:NSBackingStoreBuffered
                                                       defer:NO];
         NSWindowController *windowController = [[NSWindowController alloc] initWithWindow:self.window];
 
-        [[self window] setTitle:@"SimpleChatClient"];
         [[self window] setTitleVisibility:NSWindowTitleHidden];
+        [[self window] setTitlebarAppearsTransparent:YES];
+        [[self window] setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameAqua]];
+                //[[self window] setAppearance:NSAppearanceNameVibrantDark];
 
         [windowController setShouldCascadeWindows:NO];
         [windowController setWindowFrameAutosaveName:@"SimpleChatClient"];
@@ -69,6 +71,7 @@
                                               initialProperties:nil];
 
 
+    
     [self.window setContentView:rootView];
 }
 

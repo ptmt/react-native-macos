@@ -11,33 +11,43 @@ import React,  {
 export default class LoadingIndicator extends React.Component {
   constructor() {
     super();
-    this.state = { scale: new Animated.Value(1)};
+    this.state = {
+      animatedColor: new Animated.Value(0)
+    };
   }
   componentDidMount() {
-    this.pulse();
+    this.pulse(false);
   }
-  pulse() {
-    const replay = () => {
-      // to pass flow check
-      const a = setTimeout(() => this.pulse(), 400);
-    }
-    this.state.scale.setValue(1);
-    Animated.timing(this.state.scale, {
-      toValue: 10
-    }).start(replay);
+  pulse(back: boolean) {
+    Animated.timing(this.state.animatedColor, {
+      toValue: back ? 0 : 1,
+      duration: 1000
+    }).start(() => {
+      this.pulseTimer = setTimeout(() => this.pulse(!back), 500);
+    });
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.pulseTimer);
   }
 
   render(): ReactElement {
-    const { scale } = this.state;
-    const interpolated = scale.interpolate({
-      inputRange: [1, 4, 8, 10],
-      outputRange: [1, 1.2, 1.1, 1.15,],
+    const rand = () => Math.floor(Math.random() * 255);
+    const fromColors = [1, 2, 3].map(c => rand()).join(', ');
+    const toColors = [1, 2, 3].map(c => rand()).join(', ');
+    const animatedColor = this.state.animatedColor.interpolate({
+        inputRange: [0, 1],
+        outputRange: [
+          'rgb(' + fromColors.toString() + ')',
+          'rgb(' + toColors.toString() + ')'
+        ]
     });
-    const animatedStyles = {transform: [ { scale: interpolated } ]};
     return (
-      <Animated.Text style={[this.props.style, animatedStyles]}>
-        {this.props.children}
-      </Animated.Text>
+      <View style={{alignItems: 'center', justifyContent: 'center', width: this.props.width}}>
+        <Animated.Text style={[this.props.style, {fontSize: 20, color: animatedColor}]}>
+          {this.props.children}
+        </Animated.Text>
+      </View>
     );
   }
 }

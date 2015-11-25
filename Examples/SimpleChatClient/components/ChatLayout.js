@@ -14,13 +14,6 @@ var {
 } = React;
 
 import LoadingIndicator from './LoadingIndicator';
-// React 0.14
-// var Channel = (props) => {
-//   <TouchableOpacity onPress={() => console.log(this.props.id)}>
-//     <Text style={styles.channelText}>{props.name}</Text>
-//     <Text style={styles.channelText}>{props.topic}</Text>
-//   </TouchableOpacity>
-// }
 
 class Channel extends React.Component {
   constructor() {
@@ -28,7 +21,6 @@ class Channel extends React.Component {
     this.state = {isHovered: false};
   }
   render() {
-    // TODO: add topic on hover <Text style={styles.channelTextDescription}>{this.props.topic}</Text>
     return (
       <TouchableHighlight
       onPress={() => this.props.onSelect()}
@@ -39,7 +31,7 @@ class Channel extends React.Component {
           this.props.isSelected ? {fontWeight: '800', color: 'white'} : {},
           this.state.isHovered && !this.props.isSelected ? {color: '#009aff'} : {}
         ]}>
-          <Text style={{color: '#666'}}>#</Text>{this.props.name.toLowerCase()}
+          <Text style={{color: this.props.isSelected ? '#ddd' : '#666'}}>#</Text>{this.props.name.toLowerCase()}
         </Text>
       </TouchableHighlight>
     );
@@ -54,13 +46,6 @@ class ChatLayout extends React.Component {
   }
   componentDidMount() {
     this.props.actions.init();
-  }
-  render1() {
-    return <TextInput
-      style={styles.input}
-      multiline={false}
-      placeholder={'Type message...'}
-    />;
   }
   sendMessage(text: string) {
     if (!text) {
@@ -86,7 +71,7 @@ class ChatLayout extends React.Component {
       const date = new Date(message.timestamp);
       var time = ('0' + date.getHours()).slice(-2) + ':' +   ('0' + date.getMinutes()).slice(-2);
       return (
-        <View style={styles.message} key={message.id}>
+        <View style={[styles.message]} key={message.id}>
           <Text style={styles.messageTimestamp}>{time}</Text>
           <Text style={styles.messageUsername}>{'<'}{message.author.username}{'>'}</Text>
           <Text style={styles.messageText}>{message.content}</Text>
@@ -94,34 +79,37 @@ class ChatLayout extends React.Component {
       );
     });
     return (
-      <View style={styles.container}>
-        <View style={styles.channels}>
-          <View style={styles.user}>
-            <Text style={styles.userLabel}>@{this.props.user && this.props.user.username}</Text>
-            <Text style={{color: '#ddd', fontSize: 10}}>Sign out</Text>
+        <View style={styles.container}>
+          <View style={styles.channels}>
+            <ScrollView style={styles.channelsScroll}
+              contentContainerStyle={styles.channelScrollContainer}
+              showsVerticalScrollIndicator={true}>
+                {servers || <LoadingIndicator>Loading channels..</LoadingIndicator>}
+            </ScrollView>
           </View>
-          <ScrollView style={styles.channelsScroll} contentContainerStyle={styles.channelScrollContainer} showsVerticalScrollIndicator={true}>
-            {servers || <LoadingIndicator style={styles.messageText}>Loading channels..</LoadingIndicator>}
-          </ScrollView>
-        </View>
-        <View style={styles.messages}>
-          <ScrollView style={styles.messagesScrollContainer} showsVerticalScrollIndicator={true}>
-            {messages || <LoadingIndicator style={styles.messageLoader}>Loading messages..</LoadingIndicator>}
-          </ScrollView>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={styles.input}
-              multiline={true}
-              placeholder={'Type message...'}
-              onChangeText={(currentMessage) => this.setState({currentMessage})}
-              value={this.state.currentMessage}
-            />
-            <TouchableOpacity style={styles.button} onPress={() => this.sendMessage(this.state.currentMessage)}>
-              <Text style={styles.buttonCaption}>{this.props.sending ? 'Sending...' : 'Send (⌘+Enter)'}</Text>
-            </TouchableOpacity>
+          <View style={styles.messages}>
+            <ScrollView
+              style={[styles.messagesScrollContainer]}
+              autoScrollToBottom={true}
+              showsVerticalScrollIndicator={true}>
+                {messages || <LoadingIndicator>Loading messages..</LoadingIndicator>}
+            </ScrollView>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                multiline={true}
+                placeholder={'Type message...'}
+                onChangeText={(currentMessage) => this.setState({currentMessage})}
+                value={this.state.currentMessage}
+              />
+              <TouchableOpacity style={styles.button} onPress={() => this.sendMessage(this.state.currentMessage)}>
+                <Text style={styles.buttonCaption}>
+                  {this.props.sending ? 'Sending...' : 'Send (⌘+Enter)'}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
     );
   }
 
@@ -130,25 +118,13 @@ class ChatLayout extends React.Component {
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    //backgroundColor: 'white',
     flexDirection: 'row'
-  },
-  user: {
-    margin: 0,
-    padding: 4,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'black',
-  },
-  userLabel: {
-    color: 'white',
-    marginRight: 10
   },
   // ------------ channels
   channels: {
     width: 200,
-    backgroundColor: '#eee',
+    //backgroundColor: '#eee',
   },
   channelScroll: {
     height: Dimensions.get('window').height // TODO: dynamic
@@ -158,12 +134,10 @@ var styles = StyleSheet.create({
   },
   serverText: {
     color: '#666',
-    //letterSpacing: 5,
     paddingVertical: 5,
     paddingHorizontal: 6,
     fontSize: 12,
     fontWeight: '700'
-    //textAlign: 'center',
   },
   channelBox: {
     paddingHorizontal: 10,
@@ -184,17 +158,17 @@ var styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     //borderLeftColor: '#eee',
-    backgroundColor: '#eee',
-    padding: 5,
+    backgroundColor: 'white',
+    //padding: 5,
     flexDirection: 'row'
   },
   input: {
     height: 70,
-    width: 500,
+    width: 700, // TODO: dynamic
     backgroundColor: 'white',
     flex: 1,
     fontSize: 18,
-    padding: 10,
+    padding: 15,
     color: '#666'
   },
   button: {
@@ -217,12 +191,16 @@ var styles = StyleSheet.create({
   // --------- messages
   messages: {
     //flex: 1,
+    backgroundColor: 'white',
     top: 0,
   },
   messagesScrollContainer: {
-    //flex: 1,
-    height: Dimensions.get('window').height - 150
-    //width: Dimensions.get('window').width - 400,
+    height: Dimensions.get('window').height - 150,
+  },
+  verticallyInverted: {
+    transform: [
+      { scaleY: 2 },
+    ],
   },
   message: {
     flex: 1,
@@ -238,7 +216,7 @@ var styles = StyleSheet.create({
   },
   messageUsername: {
     color: '#222',
-    width: 150,
+    width: 100,
     textAlign: 'right',
     fontWeight: '600',
   },
@@ -254,14 +232,5 @@ var styles = StyleSheet.create({
     marginTop: 20,
     marginLeft: 100
   },
-  // -----------
-  spinner: {
-    position: 'absolute',
-    // top: 10,
-    // left: 200
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
 });
 module.exports = ChatLayout;
