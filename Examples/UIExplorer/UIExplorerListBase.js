@@ -38,7 +38,7 @@ class ListView extends React.Component {
       var componentRows = this.props.dataSource.components.map((c, i) => this.props.renderRow(c, i));
       var apiRows = this.props.dataSource.apis.map((c, i) => this.props.renderRow(c, i));
       return (
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={true}>
           {this.props.renderSectionHeader(null, 'Components:')}
           {componentRows}
           {this.props.renderSectionHeader(null, 'APIs:')}
@@ -119,7 +119,6 @@ class UIExplorerListBase extends React.Component {
     return (
       <TouchableHighlight onPress={() => this.onPressRow(example)}
       onMouseEnter={() => this.setState({hovered: example.title})}
-    //  onMouseLeave={() => this.setState({hovered: -1})}
       key={i} style={[styles.row, hovered, selected]}>
         <View>
           <Text style={styles.rowTitleText}>

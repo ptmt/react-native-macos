@@ -211,7 +211,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)layout
 {
-  NSLog(@"RCTRootView: layout");
   [super layout];
   _contentView.frame = self.bounds;
   // TODO: set center coordinates

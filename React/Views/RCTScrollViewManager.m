@@ -129,5 +129,6 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_VIEW_PROPERTY(showsHorizontalScrollIndicator, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(showsVerticalScrollIndicator, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(autoScrollToBottom, BOOL)
 
 @end

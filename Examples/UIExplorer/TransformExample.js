@@ -30,13 +30,7 @@ var Flip = React.createClass({
   },
 
   componentDidMount() {
-    // setTimeout(() => {
-    //   this.refs.view1.setNativeProps({style: {transform: [{scaleX: 0.5}]}})
-    // }, 400)
-    // setTimeout(() => {
-    //   this.refs.view1.setNativeProps({style: {transform: [{scaleX: 1.5}]}})
-    // }, 600)
-    //this._animate();
+    this._animate();
   },
 
   _animate() {
@@ -50,11 +44,10 @@ var Flip = React.createClass({
   render() {
     return (
       <View style={styles.flipCardContainer}>
-        <Animated.View ref={'view1'} style={[
+        <Animated.View style={[
           styles.flipCard,
           {transform: [
             {perspective: 850},
-            {scaleX: this.state.scale},
             {rotateX: this.state.theta.interpolate({
               inputRange: [0, 180],
               outputRange: ['0deg', '180deg']
@@ -100,7 +93,7 @@ var styles = StyleSheet.create({
       {translateY: 50},
       {rotate: '30deg'},
       {scaleX: 2},
-      {scaleY: 2},
+      {scaleY: -2},
     ],
     width: 50,
   },
@@ -219,7 +212,7 @@ exports.examples = [
   },
   {
     title: 'Translate, Rotate, Scale',
-    description: "translateX: 100, translateY: 50, rotate: '30deg', scaleX: 2, scaleY: 2",
+    description: "translateX: 100, translateY: 50, rotate: '30deg', scaleX: 2, scaleY: -2",
     render() {
       return (
         <View style={styles.container}>

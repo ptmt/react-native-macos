@@ -70,15 +70,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
-//- (void)drawRect:(NSRect)rect
-//{
-//  [super drawRect:rect];
-//  if ([[self stringValue] isEqualToString:@""] && self != [[self window] firstResponder] && _placeholderTextColor != nil) {
-//    NSDictionary *txtDict = [NSDictionary dictionaryWithObjectsAndKeys:_placeholderTextColor, NSForegroundColorAttributeName, nil];
-//    [[[NSAttributedString alloc] initWithString:_placeholderString attributes:txtDict] drawAtPoint:NSMakePoint(0,0)];
-//  }
-//}
-
 - (NSArray *)reactSubviews
 {
   // TODO: do we support subviews of textfield in React?

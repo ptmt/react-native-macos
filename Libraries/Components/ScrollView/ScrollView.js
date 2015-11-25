@@ -224,6 +224,10 @@ var ScrollView = React.createClass({
      */
     showsVerticalScrollIndicator: PropTypes.bool,
     /**
+     * When true, scrolls to bottom.
+     */
+    autoScrollToBottom: PropTypes.bool,
+    /**
      * An array of child indices determining which children get docked to the
      * top of the screen when scrolling. For example, passing
      * `stickyHeaderIndices={[0]}` will cause the first child to be fixed to the

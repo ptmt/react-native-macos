@@ -521,7 +521,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     (scrollsHorizontally && (bounds.size.width < leeway || fabs(_lastClippedToRect.origin.x - bounds.origin.x) >= leeway)) ||
     (scrollsVertically && (bounds.size.height < leeway || fabs(_lastClippedToRect.origin.y - bounds.origin.y) >= leeway));
 
-  NSLog(@"countentSize.height %hhd %hhd", shouldClipAgain, scrollsVertically);
   if (shouldClipAgain) {
     const CGRect clipRect = CGRectInset(clipView.bounds, -leeway, -leeway);
     [self react_updateClippedSubviewsWithClipRect:clipRect relativeToView:clipView];
@@ -913,7 +912,10 @@ if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
 @implementation RCTNativeScrollView
 {
   NSColor * _backgroundColor;
+  BOOL _autoScrollToBottom;
+  BOOL _inAutoScrollToBottom;
   RCTEventDispatcher *_eventDispatcher;
+  NSRect _oldDocumentFrame;
 }
 
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
@@ -933,6 +935,68 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)insertReactSubview:(NSView *)view atIndex:(__unused NSInteger)atIndex
 {
   [self setDocumentView:view];
+  if (_autoScrollToBottom) {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(documentFrameDidChange:)
+                                                 name:NSViewFrameDidChangeNotification
+                                               object:view];
+    
+    [self scrollToBottom];
+  }
+}
+
+- (void)setAutoScrollToBottom:(BOOL)autoScrollToBottom
+{
+  _autoScrollToBottom = autoScrollToBottom;
+  [self setDocumentView:[self documentView]];
+  [self setFrame:[self frame]];
+}
+
+
+- (void)setFrame:(NSRect)frameRect
+{
+  BOOL autoScroll = NO;
+
+  if (_autoScrollToBottom) {
+    NSRect	documentVisibleRect = [self documentVisibleRect];
+    NSRect	documentFrame = [[self documentView] frame];
+
+    //Autoscroll if we're scrolled close to the bottom
+    autoScroll = ((documentVisibleRect.origin.y + documentVisibleRect.size.height) > (documentFrame.size.height - 20));
+  }
+
+  [super setFrame:frameRect];
+
+  if (autoScroll) {
+    [self scrollToBottom];
+  }
+}
+
+//When our document resizes
+- (void)documentFrameDidChange:(__unused NSNotification *)notification
+{
+  //We guard against a recursive call to this method, which may occur if the user is resizing the view at the same time
+  //content is being modified
+  if (_autoScrollToBottom && !_inAutoScrollToBottom) {
+    NSRect	documentVisibleRect =  [self documentVisibleRect];
+    NSRect	   newDocumentFrame = [[self documentView] frame];
+
+    //We autoscroll if the height of the document frame changed AND (Using the old frame to calculate) we're scrolled close to the bottom.
+    if ((newDocumentFrame.size.height != _oldDocumentFrame.size.height) &&
+        ((documentVisibleRect.origin.y + documentVisibleRect.size.height) > (_oldDocumentFrame.size.height - 20))) {
+      _inAutoScrollToBottom = YES;
+      [self scrollToBottom];
+      _inAutoScrollToBottom = NO;
+    }
+
+    //Remember the new frame
+    _oldDocumentFrame = newDocumentFrame;
+  }
+}
+
+- (void)scrollToBottom
+{
+  [[self documentView] scrollPoint:NSMakePoint(0, 100000)]; // TODO: avoid this hack
 }
 
 - (BOOL)opaque
@@ -963,7 +1027,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)setBackgroundColor:(NSColor *)backgroundColor
 {
-  if ([_backgroundColor isEqual:backgroundColor]) {
+  if ([_backgroundColor isEqual:backgroundColor] || backgroundColor == NULL) {
     return;
   }
   _backgroundColor = backgroundColor;

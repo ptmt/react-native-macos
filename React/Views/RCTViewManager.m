@@ -144,7 +144,7 @@ RCT_CUSTOM_VIEW_PROPERTY(opacity, float, RCTView)
 RCT_CUSTOM_VIEW_PROPERTY(transformMatrix, CATransform3D, RCTView)
 {
   CATransform3D transform = json ? [RCTConvert CATransform3D:json] : defaultView.layer.transform;
-  if (!view.superview) {
+  if ([view respondsToSelector:@selector(shouldBeTransformed)] && !view.superview) {
     view.shouldBeTransformed = YES;
     view.transform = transform;
   } else {
