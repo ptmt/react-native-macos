@@ -29,7 +29,7 @@ class SigninForm extends React.Component {
   }
   componentDidMount() {
     Animated.sequence([
-      Animated.delay(400),
+      Animated.delay(1000),
       Animated.spring(this.state.width, {
         toValue: 1
       })
@@ -63,7 +63,7 @@ class SigninForm extends React.Component {
   }
   render() {
     const animatedStyles = {
-      width: this.state.width,
+      transform: [{scaleX: this.state.width}],
       left: this.state.x.interpolate({
        inputRange: [0, 0.5, 1],
        outputRange: [0, 20, 0]  // 0 : 150, 0.5 : 75, 1 : 0
@@ -133,16 +133,18 @@ var styles = StyleSheet.create({
   },
   form: {
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#bbb',
-    borderWidth: 1
   },
   header: {
     fontSize: 30,
-    color: '#333',
-    marginBottom: 20
+    color: 'white',
+    marginBottom: 20,
+    shadowColor: 'black',
+    shadowOffset: {width: 1, height: 1},
+    shadowOpacity: 1,
+    shadowRadius: 1
   },
   button: {
     marginVertical: 20,
@@ -150,14 +152,18 @@ var styles = StyleSheet.create({
     paddingVertical: 10,
     width: 250,
   },
-  buttonCaption: {textAlign: 'center', color: 'white', fontSize: 20},
+  buttonCaption: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 20
+  },
   textinput: {
     height: 25,
     borderWidth: 0,
     borderColor: '#0f0f0f',
     width: 250,
     fontSize: 16,
-    //padding: 6,
+    color: 'white',
   },
   input: {
     borderBottomWidth: 1,
@@ -165,8 +171,12 @@ var styles = StyleSheet.create({
     marginBottom: 20
   },
   placeholder: {
-    color: '#999',
-    marginBottom: 5
+    color: '#eee',
+    marginBottom: 5,
+    shadowColor: 'black',
+    shadowOffset: {width: 1, height: 1},
+    shadowOpacity: 1,
+    shadowRadius: 1
   },
   footer: {
     position: 'absolute',

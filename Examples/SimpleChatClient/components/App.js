@@ -16,7 +16,7 @@ class App extends Component {
     return (
       <View style={{flex: 1}}>
         {!this.props.token && this.props.loaded && <SigninForm login={actions.login} {...this.props}/>}
-        {this.props.token && <Header user={this.props.user}/> }
+        {this.props.token && <Header user={this.props.user} tabs={this.props.tabs}/> }
         {this.props.token &&
           <ChatLayout {...this.props} actions={actions}/>}
       </View>

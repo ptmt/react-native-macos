@@ -19,12 +19,6 @@ export const MESSAGE_SENT = 'MESSAGE_SENT';
 
 
 export function login(email: string, password: string): any {
-  if (!email || !password) {
-    return {
-      type: SIGNIN_FAILURE,
-      error: 'These fields cannot be empty: email and password' // most stupid error message ever
-    };
-  }
 
   return dispatch => {
     dispatch({
@@ -32,6 +26,13 @@ export function login(email: string, password: string): any {
       email,
       password
     });
+
+    if (!email || !password) {
+      return dispatch({
+        type: SIGNIN_FAILURE,
+        error: 'These fields cannot be empty: email and password' // most stupid error message ever
+      });
+    }
 
     discordLogin(email, password).then((token) => {
       return dispatch({

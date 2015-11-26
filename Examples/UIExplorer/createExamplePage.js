@@ -39,13 +39,12 @@ var createExamplePage = function(title: ?string, exampleModule: ExampleModule)
     },
 
     getBlock: function(example: Example, i) {
-      if (example.platform) {
+      if (example.platform && example.title.indexOf('only') === -1) {
         if (Platform.OS !== example.platform) {
           return;
         }
-        if (example.title.indexOf('only') === -1) {
-          example.title += ' (' + example.platform + ' only)';
-        }
+        example.title += ' (' + example.platform + ' only)';
+
       }
       // Hack warning: This is a hack because the www UI explorer requires
       // renderComponent to be called.

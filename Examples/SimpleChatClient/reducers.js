@@ -13,7 +13,8 @@ import { LOAD, SAVE } from 'redux-storage';
 type GlobalState = any;
 
 const defaultState: GlobalState = {
-  isLoading: false
+  isLoading: false,
+  tabs: []
 };
 
 export default function reducer(state: GlobalState, action: any): GlobalState {
@@ -64,7 +65,13 @@ export default function reducer(state: GlobalState, action: any): GlobalState {
       return state;
 
     case CHANNEL_SELECTED:
-      return {...state, messages: null, selectedChannel: action.selectedChannel};
+      return {
+        ...state,
+        messages: null,
+        selectedChannel:
+        action.selectedChannel,
+        tabs: state.tabs.indexOf(action.selectedChannel) > -1 ? state.tabs : state.tabs.concat(action.selectedChannel)
+      };
 
     case MESSAGES_LOADED:
       return {...state, messages: action.messages};

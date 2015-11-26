@@ -47,8 +47,7 @@
         [[self window] setTitleVisibility:NSWindowTitleHidden];
         [[self window] setTitlebarAppearsTransparent:YES];
         [[self window] setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameAqua]];
-                //[[self window] setAppearance:NSAppearanceNameVibrantDark];
-
+        
         [windowController setShouldCascadeWindows:NO];
         [windowController setWindowFrameAutosaveName:@"SimpleChatClient"];
 
