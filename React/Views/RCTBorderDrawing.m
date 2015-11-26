@@ -243,6 +243,7 @@ NSImage *RCTGetBorderImage(RCTCornerRadii cornerRadii,
                            NSEdgeInsets borderInsets,
                            RCTBorderColors borderColors,
                            CGColorRef backgroundColor,
+                           CGSize size,
                            BOOL drawToEdge)
 {
   const BOOL hasCornerRadii =
@@ -252,18 +253,6 @@ NSImage *RCTGetBorderImage(RCTCornerRadii cornerRadii,
   cornerRadii.bottomRight > RCTViewBorderThreshold;
 
   const RCTCornerInsets cornerInsets = RCTGetCornerInsets(cornerRadii, borderInsets);
-
-  const NSEdgeInsets edgeInsets = (NSEdgeInsets){
-    borderInsets.top + MAX(cornerInsets.topLeft.height, cornerInsets.topRight.height),
-    borderInsets.left + MAX(cornerInsets.topLeft.width, cornerInsets.bottomLeft.width),
-    borderInsets.bottom + MAX(cornerInsets.bottomLeft.height, cornerInsets.bottomRight.height),
-    borderInsets.right + MAX(cornerInsets.bottomRight.width, cornerInsets.topRight.width)
-  };
-
-  const CGSize size = (CGSize){
-    edgeInsets.left + 1 + edgeInsets.right,
-    edgeInsets.top + 1 + edgeInsets.bottom
-  };
 
   const CGFloat alpha = CGColorGetAlpha(backgroundColor);
   const BOOL opaque = (drawToEdge || !hasCornerRadii) && alpha == 1.0;
@@ -303,7 +292,6 @@ NSImage *RCTGetBorderImage(RCTCornerRadii cornerRadii,
     CGContextEOFillPath(ctx);
 
   } else {
-
     CGPoint topLeft = (CGPoint){borderInsets.left, borderInsets.top};
     if (cornerInsets.topLeft.width > 0 && cornerInsets.topLeft.height > 0) {
       CGPoint points[2];
@@ -418,5 +406,4 @@ NSImage *RCTGetBorderImage(RCTCornerRadii cornerRadii,
   UIGraphicsEndImageContext();
 
   return image;
-  //return nil;
 }

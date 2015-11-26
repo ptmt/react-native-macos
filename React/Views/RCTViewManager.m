@@ -115,6 +115,16 @@ RCT_EXPORT_MODULE()
   return nil;
 }
 
+- (void)checkLayerExists:(NSView *)view
+{
+  if (!view.layer) {
+    CALayer *viewLayer = [CALayer layer];
+    viewLayer.delegate = view;
+    [view setLayer:viewLayer];
+    [view setWantsLayer:YES];
+  }
+}
+
 #pragma mark - View properties
 
 RCT_EXPORT_VIEW_PROPERTY(accessibilityLabel, NSString)
@@ -136,6 +146,7 @@ RCT_CUSTOM_VIEW_PROPERTY(shouldRasterizeIOS, BOOL, RCTView)
 RCT_CUSTOM_VIEW_PROPERTY(opacity, float, RCTView)
 {
   if (json) {
+    [self checkLayerExists:view];
     [view.layer setOpacity:[RCTConvert float:json]];
   } else {
     [view.layer setOpacity:defaultView.layer.opacity];
@@ -190,6 +201,7 @@ RCT_CUSTOM_VIEW_PROPERTY(removeClippedSubviews, BOOL, RCTView)
 }
 RCT_CUSTOM_VIEW_PROPERTY(borderRadius, CGFloat, RCTView) {
   if ([view respondsToSelector:@selector(setBorderRadius:)]) {
+    [self checkLayerExists:view];
     view.borderRadius = json ? [RCTConvert CGFloat:json] : defaultView.borderRadius;
   } else {
     view.layer.cornerRadius = json ? [RCTConvert CGFloat:json] : defaultView.layer.cornerRadius;
@@ -198,6 +210,7 @@ RCT_CUSTOM_VIEW_PROPERTY(borderRadius, CGFloat, RCTView) {
 RCT_CUSTOM_VIEW_PROPERTY(borderColor, CGColor, RCTView)
 {
   if ([view respondsToSelector:@selector(setBorderColor:)]) {
+    [self checkLayerExists:view];
     view.borderColor = json ? [RCTConvert CGColor:json] : defaultView.borderColor;
   } else {
     view.layer.borderColor = json ? [RCTConvert CGColor:json] : defaultView.layer.borderColor;
@@ -206,6 +219,7 @@ RCT_CUSTOM_VIEW_PROPERTY(borderColor, CGColor, RCTView)
 RCT_CUSTOM_VIEW_PROPERTY(borderWidth, CGFloat, RCTView)
 {
   if ([view respondsToSelector:@selector(setBorderWidth:)]) {
+    [self checkLayerExists:view];
     view.borderWidth = json ? [RCTConvert CGFloat:json] : defaultView.borderWidth;
   } else {
     view.layer.borderWidth = json ? [RCTConvert CGFloat:json] : defaultView.layer.borderWidth;
@@ -218,12 +232,14 @@ RCT_EXPORT_VIEW_PROPERTY(onMagicTap, RCTDirectEventBlock)
 RCT_CUSTOM_VIEW_PROPERTY(border##SIDE##Width, CGFloat, RCTView)         \
 {                                                                       \
   if ([view respondsToSelector:@selector(setBorder##SIDE##Width:)]) {   \
+    [self checkLayerExists:view];                                       \
     view.border##SIDE##Width = json ? [RCTConvert CGFloat:json] : defaultView.border##SIDE##Width; \
   }                                                                     \
 }                                                                       \
 RCT_CUSTOM_VIEW_PROPERTY(border##SIDE##Color, NSColor, RCTView)         \
 {                                                                       \
   if ([view respondsToSelector:@selector(setBorder##SIDE##Color:)]) {   \
+    [self checkLayerExists:view];                                       \
     view.border##SIDE##Color = json ? [RCTConvert CGColor:json] : defaultView.border##SIDE##Color; \
   }                                                                     \
 }

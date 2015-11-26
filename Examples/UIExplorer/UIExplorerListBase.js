@@ -206,7 +206,7 @@ var styles = StyleSheet.create({
     backgroundColor: '#eee',
     padding: 5,
     borderColor: '#ccc',
-    borderRadius: 3,
+    borderRadius: 0,
     borderWidth: 1,
   },
   searchTextInput: {

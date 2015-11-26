@@ -58,4 +58,5 @@ NSImage *RCTGetBorderImage(RCTCornerRadii cornerRadii,
                            NSEdgeInsets borderInsets,
                            RCTBorderColors borderColors,
                            CGColorRef backgroundColor,
+                           CGSize size,
                            BOOL drawToEdge);

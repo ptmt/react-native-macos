@@ -554,17 +554,18 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
     layer.cornerRadius = cornerRadii.topLeft;
     layer.borderColor = borderColors.left;
     layer.borderWidth = borderInsets.left;
-    //layer.backgroundColor = _backgroundColor.CGColor;
     layer.contents = nil;
     layer.needsDisplayOnBoundsChange = NO;
     layer.mask = nil;
     return;
   }
 
-  NSImage *image = RCTGetBorderImage([self cornerRadii],
-                                     [self bordersAsInsets],
-                                     [self borderColors],
+  NSImage *image = RCTGetBorderImage(cornerRadii,
+                                     borderInsets,
+                                     borderColors,
                                      _backgroundColor.CGColor,
+                                     self.frame.size,
+
                                      YES);
 
   CGRect contentsCenter = ({
@@ -577,7 +578,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
       1.0 / size.height
     );
   });
-//
+
   if (RCTRunningInTestEnvironment()) {
     const CGSize size = self.bounds.size;
     UIGraphicsBeginImageContextWithOptions(size, NO, 0.0);
@@ -587,7 +588,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
     contentsCenter = CGRectMake(0, 0, 1, 1);
   }
 
-  //layer.backgroundColor = NULL;
   layer.contents = (id)image;
   layer.contentsCenter = contentsCenter;
   //layer.contentsScale = image.;

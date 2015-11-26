@@ -43,7 +43,9 @@ var createExamplePage = function(title: ?string, exampleModule: ExampleModule)
         if (Platform.OS !== example.platform) {
           return;
         }
-        example.title += ' (' + example.platform + ' only)';
+        if (example.title.indexOf('only') === -1) {
+          example.title += ' (' + example.platform + ' only)';
+        }
       }
       // Hack warning: This is a hack because the www UI explorer requires
       // renderComponent to be called.

@@ -25,7 +25,7 @@ var styles = StyleSheet.create({
     height: 100,
   },
   border1: {
-    borderWidth: 10,
+    borderWidth: 1,
     borderColor: 'brown',
   },
   borderRadius: {
@@ -42,10 +42,11 @@ var styles = StyleSheet.create({
   },
   border3: {
     borderColor: 'purple',
-    borderTopWidth: 10,
-    borderRightWidth: 20,
-    borderBottomWidth: 30,
-    borderLeftWidth: 40,
+    borderRadius: 0,
+    borderTopWidth: 4,
+    borderRightWidth: 18,
+    borderBottomWidth: 4,
+    borderLeftWidth: 18,
   },
   border4: {
     borderTopWidth: 10,
