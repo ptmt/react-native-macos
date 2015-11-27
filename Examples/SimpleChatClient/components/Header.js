@@ -15,16 +15,18 @@ import Tabs from './Tabs';
 
 export default class Header extends Component {
   render() {
-    console.log(this.props);
+    const { props } = this;
+    // <Text style={styles.userLabel}>@{props.user && props.user.username}</Text>
+    //   <Image
+        // source={{uri: 'https://cdn3.iconfinder.com/data/icons/fez/512/FEZ-04-64.png'}}
+        // style={{width: 16, height: 16}} />
     return (
       <View style={styles.header}>
-        <Tabs tabs={[{title: '#general', active: true} , {title: '#react-native', active: false}]} />
         <View style={styles.user} onPress={() => this.props.exit()}>
-          <Text style={styles.userLabel}>@{this.props.user && this.props.user.username}</Text>
-          <Image
-            source={{uri: 'https://cdn3.iconfinder.com/data/icons/fez/512/FEZ-04-64.png'}}
-            style={{width: 16, height: 16}} />
+
         </View>
+        <Tabs {...props} />
+
       </View>
     );
   }
@@ -34,21 +36,22 @@ export default class Header extends Component {
 var styles = {
   // ------------ header
   header: {
-    height: 24,
+    //height: 24,
     //flex: 1,
     flexDirection: 'row'
   },
   user: {
     height: 24,
     //position: 'absolute',
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: '#bbb',
-    borderWidth: 0.5,
+    //right: 0,
+    width: 200,
+    // flexDirection: 'row',
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // borderColor: '#bbb',
+    // borderWidth: 0.5,
     //backgroundColor: '#555',
-    paddingHorizontal: 20
+    //paddingHorizontal: 20
     //backgroundColor: 'black',
   },
   userLabel: {

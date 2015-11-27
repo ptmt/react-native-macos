@@ -40,11 +40,15 @@ export default function reducer(state: GlobalState, action: any): GlobalState {
         error: action.error
       };
     case LOAD:
+      // TODO: fix that serialization issue
       if (state.servers) {
         state.servers = Object.keys(state.servers).map(m => state.servers[m]);
       }
       if (state.messages) {
         state.messages = Object.keys(state.messages).map(m => state.messages[m]);
+      }
+      if (state.tabs) {
+        state.tabs = Object.keys(state.tabs).map(m => state.tabs[m]);
       }
       return { ...state, loaded: !state.loaded};
     case SAVE:
@@ -65,12 +69,17 @@ export default function reducer(state: GlobalState, action: any): GlobalState {
       return state;
 
     case CHANNEL_SELECTED:
+      if (!state.tabs) {
+        state.tabs = [];
+      }
+      //state.tabs = [];
+      const channel = findChannel(state.servers, action.selectedChannel);
+      const alreadyOpened = state.tabs.filter(c => c.id === action.selectedChannel).length > 0;
       return {
         ...state,
         messages: null,
-        selectedChannel:
-        action.selectedChannel,
-        tabs: state.tabs.indexOf(action.selectedChannel) > -1 ? state.tabs : state.tabs.concat(action.selectedChannel)
+        selectedChannel: action.selectedChannel,
+        tabs: alreadyOpened ? state.tabs : state.tabs.concat(channel)
       };
 
     case MESSAGES_LOADED:
@@ -96,25 +105,6 @@ export default function reducer(state: GlobalState, action: any): GlobalState {
   }
 }
 
-//
-// function byId(state = {}, action) {
-//   switch (action.type) {
-//     case RECEIVE_PRODUCTS:
-//       return {
-//         ...state,
-//         ...action.products.reduce((obj, product) => {
-//           obj[product.id] = product
-//           return obj
-//         }, {})
-//       }
-//     default:
-//       const { productId } = action
-//       if (productId) {
-//         return {
-//           ...state,
-//           [productId]: products(state[productId], action)
-//         }
-//       }
-//       return state
-//   }
-// }
+function findChannel(servers: Array<any>, channelId: string): any {
+  return [].concat.apply([], servers.map(s => s.channels)).filter(c => c.id === channelId)[0];
+}
