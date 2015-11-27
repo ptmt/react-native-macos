@@ -129,7 +129,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (BOOL)isFlipped
 {
-  return YES;
+  return NO;
 }
 
 - (BOOL)wantsDefaultClipping

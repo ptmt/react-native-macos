@@ -91,7 +91,8 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
 
     // TODO: This is a highly disgusting workaround. Need to find out how to get right position to make a hit test.
     // At the moment, because the view is flipped we compensate the header's height manually.
-    NSPoint touchLocation = CGPointMake([touch locationInWindow].x, (self.view.window.frame.size.height - 25 - [touch locationInWindow].y));
+    //self.view.window.titlebarAccessoryViewControllers.
+    NSPoint touchLocation = [touch locationInWindow];
 
     // TODO: fix hardcoded components name.
     //
@@ -287,8 +288,8 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
 
 - (void)mouseMoved:(NSEvent *)event
 {
-  NSPoint touchLocation = CGPointMake([event locationInWindow].x, (self.view.window.frame.size.height - 25 - [event locationInWindow].y));
-  NSNumber *reactTag = [self.view reactTagAtPoint:CGPointMake(touchLocation.x, touchLocation.y)];
+  NSPoint touchLocation = [event locationInWindow];
+  NSNumber *reactTag = [self.view reactTagAtPoint:touchLocation];
   if (reactTag == nil) {
     return;
   }
