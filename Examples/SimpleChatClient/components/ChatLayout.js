@@ -78,21 +78,24 @@ class ChatLayout extends React.Component {
         </View>
       );
     });
+    console.log(!messages)
     return (
         <View style={styles.container}>
           <View style={styles.channels}>
+            {!servers && <LoadingIndicator>Loading channels..</LoadingIndicator>}
             <ScrollView style={styles.channelsScroll}
               contentContainerStyle={styles.channelScrollContainer}
               showsVerticalScrollIndicator={true}>
-                {servers || <LoadingIndicator>Loading channels..</LoadingIndicator>}
+                {servers}
             </ScrollView>
           </View>
           <View style={styles.messages}>
+            {!messages && <LoadingIndicator>Loading messages..</LoadingIndicator>}
             <ScrollView
-              style={[styles.messagesScrollContainer]}
-              autoScrollToBottom={true}
-              showsVerticalScrollIndicator={true}>
-                {messages || <LoadingIndicator>Loading messages..</LoadingIndicator>}
+                style={[styles.messagesScrollContainer]}
+                autoScrollToBottom={true}
+                showsVerticalScrollIndicator={true}>
+                  {messages}
             </ScrollView>
             <View style={styles.inputWrapper}>
               <TextInput
@@ -118,13 +121,11 @@ class ChatLayout extends React.Component {
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    //backgroundColor: 'white',
     flexDirection: 'row'
   },
   // ------------ channels
   channels: {
     width: 200,
-    //backgroundColor: '#eee',
   },
   channelScroll: {
     height: Dimensions.get('window').height // TODO: dynamic
@@ -190,7 +191,7 @@ var styles = StyleSheet.create({
   },
   // --------- messages
   messages: {
-    //flex: 1,
+    flex: 1,
     backgroundColor: 'white',
     top: 0,
   },
