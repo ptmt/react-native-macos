@@ -131,8 +131,8 @@ var TextOnPressBox = React.createClass({
 var Hoverable = React.createClass({
   render: function() {
     return (
-      <View onMouseEnter={() => console.log('asdf')} style={{backgroundColor: 'black'}}>
-        <Text>Hover this</Text>
+      <View style={{backgroundColor: 'black'}}>
+        <Text>TODO: Hover this</Text>
       </View>
     );
   }
