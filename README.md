@@ -6,31 +6,20 @@ Build OS X desktop apps using React Native.
 [![npm version](https://badge.fury.io/js/react-native-desktop.svg)](https://badge.fury.io/js/react-native-desktop)
 [![discord #react-native-desktop](https://img.shields.io/badge/discord-%23react--native--desktop-blue.svg)](https://discordapp.com/channels/102860784329052160/111514927801307136)
 
-<img width="914" alt="screenshot 2015-11-03 10 42 56" src="https://cloud.githubusercontent.com/assets/1004115/10905298/8c4e31bc-8219-11e5-8375-d43066e51c66.png">
-*(Placeholder for a nice video demonstrating smooth native UI updates from JS thread)*
+![simplechat2](https://cloud.githubusercontent.com/assets/1004115/11457776/878f8fd0-96d3-11e5-9460-0fff58b34d7b.gif)
+(*Sorry for GIF*)
 
-**It's not production ready**: the lack of few important APIs, documentation, benchmarks and completed examples (work in progress). It's also only for OS X at the moment.
+**It's not production ready**: the lack of few important APIs, documentation, benchmarks and completed examples (work in progress).
 
 **Getting started**
 
-Since it's simply a fork of React Native, you can follow the same steps to run Examples or create your own app. Feel free to ask anything on `#react-native-desktop` channel if you run into problems (and you probably will).
-
-**Why not vanilla AppKit?**
-
-- "Learn once, write anywhere" (c). Write low-level parts in Objective-C and use the power of React ecosystem.
-- ClojureScript, Elm, Whatever-to-js-compiles.
-- Developer experience, especially for the UI-part.
-
-**Why not Electron?**
-
-- In some ways RND is kind of a small unstable subset of Electron's features: there is no DOM, CSS, browser APIs. Potentially it could be useful if you don't need a whole browser for your app. Until the next-gen parallel browser engines become real.
-- RND's footprint is relatively small (about 1.3MB for Examples/SimpleChatClient) and could be configured.
+Since it's simply a fork of React Native, you can follow the same steps to run Examples. Feel free to ask anything on `#react-native-desktop` channel if you run into problems (and you probably will).
 
 ****
 
 If you are into React.js please help to make examples look clean and idiomatic. If you can give an advice on Windows or Linux bindings or just have an idea for an awesome app which you always wanted, please feel free to reach me out on `#react-native-desktop`.
 
-Some screenshots:
+UIExplorer screenshots:
 
 ![uiexplorer](https://cloud.githubusercontent.com/assets/1004115/10608147/311445b0-7757-11e5-9ef7-2e76107e4bb7.png)
 
