@@ -31,10 +31,13 @@ export default class Message extends React.Component {
 }
 
 function parseMentions(text: string, mentions: Array<any>): string {
-  if (!mentions || mentions.length === 0) {
+  if (!mentions || mentions.length === 0 || !text) {
     return text;
   }
   const matches = text.match(/<@[^>]*>/g);
+  if (!matches) {
+    return text;
+  }
   matches.forEach(mention => {
     const id = mention.substring(2, mention.length - 1);
 		text = text.replace(mention, '**@' + mentions.filter(m => m.id === id)[0].username + '**');

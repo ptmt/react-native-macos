@@ -1,4 +1,3 @@
-/* @flow */
 
 import React from 'react-native-desktop';
 import SimpleMarkdown from 'simple-markdown';
@@ -34,7 +33,7 @@ export default class Markdown extends React.Component {
 const generateRules = styles => {
   return {
     autolink: {
-      react: function(node, output, state) {
+      react: function(node, output, state): ReactElement {
         state.withinText = true;
         return React.createElement(Text, {
           key: state.key,
@@ -45,15 +44,6 @@ const generateRules = styles => {
     },
     newline: {
       react: function() { return null; }
-    },
-    blockQuote: {
-      react: function(node, output, state) {
-        state.withinText = true;
-        return React.createElement(Text, {
-          key: state.key,
-          style: styles.blockQuote
-        }, output(node.content, state));
-      }
     },
     codeBlock: {
       react: function(node, output, state) {

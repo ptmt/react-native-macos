@@ -18,6 +18,7 @@
 .*/node_modules/react-tools/src/renderers/shared/event/EventPropagators.js
 .*/node_modules/react-tools/src/renderers/shared/event/eventPlugins/ResponderEventPlugin.js
 .*/node_modules/react-tools/src/shared/vendor/core/ExecutionEnvironment.js
+.*/Examples/SimpleChatClient/node_modules/simple-markdown/.*
 
 # Ignore commoner tests
 .*/node_modules/commoner/test/.*
