@@ -72,7 +72,7 @@ export default function reducer(state: GlobalState, action: any): GlobalState {
       if (!state.tabs) {
         state.tabs = [];
       }
-      //state.tabs = [];
+      //state.tabs = []; 
       const channel = findChannel(state.servers, action.selectedChannel);
       const alreadyOpened = state.tabs.filter(c => c.id === action.selectedChannel).length > 0;
       return {

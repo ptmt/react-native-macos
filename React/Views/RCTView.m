@@ -263,6 +263,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)react_remountAllSubviews
 {
+  NSLog(@"remountAllSubviews");
   if (_reactSubviews) {
     NSUInteger index = 0;
     for (NSView *view in _reactSubviews) {
@@ -300,7 +301,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)mountOrUnmountSubview:(NSView *)view withClipRect:(CGRect)clipRect relativeToView:(NSView *)clipView
 {
-  NSLog(@"mountOrUnmounSubview isn't implemented yet");
+  NSLog(@"mountOrUnmountSubview isn't implemented yet");
 //  if (view.clipsToBounds) {
 //
 //    // View has cliping enabled, so we can easily test if it is partially

@@ -121,7 +121,7 @@ function connnectionMessage(token): void {
 }
 
 export function getMessages(token: string, channelID: string): Promise {
-  return fetch(`${ENDPOINTS.CHANNELS}/${channelID}/messages?limit=200`, {
+  return fetch(`${ENDPOINTS.CHANNELS}/${channelID}/messages?limit=50`, { // TODO: increase limit when optimized
     headers: {
       authorization: token
     }

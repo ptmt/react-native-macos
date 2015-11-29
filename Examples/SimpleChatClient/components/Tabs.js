@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 0.5,
     borderTopWidth: 0.5,
     borderBottomWidth: 0.5,
-    backgroundColor: 'transparent'
+    backgroundColor: '#eee'
   },
   tabWrapper: {
     flexDirection: 'row',

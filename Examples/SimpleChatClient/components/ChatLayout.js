@@ -14,6 +14,7 @@ var {
 } = React;
 
 import LoadingIndicator from './LoadingIndicator';
+import Message from './Message';
 
 class Channel extends React.Component {
   constructor() {
@@ -67,18 +68,10 @@ class ChatLayout extends React.Component {
       );
     });
 
-    const messages = this.props.messages && this.props.messages.map(message => {
-      const date = new Date(message.timestamp);
-      var time = ('0' + date.getHours()).slice(-2) + ':' +   ('0' + date.getMinutes()).slice(-2);
-      return (
-        <View style={[styles.message]} key={message.id}>
-          <Text style={styles.messageTimestamp}>{time}</Text>
-          <Text style={styles.messageUsername}>{'<'}{message.author.username}{'>'}</Text>
-          <Text style={styles.messageText}>{message.content}</Text>
-        </View>
-      );
+    const messages = this.props.messages && this.props.messages.map((message, i) => {
+      return <Message {...message} key={i} />
     });
-    console.log(!messages)
+
     return (
         <View style={styles.container}>
           <View style={styles.channels}>
@@ -90,12 +83,11 @@ class ChatLayout extends React.Component {
             </ScrollView>
           </View>
           <View style={styles.messages}>
-            {!messages && <LoadingIndicator>Loading messages..</LoadingIndicator>}
             <ScrollView
                 style={[styles.messagesScrollContainer]}
                 autoScrollToBottom={true}
                 showsVerticalScrollIndicator={true}>
-                  {messages}
+                  {messages || <LoadingIndicator>Loading...</LoadingIndicator>}
             </ScrollView>
             <View style={styles.inputWrapper}>
               <TextInput
@@ -192,46 +184,10 @@ var styles = StyleSheet.create({
   // --------- messages
   messages: {
     flex: 1,
-    backgroundColor: 'white',
-    top: 0,
+    backgroundColor: 'white'
   },
   messagesScrollContainer: {
     height: Dimensions.get('window').height - 150,
-  },
-  verticallyInverted: {
-    transform: [
-      { scaleY: 2 },
-    ],
-  },
-  message: {
-    flex: 1,
-    flexDirection: 'row',
-    marginLeft: 10,
-    marginBottom: 5,
-  },
-  messageTimestamp: {
-    color: '#999',
-    marginRight: 5,
-    fontFamily: 'Monaco'
-    //fontSize: 12
-  },
-  messageUsername: {
-    color: '#222',
-    width: 100,
-    textAlign: 'right',
-    fontWeight: '600',
-  },
-  messageText: {
-    //position: 'absolute',
-    color: '#222',
-    marginLeft: 4,
-    width: Dimensions.get('window').width - 700 // TODO: why it's not wrap automatically
-  },
-  messageLoader: {
-    fontSize: 20,
-    color: '#333',
-    marginTop: 20,
-    marginLeft: 100
   },
 });
 module.exports = ChatLayout;

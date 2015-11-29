@@ -37,7 +37,7 @@ class UIExplorerApp extends React.Component {
     var UIExplorerListBase = require('./UIExplorerListBase');
     var BorderExample = require('./BorderExample');
     this.state = {
-      component: UIExplorerListBase.makeRenderable(BorderExample),
+      component: Welcome, //UIExplorerListBase.makeRenderable(BorderExample)
       layout: defaultLayout
     };
   }
