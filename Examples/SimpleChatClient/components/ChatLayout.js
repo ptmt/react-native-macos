@@ -14,7 +14,7 @@ var {
 } = React;
 
 import LoadingIndicator from './LoadingIndicator';
-import Message from './Message';
+import MessagesListView from './MessagesListView';
 
 class Channel extends React.Component {
   constructor() {
@@ -68,9 +68,7 @@ class ChatLayout extends React.Component {
       );
     });
 
-    const messages = this.props.messages && this.props.messages.map((message, i) => {
-      return <Message {...message} key={i} />
-    });
+    const messages = this.props.messages;
 
     return (
         <View style={styles.container}>
@@ -83,12 +81,12 @@ class ChatLayout extends React.Component {
             </ScrollView>
           </View>
           <View style={styles.messages}>
-            <ScrollView
-                style={[styles.messagesScrollContainer]}
-                autoScrollToBottom={true}
-                showsVerticalScrollIndicator={true}>
-                  {messages || <LoadingIndicator>Loading...</LoadingIndicator>}
-            </ScrollView>
+            <View style={{flex: 1}}>
+              {messages && messages.length > 0 ?
+                <MessagesListView messages={messages} /> :
+                <LoadingIndicator visible={messages}>Loading messages...</LoadingIndicator>
+              }
+            </View>
             <View style={styles.inputWrapper}>
               <TextInput
                 style={styles.input}

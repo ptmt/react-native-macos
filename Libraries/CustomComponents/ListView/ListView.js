@@ -31,6 +31,7 @@ var React = require('React');
 var RCTUIManager = require('NativeModules').UIManager;
 var RCTScrollViewManager = require('NativeModules').ScrollViewManager;
 var ScrollView = require('ScrollView');
+var View = require('View');
 var ScrollResponder = require('ScrollResponder');
 var StaticRenderer = require('StaticRenderer');
 var TimerMixin = require('react-timer-mixin');
@@ -270,9 +271,9 @@ var ListView = React.createClass({
   componentDidMount: function() {
     // do this in animation frame until componentDidMount actually runs after
     // the component is laid out
-    this.requestAnimationFrame(() => {
-      this._measureAndUpdateScrollProps();
-    });
+    // this.requestAnimationFrame(() => {
+    //   this._measureAndUpdateScrollProps();
+    // });
   },
 
   componentWillReceiveProps: function(nextProps) {
@@ -291,9 +292,9 @@ var ListView = React.createClass({
   },
 
   componentDidUpdate: function() {
-    this.requestAnimationFrame(() => {
-      this._measureAndUpdateScrollProps();
-    });
+    // this.requestAnimationFrame(() => {
+    //   this._measureAndUpdateScrollProps();
+    // });
   },
 
   onRowHighlighted: function(sectionID, rowID) {
@@ -401,7 +402,6 @@ var ListView = React.createClass({
       onKeyboardDidShow: undefined,
       onKeyboardDidHide: undefined,
     });
-
     // TODO(ide): Use function refs so we can compose with the scroll
     // component's original ref instead of clobbering it
     return React.cloneElement(renderScrollComponent(props), {

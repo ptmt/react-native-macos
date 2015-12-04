@@ -309,10 +309,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
   [[self window] setAcceptsMouseMovedEvents:NO];
 }
 
-- (void)viewDidEndLiveResize
-{
-  [self setFrame:[RCTSharedApplication() mainWindow].contentView.frame];
-}
+// TODO: fire onLayout or something?
+//- (void)viewDidEndLiveResize
+//{
+//  [self setFrame:[RCTSharedApplication() mainWindow].contentView.frame];
+//}
 
 - (void)setFrame:(CGRect)frame
 {

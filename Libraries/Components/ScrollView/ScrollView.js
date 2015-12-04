@@ -17,7 +17,6 @@ var PointPropType = require('PointPropType');
 var RCTScrollView = require('NativeModules').UIManager.RCTScrollView;
 var React = require('React');
 var ReactNativeViewAttributes = require('ReactNativeViewAttributes');
-var RCTUIManager = require('NativeModules').UIManager;
 var ScrollResponder = require('ScrollResponder');
 var StyleSheet = require('StyleSheet');
 var StyleSheetPropType = require('StyleSheetPropType');
@@ -367,7 +366,7 @@ var ScrollView = React.createClass({
       // onStartShouldSetResponder: this.scrollResponderHandleStartShouldSetResponder,
       // onStartShouldSetResponderCapture: this.scrollResponderHandleStartShouldSetResponderCapture,
       // onScrollShouldSetResponder: this.scrollResponderHandleScrollShouldSetResponder,
-      // onScroll: this.handleScroll,
+      onScroll: this.handleScroll,
       // onResponderGrant: this.scrollResponderHandleResponderGrant,
       // onResponderTerminationRequest: this.scrollResponderHandleTerminationRequest,
       // onResponderTerminate: this.scrollResponderHandleTerminate,
@@ -389,6 +388,7 @@ var ScrollView = React.createClass({
       ScrollViewClass !== undefined,
       'ScrollViewClass must not be undefined'
     );
+
 
     return (
       <ScrollViewClass {...props} ref={SCROLLVIEW}>

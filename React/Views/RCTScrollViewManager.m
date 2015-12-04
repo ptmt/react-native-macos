@@ -20,6 +20,12 @@
 
 @end
 
+@interface RCTNativeScrollView (Private)
+
+- (NSArray *)calculateChildFramesData;
+
+@end
+
 @implementation RCTConvert (UIScrollView)
 
 //RCT_ENUM_CONVERTER(UIScrollViewKeyboardDismissMode, (@{
@@ -130,5 +136,52 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_VIEW_PROPERTY(showsHorizontalScrollIndicator, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(showsVerticalScrollIndicator, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(autoScrollToBottom, BOOL)
+
+RCT_EXPORT_METHOD(getContentSize:(nonnull NSNumber *)reactTag
+                  callback:(RCTResponseSenderBlock)callback)
+{
+  [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
+
+    NSView *view = viewRegistry[reactTag];
+    if (!view) {
+      RCTLogError(@"Cannot find view with tag #%@", reactTag);
+      return;
+    }
+
+    CGSize size = ((RCTNativeScrollView *)view).contentSize;
+    callback(@[@{
+                 @"width" : @(size.width),
+                 @"height" : @(size.height)
+                 }]);
+  }];
+}
+
+RCT_EXPORT_METHOD(calculateChildFrames:(nonnull NSNumber *)reactTag
+                  callback:(RCTResponseSenderBlock)callback)
+{
+  [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
+
+    NSView *view = viewRegistry[reactTag];
+    if (!view) {
+      RCTLogError(@"Cannot find view with tag #%@", reactTag);
+      return;
+    }
+
+    NSArray *childFrames = [((RCTNativeScrollView *)view) calculateChildFramesData];
+    if (childFrames) {
+      callback(@[childFrames]);
+    }
+  }];
+}
+
+- (NSArray *)customDirectEventTypes
+{
+  return @[
+           @"scrollBeginDrag",
+           @"scroll",
+           @"scrollEndDrag",
+           @"scrollAnimationEnd",
+           ];
+}
 
 @end

@@ -70,5 +70,7 @@
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
 
+@property (nonatomic, assign) BOOL automaticallyAdjustContentInsets;
+@property (nonatomic, assign) NSTimeInterval scrollEventThrottle;
 
 @end

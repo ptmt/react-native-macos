@@ -105,7 +105,7 @@
      * then add the `main.jsbundle` file to your project and uncomment this line:
      */
 
-    sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+    //sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 
 #if RUNNING_ON_CI
     sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];

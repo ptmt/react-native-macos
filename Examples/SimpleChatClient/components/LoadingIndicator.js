@@ -4,9 +4,7 @@
 import React,  {
   View,
   Text,
-  StyleSheet,
   ActivityIndicatorIOS,
-  Animated
 } from 'react-native-desktop';
 
 export default class LoadingIndicator extends React.Component {
@@ -14,11 +12,17 @@ export default class LoadingIndicator extends React.Component {
     console.log('on unmount');
   }
   render(): ReactElement {
+    const visibilityStyle = this.props.visible ? { opacity: 0} : {};
+    console.log(this.props.children, visibilityStyle)
     return (
-      <View style={{flex: 1, marginTop: 100, alignItems: 'center', justifyContent: 'center'}}>
+      <View style={[styles.container, visibilityStyle]}>
         <ActivityIndicatorIOS size="large" style={{width: 40, alignSelf: 'center'}}/>
         <Text>{this.props.children}</Text>
       </View>
     );
   }
 }
+
+const styles = {
+  container: {flex: 1, marginTop: 100, alignItems: 'center', justifyContent: 'center'}
+};

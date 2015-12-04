@@ -66,10 +66,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 - (NSDictionary *)body
 {
   NSDictionary *body = @{
-//    @"contentOffset": @{
-//      @"x": @(_scrollView.contentOffset.x),
-//      @"y": @(_scrollView.contentOffset.y)
-//    },
+    @"contentOffset": @{
+      @"x": @([[_scrollView contentView] documentVisibleRect].origin.x),
+      @"y": @([[_scrollView contentView] documentVisibleRect].origin.y)
+    },
     @"contentInset": @{
       @"top": @(_scrollView.contentInsets.top),
       @"left": @(_scrollView.contentInsets.left),
@@ -77,8 +77,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
       @"right": @(_scrollView.contentInsets.right)
     },
     @"contentSize": @{
-      @"width": @(_scrollView.contentSize.width),
-      @"height": @(_scrollView.contentSize.height)
+      @"width": @([[_scrollView documentView] bounds].size.width),
+      @"height": @([[_scrollView documentView] bounds].size.height)
     },
     @"layoutMeasurement": @{
       @"width": @(_scrollView.frame.size.width),
@@ -916,6 +916,11 @@ if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
   BOOL _inAutoScrollToBottom;
   RCTEventDispatcher *_eventDispatcher;
   NSRect _oldDocumentFrame;
+  NSMutableArray *_cachedChildFrames;
+  NSTimeInterval _lastScrollDispatchTime;
+  BOOL _allowNextScrollNoMatterWhat;
+  CGRect _lastClippedToRect;
+
 }
 
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
@@ -927,6 +932,18 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     _backgroundColor = [NSColor clearColor];
     _eventDispatcher = eventDispatcher;
     [self setDrawsBackground:NO];
+
+    [self.contentView setPostsBoundsChangedNotifications:YES];
+    [[NSNotificationCenter defaultCenter]
+                                  addObserver:self
+                                  selector:@selector(boundsDidChange:)
+                                  name:NSViewBoundsDidChangeNotification
+                                  object:self.contentView];
+
+    _scrollEventThrottle = 0.0;
+    _lastScrollDispatchTime = CACurrentMediaTime();
+    _cachedChildFrames = [NSMutableArray new];
+    _lastClippedToRect = CGRectNull;
 
   }
   return self;
@@ -994,6 +1011,38 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
+- (NSArray *)calculateChildFramesData
+{
+  NSMutableArray *updatedChildFrames = [NSMutableArray new];
+  [[_contentView reactSubviews] enumerateObjectsUsingBlock:
+   ^(NSView *subview, NSUInteger idx, __unused BOOL *stop) {
+
+     // Check if new or changed
+     CGRect newFrame = subview.frame;
+     BOOL frameChanged = NO;
+     if (_cachedChildFrames.count <= idx) {
+       frameChanged = YES;
+       //[_cachedChildFrames addObject:[NSValue valueWithCGRect:newFrame]];
+     } else if (!CGRectEqualToRect(newFrame, [_cachedChildFrames[idx] CGRectValue])) {
+       frameChanged = YES;
+       //_cachedChildFrames[idx] = [NSValue valueWithCGRect:newFrame];
+     }
+
+     // Create JS frame object
+     if (frameChanged) {
+       [updatedChildFrames addObject: @{
+                                        @"index": @(idx),
+                                        @"x": @(newFrame.origin.x),
+                                        @"y": @(newFrame.origin.y),
+                                        @"width": @(newFrame.size.width),
+                                        @"height": @(newFrame.size.height),
+                                        }];
+     }
+   }];
+  
+  return updatedChildFrames;
+}
+
 - (void)scrollToBottom
 {
   [[self documentView] scrollPoint:NSMakePoint(0, 100000)]; // TODO: avoid this hack
@@ -1041,6 +1090,66 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     [self.layer setBackgroundColor:[backgroundColor CGColor]];
   }
   [self setNeedsDisplay:YES];
+}
+
+- (void)updateClippedSubviews
+{
+  // Find a suitable view to use for clipping
+  NSView *clipView = [self react_findClipView];
+  if (!clipView) {
+    return;
+  }
+
+  static const CGFloat leeway = 1.0;
+
+  const CGSize contentSize = [[self documentView] bounds].size;
+  const CGRect bounds = [[self contentView] bounds];
+  const BOOL scrollsHorizontally = contentSize.width > bounds.size.width;
+  const BOOL scrollsVertically = contentSize.height > bounds.size.height;
+  const BOOL shouldClipAgain =
+  CGRectIsNull(_lastClippedToRect) ||
+  (scrollsHorizontally && (bounds.size.width < leeway || fabs(_lastClippedToRect.origin.x - bounds.origin.x) >= leeway)) ||
+  (scrollsVertically && (bounds.size.height < leeway || fabs(_lastClippedToRect.origin.y - bounds.origin.y) >= leeway));
+
+  if (shouldClipAgain) {
+    const CGRect clipRect = CGRectInset(clipView.bounds, -leeway, -leeway);
+   // NSLog(@"clipRect %f %f", [[self contentView] bounds].size.height, [[self contentView] bounds].origin.y);
+
+    [self react_updateClippedSubviewsWithClipRect:clipRect relativeToView:clipView];
+    _lastClippedToRect = bounds;
+  }
+}
+
+- (void)boundsDidChange:(__unused NSEvent *)theEvent
+{
+   //[_scrollView dockClosestSectionHeader];
+  [self updateClippedSubviews];
+  NSTimeInterval now = CACurrentMediaTime();
+
+  /**
+   * TODO: this logic looks wrong, and it may be because it is. Currently, if _scrollEventThrottle
+   * is set to zero (the default), the "didScroll" event is only sent once per scroll, instead of repeatedly
+   * while scrolling as expected. However, if you "fix" that bug, ScrollView will generate repeated
+   * warnings, and behave strangely (ListView works fine however), so don't fix it unless you fix that too!
+   */
+  if (_scrollEventThrottle == 0 ||
+        (_scrollEventThrottle > 0 && _scrollEventThrottle < (now - _lastScrollDispatchTime))) {
+
+    // Calculate changed frames
+    NSArray *childFrames = [self calculateChildFramesData];
+
+    // Dispatch event
+    [_eventDispatcher sendScrollEventWithType:RCTScrollEventTypeMove
+                                   reactTag:self.reactTag
+                                 scrollView:self
+                                   userData:@{@"updatedChildFrames": childFrames}];
+
+
+      // Update dispatch time
+      _lastScrollDispatchTime = now;
+      _allowNextScrollNoMatterWhat = NO;
+  }
+
 }
 
 

@@ -51,20 +51,19 @@ static NSView *RCTViewHitTest(NSView *view, CGPoint point)
   // we do support clipsToBounds, so if that's enabled
   // we'll update the clipping
 
-  NSLog(@"react_updateClippedSubviewsWithClipRect");
-//  if (self.clipsToBounds && self.subviews.count > 0) {
-//    clipRect = [clipView convertRect:clipRect toView:self];
-//    clipRect = CGRectIntersection(clipRect, self.bounds);
-//    clipView = self;
-//  }
-//
-//  // Normal views don't support unmounting, so all
-//  // this does is forward message to our subviews,
-//  // in case any of those do support it
-//
-//  for (NSView *subview in self.subviews) {
-//    [subview react_updateClippedSubviewsWithClipRect:clipRect relativeToView:clipView];
-//  }
+  if (self.wantsDefaultClipping && self.subviews.count > 0) {
+    clipRect = [clipView convertRect:clipRect toView:self];
+    clipRect = CGRectIntersection(clipRect, self.bounds);
+    clipView = self;
+  }
+
+  // Normal views don't support unmounting, so all
+  // this does is forward message to our subviews,
+  // in case any of those do support it
+
+  for (NSView *subview in self.subviews) {
+    [subview react_updateClippedSubviewsWithClipRect:clipRect relativeToView:clipView];
+  }
 }
 
 - (NSView *)react_findClipView
@@ -246,6 +245,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 + (NSEdgeInsets)contentInsetsForView:(NSView *)view
 {
+  NSLog(@"contentInsetsForView not implemented");
 //  while (view) {
 //    NSViewController *controller = view.reactViewController;
 //    if (controller) {
@@ -263,7 +263,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)react_remountAllSubviews
 {
-  NSLog(@"remountAllSubviews");
   if (_reactSubviews) {
     NSUInteger index = 0;
     for (NSView *view in _reactSubviews) {
@@ -301,45 +300,44 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)mountOrUnmountSubview:(NSView *)view withClipRect:(CGRect)clipRect relativeToView:(NSView *)clipView
 {
-  NSLog(@"mountOrUnmountSubview isn't implemented yet");
-//  if (view.clipsToBounds) {
-//
-//    // View has cliping enabled, so we can easily test if it is partially
-//    // or completely within the clipRect, and mount or unmount it accordingly
-//
-//    if (!CGRectIsEmpty(CGRectIntersection(clipRect, view.frame))) {
-//
-//      // View is at least partially visible, so remount it if unmounted
-//      if (view.superview == nil) {
-//        [self remountSubview:view];
-//      }
-//
-//      // Then test its subviews
-//      if (CGRectContainsRect(clipRect, view.frame)) {
-//        [view react_remountAllSubviews];
-//      } else {
-//        [view react_updateClippedSubviewsWithClipRect:clipRect relativeToView:clipView];
-//      }
-//
-//    } else if (view.superview) {
-//
-//      // View is completely outside the clipRect, so unmount it
-//      [view removeFromSuperview];
-//    }
-//
-//  } else {
-//
-//    // View has clipping disabled, so there's no way to tell if it has
-//    // any visible subviews without an expensive recursive test, so we'll
-//    // just add it.
-//
-//    if (view.superview == nil) {
-//      [self remountSubview:view];
-//    }
-//
-//    // Check if subviews need to be mounted/unmounted
-//    [view react_updateClippedSubviewsWithClipRect:clipRect relativeToView:clipView];
-//  }
+  if (view.wantsDefaultClipping) {
+
+    // View has cliping enabled, so we can easily test if it is partially
+    // or completely within the clipRect, and mount or unmount it accordingly
+
+    if (!CGRectIsEmpty(CGRectIntersection(clipRect, view.frame))) {
+
+      // View is at least partially visible, so remount it if unmounted
+      if (view.superview == nil) {
+        [self remountSubview:view];
+      }
+
+      // Then test its subviews
+      if (CGRectContainsRect(clipRect, view.frame)) {
+        [view react_remountAllSubviews];
+      } else {
+        [view react_updateClippedSubviewsWithClipRect:clipRect relativeToView:clipView];
+      }
+
+    } else if (view.superview) {
+
+      // View is completely outside the clipRect, so unmount it
+      [view removeFromSuperview];
+    }
+
+  } else {
+
+    // View has clipping disabled, so there's no way to tell if it has
+    // any visible subviews without an expensive recursive test, so we'll
+    // just add it.
+
+    if (view.superview == nil) {
+      [self remountSubview:view];
+    }
+
+    // Check if subviews need to be mounted/unmounted
+    [view react_updateClippedSubviewsWithClipRect:clipRect relativeToView:clipView];
+  }
 }
 
 - (void)react_updateClippedSubviewsWithClipRect:(CGRect)clipRect relativeToView:(NSView *)clipView
@@ -378,7 +376,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)setRemoveClippedSubviews:(BOOL)removeClippedSubviews
 {
-   NSLog(@"RCTView: removeCLippedSubviews %hhd ", removeClippedSubviews);
   if (removeClippedSubviews && !_reactSubviews) {
     _reactSubviews = [self.subviews mutableCopy];
   } else if (!removeClippedSubviews && _reactSubviews) {

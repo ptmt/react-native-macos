@@ -32,7 +32,7 @@ var COMPONENTS = [
   require('./DatePickerIOSExample'),
   require('./ImageExample'),
   require('./LayoutEventsExample'),
-  //require('./ListViewExample'),
+  require('./ListViewExample'),
   // require('./ListViewGridLayoutExample'),
   // require('./ListViewPagingExample'),
   // require('./ModalExample'),

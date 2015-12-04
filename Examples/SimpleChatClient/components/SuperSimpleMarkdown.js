@@ -164,6 +164,26 @@ const generateRules = styles => {
         // }, node.content);
       }
     },
+    heading: {
+      react: function(node, output, state) {
+        //Breaking words up in order to allow for text reflowing in flexbox
+        var words = node.content.split(' ');
+        words = words.map((word, i) => {
+          var elements = [];
+          if (i != words.length - 1) {
+            word = word + ' ';
+          }
+          var textStyles = [styles.text];
+          if (!state.withinText) {
+            textStyles.push(styles.plainText);
+          }
+          return React.createElement(Text, {
+            style: textStyles
+          }, word);
+        });
+        return words;
+      }
+    },
     url: {
       react: function(node, output, state) {
         state.withinText = true;
