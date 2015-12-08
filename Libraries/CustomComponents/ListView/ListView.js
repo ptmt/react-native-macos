@@ -31,7 +31,6 @@ var React = require('React');
 var RCTUIManager = require('NativeModules').UIManager;
 var RCTScrollViewManager = require('NativeModules').ScrollViewManager;
 var ScrollView = require('ScrollView');
-var View = require('View');
 var ScrollResponder = require('ScrollResponder');
 var StaticRenderer = require('StaticRenderer');
 var TimerMixin = require('react-timer-mixin');
@@ -338,23 +337,37 @@ var ListView = React.createClass({
       }
 
       for (var rowIdx = 0; rowIdx < rowIDs.length; rowIdx++) {
-        var rowID = rowIDs[rowIdx];
+
+        // Inverting index if this is inverting ListView
+        var rowID = this.props.autoScrollToBottom ?
+          rowIDs[rowIdx] :
+          rowIDs.length - 1 - rowIdx;
+
         var comboID = sectionID + rowID;
         var shouldUpdateRow = rowCount >= this.state.prevRenderedRowsCount &&
-          dataSource.rowShouldUpdate(sectionIdx, rowIdx);
+          dataSource.rowShouldUpdate(sectionIdx, rowID);
         var row =
           <StaticRenderer
             key={'r_' + comboID}
             shouldUpdate={!!shouldUpdateRow}
             render={this.props.renderRow.bind(
               null,
-              dataSource.getRowData(sectionIdx, rowIdx),
+              dataSource.getRowData(sectionIdx, rowID),
               sectionID,
               rowID,
               this.onRowHighlighted
             )}
           />;
-        bodyComponents.push(row);
+
+        /*
+         * Prepend items
+         */
+        if (this.props.autoScrollToBottom) {
+          bodyComponents = [row].concat(bodyComponents);
+        } else {
+          bodyComponents.push(row);
+        }
+
         totalIndex++;
 
         if (this.props.renderSeparator &&

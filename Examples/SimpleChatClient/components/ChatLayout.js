@@ -10,7 +10,8 @@ var {
   Text,
   TouchableOpacity,
   TouchableHighlight,
-  TextInput
+  TextInput,
+  LayoutAnimation
 } = React;
 
 import LoadingIndicator from './LoadingIndicator';
@@ -52,8 +53,22 @@ class ChatLayout extends React.Component {
     if (!text) {
       return;
     }
+    LayoutAnimation.spring();
     this.props.actions.sendMessage(text);
     this.setState({currentMessage: ''});
+  }
+  render1() {
+    const messages = this.props.messages ?
+      <View style={{backgroundColor: 'black', flex: 1}} /> :
+      <Text key={'loading_indicator'}>Loading messages...</Text>;
+
+    console.log('MESSAGES', messages);
+
+    return (
+      <View style={{flex: 1}}>
+        {messages}
+      </View>
+    );
   }
   render() {
     const servers = this.props.servers && this.props.servers.map((server, serverKey) => {
@@ -84,7 +99,7 @@ class ChatLayout extends React.Component {
             <View style={{flex: 1}}>
               {messages && messages.length > 0 ?
                 <MessagesListView messages={messages} /> :
-                <LoadingIndicator visible={messages}>Loading messages...</LoadingIndicator>
+                <LoadingIndicator>Loading messages...</LoadingIndicator>
               }
             </View>
             <View style={styles.inputWrapper}>

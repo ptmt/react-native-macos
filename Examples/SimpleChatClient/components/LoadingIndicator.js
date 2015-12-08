@@ -8,14 +8,9 @@ import React,  {
 } from 'react-native-desktop';
 
 export default class LoadingIndicator extends React.Component {
-  componentWillUnmount() {
-    console.log('on unmount');
-  }
-  render(): ReactElement {
-    const visibilityStyle = this.props.visible ? { opacity: 0} : {};
-    console.log(this.props.children, visibilityStyle)
+  render() {
     return (
-      <View style={[styles.container, visibilityStyle]}>
+      <View style={[styles.container]}>
         <ActivityIndicatorIOS size="large" style={{width: 40, alignSelf: 'center'}}/>
         <Text>{this.props.children}</Text>
       </View>

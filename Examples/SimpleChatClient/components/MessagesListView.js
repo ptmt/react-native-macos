@@ -4,7 +4,7 @@
 import React,  {
   Text,
   StyleSheet,
-  ListView,
+  ListView
 } from 'react-native-desktop';
 
 import Message from './Message';
@@ -26,7 +26,6 @@ export default class MessagesListView extends React.Component {
     });
   }
   render() {
-
     return (
       <ListView
         style={styles.container}

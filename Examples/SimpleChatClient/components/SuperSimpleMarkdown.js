@@ -11,6 +11,7 @@ const {
 export default class Markdown extends React.Component {
 
   componentWillMount() {
+
     const rules = generateRules(styles);
     const mixedRules = { ...rules, ...SimpleMarkdown.defaultRules};
     const parser = SimpleMarkdown.parserFor(mixedRules);
@@ -100,7 +101,7 @@ const generateRules = styles => {
         return React.createElement(Text, {
           key: state.key,
           style: [styles.text, styles.link],
-          children: node.content
+          children: node.content[0].content
         });
       }
     },
@@ -143,6 +144,13 @@ const generateRules = styles => {
     },
     text: {
       react: function(node, output, state) {
+
+        var textStyles = [styles.text];
+        if (typeof node.content.split !== 'function') {
+          return React.createElement(Text, {
+            style: textStyles
+          }, node.content);
+        }
         //Breaking words up in order to allow for text reflowing in flexbox
         var words = node.content.split(' ');
         words = words.map((word, i) => {
@@ -150,7 +158,6 @@ const generateRules = styles => {
           if (i != words.length - 1) {
             word = word + ' ';
           }
-          var textStyles = [styles.text];
           if (!state.withinText) {
             textStyles.push(styles.plainText);
           }
@@ -159,13 +166,17 @@ const generateRules = styles => {
           }, word);
         });
         return words;
-        // return React.createElement(Text, {
-        //   style: styles.text
-        // }, node.content);
       }
     },
     heading: {
       react: function(node, output, state) {
+        var textStyles = [styles.text];
+        if (typeof node.content.split !== 'function') {
+          return React.createElement(Text, {
+            style: textStyles
+          }, node.content);
+        }
+
         //Breaking words up in order to allow for text reflowing in flexbox
         var words = node.content.split(' ');
         words = words.map((word, i) => {
@@ -173,7 +184,6 @@ const generateRules = styles => {
           if (i != words.length - 1) {
             word = word + ' ';
           }
-          var textStyles = [styles.text];
           if (!state.withinText) {
             textStyles.push(styles.plainText);
           }

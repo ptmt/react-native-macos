@@ -70,6 +70,9 @@ export function init(): any {
         if (!getState().selectedChannel) {
           dispatch(onChannelSelect(payload.servers[0].channels[0].id));
         }
+        if (getState().selectedChannel && !getState().messages) {
+          dispatch(onChannelSelect(getState().selectedChannel));
+        }
       })
     )
     .catch(e => {
