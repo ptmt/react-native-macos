@@ -6,10 +6,7 @@ Build OS X desktop apps using React Native.
 [![npm version](https://badge.fury.io/js/react-native-desktop.svg)](https://badge.fury.io/js/react-native-desktop)
 [![discord #react-native-desktop](https://img.shields.io/badge/discord-%23react--native--desktop-blue.svg)](https://discordapp.com/channels/102860784329052160/111514927801307136)
 
-![simplechat2](https://cloud.githubusercontent.com/assets/1004115/11457776/878f8fd0-96d3-11e5-9460-0fff58b34d7b.gif)
-
-
-<sup>*(Sorry for GIF)*</sup>
+[![Youtube play](https://cloud.githubusercontent.com/assets/1004115/11681502/1eeb716e-9e81-11e5-9359-d4ce61a965d1.png)](https://www.youtube.com/watch?v=m1-LNKIuqtI)
 
 **It's not production ready**: the lack of few important APIs, documentation, benchmarks and completed examples (work in progress).
 
