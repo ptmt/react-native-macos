@@ -33,9 +33,9 @@ cd ..
 set -x
 DEST=$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH
 
-react-native bundle \
-  --entry-file index.ios.js \
-  --platform ios \
+react-native-desktop bundle \
+  --entry-file index.osx.js \
+  --platform osx \
   --dev $DEV \
   --bundle-output "$DEST/main.jsbundle" \
   --assets-dest "$DEST"

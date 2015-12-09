@@ -1,6 +1,6 @@
 {
   "name": "react-native-desktop",
-  "version": "0.1.0",
+  "version": "0.1.13",
   "description": "A framework for building desktop native apps using React",
   "license": "BSD-3-Clause",
   "repository": {
@@ -82,6 +82,9 @@
     "yargs": "^3.24.0",
     "yeoman-environment": "^1.2.7",
     "yeoman-generator": "^0.20.3"
+  },
+  "bin": {
+    "react-native-desktop": "local-cli/wrong-react-native.js"
   },
   "devDependencies": {
     "jest-cli": "0.5.7",

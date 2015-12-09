@@ -29,14 +29,9 @@ module.exports = yeoman.generators.NamedBase.extend({
 
     // this passes command line arguments down to the composed generators
     var args = arguments[0];
-    if (!this.options['skip-ios']) {
-      this.composeWith('react:ios', {args: args}, {
-        local: require.resolve(path.resolve(__dirname, '..', 'generator-ios'))
-      });
-    }
-    if (!this.options['skip-android']) {
-      this.composeWith('react:android', {args: args}, {
-        local: require.resolve(path.resolve(__dirname, '..', 'generator-android'))
+    if (!this.options['skip-osx']) {
+      this.composeWith('react:osx', {args: args}, {
+        local: require.resolve(path.resolve(__dirname, '..', 'generator-osx'))
       });
     }
   },
@@ -59,17 +54,10 @@ module.exports = yeoman.generators.NamedBase.extend({
   },
 
   writing: function() {
-    if (!this.options['skip-ios']) {
+    if (!this.options['skip-osx']) {
       this.fs.copyTpl(
-        this.templatePath('index.ios.js'),
-        this.destinationPath('index.ios.js'),
-        {name: this.name}
-      );
-    }
-    if (!this.options['skip-android']) {
-      this.fs.copyTpl(
-        this.templatePath('index.android.js'),
-        this.destinationPath('index.android.js'),
+        this.templatePath('index.osx.js'),
+        this.destinationPath('index.osx.js'),
         {name: this.name}
       );
     }

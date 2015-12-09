@@ -45,7 +45,7 @@ var CLI_MODULE_PATH = function() {
   return path.resolve(
     process.cwd(),
     'node_modules',
-    'react-native',
+    'react-native-desktop',
     'cli.js'
   );
 };
@@ -64,7 +64,7 @@ if (cli) {
   var args = process.argv.slice(2);
   if (args.length === 0) {
     console.error(
-      'You did not pass any commands, did you mean to run `react-native init`?'
+      'You did not pass any commands, did you mean to run `react-native-desktop init`?'
     );
     process.exit(1);
   }
@@ -76,7 +76,7 @@ if (cli) {
       init(args[1], verbose);
     } else {
       console.error(
-        'Usage: react-native init <ProjectName> [--verbose]'
+        'Usage: react-native-desktop init <ProjectName> [--verbose]'
       );
       process.exit(1);
     }
@@ -84,7 +84,7 @@ if (cli) {
   default:
     console.error(
       'Command `%s` unrecognized. ' +
-      'Did you mean to run this inside a react-native project?',
+      'Did you mean to run this inside a react-native-desktop project?',
       args[0]
     );
     process.exit(1);
@@ -161,13 +161,13 @@ function createProject(name, verbose) {
     version: '0.0.1',
     private: true,
     scripts: {
-      start: 'react-native start'
+      start: 'react-native-desktop start'
     }
   };
   fs.writeFileSync(path.join(root, 'package.json'), JSON.stringify(packageJson));
   process.chdir(root);
 
-  console.log('Installing react-native package from npm...');
+  console.log('Installing react-native-desktop package from npm...');
 
   if (verbose) {
     runVerbose(root, projectName);
@@ -177,7 +177,7 @@ function createProject(name, verbose) {
 }
 
 function run(root, projectName) {
-  exec('npm install --save react-native', function(e, stdout, stderr) {
+  exec('npm install --save react-native-desktop', function(e, stdout, stderr) {
     if (e) {
       console.log(stdout);
       console.error(stderr);
@@ -194,7 +194,7 @@ function runVerbose(root, projectName) {
   var proc = spawn('npm', ['install', '--verbose', '--save', 'react-native-desktop'], {stdio: 'inherit'});
   proc.on('close', function (code) {
     if (code !== 0) {
-      console.error('`npm install --save react-native` failed');
+      console.error('`npm install --save react-native-desktop` failed');
       return;
     }
 

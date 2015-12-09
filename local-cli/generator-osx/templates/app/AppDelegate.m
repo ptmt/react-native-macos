@@ -1,25 +1,3 @@
-//
-//  AppDelegate.m
-//  SimpleGmailClient
-//
-//  Created by Dmitriy Loktev on 10/21/15.
-//  Copyright © 2015 Elephant. All rights reserved.
-//
-
-/**
- * The examples provided by Facebook are for non-commercial testing and
- * evaluation purposes only.
- *
- * Facebook reserves all rights not expressly granted.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
- * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
- * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 #import "AppDelegate.h"
 
 #import "RCTBridge.h"
@@ -47,9 +25,9 @@
         [[self window] setTitleVisibility:NSWindowTitleHidden];
         [[self window] setTitlebarAppearsTransparent:YES];
         [[self window] setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameAqua]];
-        
+
         [windowController setShouldCascadeWindows:NO];
-        [windowController setWindowFrameAutosaveName:@"SimpleChatClient"];
+        [windowController setWindowFrameAutosaveName:@"<%= name %>"];
 
         [windowController showWindow:self.window];
 
@@ -66,11 +44,11 @@
                                               launchOptions:nil];
 
     RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
-                                                     moduleName:@"SimpleChatClient"
+                                                     moduleName:@"<%= name %>"
                                               initialProperties:nil];
 
 
-    
+
     [self.window setContentView:rootView];
 }
 
@@ -93,19 +71,19 @@
      * on the same Wi-Fi network.
      */
 
-    sourceURL = [NSURL URLWithString:@"http://localhost:8081/Examples/SimpleChatClient/index.osx.bundle?platform=osx&dev=true"];
+    sourceURL = [NSURL URLWithString:@"http://localhost:8081/index.osx.bundle?platform=osx&dev=true"];
 
     /**
      * OPTION 2
      * Load from pre-bundled file on disk. To re-generate the static bundle, `cd`
      * to your Xcode project folder and run
      *
-     * $ curl 'http://localhost:8081/Examples/SimpleChatClient/index.osx.bundle?platform=osx&dev=false&minify=true' -o SimpleChatClient/main.jsbundle
+     * $ curl 'http://localhost:8081/index.osx.bundle?platform=osx&dev=false&minify=true' -o RNGLDesktop/main.jsbundle
      *
      * then add the `main.jsbundle` file to your project and uncomment this line:
      */
 
-    sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+    //sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 
 #if RUNNING_ON_CI
     sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
@@ -129,10 +107,8 @@
     NSMenu *rootMenu = [[NSMenu alloc] initWithTitle:@"" ];
     [containerItem setSubmenu:rootMenu];
     [mainMenu addItem:containerItem];
-    [rootMenu addItemWithTitle:@"Quit SimpleChatClient" action:@selector(terminate) keyEquivalent:@"Q"];
-    [NSApp setMainMenu:mainMenu];
+    [rootMenu addItemWithTitle:@"Quit <%= name %>" action:@selector(terminate) keyEquivalent:@"Q"];
 
-    [self setUpEditMenu];
 }
 
 - (id)firstResponder
@@ -140,31 +116,4 @@
     return [self.window firstResponder];
 }
 
-- (void)setUpEditMenu
-{
-    NSMenuItem *developerItemContainer = [[NSMenuItem alloc] init];
-    NSMenu *developerMenu = [[NSMenu alloc] initWithTitle:@"Edit"];
-    [developerItemContainer setSubmenu:developerMenu];
-    [developerMenu setAutoenablesItems:YES];
-    [developerMenu addItem:[self addEditMenuItem:@"Cut" action:@selector(cut:) key:@"x" ]];
-    [developerMenu addItem:[self addEditMenuItem:@"Copy" action:@selector(copy:) key:@"c" ]];
-    [developerMenu addItem:[self addEditMenuItem:@"Paste" action:@selector(paste:) key:@"v" ]];
-    [developerMenu addItem:[self addEditMenuItem:@"SelectAll" action:@selector(selectAll:) key:@"a" ]];
-    [[NSApp mainMenu] addItem:developerItemContainer];
-}
-
-- (NSMenuItem *)addEditMenuItem:(NSString *)title
-                         action:(SEL _Nullable)action
-                            key:(NSString *)key
-{
-    NSMenuItem * menuItem = [[NSMenuItem alloc] init];
-    [menuItem setTitle:title];
-    [menuItem setEnabled:YES];
-    //[menuItem setTarget:[self.window firstResponder]];
-    [menuItem setAction:action];
-    [menuItem setKeyEquivalent:key];
-    return menuItem;
-}
-
 @end
-
