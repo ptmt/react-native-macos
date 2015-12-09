@@ -6,13 +6,19 @@ Build OS X desktop apps using React Native.
 [![npm version](https://badge.fury.io/js/react-native-desktop.svg)](https://badge.fury.io/js/react-native-desktop)
 [![discord #react-native-desktop](https://img.shields.io/badge/discord-%23react--native--desktop-blue.svg)](https://discordapp.com/channels/102860784329052160/111514927801307136)
 
-[![Youtube play](https://cloud.githubusercontent.com/assets/1004115/11681502/1eeb716e-9e81-11e5-9359-d4ce61a965d1.png)](https://www.youtube.com/watch?v=m1-LNKIuqtI)
+[![Youtube play](https://cloud.githubusercontent.com/assets/1004115/11685246/75db9d6a-9e99-11e5-8378-1d5cea6053c0.png)](https://www.youtube.com/watch?v=m1-LNKIuqtI)
 
-**It's not production ready**: the lack of few important APIs, documentation, benchmarks and completed examples (work in progress).
+**It's not a production-ready yet**
 
-**Getting started**
+## Getting started
 
-Since it's simply a fork of React Native, you can follow the same steps to run Examples. Feel free to ask anything on `#react-native-desktop` channel if you run into problems (and you probably will).
+```
+npm install react-native-desktop-cli -g
+cd projects
+react-native-desktop init MyProject
+```
+Since it's simply a fork of React Native, basically you just can follow [the same steps](http://facebook.github.io/react-native/docs/getting-started.html#content).
+Feel free to ask anything on `#react-native-desktop` channel if you run into problems (and you probably will).
 
 ****
 

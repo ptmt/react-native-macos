@@ -1,7 +1,7 @@
 {
   "name": "react-native-desktop",
-  "version": "0.1.13",
-  "description": "A framework for building desktop native apps using React",
+  "version": "0.2.0",
+  "description": "A framework for building native desktop apps using React",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
