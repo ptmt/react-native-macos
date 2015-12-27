@@ -68,6 +68,7 @@
 		83CBBA601A601EAA00E9B192 /* RCTBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CBBA5F1A601EAA00E9B192 /* RCTBridge.m */; };
 		83CBBA691A601EF300E9B192 /* RCTEventDispatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CBBA661A601EF300E9B192 /* RCTEventDispatcher.m */; };
 		83CBBACC1A6023D300E9B192 /* RCTConvert.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CBBACB1A6023D300E9B192 /* RCTConvert.m */; };
+		C924C30F1C2EBDA100D7ED48 /* NSView+NSViewAnimationWithBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = C924C30E1C2EBDA100D7ED48 /* NSView+NSViewAnimationWithBlocks.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -219,6 +220,8 @@
 		83CBBACA1A6023D300E9B192 /* RCTConvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTConvert.h; sourceTree = "<group>"; };
 		83CBBACB1A6023D300E9B192 /* RCTConvert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTConvert.m; sourceTree = "<group>"; };
 		83F15A171B7CC46900F10295 /* NSView+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+Private.h"; sourceTree = "<group>"; };
+		C924C30D1C2EBDA100D7ED48 /* NSView+NSViewAnimationWithBlocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSView+NSViewAnimationWithBlocks.h"; sourceTree = "<group>"; };
+		C924C30E1C2EBDA100D7ED48 /* NSView+NSViewAnimationWithBlocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSView+NSViewAnimationWithBlocks.m"; sourceTree = "<group>"; };
 		E3BBC8EB1ADE6F47001BBD81 /* RCTTextDecorationLineType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTTextDecorationLineType.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -281,6 +284,8 @@
 		13B07FF31A6947C200A75B9A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				C924C30D1C2EBDA100D7ED48 /* NSView+NSViewAnimationWithBlocks.h */,
+				C924C30E1C2EBDA100D7ED48 /* NSView+NSViewAnimationWithBlocks.m */,
 				83F15A171B7CC46900F10295 /* NSView+Private.h */,
 				13E067531A70F44B002CDEE1 /* NSView+React.h */,
 				13E067541A70F44B002CDEE1 /* NSView+React.m */,
@@ -570,6 +575,7 @@
 				03279A2B1BB820010015275D /* RCTShadowView.m in Sources */,
 				14F484561AABFCE100FDF6B9 /* RCTSliderManager.m in Sources */,
 				14C2CA741B3AC64300E6CBB2 /* RCTModuleData.m in Sources */,
+				C924C30F1C2EBDA100D7ED48 /* NSView+NSViewAnimationWithBlocks.m in Sources */,
 				142014191B32094000CC17BA /* RCTPerformanceLogger.m in Sources */,
 				032625A81BBCF725001C8FC1 /* RCTRedBox.m in Sources */,
 				83CBBA521A601E3B00E9B192 /* RCTLog.m in Sources */,
