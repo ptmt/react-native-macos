@@ -32,6 +32,7 @@
 #import "RCTView.h"
 #import "RCTViewManager.h"
 #import "NSView+React.h"
+#import "NSView+NSViewAnimationWithBlocks.h"
 
 static void RCTTraverseViewNodes(id<RCTComponent> view, void (^block)(id<RCTComponent>))
 {
@@ -61,25 +62,25 @@ NSString *const RCTUIManagerRootViewKey = @"RCTUIManagerRootViewKey";
 
 @implementation RCTAnimation
 
-//static NSViewAnimationOptions NSViewAnimationOptionsFromRCTAnimationType(RCTAnimationType type)
-//{
-//  switch (type) {
-//    case RCTAnimationTypeLinear:
-//      return NSViewAnimationOptionCurveLinear;
-//    case RCTAnimationTypeEaseIn:
-//      return NSViewAnimationOptionCurveEaseIn;
-//    case RCTAnimationTypeEaseOut:
-//      return NSViewAnimationOptionCurveEaseOut;
-//    case RCTAnimationTypeEaseInEaseOut:
-//      return NSViewAnimationOptionCurveEaseInOut;
-//    case RCTAnimationTypeKeyboard:
-//      // http://stackoverflow.com/questions/18870447/how-to-use-the-default-ios7-uianimation-curve
-//      return (NSViewAnimationOptions)(7 << 16);
-//    default:
-//      RCTLogError(@"Unsupported animation type %zd", type);
-//      return NSViewAnimationOptionCurveEaseInOut;
-//  }
-//}
+static NSViewAnimationOptions NSViewAnimationOptionsFromRCTAnimationType(RCTAnimationType type)
+{
+  switch (type) {
+    case RCTAnimationTypeLinear:
+      return NSViewAnimationOptionCurveLinear;
+    case RCTAnimationTypeEaseIn:
+      return NSViewAnimationOptionCurveEaseIn;
+    case RCTAnimationTypeEaseOut:
+      return NSViewAnimationOptionCurveEaseOut;
+    case RCTAnimationTypeEaseInEaseOut:
+      return NSViewAnimationOptionCurveEaseInOut;
+    case RCTAnimationTypeKeyboard:
+      // http://stackoverflow.com/questions/18870447/how-to-use-the-default-ios7-uianimation-curve
+      return (NSViewAnimationOptions)(7 << 16);
+    default:
+      RCTLogError(@"Unsupported animation type %zd", type);
+      return NSViewAnimationOptionCurveEaseInOut;
+  }
+}
 
 - (instancetype)initWithDuration:(NSTimeInterval)duration dictionary:(NSDictionary *)config
 {
@@ -116,8 +117,8 @@ NSString *const RCTUIManagerRootViewKey = @"RCTUIManagerRootViewKey";
 - (void)performAnimations:(void (^)(void))animations
       withCompletionBlock:(void (^)(BOOL completed))completionBlock
 {
-//  if (_animationType == RCTAnimationTypeSpring) {
-//
+  if (_animationType == RCTAnimationTypeSpring) {
+
 //    [NSView animateWithDuration:_duration
 //                          delay:_delay
 //         usingSpringWithDamping:_springDamping
@@ -125,18 +126,18 @@ NSString *const RCTUIManagerRootViewKey = @"RCTUIManagerRootViewKey";
 //                        options:NSViewAnimationOptionBeginFromCurrentState
 //                     animations:animations
 //                     completion:completionBlock];
-//
-//  } else {
-//
-//    NSViewAnimationOptions options = NSViewAnimationOptionBeginFromCurrentState |
-//      NSViewAnimationOptionsFromRCTAnimationType(_animationType);
-//
-//    [NSView animateWithDuration:_duration
-//                          delay:_delay
-//                        options:options
-//                     animations:animations
-//                     completion:completionBlock];
-//  }
+
+  } else {
+
+    NSViewAnimationOptions options = NSViewAnimationOptionBeginFromCurrentState |
+      NSViewAnimationOptionsFromRCTAnimationType(_animationType);
+
+    [NSView animateWithDuration:_duration
+                          delay:_delay
+                        options:options
+                     animations:animations
+                     completion:completionBlock];
+  }
 }
 
 @end
@@ -519,6 +520,7 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
       // Animate view update
       if (updateAnimation) {
         [updateAnimation performAnimations:^{
+          [[view animator] setFrame:frame];
           [view reactSetFrame:frame];
           for (RCTViewManagerUIBlock block in updateBlocks) {
             block(self, _viewRegistry);
