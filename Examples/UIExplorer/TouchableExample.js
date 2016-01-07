@@ -129,10 +129,17 @@ var TextOnPressBox = React.createClass({
 });
 
 var Hoverable = React.createClass({
+  getInitialState: function() {
+    return {
+      hovered: false,
+    };
+  },
   render: function() {
     return (
-      <View style={{backgroundColor: 'black'}}>
-        <Text>TODO: Hover this</Text>
+      <View style={{backgroundColor: this.state.hovered ? 'lightgray' : 'transparent'}}
+        onMouseEnter={() => this.setState({hovered: true})}
+        onMouseLeave={() => this.setState({hovered: false})}>
+        <Text>Hover this</Text>
       </View>
     );
   }
