@@ -99,7 +99,9 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
     // Check if item is becoming first responder to delete touch
     NSView *targetView = [self.view hitTest:touchLocation];
 
-    if (![targetView.className isEqualToString:@"RCTText"] && ![targetView.className isEqualToString:@"RCTView"]) {
+    if (![targetView.className isEqualToString:@"RCTText"] &&
+        ![targetView.className isEqualToString:@"RCTView"] &&
+        ![targetView.className isEqualToString:@"RCTImageView"]) {
       self.state = NSGestureRecognizerStateEnded;
       return;
     }
@@ -211,6 +213,7 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
     [reactTouches addObject:[touch copy]];
   }
   eventName = RCTNormalizeInputEventName(eventName);
+
   [_bridge enqueueJSCall:@"RCTEventEmitter.receiveTouches"
                     args:@[eventName, reactTouches, changedIndexes]];
 }

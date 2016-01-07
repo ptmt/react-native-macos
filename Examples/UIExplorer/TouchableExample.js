@@ -41,7 +41,14 @@ exports.examples = [
     return (
       <View>
         <View style={styles.row}>
-
+          <TouchableOpacity
+              style={styles.wrapper}
+              onPress={() => console.log('stock THW image - highlight')}>
+              <Image
+                source={heartImage}
+                style={styles.image}
+              />
+            </TouchableOpacity>
           <TouchableHighlight
             style={styles.wrapper}
             activeOpacity={1}
