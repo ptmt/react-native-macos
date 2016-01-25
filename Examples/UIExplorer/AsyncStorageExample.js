@@ -11,7 +11,7 @@
  * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * TODO: add flow
+ * @flow
  */
 'use strict';
 
@@ -80,7 +80,7 @@ var BasicStorageExample = React.createClass({
         </Text>
         <Text>{' '}</Text>
         <Text>Messages:</Text>
-        {this.state.messages.map((m) => <Text>{m}</Text>)}
+        {this.state.messages.map((m) => <Text key={m}>{m}</Text>)}
       </View>
     );
   },

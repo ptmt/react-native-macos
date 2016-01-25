@@ -11,7 +11,6 @@
 
 'use strict';
 
-var Set = require('Set');
 var DeviceEventManager = require('NativeModules').DeviceEventManager;
 var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 
@@ -36,7 +35,7 @@ RCTDeviceEventEmitter.addListener(DEVICE_BACK_EVENT, function() {
 });
 
 /**
- * Detect hardware back button presses, and programatically invoke the default back button
+ * Detect hardware back button presses, and programmatically invoke the default back button
  * functionality to exit the app if there are no listeners or if none of the listeners return true.
  *
  * Example:

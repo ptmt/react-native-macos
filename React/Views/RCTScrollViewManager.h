@@ -21,7 +21,10 @@
 
 @end
 
+/**
+ * Workaround for a AppKit NSScrollView
+ *
+ */
 @interface RCTNativeScrollViewManager : RCTViewManager
 
 @end
-

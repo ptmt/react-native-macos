@@ -73,7 +73,7 @@
 @implementation RCTText
 {
   NSTextStorage *_textStorage;
-  NSMutableArray *_reactSubviews;
+  NSMutableArray<NSView *> *_reactSubviews;
   CAShapeLayer *_highlightLayer;
 }
 
@@ -82,20 +82,6 @@
   if ((self = [super initWithFrame:frame])) {
     _textStorage = [NSTextStorage new];
     _reactSubviews = [NSMutableArray array];
-//    CALayer *_rootLayer = [CALayer layer];
-//
-//    _rootLayer.shouldRasterize = YES;
-//
-//    self.layer = _rootLayer;
-//    [self setWantsLayer:YES];
-//    [self.layer setNeedsDisplay];
-
-    //self.is = YES;
-   // self.accessibilityTraits |= NSAccessibilityStaticTextRole;
-
-//    self.opaque = NO;
-
-    //self.contentMode = UIViewContentModeRedraw;
   }
   return self;
 }
@@ -129,11 +115,12 @@
 
 - (void)reactSetFrame:(CGRect)frame
 {
-  // Text looks super weird if its frame is animated.
-  // This disables the frame animation, without affecting opacity, etc.
-//  [NSView performWithoutAnimation:^{
     [super reactSetFrame:frame];
-//  }];
+}
+
+- (void)reactSetInheritedBackgroundColor:(NSColor *)inheritedBackgroundColor
+{
+  self.layer.backgroundColor = [inheritedBackgroundColor CGColor];
 }
 
 - (void)insertReactSubview:(NSView *)subview atIndex:(NSInteger)atIndex
@@ -146,7 +133,7 @@
   [_reactSubviews removeObject:subview];
 }
 
-- (NSArray *)reactSubviews
+- (NSArray<NSView *> *)reactSubviews
 {
   return _reactSubviews;
 }

@@ -12,26 +12,30 @@ const debug = require('debug')('ReactNativePackager:DependencyGraph');
 const util = require('util');
 const path = require('path');
 const isAbsolutePath = require('absolute-path');
-const getAssetDataFromName = require('../../lib/getAssetDataFromName');
+const getAssetDataFromName = require('../lib/getAssetDataFromName');
 const Promise = require('promise');
 
 class ResolutionRequest {
   constructor({
     platform,
+    preferNativePlatform,
     entryPath,
     hasteMap,
     deprecatedAssetMap,
     helpers,
     moduleCache,
     fastfs,
+    shouldThrowOnUnresolvedErrors,
   }) {
     this._platform = platform;
+    this._preferNativePlatform = preferNativePlatform;
     this._entryPath = entryPath;
     this._hasteMap = hasteMap;
     this._deprecatedAssetMap = deprecatedAssetMap;
     this._helpers = helpers;
     this._moduleCache = moduleCache;
     this._fastfs = fastfs;
+    this._shouldThrowOnUnresolvedErrors = shouldThrowOnUnresolvedErrors;
     this._resetResolutionCache();
   }
 
@@ -65,12 +69,14 @@ class ResolutionRequest {
     };
 
     const forgive = (error) => {
-      if (error.type !== 'UnableToResolveError' ||
-        this._platform === 'ios') {
+      if (
+        error.type !== 'UnableToResolveError' ||
+        this._shouldThrowOnUnresolvedErrors(this._entryPath, this._platform)
+      ) {
         throw error;
       }
 
-      console.warn(
+      debug(
         'Unable to resolve module %s from %s',
         toModuleName,
         fromModule.path
@@ -97,8 +103,10 @@ class ResolutionRequest {
       );
   }
 
-  getOrderedDependencies(response) {
-    return Promise.resolve().then(() => {
+  getOrderedDependencies(response, mocksPattern) {
+    return this._getAllMocks(mocksPattern).then(mocks => {
+      response.setMocks(mocks);
+
       const entry = this._moduleCache.getModule(this._entryPath);
       const visited = Object.create(null);
       visited[entry.hash()] = true;
@@ -110,20 +118,42 @@ class ResolutionRequest {
             depNames.map(name => this.resolveDependency(mod, name))
           ).then((dependencies) => [depNames, dependencies])
         ).then(([depNames, dependencies]) => {
+          if (mocks) {
+            return mod.getName().then(name => {
+              if (mocks[name]) {
+                const mockModule =
+                  this._moduleCache.getModule(mocks[name]);
+                depNames.push(name);
+                dependencies.push(mockModule);
+              }
+              return [depNames, dependencies];
+            });
+          }
+          return Promise.resolve([depNames, dependencies]);
+        }).then(([depNames, dependencies]) => {
           let p = Promise.resolve();
-
           const filteredPairs = [];
 
           dependencies.forEach((modDep, i) => {
+            const name = depNames[i];
             if (modDep == null) {
+              // It is possible to require mocks that don't have a real
+              // module backing them. If a dependency cannot be found but there
+              // exists a mock with the desired ID, resolve it and add it as
+              // a dependency.
+              if (mocks && mocks[name]) {
+                const mockModule = this._moduleCache.getModule(mocks[name]);
+                return filteredPairs.push([name, mockModule]);
+              }
+
               debug(
                 'WARNING: Cannot find required module `%s` from module `%s`',
-                depNames[i],
+                name,
                 mod.path
               );
               return false;
             }
-            return filteredPairs.push([depNames[i], modDep]);
+            return filteredPairs.push([name, modDep]);
           });
 
           response.setResolvedDependencyPairs(mod, filteredPairs);
@@ -161,6 +191,20 @@ class ResolutionRequest {
     }).then(asyncDependencies => asyncDependencies.forEach(
       (dependency) => response.pushAsyncDependency(dependency)
     ));
+  }
+
+  _getAllMocks(pattern) {
+    // Take all mocks in all the roots into account. This is necessary
+    // because currently mocks are global: any module can be mocked by
+    // any mock in the system.
+    let mocks = null;
+    if (pattern) {
+      mocks = Object.create(null);
+      this._fastfs.matchFilesByPattern(pattern).forEach(file =>
+        mocks[path.basename(file, path.extname(file))] = file
+      );
+    }
+    return Promise.resolve(mocks);
   }
 
   _resolveHasteDependency(fromModule, toModuleName) {
@@ -301,8 +345,13 @@ class ResolutionRequest {
       } else if (this._platform != null &&
                  this._fastfs.fileExists(potentialModulePath + '.' + this._platform + '.js')) {
         file = potentialModulePath + '.' + this._platform + '.js';
+      } else if (this._preferNativePlatform &&
+                 this._fastfs.fileExists(potentialModulePath + '.native.js')) {
+        file = potentialModulePath + '.native.js';
       } else if (this._fastfs.fileExists(potentialModulePath + '.js')) {
         file = potentialModulePath + '.js';
+      } else if (this._fastfs.fileExists(potentialModulePath + '.jsx')) {
+        file = potentialModulePath + '.jsx';
       } else if (this._fastfs.fileExists(potentialModulePath + '.json')) {
         file = potentialModulePath + '.json';
       } else {
@@ -323,7 +372,13 @@ class ResolutionRequest {
         throw new UnableToResolveError(
           fromModule,
           toModule,
-          `Invalid directory ${potentialDirPath}`,
+`Invalid directory ${potentialDirPath}
+
+This might be related to https://github.com/facebook/react-native/issues/4968
+To resolve try the following:
+  1. Clear watchman watches: \`watchman watch-del-all\`.
+  2. Delete the \`node_modules\` folder: \`rm -rf node_modules && npm install\`.
+  3. Reset packager cache: \`rm -fr $TMPDIR/react-*\` or \`npm start -- --reset-cache\`.`,
         );
       }
 
@@ -349,6 +404,7 @@ class ResolutionRequest {
   _resetResolutionCache() {
     this._immediateResolutionCache = Object.create(null);
   }
+
 }
 
 

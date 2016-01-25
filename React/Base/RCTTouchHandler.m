@@ -31,9 +31,9 @@
    * These must be kept track of because `UIKit` destroys the touch targets
    * if touches are canceled, and we have no other way to recover this info.
    */
-  NSMutableOrderedSet *_nativeTouches;
-  NSMutableArray *_reactTouches;
-  NSMutableArray *_touchViews;
+  NSMutableOrderedSet<NSEvent *> *_nativeTouches;
+  NSMutableArray<NSMutableDictionary *> *_reactTouches;
+  NSMutableArray<NSView *> *_touchViews;
 
   BOOL _dispatchedInitialTouches;
   BOOL _recordingInteractionTiming;
@@ -78,7 +78,7 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
 
 #pragma mark - Bookkeeping for touch indices
 
-- (void)_recordNewTouches:(NSSet *)touches
+- (void)_recordNewTouches:(NSSet<NSEvent *> *)touches
 {
   for (NSEvent *touch in touches) {
 
@@ -89,9 +89,10 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
     RCTAssert(index == NSNotFound,
               @"Touch is already recorded. This is a critical bug.");
 
-    // TODO: This is a highly disgusting workaround. Need to find out how to get right position to make a hit test.
+    // TODO: This is a highly disgusting workaround. Need to find out the way
+    // to get right position for a hit test.
     // At the moment, because the view is flipped we compensate the header's height manually.
-    //self.view.window.titlebarAccessoryViewControllers.
+
     NSPoint touchLocation = [touch locationInWindow];
 
     // TODO: fix hardcoded components name.
@@ -140,7 +141,7 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
   }
 }
 
-- (void)_recordRemovedTouches:(NSSet *)touches
+- (void)_recordRemovedTouches:(NSSet<NSEvent *> *)touches
 {
   for (NSEvent *touch in touches) {
     NSUInteger index = [_nativeTouches indexOfObjectPassingTest:^BOOL(id obj, __unused NSUInteger idx, __unused BOOL *stop) {
@@ -185,7 +186,7 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
  * (start/end/move/cancel) and the indices that represent "changed" `Touch`es
  * from that array.
  */
-- (void)_updateAndDispatchTouches:(NSSet *)touches
+- (void)_updateAndDispatchTouches:(NSSet<NSEvent *> *)touches
                         eventName:(NSString *)eventName
                   originatingTime:(__unused CFTimeInterval)originatingTime
 {
@@ -208,7 +209,8 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
 
   // Deep copy the touches because they will be accessed from another thread
   // TODO: would it be safer to do this in the bridge or executor, rather than trusting caller?
-  NSMutableArray *reactTouches = [[NSMutableArray alloc] initWithCapacity:_reactTouches.count];
+  NSMutableArray<NSDictionary *> *reactTouches =
+    [[NSMutableArray alloc] initWithCapacity:_reactTouches.count];
   for (NSDictionary *touch in _reactTouches) {
     [reactTouches addObject:[touch copy]];
   }
@@ -324,7 +326,8 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
   [self _recordRemovedTouches:touches];
 }
 
-// Mouse move events https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/EventOverview/MouseTrackingEvents/MouseTrackingEvents.html
+  // Mouse move events
+  // https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/EventOverview/MouseTrackingEvents/MouseTrackingEvents.html
 
 - (BOOL)canPreventGestureRecognizer:(__unused NSGestureRecognizer *)preventedGestureRecognizer
 {
@@ -339,6 +342,12 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
 - (void)reset
 {
   _dispatchedInitialTouches = NO;
+}
+
+- (void)cancel
+{
+  self.enabled = NO;
+  self.enabled = YES;
 }
 
 @end

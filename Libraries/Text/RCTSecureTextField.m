@@ -94,12 +94,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   [super addSubview:view];
 }
 
+
 - (void)textDidChange:(NSNotification *)aNotification
 {
   _nativeEventCount++;
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeChange
                                  reactTag:self.reactTag
                                      text:[self stringValue]
+                                      key:nil
                                eventCount:_nativeEventCount];
 }
 
@@ -109,6 +111,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeEnd
                                  reactTag:self.reactTag
                                      text:[self stringValue]
+                                      key:nil
                                eventCount:_nativeEventCount];
 }
 
@@ -122,6 +125,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeFocus
                                  reactTag:self.reactTag
                                      text:[self stringValue]
+                                      key:nil
                                eventCount:_nativeEventCount];
 }
 
@@ -141,6 +145,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     [_eventDispatcher sendTextEventWithType:RCTTextEventTypeBlur
                                    reactTag:self.reactTag
                                        text:[self stringValue]
+                                        key:nil
                                  eventCount:_nativeEventCount];
   }
   return result;

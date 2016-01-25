@@ -16,6 +16,7 @@
 @interface RCTTouchHandler : NSGestureRecognizer
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge NS_DESIGNATED_INITIALIZER;
+- (void)cancel;
 
 - (void)mouseMoved:(NSEvent *)theEvent;
 

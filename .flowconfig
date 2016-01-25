@@ -11,6 +11,8 @@
 # Examples
 .*/Examples/SimpleChatClient/node_modules/react/.* # <- should not be here
 .*/Examples/SimpleChatClient/node_modules/react-redux/node_modules/invariant/.*
+.*/Examples/SimpleChatClient/node_modules/simple-markdown/.*
+.*/Examples/SimpleChatClient/node_modules/fbjs/.*
 
 # Ignore react-tools where there are overlaps, but don't ignore anything that
 # react-native relies on
@@ -18,7 +20,27 @@
 .*/node_modules/react-tools/src/renderers/shared/event/EventPropagators.js
 .*/node_modules/react-tools/src/renderers/shared/event/eventPlugins/ResponderEventPlugin.js
 .*/node_modules/react-tools/src/shared/vendor/core/ExecutionEnvironment.js
-.*/Examples/SimpleChatClient/node_modules/simple-markdown/.*
+
+# Ugh
+.*/node_modules/babel.*
+.*/node_modules/babylon.*
+.*/node_modules/invariant.*
+
+# Ignore react and fbjs where there are overlaps, but don't ignore
+# anything that react-native relies on
+.*/node_modules/fbjs/lib/Map.js
+.*/node_modules/fbjs/lib/Promise.js
+.*/node_modules/fbjs/lib/fetch.js
+#.*/node_modules/fbjs/lib/ExecutionEnvironment.js
+.*/node_modules/fbjs/lib/isEmpty.js
+.*/node_modules/fbjs/lib/crc32.js
+.*/node_modules/fbjs/lib/ErrorUtils.js
+
+# Flow has a built-in definition for the 'react' module which we prefer to use
+# over the currently-untyped source
+.*/node_modules/react/react.js
+.*/node_modules/react/lib/React.js
+.*/node_modules/react/lib/ReactDOM.js
 
 # Ignore commoner tests
 .*/node_modules/commoner/test/.*
@@ -49,9 +71,9 @@ suppress_type=$FlowIssue
 suppress_type=$FlowFixMe
 suppress_type=$FixMe
 
-suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe\\($\\|[^(]\\|(\\(>=0\\.\\(1[0-8]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)
-suppress_comment=\\(.\\|\n\\)*\\$FlowIssue\\((\\(>=0\\.\\(1[0-8]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)? #[0-9]+
+suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe\\($\\|[^(]\\|(\\(>=0\\.\\(2[0-0]\\|1[0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)
+suppress_comment=\\(.\\|\n\\)*\\$FlowIssue\\((\\(>=0\\.\\(2[0-0]\\|1[0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)?:? #[0-9]+
 suppress_comment=\\(.\\|\n\\)*\\$FlowFixedInNextDeploy
 
 [version]
-0.18.1
+0.20.1

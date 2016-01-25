@@ -14,6 +14,7 @@
 #import "RCTConvert.h"
 #import "RCTLog.h"
 #import "RCTUtils.h"
+#import "RCTImageUtils.h"
 
 #import "RCTImageStoreManager.h"
 #import "RCTImageLoader.h"
@@ -36,6 +37,7 @@ RCT_EXPORT_MODULE()
  *        be scaled down to `displaySize` rather than `size`.
  *        All units are in px (not points).
  */
+
 //RCT_EXPORT_METHOD(cropImage:(NSString *)imageTag
 //                  cropData:(NSDictionary *)cropData
 //                  successCallback:(RCTResponseSenderBlock)successCallback

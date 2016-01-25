@@ -1,8 +1,8 @@
 'use strict';
 
 jest
-  .dontMock('../../lib/getPlatformExtension')
-  .dontMock('../../lib/getAssetDataFromName')
+  .dontMock('../../DependencyResolver/lib/getPlatformExtension')
+  .dontMock('../../DependencyResolver/lib/getAssetDataFromName')
   .dontMock('../');
 
 jest
@@ -185,7 +185,7 @@ describe('AssetServer', () => {
     });
   });
 
-  describe('assetSerer.getAssetData', () => {
+  describe('assetServer.getAssetData', () => {
     pit('should get assetData', () => {
       const hash = {
         update: jest.genMockFn(),

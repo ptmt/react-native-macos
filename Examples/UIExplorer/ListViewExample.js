@@ -21,6 +21,7 @@ var {
   ListView,
   TouchableHighlight,
   StyleSheet,
+  RecyclerViewBackedScrollView,
   Text,
   View,
 } = React;
@@ -57,6 +58,8 @@ var ListViewSimpleExample = React.createClass({
           initialListSize={10}
           dataSource={this.state.dataSource}
           renderRow={this._renderRow}
+          renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
+          renderSeparator={(sectionID, rowID) => <View key={`${sectionID}-${rowID}`} style={styles.separator} />}
         />
       </UIExplorerPage>
     );
@@ -64,9 +67,7 @@ var ListViewSimpleExample = React.createClass({
 
   _renderRow: function(rowData: string, sectionID: number, rowID: number) {
     var rowHash = Math.abs(hashCode(rowData));
-    var imgSource = {
-      uri: THUMB_URLS[rowHash % THUMB_URLS.length],
-    };
+    var imgSource = THUMB_URLS[rowHash % THUMB_URLS.length];
     return (
       <TouchableHighlight onPress={() => this._pressRow(rowID)}>
         <View>
@@ -76,7 +77,6 @@ var ListViewSimpleExample = React.createClass({
               {rowData + ' - ' + LOREM_IPSUM.substr(0, rowHash % 301 + 10)}
             </Text>
           </View>
-          <View style={styles.separator} />
         </View>
       </TouchableHighlight>
     );
@@ -99,10 +99,20 @@ var ListViewSimpleExample = React.createClass({
   },
 });
 
-var THUMB_URLS = new Array(20)
-  .join()
-  .split(',')
-  .map(x => 'http://placehold.it/150x150');
+var THUMB_URLS = [
+  require('./Thumbnails/like.png'),
+  require('./Thumbnails/dislike.png'),
+  require('./Thumbnails/call.png'),
+  require('./Thumbnails/fist.png'),
+  require('./Thumbnails/bandaged.png'),
+  require('./Thumbnails/flowers.png'),
+  require('./Thumbnails/heart.png'),
+  require('./Thumbnails/liking.png'),
+  require('./Thumbnails/party.png'),
+  require('./Thumbnails/poke.png'),
+  require('./Thumbnails/superlike.png'),
+  require('./Thumbnails/victory.png'),
+  ];
 
 var LOREM_IPSUM = 'Lorem ipsum dolor sit amet, ius ad pertinax oportere accommodare, an vix civibus corrumpit referrentur. Te nam case ludus inciderint, te mea facilisi adipiscing. Sea id integre luptatum. In tota sale consequuntur nec. Erat ocurreret mei ei. Eu paulo sapientem vulputate est, vel an accusam intellegam interesset. Nam eu stet pericula reprimique, ea vim illud modus, putant invidunt reprehendunt ne qui.';
 

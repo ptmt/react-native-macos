@@ -9,6 +9,8 @@
 
 #import "RCTSlider.h"
 
+#import <tgmath.h>
+
 @implementation RCTSlider
 {
   float _unclippedValue;
@@ -31,5 +33,6 @@
   self.maxValue = maximumValue;
   [self setDoubleValue:_unclippedValue];
 }
+
 
 @end

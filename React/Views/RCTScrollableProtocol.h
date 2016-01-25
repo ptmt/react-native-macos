@@ -16,6 +16,7 @@
 @protocol RCTScrollableProtocol
 
 //@property (nonatomic, weak) NSObject<NSScrollViewDelegate> *nativeMainScrollDelegate;
+
 @property (nonatomic, readonly) CGSize contentSize;
 
 - (void)scrollWheel:(NSEvent *)theEvent;

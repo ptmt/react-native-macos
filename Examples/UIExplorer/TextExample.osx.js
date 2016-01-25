@@ -223,7 +223,7 @@ exports.examples = [
         </Text>
       </View>
     );
-  },
+  }
 }, {
   title: 'Nested',
   description: 'Nested text components will inherit the styles of their ' +
@@ -241,6 +241,21 @@ exports.examples = [
             </Text>
             )
           </Text>
+          )
+        </Text>
+        <Text style={{opacity:0.7}}>
+          (opacity
+            <Text>
+              (is inherited
+                <Text style={{opacity:0.7}}>
+                  (and accumulated
+                    <Text style={{backgroundColor:'#ffaaaa'}}>
+                      (and also applies to the background)
+                    </Text>
+                  )
+                </Text>
+              )
+            </Text>
           )
         </Text>
         <Text style={{fontSize: 12}}>
@@ -404,7 +419,18 @@ exports.examples = [
     return (
       <View>
         <Text>
-          This text contains an inline image <Image source={require('./flux.png')}/>. Neat, huh?
+          This text contains an inline image <Image source={require('./flux.png')} style={{width: 30, height: 11, resizeMode: 'cover'}}/>. Neat, huh?
+        </Text>
+      </View>
+    );
+  },
+}, {
+  title: 'Text shadow',
+  render: function() {
+    return (
+      <View>
+        <Text style={{fontSize: 20, textShadowOffset: {width: 2, height: 2}, textShadowRadius: 1, textShadowColor: '#00cccc'}}>
+          Demo text shadow
         </Text>
       </View>
     );

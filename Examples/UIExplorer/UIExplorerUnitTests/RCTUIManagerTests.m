@@ -14,7 +14,6 @@
 
 #import <XCTest/XCTest.h>
 
-#import "RCTSparseArray.h"
 #import "RCTUIManager.h"
 #import "NSView+React.h"
 
@@ -26,9 +25,9 @@
       addChildReactTags:(NSArray *)addChildReactTags
            addAtIndices:(NSArray *)addAtIndices
         removeAtIndices:(NSArray *)removeAtIndices
-               registry:(RCTSparseArray *)registry;
+               registry:(NSDictionary<NSNumber *, id<RCTComponent>> *)registry;
 
-@property (nonatomic, readonly) RCTSparseArray *viewRegistry;
+@property (nonatomic, copy, readonly) NSMutableDictionary<NSNumber *, UIView *> *viewRegistry;
 
 @end
 
@@ -50,13 +49,17 @@
   for (NSInteger i = 1; i <= 20; i++) {
     NSView *registeredView = [NSView new];
     registeredView.reactTag = @(i);
-    _uiManager.viewRegistry[i] = registeredView;
+    _uiManager.viewRegistry[@(i)] = registeredView;
   }
 }
 
 - (void)testManagingChildrenToAddViews
 {
+<<<<<<< HEAD
   NSView *containerView = _uiManager.viewRegistry[20];
+=======
+  UIView *containerView = _uiManager.viewRegistry[@20];
+>>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
   NSMutableArray *addedViews = [NSMutableArray array];
 
   NSArray *tagsToAdd = @[@1, @2, @3, @4, @5];
@@ -86,7 +89,11 @@
 
 - (void)testManagingChildrenToRemoveViews
 {
+<<<<<<< HEAD
   NSView *containerView = _uiManager.viewRegistry[20];
+=======
+  UIView *containerView = _uiManager.viewRegistry[@20];
+>>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
   NSMutableArray *removedViews = [NSMutableArray array];
 
   NSArray *removeAtIndices = @[@0, @4, @8, @12, @16];
@@ -95,7 +102,11 @@
     [removedViews addObject:_uiManager.viewRegistry[reactTag]];
   }
   for (NSInteger i = 2; i < 20; i++) {
+<<<<<<< HEAD
     NSView *view = _uiManager.viewRegistry[i];
+=======
+    UIView *view = _uiManager.viewRegistry[@(i)];
+>>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
     [containerView addSubview:view];
   }
 
@@ -119,7 +130,11 @@
     _uiManager.viewRegistry[view.reactTag] = view;
   }
   for (NSInteger i = 2; i < 20; i++) {
+<<<<<<< HEAD
     NSView *view = _uiManager.viewRegistry[i];
+=======
+    UIView *view = _uiManager.viewRegistry[@(i)];
+>>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
     if (![removedViews containsObject:view]) {
       XCTAssertTrue([view superview] == containerView,
                    @"Should not have removed view with react tag %ld during delete but did", (long)i);
@@ -138,7 +153,11 @@
 // [11,5,1,2,7,8,12,10]
 - (void)testManagingChildrenToAddRemoveAndMove
 {
+<<<<<<< HEAD
   NSView *containerView = _uiManager.viewRegistry[20];
+=======
+  UIView *containerView = _uiManager.viewRegistry[@20];
+>>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
 
   NSArray *removeAtIndices = @[@2, @3, @5, @8];
   NSArray *addAtIndices = @[@0, @6];
@@ -155,7 +174,11 @@
   }
 
   for (NSInteger i = 1; i < 11; i++) {
+<<<<<<< HEAD
     NSView *view = _uiManager.viewRegistry[i];
+=======
+    UIView *view = _uiManager.viewRegistry[@(i)];
+>>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
     [containerView addSubview:view];
   }
 
@@ -180,7 +203,11 @@
 
   // Clean up after ourselves
   for (NSInteger i = 1; i < 13; i++) {
+<<<<<<< HEAD
     NSView *view = _uiManager.viewRegistry[i];
+=======
+    UIView *view = _uiManager.viewRegistry[@(i)];
+>>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
     [view removeFromSuperview];
   }
   for (NSView *view in viewsToRemove) {

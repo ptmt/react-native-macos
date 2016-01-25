@@ -14,10 +14,12 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class RCTBridge;
+
 @interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate>
 
 @property (strong, nonatomic) NSWindow *window;
 @property(assign) Class<NSWindowRestoration> restorationClass;
+@property (nonatomic, readonly) RCTBridge *bridge;
 
 @end
-

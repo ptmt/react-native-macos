@@ -9,14 +9,11 @@
 
 #import "RCTPicker.h"
 
+#import "RCTConvert.h"
 #import "RCTUtils.h"
 #import "NSView+React.h"
 
 @interface RCTPicker() <NSComboBoxDataSource, NSComboBoxDelegate>
-
-@property (nonatomic, copy) NSArray *items;
-@property (nonatomic, assign) NSInteger selectedIndex;
-@property (nonatomic, copy) RCTBubblingEventBlock onChange;
 
 @end
 
@@ -26,6 +23,7 @@
 {
   if ((self = [super initWithFrame:frame])) {
     _selectedIndex = NSNotFound;
+    _textAlign = NSTextAlignmentCenter;
     self.delegate = self;
     self.usesDataSource = YES;
     [self setDataSource:self];
@@ -35,7 +33,7 @@
 
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
-- (void)setItems:(NSArray *)items
+- (void)setItems:(NSArray<NSDictionary *> *)items
 {
   _items = [items copy];
   [self layout];
@@ -69,14 +67,6 @@ objectValueForItemAtIndex:(NSInteger)index
 {
   return _items[index][@"label"];
 }
-
-#pragma mark - UIPickerViewDelegate methods
-
-//- (NSString *)pickerView:(__unused UIPickerView *)pickerView
-//             titleForRow:(NSInteger)row forComponent:(__unused NSInteger)component
-//{
-//  return [self itemForRow:row][@"label"];
-//}
 
 - (void)comboBoxSelectionDidChange:(__unused NSNotification *)notification
 {

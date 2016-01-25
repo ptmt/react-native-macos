@@ -9,9 +9,10 @@
 
 #import <AppKit/AppKit.h>
 #import "RCTImageComponent.h"
-#import "RCTImageLoader.h" // - for UIViewContentMode. TODO: move it to UIImageUtils
+#import "RCTResizeMode.h"
 
 @class RCTBridge;
+@class RCTImageSource;
 
 @interface RCTImageView : NSImageView <RCTImageComponent>
 
@@ -19,8 +20,8 @@
 
 @property (nonatomic, assign) NSEdgeInsets capInsets;
 @property (nonatomic, strong) NSImage *defaultImage;
-//@property (nonatomic, assign) NSImageRenderingMode renderingMode;
-@property (nonatomic, assign) UIViewContentMode contentMode;
+@property (nonatomic, assign) NSImageResizingMode contentMode;
 @property (nonatomic, copy) NSString *src;
+@property (nonatomic, strong) RCTImageSource *source;
 
 @end

@@ -34,8 +34,6 @@ class UIExplorerApp extends React.Component {
 
   constructor() {
     super();
-    var UIExplorerListBase = require('./UIExplorerListBase');
-    var BorderExample = require('./BorderExample');
     this.state = {
       component: Welcome, //UIExplorerListBase.makeRenderable(BorderExample)
       layout: defaultLayout
@@ -62,7 +60,7 @@ class Welcome extends React.Component {
     super();
     this.state = {
       onHover: false
-    }
+    };
   }
   render() {
     var backgroundStyles = this.state.onHover ? { backgroundColor: 'black'} : {};

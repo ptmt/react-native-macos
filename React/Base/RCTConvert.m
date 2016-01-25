@@ -12,6 +12,8 @@
 #import <objc/message.h>
 
 #import "RCTDefines.h"
+#import "RCTImageSource.h"
+#import "RCTParserUtils.h"
 #import "RCTUtils.h"
 #import "UIImageUtils.h"
 
@@ -174,7 +176,7 @@ NSNumber *RCTConvertEnumValue(const char *typeName, NSDictionary *mapping, NSNum
   }
   if ([json isKindOfClass:[NSNumber class]]) {
     NSArray *allValues = mapping.allValues;
-    if ([mapping.allValues containsObject:json] || [json isEqual:defaultValue]) {
+    if ([allValues containsObject:json] || [json isEqual:defaultValue]) {
       return json;
     }
     RCTLogError(@"Invalid %s '%@'. should be one of: %@", typeName, json, allValues);
@@ -207,6 +209,15 @@ NSNumber *RCTConvertMultiEnumValue(const char *typeName, NSDictionary *mapping, 
   return RCTConvertEnumValue(typeName, mapping, defaultValue, json);
 }
 
+RCT_ENUM_CONVERTER(NSLineBreakMode, (@{
+  @"wordWrapping": @(NSLineBreakByWordWrapping),
+  @"charWrapping": @(NSLineBreakByCharWrapping),
+  @"clipping": @(NSLineBreakByClipping),
+  @"truncatingHead": @(NSLineBreakByTruncatingHead),
+  @"truncatingTail": @(NSLineBreakByTruncatingTail),
+  @"truncatingMiddle": @(NSLineBreakByTruncatingMiddle),
+}), NSLineBreakByWordWrapping, integerValue)
+
 RCT_ENUM_CONVERTER(NSTextAlignment, (@{
   @"auto": @(NSTextAlignmentNatural),
   @"left": @(NSTextAlignmentLeft),
@@ -222,6 +233,12 @@ RCT_ENUM_CONVERTER(NSUnderlineStyle, (@{
   @"dashed": @(NSUnderlinePatternDash | NSUnderlineStyleSingle),
 }), NSUnderlineStyleSingle, integerValue)
 
+RCT_ENUM_CONVERTER(RCTBorderStyle, (@{
+  @"solid": @(RCTBorderStyleSolid),
+  @"dotted": @(RCTBorderStyleDotted),
+  @"dashed": @(RCTBorderStyleDashed),
+}), RCTBorderStyleSolid, integerValue)
+
 RCT_ENUM_CONVERTER(RCTTextDecorationLineType, (@{
   @"none": @(RCTTextDecorationLineTypeNone),
   @"underline": @(RCTTextDecorationLineTypeUnderline),
@@ -234,51 +251,7 @@ RCT_ENUM_CONVERTER(NSWritingDirection, (@{
   @"ltr": @(NSWritingDirectionLeftToRight),
   @"rtl": @(NSWritingDirectionRightToLeft),
 }), NSWritingDirectionNatural, integerValue)
-//
-//RCT_ENUM_CONVERTER(UITextAutocapitalizationType, (@{
-//  @"none": @(UITextAutocapitalizationTypeNone),
-//  @"words": @(UITextAutocapitalizationTypeWords),
-//  @"sentences": @(UITextAutocapitalizationTypeSentences),
-//  @"characters": @(UITextAutocapitalizationTypeAllCharacters)
-//}), UITextAutocapitalizationTypeSentences, integerValue)
-//
-//RCT_ENUM_CONVERTER(UITextFieldViewMode, (@{
-//  @"never": @(UITextFieldViewModeNever),
-//  @"while-editing": @(UITextFieldViewModeWhileEditing),
-//  @"unless-editing": @(UITextFieldViewModeUnlessEditing),
-//  @"always": @(UITextFieldViewModeAlways),
-//}), UITextFieldViewModeNever, integerValue)
-//
-//RCT_ENUM_CONVERTER(UIKeyboardType, (@{
-//  @"default": @(UIKeyboardTypeDefault),
-//  @"ascii-capable": @(UIKeyboardTypeASCIICapable),
-//  @"numbers-and-punctuation": @(UIKeyboardTypeNumbersAndPunctuation),
-//  @"url": @(UIKeyboardTypeURL),
-//  @"number-pad": @(UIKeyboardTypeNumberPad),
-//  @"phone-pad": @(UIKeyboardTypePhonePad),
-//  @"name-phone-pad": @(UIKeyboardTypeNamePhonePad),
-//  @"email-address": @(UIKeyboardTypeEmailAddress),
-//  @"decimal-pad": @(UIKeyboardTypeDecimalPad),
-//  @"twitter": @(UIKeyboardTypeTwitter),
-//  @"web-search": @(UIKeyboardTypeWebSearch),
-//  // Added for Android compatibility
-//  @"numeric": @(UIKeyboardTypeDecimalPad),
-//}), UIKeyboardTypeDefault, integerValue)
-//
-//RCT_ENUM_CONVERTER(UIReturnKeyType, (@{
-//  @"default": @(UIReturnKeyDefault),
-//  @"go": @(UIReturnKeyGo),
-//  @"google": @(UIReturnKeyGoogle),
-//  @"join": @(UIReturnKeyJoin),
-//  @"next": @(UIReturnKeyNext),
-//  @"route": @(UIReturnKeyRoute),
-//  @"search": @(UIReturnKeySearch),
-//  @"send": @(UIReturnKeySend),
-//  @"yahoo": @(UIReturnKeyYahoo),
-//  @"done": @(UIReturnKeyDone),
-//  @"emergency-call": @(UIReturnKeyEmergencyCall),
-//}), UIReturnKeyDefault, integerValue)
-//
+
 RCT_ENUM_CONVERTER(UIViewContentMode, (@{
   @"scale-to-fill": @(UIViewContentModeScaleToFill),
   @"scale-aspect-fit": @(UIViewContentModeScaleAspectFit),
@@ -384,6 +357,9 @@ RCT_CGSTRUCT_CONVERTER(CGAffineTransform, (@[
 
 + (NSColor *)NSColor:(id)json
 {
+  if (!json) {
+    return nil;
+  }
   if ([json isKindOfClass:[NSArray class]]) {
     NSArray *components = [self NSNumberArray:json];
     CGFloat alpha = components.count > 3 ? [self CGFloat:components[3]] : 1.0;
@@ -391,13 +367,16 @@ RCT_CGSTRUCT_CONVERTER(CGAffineTransform, (@[
                            green:[self CGFloat:components[1]]
                             blue:[self CGFloat:components[2]]
                            alpha:alpha];
-  } else {
+  } else if ([json isKindOfClass:[NSNumber class]]) {
     NSUInteger argb = [self NSUInteger:json];
     CGFloat a = ((argb >> 24) & 0xFF) / 255.0;
     CGFloat r = ((argb >> 16) & 0xFF) / 255.0;
     CGFloat g = ((argb >> 8) & 0xFF) / 255.0;
     CGFloat b = (argb & 0xFF) / 255.0;
     return [NSColor colorWithRed:r green:g blue:b alpha:a];
+  } else {
+    RCTLogConvertError(json, @"a UIColor. Did you forget to call processColor() on the JS side?");
+    return nil;
   }
 }
 
@@ -428,9 +407,6 @@ RCT_CGSTRUCT_CONVERTER(CGAffineTransform, (@[
     }
     //scale = [self CGFloat:json[@"scale"]];
     isPackagerAsset = [self BOOL:json[@"__packager_asset"]];
-  } else {
-    RCTLogConvertError(json, @"an image");
-    return nil;
   }
 
   NSURL *URL = [self NSURL:path];
@@ -481,14 +457,6 @@ RCT_CGSTRUCT_CONVERTER(CGAffineTransform, (@[
   return image;
 }
 
-+ (CGImageRef)CGImage:(id)json
-{
-  // TODO:
-  return [[self NSImage:json] CGImageForProposedRect:nil context:nil hints:nil];
-}
-
-
-
 typedef CGFloat RCTFontWeight;
 RCT_ENUM_CONVERTER(RCTFontWeight, (@{
   @"normal": @(NSFontWeightRegular),
@@ -513,8 +481,34 @@ RCT_ENUM_CONVERTER(RCTFontStyle, (@{
 
 static RCTFontWeight RCTWeightOfFont(NSFont *font)
 {
+  static NSDictionary *nameToWeight;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    nameToWeight = @{
+      @"normal": @(NSFontWeightRegular),
+      @"bold": @(NSFontWeightBold),
+      @"ultralight": @(NSFontWeightUltraLight),
+      @"thin": @(NSFontWeightThin),
+      @"light": @(NSFontWeightLight),
+      @"regular": @(NSFontWeightRegular),
+      @"medium": @(NSFontWeightMedium),
+      @"semibold": @(NSFontWeightSemibold),
+      @"bold": @(NSFontWeightBold),
+      @"heavy": @(NSFontWeightHeavy),
+      @"black": @(NSFontWeightBlack),
+    };
+  });
+
   NSDictionary *traits = [font.fontDescriptor objectForKey:NSFontTraitsAttribute];
-  return [traits[NSFontWeightTrait] doubleValue];
+  RCTFontWeight weight = [traits[NSFontWeightTrait] doubleValue];
+  if (weight == 0.0) {
+    for (NSString *name in nameToWeight) {
+      if ([font.fontName.lowercaseString hasSuffix:name]) {
+        return [nameToWeight[name] doubleValue];
+      }
+    }
+  }
+  return weight;
 }
 
 static BOOL RCTFontIsItalic(NSFont *font)
@@ -689,6 +683,12 @@ NSArray *RCTConvertArrayValue(SEL type, id json)
   return values;
 }
 
+SEL RCTConvertSelectorForType(NSString *type)
+{
+  const char *input = type.UTF8String;
+  return NSSelectorFromString([RCTParseType(&input) stringByAppendingString:@":"]);
+}
+
 RCT_ARRAY_CONVERTER(NSURL)
 RCT_ARRAY_CONVERTER(RCTFileURL)
 RCT_ARRAY_CONVERTER(NSColor)
@@ -705,6 +705,7 @@ RCT_ARRAY_CONVERTER(NSColor)
 
 RCT_JSON_ARRAY_CONVERTER(NSArray)
 RCT_JSON_ARRAY_CONVERTER(NSString)
+RCT_JSON_ARRAY_CONVERTER(NSStringArray)
 RCT_JSON_ARRAY_CONVERTER(NSDictionary)
 RCT_JSON_ARRAY_CONVERTER(NSNumber)
 
@@ -828,3 +829,10 @@ RCT_ENUM_CONVERTER(RCTAnimationType, (@{
 }), RCTAnimationTypeEaseInEaseOut, integerValue)
 
 @end
+
+@interface RCTImageSource (Packager)
+
+@property (nonatomic, assign) BOOL packagerAsset;
+
+@end
+

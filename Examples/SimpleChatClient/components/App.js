@@ -6,12 +6,13 @@ import SigninForm from './SigninForm';
 import ChatLayout from './ChatLayout';
 import Header from './Header';
 import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux/native';
+import { connect } from 'react-redux';
 import * as Actions from '../actions';
 
 
 class App extends Component {
   render() {
+
     const actions = bindActionCreators(Actions, this.props.dispatch);
     return (
       <View style={{flex: 1}}>

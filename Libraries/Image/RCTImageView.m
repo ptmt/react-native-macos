@@ -13,6 +13,8 @@
 #import "RCTConvert.h"
 #import "RCTEventDispatcher.h"
 #import "UIImageUtils.h"
+#import "RCTImageLoader.h"
+#import "RCTImageSource.h"
 #import "RCTImageUtils.h"
 #import "RCTUtils.h"
 
@@ -46,7 +48,7 @@ static BOOL RCTShouldReloadImageForSizeChange(CGSize currentSize, CGSize idealSi
 
 @implementation RCTImageView
 {
-  RCTBridge *_bridge;
+  __weak RCTBridge *_bridge;
   CGSize _targetSize;
 
   /**
@@ -119,8 +121,15 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
 - (void)setCapInsets:(NSEdgeInsets)capInsets
 {
   if (!UIEdgeInsetsEqualToEdgeInsets(_capInsets, capInsets)) {
-    _capInsets = capInsets;
-    [self updateImage];
+    if (UIEdgeInsetsEqualToEdgeInsets(_capInsets, NSEdgeInsetsZero) ||
+        UIEdgeInsetsEqualToEdgeInsets(capInsets, NSEdgeInsetsZero)) {
+      _capInsets = capInsets;
+      // Need to reload image when enabling or disabling capInsets
+      [self reloadImage];
+    } else {
+      _capInsets = capInsets;
+      [self updateImage];
+    }
   }
 }
 
@@ -132,99 +141,28 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
 //  }
 //}
 
-- (void)setSrc:(NSString *)src
+- (void)setSource:(RCTImageSource *)source
 {
-  if (![src isEqual:_src]) {
-    _src = [src copy];
+  if (![source isEqual:_source]) {
+    _source = source;
     [self reloadImage];
   }
 }
 
-+ (BOOL)srcNeedsReload:(NSString *)src
+- (BOOL)sourceNeedsReload
 {
-  return
-    [src hasPrefix:@"http://"] ||
-    [src hasPrefix:@"https://"] ||
-    [src hasPrefix:@"assets-library://"] ||
-    [src hasPrefix:@"ph://"];
+  // If capInsets are set, image doesn't need reloading when resized
+  return UIEdgeInsetsEqualToEdgeInsets(_capInsets, NSEdgeInsetsZero);
 }
 
-- (void)setContentMode:(UIViewContentMode)mode
-{
-  // TODO: move it to NSView?
-    if (mode != _contentMode) {
-      _contentMode = mode;
-      switch(_contentMode) {
-        case UIViewContentModeScaleToFill:
-          _layer.contentsGravity = kCAGravityResize;
-          _layer.needsDisplayOnBoundsChange = NO;
-          break;
-
-        case UIViewContentModeScaleAspectFit:
-          _layer.contentsGravity = kCAGravityResizeAspect;
-          _layer.needsDisplayOnBoundsChange = NO;
-          break;
-
-        case UIViewContentModeScaleAspectFill:
-          _layer.contentsGravity = kCAGravityResizeAspectFill;
-          _layer.masksToBounds = YES;
-          _layer.needsDisplayOnBoundsChange = YES;
-          break;
-
-        case UIViewContentModeRedraw:
-          _layer.needsDisplayOnBoundsChange = YES;
-          break;
-
-        case UIViewContentModeCenter:
-          _layer.contentsGravity = kCAGravityCenter;
-          _layer.needsDisplayOnBoundsChange = NO;
-          break;
-
-        case UIViewContentModeTop:
-          _layer.contentsGravity = kCAGravityTop;
-          _layer.needsDisplayOnBoundsChange = NO;
-          break;
-
-        case UIViewContentModeBottom:
-          _layer.contentsGravity = kCAGravityBottom;
-          _layer.needsDisplayOnBoundsChange = NO;
-          break;
-
-        case UIViewContentModeLeft:
-          _layer.contentsGravity = kCAGravityLeft;
-          _layer.needsDisplayOnBoundsChange = NO;
-          break;
-
-        case UIViewContentModeRight:
-          _layer.contentsGravity = kCAGravityRight;
-          _layer.needsDisplayOnBoundsChange = NO;
-          break;
-
-        case UIViewContentModeTopLeft:
-          _layer.contentsGravity = kCAGravityTopLeft;
-          _layer.needsDisplayOnBoundsChange = NO;
-          break;
-
-        case UIViewContentModeTopRight:
-          _layer.contentsGravity = kCAGravityTopRight;
-          _layer.needsDisplayOnBoundsChange = NO;
-          break;
-
-        case UIViewContentModeBottomLeft:
-          _layer.contentsGravity = kCAGravityBottomLeft;
-          _layer.needsDisplayOnBoundsChange = NO;
-          break;
-
-        case UIViewContentModeBottomRight:
-          _layer.contentsGravity = kCAGravityBottomRight;
-          _layer.needsDisplayOnBoundsChange = NO;
-          break;
-      }
-      if ([RCTImageView srcNeedsReload:_src]) {
-        [self reloadImage];
-      }
-    }
-}
+//- (void)setContentMode:(NSViewContentMode)mode
+//{
+//  if (self.contentMode != contentMode) {
+//    super.contentMode = contentMode;
+//    if ([self sourceNeedsReload]) {
+//      [self reloadImage];
+//    }
+//}
 
 - (void)cancelImageLoad
 {
@@ -246,7 +184,7 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
 {
   [self cancelImageLoad];
 
-  if (_src && self.frame.size.width > 0 && self.frame.size.height > 0) {
+  if (_source && self.frame.size.width > 0 && self.frame.size.height > 0) {
     if (_onLoadStart) {
       _onLoadStart(nil);
     }
@@ -261,30 +199,46 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
       };
     }
 
-    _reloadImageCancellationBlock = [_bridge.imageLoader loadImageWithTag:_src
-                                                                     size:self.bounds.size
-                                                                    scale:RCTScreenScale()
-                                                               resizeMode:self.contentMode
-                                                            progressBlock:progressHandler
-                                                          completionBlock:^(NSError *error, NSImage *image) {
+    CGSize imageSize = self.bounds.size;
+    CGFloat imageScale = RCTScreenScale();
+    if (!UIEdgeInsetsEqualToEdgeInsets(_capInsets, NSEdgeInsetsZero)) {
+      // Don't resize images that use capInsets
+      imageSize = CGSizeZero;
+      imageScale = _source.scale;
+    }
+
+    RCTImageSource *source = _source;
+    __weak RCTImageView *weakSelf = self;
+    _reloadImageCancellationBlock = [_bridge.imageLoader loadImageWithoutClipping:_source.imageURL.absoluteString
+                                                                             size:imageSize
+                                                                            scale:imageScale
+                                                                       resizeMode:(RCTResizeMode)self.contentMode
+                                                                    progressBlock:progressHandler
+                                                                  completionBlock:^(NSError *error, NSImage *image) {
+
       dispatch_async(dispatch_get_main_queue(), ^{
+        RCTImageView *strongSelf = weakSelf;
+        if (![source isEqual:strongSelf.source]) {
+          // Bail out if source has changed since we started loading
+          return;
+        }
         if (image.reactKeyframeAnimation) {
-          [self.layer addAnimation:image.reactKeyframeAnimation forKey:@"contents"];
+          [strongSelf.layer addAnimation:image.reactKeyframeAnimation forKey:@"contents"];
         } else {
-          [self.layer removeAnimationForKey:@"contents"];
-          self.image = image;
+          [strongSelf.layer removeAnimationForKey:@"contents"];
+          strongSelf.image = image;
         }
         if (error) {
-          if (_onError) {
-            _onError(@{ @"error": error.localizedDescription });
+          if (strongSelf->_onError) {
+            strongSelf->_onError(@{ @"error": error.localizedDescription });
           }
         } else {
-          if (_onLoad) {
-            _onLoad(nil);
+          if (strongSelf->_onLoad) {
+            strongSelf->_onLoad(nil);
           }
         }
-        if (_onLoadEnd) {
-           _onLoadEnd(nil);
+        if (strongSelf->_onLoadEnd) {
+           strongSelf->_onLoadEnd(nil);
         }
       });
     }];
@@ -300,17 +254,19 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
   if (!self.image || self.image == _defaultImage) {
     _targetSize = frame.size;
     [self reloadImage];
-  } else if ([RCTImageView srcNeedsReload:_src]) {
+  } else if ([self sourceNeedsReload]) {
     CGSize imageSize = self.image.size;
+
     // TODO: replace 1.0 with real scale
-    CGSize idealSize = RCTTargetSize(imageSize, 1.0, frame.size, RCTScreenScale(), self.contentMode, YES);
+    CGSize idealSize = RCTTargetSize(imageSize, 1.0f, frame.size,
+                                     RCTScreenScale(), (RCTResizeMode)self.contentMode, YES);
 
     if (RCTShouldReloadImageForSizeChange(imageSize, idealSize)) {
       if (RCTShouldReloadImageForSizeChange(_targetSize, idealSize)) {
-        RCTLogInfo(@"[PERF IMAGEVIEW] Reloading image %@ as size %f %f", _src, idealSize.height, idealSize.width);
+        RCTLogInfo(@"[PERF IMAGEVIEW] Reloading image %@ as size %f x %f", _source.imageURL, idealSize.width, idealSize.height);
 
-        // If the existing image or an image being loaded are not the right size, reload the asset in case there is a
-        // better size available.
+        // If the existing image or an image being loaded are not the right
+        // size, reload the asset in case there is a better size available.
         _targetSize = idealSize;
         [self reloadImage];
       }
@@ -322,29 +278,30 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
   }
 }
 
-//- (void)didMoveToWindow
-//{
-//  [super did];
-//
-//  if (!self.window) {
-//    // Don't keep self alive through the asynchronous dispatch, if the intention was to remove the view so it would
-//    // deallocate.
-//    __weak typeof(self) weakSelf = self;
-//
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//      __strong typeof(self) strongSelf = weakSelf;
-//      if (!strongSelf) {
-//        return;
-//      }
-//
-//      // If we haven't been re-added to a window by this run loop iteration, clear out the image to save memory.
-//      if (!strongSelf.window) {
-//        [strongSelf clearImage];
-//      }
-//    });
-//  } else if (!self.image || self.image == _defaultImage) {
-//    [self reloadImage];
-//  }
-//}
+- (void)didMoveToWindow
+{
+  //[super didMoveToWindow];
+
+  if (!self.window) {
+    // Don't keep self alive through the asynchronous dispatch, if the intention
+    // was to remove the view so it would deallocate.
+    __weak typeof(self) weakSelf = self;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+      __strong typeof(self) strongSelf = weakSelf;
+      if (!strongSelf) {
+        return;
+      }
+
+      // If we haven't been re-added to a window by this run loop iteration,
+      // clear out the image to save memory.
+      if (!strongSelf.window) {
+        [strongSelf clearImage];
+      }
+    });
+  } else if (!self.image || self.image == _defaultImage) {
+    [self reloadImage];
+  }
+}
 
 @end

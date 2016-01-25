@@ -54,19 +54,29 @@
   return self;
 }
 
-- (void)applicationDidFinishLaunching:(__unused NSNotification *)aNotification
+- (void)applicationDidFinishLaunching:(NSDictionary *)launchOptions
 {
 
-  RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self
-                                            launchOptions:nil];
+  _bridge = [[RCTBridge alloc] initWithDelegate:self
+                                  launchOptions:launchOptions];
 
-  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
+  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:_bridge
                                                    moduleName:@"UIExplorerApp"
                                             initialProperties:nil];
 
 
 
   [self.window setContentView:rootView];
+}
+
+
+/**
+ * Indicates whether Hot Loading is supported or not.
+ * Note: this method will be removed soon, once Hot Loading is supported on OSS.
+ */
+- (BOOL)bridgeSupportsHotLoading:(__unused RCTBridge *)bridge
+{
+  return YES;
 }
 
 
