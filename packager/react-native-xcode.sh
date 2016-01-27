@@ -29,11 +29,6 @@ cd ..
 set -x
 DEST=$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH
 
-<<<<<<< HEAD
-react-native-desktop bundle \
-  --entry-file index.osx.js \
-  --platform osx \
-=======
 # Define NVM_DIR and source the nvm.sh setup script
 [ -z "$NVM_DIR" ] && export NVM_DIR="$HOME/.nvm"
 
@@ -51,10 +46,9 @@ fi
 # npm global install path may be a non-standard location
 PATH="$(npm prefix -g)/bin:$PATH"
 
-react-native bundle \
-  --entry-file index.ios.js \
-  --platform ios \
->>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
+react-native-desktop bundle \
+  --entry-file index.osx.js \
+  --platform osx \
   --dev $DEV \
   --bundle-output "$DEST/main.jsbundle" \
   --assets-dest "$DEST"
