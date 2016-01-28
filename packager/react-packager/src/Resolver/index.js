@@ -83,7 +83,7 @@ class Resolver {
       providesModuleNodeModules: [
         'fbjs',
         'react',
-        'react-native',
+        'react-native-desktop',
         // Parse requires AsyncStorage. They will
         // change that to require('react-native') which
         // should work after this release and we can
@@ -95,7 +95,7 @@ class Resolver {
       preferNativePlatform: true,
       fileWatcher: opts.fileWatcher,
       cache: opts.cache,
-      shouldThrowOnUnresolvedErrors: (_, platform) => platform === 'ios',
+      shouldThrowOnUnresolvedErrors: (_, platform) => platform === 'osx',
     });
 
     this._polyfillModuleNames = opts.polyfillModuleNames || [];
