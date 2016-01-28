@@ -11,6 +11,7 @@
 
 #import <AppKit/AppKit.h>
 
+#import "RCTBorderStyle.h"
 #import "RCTComponent.h"
 #import "RCTPointerEvents.h"
 
@@ -92,5 +93,11 @@
  */
 @property (nonatomic, assign) CATransform3D transform;
 @property (nonatomic, assign) bool shouldBeTransformed;
+
+/**
+ * Border styles.
+ */
+@property (nonatomic, assign) RCTBorderStyle borderStyle;
+
 
 @end

@@ -10,8 +10,19 @@
 #import "RCTAlertManager.h"
 
 #import "RCTAssert.h"
+#import "RCTConvert.h"
 #import "RCTLog.h"
 #import "RCTUtils.h"
+
+@implementation RCTConvert (NSAlertViewStyle)
+
+RCT_ENUM_CONVERTER(NSAlertStyle, (@{
+  @"default": @(NSWarningAlertStyle),
+  @"information": @(NSInformationalAlertStyle),
+  @"critical": @(NSCriticalAlertStyle)
+}), NSWarningAlertStyle, integerValue)
+
+@end
 
 @interface RCTAlertManager() <NSAlertDelegate>
 
@@ -19,22 +30,12 @@
 
 @implementation RCTAlertManager
 {
-  NSMutableArray *_alerts;
-  NSMutableArray *_alertCallbacks;
-  NSMutableArray *_alertButtonKeys;
+  NSMutableArray<NSAlert *> *_alerts;
+  NSMutableArray<RCTResponseSenderBlock> *_alertCallbacks;
+  NSMutableArray<NSArray<NSString *> *> *_alertButtonKeys;
 }
 
 RCT_EXPORT_MODULE()
-
-- (instancetype)init
-{
-  if ((self = [super init])) {
-    _alerts = [NSMutableArray new];
-    _alertCallbacks = [NSMutableArray new];
-    _alertButtonKeys = [NSMutableArray new];
-  }
-  return self;
-}
 
 - (dispatch_queue_t)methodQueue
 {
@@ -43,9 +44,6 @@ RCT_EXPORT_MODULE()
 
 - (void)invalidate
 {
-//    for (NSAlertView *alert in _alerts) {
-//        [alert dismissWithClickedButtonIndex:0 animated:YES];
-//    }
 }
 
 /**
@@ -55,63 +53,55 @@ RCT_EXPORT_MODULE()
  *     @"message": @"<Alert message>",
  *     @"buttons": @[
  *       @{@"<key1>": @"<title1>"},
- *       @{@"<key2>": @"<cancelButtonTitle>"},
- *     ]
+ *       @{@"<key2>": @"<title2>"},
+ *     ],
+ *     @"cancelButtonKey": @"<key2>",
  *   }
  * The key from the `buttons` dictionary is passed back in the callback on click.
- * Buttons are displayed in the order they are specified. If "cancel" is used as
- * the button key, it will be differently highlighted, according to iOS UI conventions.
+ * Buttons are displayed in the order they are specified.
  */
 RCT_EXPORT_METHOD(alertWithArgs:(NSDictionary *)args
                   callback:(RCTResponseSenderBlock)callback)
 {
-//  NSString *title = args[@"title"];
-//  NSString *message = args[@"message"];
-//  NSString *type = args[@"type"];
-//  NSArray *buttons = args[@"buttons"];
-//
-//  if (!title && !message) {
-//    RCTLogError(@"Must specify either an alert title, or message, or both");
-//    return;
-//  } else if (buttons.count == 0) {
-//    RCTLogError(@"Must have at least one button.");
-//    return;
-//  }
-//  
-//  if (RCTRunningInAppExtension()) {
-//    return;
-//  }
-//  
-//  UIAlertView *alertView = RCTAlertView(title, nil, self, nil, nil);
-//  NSMutableArray *buttonKeys = [[NSMutableArray alloc] initWithCapacity:buttons.count];
-//
-//  if ([type isEqualToString:@"plain-text"]) {
-//    alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
-//    [alertView textFieldAtIndex:0].text = message;
-//  } else {
-//    alertView.message = message;
-//  }
-//
-//  NSInteger index = 0;
-//  for (NSDictionary *button in buttons) {
-//    if (button.count != 1) {
-//      RCTLogError(@"Button definitions should have exactly one key.");
-//    }
-//    NSString *buttonKey = button.allKeys.firstObject;
-//    NSString *buttonTitle = [button[buttonKey] description];
-//    [alertView addButtonWithTitle:buttonTitle];
-//    if ([buttonKey isEqualToString: @"cancel"]) {
-//      alertView.cancelButtonIndex = index;
-//    }
-//    [buttonKeys addObject:buttonKey];
-//    index ++;
-//  }
-//
-//  [_alerts addObject:alertView];
-//  [_alertCallbacks addObject:callback ?: ^(__unused id unused) {}];
-//  [_alertButtonKeys addObject:buttonKeys];
-//
-//  [alertView show];
+  NSString *title = args[@"title"];
+  NSString *message = args[@"message"];
+  NSString *type = args[@"type"];
+  NSArray *buttons = args[@"buttons"];
+
+  if (!title && !message) {
+    RCTLogError(@"Must specify either an alert title, or message, or both");
+    return;
+  } else if (buttons.count == 0) {
+    RCTLogError(@"Must have at least one button.");
+    return;
+  }
+  
+  if (RCTRunningInAppExtension()) {
+    return;
+  }
+  
+  NSAlert *alertView = RCTAlertView(title, nil, self, nil, nil);
+  NSMutableArray *buttonKeys = [[NSMutableArray alloc] initWithCapacity:buttons.count];
+
+  [alertView setMessageText:message];
+
+  NSInteger index = 0;
+  for (NSDictionary *button in buttons) {
+    if (button.count != 1) {
+      RCTLogError(@"Button definitions should have exactly one key.");
+    }
+    NSString *buttonKey = button.allKeys.firstObject;
+    NSString *buttonTitle = [button[buttonKey] description];
+    [alertView addButtonWithTitle:buttonTitle];
+    [buttonKeys addObject:buttonKey];
+    index ++;
+  }
+
+  [_alerts addObject:alertView];
+  [_alertCallbacks addObject:callback ?: ^(__unused id unused) {}];
+  [_alertButtonKeys addObject:buttonKeys];
+
+  [alertView runModal];
 }
 
 #pragma mark - UIAlertViewDelegate
@@ -137,5 +127,6 @@ RCT_EXPORT_METHOD(alertWithArgs:(NSDictionary *)args
 //  [_alertCallbacks removeObjectAtIndex:index];
 //  [_alertButtonKeys removeObjectAtIndex:index];
 //}
+
 
 @end

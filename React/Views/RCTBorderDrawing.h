@@ -9,6 +9,8 @@
 
 #import <AppKit/AppKit.h>
 
+#import "RCTBorderStyle.h"
+
 typedef struct {
   CGFloat topLeft;
   CGFloat topRight;
@@ -39,6 +41,7 @@ BOOL RCTBorderColorsAreEqual(RCTBorderColors borderColors);
 
 /**
  * Convert RCTCornerRadii to RCTCornerInsets by applying border insets.
+ * Effectively, returns radius - inset, with a lower bound of 0.0.
  */
 RCTCornerInsets RCTGetCornerInsets(RCTCornerRadii cornerRadii,
                                    NSEdgeInsets borderInsets);
@@ -52,11 +55,16 @@ CGPathRef RCTPathCreateWithRoundedRect(CGRect bounds,
                                        const CGAffineTransform *transform);
 
 /**
- * Draw a CSS-compliant border as a scalable image.
+ * Draw a CSS-compliant border as an image. You can determine if it's scalable
+ * by inspecting the image's `capInsets`.
+ *
+ * `borderInsets` defines the border widths for each edge.
  */
-NSImage *RCTGetBorderImage(RCTCornerRadii cornerRadii,
+NSImage *RCTGetBorderImage(RCTBorderStyle borderStyle,
+                           CGSize viewSize,
+                           RCTCornerRadii cornerRadii,
                            NSEdgeInsets borderInsets,
                            RCTBorderColors borderColors,
                            CGColorRef backgroundColor,
-                           CGSize size,
                            BOOL drawToEdge);
+

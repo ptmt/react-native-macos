@@ -10,6 +10,7 @@
 #import "RCTAccessibilityManager.h"
 
 #import "RCTBridge.h"
+#import "RCTConvert.h"
 #import "RCTEventDispatcher.h"
 #import "RCTLog.h"
 
@@ -29,6 +30,7 @@ NSString *const RCTAccessibilityManagerDidUpdateMultiplierNotification = @"RCTAc
 
 RCT_EXPORT_MODULE()
 
+<<<<<<< HEAD
 //+ (NSDictionary *)JSToUIKitMap
 //{
 //  static NSDictionary *map = nil;
@@ -54,11 +56,39 @@ RCT_EXPORT_MODULE()
 //{
 //  return self.JSToUIKitMap[JSCategory];
 //}
+=======
++ (NSDictionary<NSString *, NSString *> *)JSToUIKitMap
+{
+  static NSDictionary *map = nil;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    map = @{@"extraSmall": UIContentSizeCategoryExtraSmall,
+            @"small": UIContentSizeCategorySmall,
+            @"medium": UIContentSizeCategoryMedium,
+            @"large": UIContentSizeCategoryLarge,
+            @"extraLarge": UIContentSizeCategoryExtraLarge,
+            @"extraExtraLarge": UIContentSizeCategoryExtraExtraLarge,
+            @"extraExtraExtraLarge": UIContentSizeCategoryExtraExtraExtraLarge,
+            @"accessibilityMedium": UIContentSizeCategoryAccessibilityMedium,
+            @"accessibilityLarge": UIContentSizeCategoryAccessibilityLarge,
+            @"accessibilityExtraLarge": UIContentSizeCategoryAccessibilityExtraLarge,
+            @"accessibilityExtraExtraLarge": UIContentSizeCategoryAccessibilityExtraExtraLarge,
+            @"accessibilityExtraExtraExtraLarge": UIContentSizeCategoryAccessibilityExtraExtraExtraLarge};
+  });
+  return map;
+}
+
++ (NSString *)UIKitCategoryFromJSCategory:(NSString *)JSCategory
+{
+  return [self JSToUIKitMap][JSCategory];
+}
+>>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
 
 - (instancetype)init
 {
-  self = [super init];
-  if (self) {
+  if ((self = [super init])) {
+
+    // TODO: can this be moved out of the startup path?
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didReceiveNewContentSizeCategory:)
                                                  name:UIContentSizeCategoryDidChangeNotification
@@ -119,7 +149,7 @@ RCT_EXPORT_MODULE()
   return m.doubleValue;
 }
 
-- (void)setMultipliers:(NSDictionary *)multipliers
+- (void)setMultipliers:(NSDictionary<NSString *, NSNumber *> *)multipliers
 {
   if (_multipliers != multipliers) {
     _multipliers = [multipliers copy];
@@ -127,7 +157,7 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (NSDictionary *)multipliers
+- (NSDictionary<NSString *, NSNumber *> *)multipliers
 {
   if (_multipliers == nil) {
     _multipliers = @{UIContentSizeCategoryExtraSmall: @0.823,
@@ -148,10 +178,10 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(setAccessibilityContentSizeMultipliers:(NSDictionary *)JSMultipliers)
 {
-  NSMutableDictionary *multipliers = [NSMutableDictionary new];
+  NSMutableDictionary<NSString *, NSNumber *> *multipliers = [NSMutableDictionary new];
   for (NSString *__nonnull JSCategory in JSMultipliers) {
-    NSNumber *m = JSMultipliers[JSCategory];
-    NSString *UIKitCategory = [self.class UIKitCategoryFromJSCategory:JSCategory];
+    NSNumber *m = [RCTConvert NSNumber:JSMultipliers[JSCategory]];
+    NSString *UIKitCategory = [[self class] UIKitCategoryFromJSCategory:JSCategory];
     multipliers[UIKitCategory] = m;
   }
   self.multipliers = multipliers;
@@ -176,7 +206,7 @@ RCT_EXPORT_METHOD(getCurrentVoiceOverState:(RCTResponseSenderBlock)callback
 
 - (RCTAccessibilityManager *)accessibilityManager
 {
-  return self.modules[RCTBridgeModuleNameForClass([RCTAccessibilityManager class])];
+  return [self moduleForClass:[RCTAccessibilityManager class]];
 }
 
 @end

@@ -34,23 +34,6 @@ RCT_EXPORT_MODULE()
   isEnabled = enabled;
 }
 
-- (instancetype)init
-{
-  if ((self = [super init])) {
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(hide)
-                                                 name:RCTJavaScriptDidLoadNotification
-                                               object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(hide)
-                                                 name:RCTJavaScriptDidFailToLoadNotification
-                                               object:nil];
-  }
-  return self;
-}
-
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -59,6 +42,16 @@ RCT_EXPORT_MODULE()
 - (void)setBridge:(RCTBridge *)bridge
 {
   _bridge = bridge;
+
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(hide)
+                                               name:RCTJavaScriptDidLoadNotification
+                                             object:nil];
+
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(hide)
+                                               name:RCTJavaScriptDidFailToLoadNotification
+                                             object:nil];
   [self showWithURL:bridge.bundleURL];
 }
 
@@ -96,14 +89,17 @@ RCT_EXPORT_MODULE()
 
     NSString *source;
     if (URL.fileURL) {
+      _window.backgroundColor = [NSColor greenColor];
+      _label.textColor = [NSColor whiteColor];
       source = @"pre-bundled file";
     } else {
+      _window.backgroundColor = [NSColor blackColor];
+      _label.textColor = [NSColor grayColor];
       source = [NSString stringWithFormat:@"%@:%@", URL.host, URL.port];
     }
 
     [_label setStringValue:[NSString stringWithFormat:@"Loading from %@...", source]];
     //_window.hidden = NO;
-
   });
 }
 

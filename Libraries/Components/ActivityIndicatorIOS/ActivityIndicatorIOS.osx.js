@@ -32,6 +32,7 @@ var ActivityIndicatorIOS = React.createClass({
   mixins: [NativeMethodsMixin],
 
   propTypes: {
+    ...View.propTypes,
     /**
      * Whether to show the indicator (true, the default) or hide it (false).
      */
@@ -74,7 +75,7 @@ var ActivityIndicatorIOS = React.createClass({
     return (
       <View
         onLayout={onLayout}
-        style={[styles.container, sizeStyle, style]}>
+        style={[styles.container, style]}>
         <RCTActivityIndicatorView {...props} style={sizeStyle}/>
       </View>
     );

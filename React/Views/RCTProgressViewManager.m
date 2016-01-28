@@ -49,7 +49,7 @@ RCT_CUSTOM_VIEW_PROPERTY(progress, BOOL, NSProgressIndicator)
   }
 }
 
-- (NSDictionary *)constantsToExport
+- (NSDictionary<NSString *, id> *)constantsToExport
 {
   NSProgressIndicator *view = [NSProgressIndicator new];
   return @{

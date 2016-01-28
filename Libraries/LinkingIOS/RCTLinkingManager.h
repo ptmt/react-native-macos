@@ -18,4 +18,8 @@
   sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation;
 
++ (BOOL)application:(NSApplication *)application
+continueUserActivity:(NSUserActivity *)userActivity
+  restorationHandler:(void (^)(NSArray *))restorationHandler;
+
 @end

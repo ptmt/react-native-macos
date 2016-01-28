@@ -9,6 +9,8 @@
 
 #import <AppKit/AppKit.h>
 
+#import "RCTComponent.h"
+
 @class RCTEventDispatcher;
 
 @interface RCTTextField : NSTextField <NSTextFieldDelegate>
@@ -20,8 +22,15 @@
 @property (nonatomic, strong) NSColor *placeholderTextColor;
 @property (nonatomic, assign) NSInteger mostRecentEventCount;
 @property (nonatomic, strong) NSNumber *maxLength;
+@property (nonatomic, assign) BOOL textWasPasted;
+
+@property (nonatomic, copy) RCTDirectEventBlock onSelectionChange;
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
+
+//- (void)textFieldDidChange:(NSNotification *)aNotification;
+- (void)sendKeyValueForString:(NSString *)string;
+- (BOOL)textFieldShouldEndEditing:(RCTTextField *)textField;
 
 @end
 

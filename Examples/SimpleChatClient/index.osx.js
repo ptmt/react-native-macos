@@ -3,7 +3,7 @@
 
 import React from 'react-native-desktop';
 import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux/native';
+import { Provider } from 'react-redux';
 import logger from 'redux-logger';
 import thunk from 'redux-thunk';
 import storage from 'redux-storage';
@@ -13,7 +13,7 @@ import reducer from './reducers';
 import { SIGNIN_REQUEST, SIGNIN_FAILURE } from './actions';
 import App from './components/App';
 
-const engine = createEngine('chat');
+const engine = createEngine(React.AsyncStorage)('chat');
 const wrappedReducer = storage.reducer(reducer);
 const storageMiddleware = storage.createMiddleware(engine, [ SIGNIN_REQUEST, SIGNIN_FAILURE ]);
 
@@ -32,7 +32,7 @@ class SimpleChatClient extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        {() => <App />}
+        <App />
       </Provider>
     );
   }

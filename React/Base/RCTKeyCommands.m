@@ -75,13 +75,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 @interface RCTKeyCommands ()
 
-@property (nonatomic, strong) NSMutableSet *commands;
+@property (nonatomic, strong) NSMutableSet<RCTKeyCommand *> *commands;
 
 @end
 
 
 @implementation NSWindow (RCTKeyCommands)
-
 - (void)keyDown:(NSEvent *)theEvent {
   [super keyDown:theEvent];
   for (RCTKeyCommand *command in [RCTKeyCommands sharedInstance].commands) {

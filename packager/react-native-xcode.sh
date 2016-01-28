@@ -14,16 +14,12 @@ case "$CONFIGURATION" in
   Debug)
     DEV=true
     ;;
-  Release)
-    DEV=false
-    ;;
   "")
     echo "$0 must be invoked by Xcode"
     exit 1
     ;;
   *)
-    echo "Unsupported value of \$CONFIGURATION=$CONFIGURATION"
-    exit 1
+    DEV=false
     ;;
 esac
 
@@ -32,6 +28,23 @@ cd ..
 
 set -x
 DEST=$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH
+
+# Define NVM_DIR and source the nvm.sh setup script
+[ -z "$NVM_DIR" ] && export NVM_DIR="$HOME/.nvm"
+
+if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
+  . "$HOME/.nvm/nvm.sh"
+elif [[ -x "$(command -v brew)" && -s "$(brew --prefix nvm)/nvm.sh" ]]; then
+  . "$(brew --prefix nvm)/nvm.sh"
+fi
+
+# Set up the nodenv node version manager if present
+if [[ -x "$HOME/.nodenv/bin/nodenv" ]]; then
+  eval "$($HOME/.nodenv/bin/nodenv init -)"
+fi
+
+# npm global install path may be a non-standard location
+PATH="$(npm prefix -g)/bin:$PATH"
 
 react-native-desktop bundle \
   --entry-file index.osx.js \

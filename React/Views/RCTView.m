@@ -87,7 +87,7 @@ static NSView *RCTViewHitTest(NSView *view, CGPoint point)
     }
     testView = testView.superview;
   }
-  return clipView ?: self.window;
+  return clipView ?: self.window.contentView;
 }
 
 @end
@@ -109,7 +109,7 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
 
 @implementation RCTView
 {
-  NSMutableArray *_reactSubviews;
+  NSMutableArray<NSView *> *_reactSubviews;
   NSColor *_backgroundColor;
 }
 
@@ -126,6 +126,7 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
     _borderBottomLeftRadius = -1;
     _borderBottomRightRadius = -1;
     self.needsLayout = NO;
+    _borderStyle = RCTBorderStyleSolid;
   }
 
   return self;
@@ -243,7 +244,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   }
 }
 
-+ (NSEdgeInsets)contentInsetsForView:(NSView *)view
++ (NSEdgeInsets)contentInsetsForView:(__unused NSView *)view
 {
   NSLog(@"contentInsetsForView not implemented");
 //  while (view) {
@@ -421,7 +422,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   [subview removeFromSuperview];
 }
 
-- (NSArray *)reactSubviews
+- (NSArray<NSView *> *)reactSubviews
 {
   // The _reactSubviews array is only used when we have hidden
   // offscreen views. If _reactSubviews is nil, we can assume
@@ -497,15 +498,26 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (RCTCornerRadii)cornerRadii
 {
-  const CGRect bounds = self.bounds;
-  const CGFloat maxRadius = MIN(bounds.size.height, bounds.size.width);
+  // Get corner radii
   const CGFloat radius = MAX(0, _borderRadius);
+  const CGFloat topLeftRadius = _borderTopLeftRadius >= 0 ? _borderTopLeftRadius : radius;
+  const CGFloat topRightRadius = _borderTopRightRadius >= 0 ? _borderTopRightRadius : radius;
+  const CGFloat bottomLeftRadius = _borderBottomLeftRadius >= 0 ? _borderBottomLeftRadius : radius;
+  const CGFloat bottomRightRadius = _borderBottomRightRadius >= 0 ? _borderBottomRightRadius : radius;
 
+  // Get scale factors required to prevent radii from overlapping
+  const CGSize size = self.bounds.size;
+  const CGFloat topScaleFactor = RCTZeroIfNaN(MIN(1, size.width / (topLeftRadius + topRightRadius)));
+  const CGFloat bottomScaleFactor = RCTZeroIfNaN(MIN(1, size.width / (bottomLeftRadius + bottomRightRadius)));
+  const CGFloat rightScaleFactor = RCTZeroIfNaN(MIN(1, size.height / (topRightRadius + bottomRightRadius)));
+  const CGFloat leftScaleFactor = RCTZeroIfNaN(MIN(1, size.height / (topLeftRadius + bottomLeftRadius)));
+
+  // Return scaled radii
   return (RCTCornerRadii){
-    MIN(_borderTopLeftRadius >= 0 ? _borderTopLeftRadius : radius, maxRadius),
-    MIN(_borderTopRightRadius >= 0 ? _borderTopRightRadius : radius, maxRadius),
-    MIN(_borderBottomLeftRadius >= 0 ? _borderBottomLeftRadius : radius, maxRadius),
-    MIN(_borderBottomRightRadius >= 0 ? _borderBottomRightRadius : radius, maxRadius),
+    topLeftRadius * MIN(topScaleFactor, leftScaleFactor),
+    topRightRadius * MIN(topScaleFactor, rightScaleFactor),
+    bottomLeftRadius * MIN(bottomScaleFactor, leftScaleFactor),
+    bottomRightRadius * MIN(bottomScaleFactor, rightScaleFactor),
   };
 }
 
@@ -526,8 +538,26 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   return YES;
 }
 
+- (void)reactSetFrame:(CGRect)frame
+{
+  // If frame is zero, or below the threshold where the border radii can
+  // be rendered as a stretchable image, we'll need to re-render.
+  // TODO: detect up-front if re-rendering is necessary
+  CGSize oldSize = self.bounds.size;
+  [super reactSetFrame:frame];
+  if (!CGSizeEqualToSize(self.bounds.size, oldSize)) {
+    [self.layer setNeedsDisplay];
+  }
+}
+
 - (void)displayLayer:(CALayer *)layer
 {
+  if (CGSizeEqualToSize(layer.bounds.size, CGSizeZero)) {
+    return;
+  }
+
+  RCTUpdateShadowPathForView(self);
+
   const RCTCornerRadii cornerRadii = [self cornerRadii];
   const NSEdgeInsets borderInsets = [self bordersAsInsets];
   const RCTBorderColors borderColors = [self borderColors];
@@ -537,6 +567,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   RCTCornerRadiiAreEqual(cornerRadii) &&
   RCTBorderInsetsAreEqual(borderInsets) &&
   RCTBorderColorsAreEqual(borderColors) &&
+  _borderStyle == RCTBorderStyleSolid &&
 
   // iOS draws borders in front of the content whereas CSS draws them behind
   // the content. For this reason, only use iOS border drawing when clipping
@@ -558,13 +589,21 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
     return;
   }
 
-  NSImage *image = RCTGetBorderImage(cornerRadii,
+  NSImage *image = RCTGetBorderImage(_borderStyle,
+                                     layer.bounds.size,
+                                     cornerRadii,
                                      borderInsets,
                                      borderColors,
                                      _backgroundColor.CGColor,
-                                     self.frame.size,
-
                                      YES);
+
+  layer.backgroundColor = NULL;
+
+  if (image == nil) {
+    layer.contents = nil;
+    layer.needsDisplayOnBoundsChange = NO;
+    return;
+  }
 
   CGRect contentsCenter = ({
     CGSize size = image.size;
@@ -591,8 +630,55 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   //layer.contentsScale = image.;
   layer.magnificationFilter = kCAFilterNearest;
   layer.needsDisplayOnBoundsChange = YES;
+  layer.magnificationFilter = kCAFilterNearest;
+
+  // TODO: make it resizable
+//  const BOOL isResizable = !UIEdgeInsetsEqualToEdgeInsets(image.capInsets, NSEdgeInsetsZero);
+//  if (isResizable) {
+//    layer.contentsCenter = contentsCenter;
+//  } else {
+//    layer.contentsCenter = CGRectMake(0.0, 0.0, 1.0, 1.0);
+//  }
 
   [self updateClippingForLayer:layer];
+}
+
+static BOOL RCTLayerHasShadow(CALayer *layer)
+{
+  return layer.shadowOpacity * CGColorGetAlpha(layer.shadowColor) > 0;
+}
+
+- (void)reactSetInheritedBackgroundColor:(NSColor *)inheritedBackgroundColor
+{
+  // Inherit background color if a shadow has been set, as an optimization
+  if (RCTLayerHasShadow(self.layer)) {
+    self.backgroundColor = inheritedBackgroundColor;
+  }
+}
+
+static void RCTUpdateShadowPathForView(RCTView *view)
+{
+  if (RCTLayerHasShadow(view.layer)) {
+    if (CGColorGetAlpha(view.backgroundColor.CGColor) > 0.999) {
+
+      // If view has a solid background color, calculate shadow path from border
+      const RCTCornerRadii cornerRadii = [view cornerRadii];
+      const RCTCornerInsets cornerInsets = RCTGetCornerInsets(cornerRadii, NSEdgeInsetsZero);
+      CGPathRef shadowPath = RCTPathCreateWithRoundedRect(view.bounds, cornerInsets, NULL);
+      view.layer.shadowPath = shadowPath;
+      CGPathRelease(shadowPath);
+
+    } else {
+
+      // Can't accurately calculate box shadow, so fall back to pixel-based shadow
+      view.layer.shadowPath = nil;
+
+      RCTLogWarn(@"View #%@ of type %@ has a shadow set but cannot calculate "
+                 "shadow efficiently. Consider setting a background color to "
+                 "fix this, or apply the shadow to a more specific component.",
+                 view.reactTag, [view class]);
+    }
+  }
 }
 
 - (void)updateClippingForLayer:(CALayer *)layer
@@ -658,6 +744,8 @@ setBorderWidth(Right)
 setBorderWidth(Bottom)
 setBorderWidth(Left)
 
+#pragma mark - Border Radius
+
 #define setBorderRadius(side)                     \
   - (void)setBorder##side##Radius:(CGFloat)radius \
   {                                               \
@@ -673,6 +761,20 @@ setBorderRadius(TopLeft)
 setBorderRadius(TopRight)
 setBorderRadius(BottomLeft)
 setBorderRadius(BottomRight)
+
+#pragma mark - Border Style
+
+#define setBorderStyle(side)                           \
+  - (void)setBorder##side##Style:(RCTBorderStyle)style \
+  {                                                    \
+    if (_border##side##Style == style) {               \
+      return;                                          \
+    }                                                  \
+    _border##side##Style = style;                      \
+    [self.layer setNeedsDisplay];                      \
+  }
+
+setBorderStyle()
 
 - (void)dealloc
 {

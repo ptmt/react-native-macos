@@ -37,54 +37,27 @@ var COMPONENTS = [
   // require('./ListViewPagingExample'),
   // require('./ModalExample'),
   require('./ProgressViewIOSExample'),
-  require('./ScrollViewExample'),
-  require('./SegmentedControlIOSExample'),
+  require('./ScrollViewSimpleExample'),
+  // require('./SegmentedControlIOSExample'),
   require('./SliderIOSExample'),
-  require('./SwitchIOSExample'),
+  //require('./SwitchExample'),
   require('./TextExample.osx'),
   require('./TextInputExample.osx'),
   require('./TouchableExample'),
+  require('./TransparentHitTestExample'),
   require('./ViewExample'),
-  require('./WebViewExample'),
+//  require('./WebViewExample'),
 ];
 
 var APIS = [
-  // require('./AccessibilityIOSExample'),
-  // require('./AlertIOSExample'),
   require('./AnimatedExample'),
   require('./LayoutAnimationExample'),
-  // require('./AnimatedGratuitousApp/AnExApp'),
-  // require('./AppStateIOSExample'),
   require('./AsyncStorageExample'),
   require('./BorderExample'),
   require('./LayoutExample'),
-  // require('./NetInfoExample'),
-  // require('./PanResponderExample'),
-  // require('./PointerEventsExample'),
-  // require('./PushNotificationIOSExample'),
-  // require('./StatusBarIOSExample'),
-  // require('./TimerExample'),
   require('./TransformExample'),
   require('./XHRExample.osx'),
-
 ];
-
-// Register suitable examples for snapshot tests
-COMPONENTS.concat(APIS).forEach((Example) => {
-  if (Example.displayName) {
-    var Snapshotter = React.createClass({
-      render: function() {
-        var Renderable = UIExplorerListBase.makeRenderable(Example);
-        return (
-          <SnapshotViewIOS>
-            <Renderable />
-          </SnapshotViewIOS>
-        );
-      },
-    });
-    AppRegistry.registerComponent(Example.displayName, () => Snapshotter);
-  }
-});
 
 type Props = {
   openExample: Function,
@@ -117,6 +90,25 @@ class UIExplorerList extends React.Component {
   onPressRow(example: any) {
     var Component = UIExplorerListBase.makeRenderable(example);
     this.props.openExample(Component);
+  }
+
+  // Register suitable examples for snapshot tests
+  static registerComponents() {
+    COMPONENTS.concat(APIS).forEach((Example) => {
+      if (Example.displayName) {
+        var Snapshotter = React.createClass({
+          render: function() {
+            var Renderable = UIExplorerListBase.makeRenderable(Example);
+            return (
+              <SnapshotViewIOS>
+                <Renderable />
+              </SnapshotViewIOS>
+            );
+          },
+        });
+        AppRegistry.registerComponent(Example.displayName, () => Snapshotter);
+      }
+    });
   }
 }
 

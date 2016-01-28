@@ -17,6 +17,8 @@ var Platform = require('Platform');
 var WebSocketBase = require('WebSocketBase');
 var WebSocketEvent = require('WebSocketEvent');
 
+var base64 = require('base64-js');
+
 var WebSocketId = 0;
 var CLOSE_NORMAL = 1000;
 
@@ -24,15 +26,16 @@ var CLOSE_NORMAL = 1000;
  * Browser-compatible WebSockets implementation.
  *
  * See https://developer.mozilla.org/en-US/docs/Web/API/WebSocket
+ * See https://github.com/websockets/ws
  */
 class WebSocket extends WebSocketBase {
   _socketId: number;
   _subs: any;
 
-  connectToSocketImpl(url: string): void {
+  connectToSocketImpl(url: string, protocols: ?Array<string>, options: ?{origin?: string}): void {
     this._socketId = WebSocketId++;
 
-    RCTWebSocketModule.connect(url, this._socketId);
+    RCTWebSocketModule.connect(url, protocols, options, this._socketId);
 
     this._registerEvents(this._socketId);
   }
@@ -79,7 +82,7 @@ class WebSocket extends WebSocketBase {
           return;
         }
         var event = new WebSocketEvent('message', {
-          data: ev.data
+          data: (ev.type === 'binary') ? base64.toByteArray(ev.data).buffer : ev.data
         });
         this.onmessage && this.onmessage(event);
         this.dispatchEvent(event);
@@ -104,7 +107,7 @@ class WebSocket extends WebSocketBase {
         this.onclose && this.onclose(event);
         this.dispatchEvent(event);
         this._unregisterEvents();
-        this._closeWebSocket(id);
+        this.close();
       }),
       RCTDeviceEventEmitter.addListener('websocketFailed', ev => {
         if (ev.id !== id) {
@@ -115,7 +118,7 @@ class WebSocket extends WebSocketBase {
         this.onerror && this.onerror(event);
         this.dispatchEvent(event);
         this._unregisterEvents();
-        this.readyState === this.OPEN && this._closeWebSocket(id);
+        this.close();
       })
     ];
   }

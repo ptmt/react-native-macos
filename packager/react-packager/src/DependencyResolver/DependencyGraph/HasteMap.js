@@ -7,30 +7,38 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 'use strict';
-
 const path = require('path');
-const getPlatformExtension = require('../../lib/getPlatformExtension');
+const getPlatformExtension = require('../lib/getPlatformExtension');
 const Promise = require('promise');
 
 const GENERIC_PLATFORM = 'generic';
+const NATIVE_PLATFORM = 'native';
 
 class HasteMap {
-  constructor({ fastfs, moduleCache, helpers }) {
+  constructor({
+    extensions,
+    fastfs,
+    moduleCache,
+    preferNativePlatform,
+    helpers,
+  }) {
+    this._extensions = extensions;
     this._fastfs = fastfs;
     this._moduleCache = moduleCache;
+    this._preferNativePlatform = preferNativePlatform;
     this._helpers = helpers;
   }
 
   build() {
     this._map = Object.create(null);
 
-    let promises = this._fastfs.findFilesByExt('js', {
-      ignore: (file) => this._helpers.isNodeModulesDir(file)
+    let promises = this._fastfs.findFilesByExts(this._extensions, {
+      ignore: (file) => this._helpers.isNodeModulesDir(file),
     }).map(file => this._processHasteModule(file));
 
     promises = promises.concat(
       this._fastfs.findFilesByName('package.json', {
-        ignore: (file) => this._helpers.isNodeModulesDir(file)
+        ignore: (file) => this._helpers.isNodeModulesDir(file),
       }).map(file => this._processHastePackage(file))
     );
 
@@ -41,9 +49,9 @@ class HasteMap {
     return Promise.resolve().then(() => {
       /*eslint no-labels: 0 */
       if (type === 'delete' || type === 'change') {
-        loop: for (let name in this._map) {
+        loop: for (const name in this._map) {
           const modulesMap = this._map[name];
-          for (let platform in modulesMap) {
+          for (const platform in modulesMap) {
             const module = modulesMap[platform];
             if (module.path === absPath) {
               delete modulesMap[platform];
@@ -53,12 +61,11 @@ class HasteMap {
         }
 
         if (type === 'delete') {
-          return;
+          return null;
         }
       }
 
-      if (this._helpers.extname(absPath) === 'js' ||
-          this._helpers.extname(absPath) === 'json') {
+      if (this._extensions.indexOf(this._helpers.extname(absPath)) !== -1) {
         if (path.basename(absPath) === 'package.json') {
           return this._processHastePackage(absPath);
         } else {
@@ -74,18 +81,19 @@ class HasteMap {
       return null;
     }
 
-    // If no platform is given we choose the generic platform module list.
-    // If a platform is given and no modules exist we fallback
-    // to the generic platform module list.
-    if (platform == null) {
-      return modulesMap[GENERIC_PLATFORM];
-    } else {
-      let module = modulesMap[platform];
-      if (module == null) {
-        module = modulesMap[GENERIC_PLATFORM];
-      }
-      return module;
+    // If platform is 'ios', we prefer .ios.js to .native.js which we prefer to
+    // a plain .js file.
+    let module = undefined;
+    if (module == null && platform != null) {
+      module = modulesMap[platform];
     }
+    if (module == null && this._preferNativePlatform) {
+      module = modulesMap[NATIVE_PLATFORM];
+    }
+    if (module == null) {
+      module = modulesMap[GENERIC_PLATFORM];
+    }
+    return module;
   }
 
   _processHasteModule(file) {
@@ -118,11 +126,12 @@ class HasteMap {
 
     const moduleMap = this._map[name];
     const modulePlatform = getPlatformExtension(mod.path) || GENERIC_PLATFORM;
+    const existingModule = moduleMap[modulePlatform];
 
-    if (moduleMap[modulePlatform]) {
+    if (existingModule && existingModule.path !== mod.path) {
       throw new Error(
         `Naming collision detected: ${mod.path} ` +
-        `collides with ${moduleMap[modulePlatform].path}`
+        `collides with ${existingModule.path}`
       );
     }
 

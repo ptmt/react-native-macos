@@ -15,7 +15,8 @@
 #import "RCTRootView.h"
 #import "RCTTestModule.h"
 #import "RCTUtils.h"
-#import "RCTContextExecutor.h"
+#import "RCTJSCExecutor.h"
+#import "RCTBridge+Private.h"
 
 static const NSTimeInterval kTestTimeoutSeconds = 60;
 static const NSTimeInterval kTestTeardownTimeoutSeconds = 30;
@@ -34,6 +35,9 @@ static const NSTimeInterval kTestTeardownTimeoutSeconds = 30;
   RCTAssertParam(referenceDirectory);
 
   if ((self = [super init])) {
+    if (!referenceDirectory.length) {
+      referenceDirectory = [[NSBundle bundleForClass:self.class].resourcePath stringByAppendingPathComponent:@"ReferenceImages"];
+    }
 
     NSString *sanitizedAppName = [app stringByReplacingOccurrencesOfString:@"/" withString:@"-"];
     sanitizedAppName = [sanitizedAppName stringByReplacingOccurrencesOfString:@"\\" withString:@"-"];
@@ -65,25 +69,38 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 - (void)runTest:(SEL)test module:(NSString *)moduleName
 {
-  [self runTest:test module:moduleName initialProps:nil expectErrorBlock:nil];
+  [self runTest:test module:moduleName initialProps:nil configurationBlock:nil expectErrorBlock:nil];
 }
 
 - (void)runTest:(SEL)test module:(NSString *)moduleName
-   initialProps:(NSDictionary *)initialProps expectErrorRegex:(NSString *)errorRegex
+   initialProps:(NSDictionary<NSString *, id> *)initialProps
+configurationBlock:(void(^)(RCTRootView *rootView))configurationBlock
 {
-  [self runTest:test module:moduleName initialProps:initialProps expectErrorBlock:^BOOL(NSString *error){
-    return [error rangeOfString:errorRegex options:NSRegularExpressionSearch].location != NSNotFound;
-  }];
+  [self runTest:test module:moduleName initialProps:initialProps configurationBlock:configurationBlock expectErrorBlock:nil];
 }
 
 - (void)runTest:(SEL)test module:(NSString *)moduleName
-   initialProps:(NSDictionary *)initialProps expectErrorBlock:(BOOL(^)(NSString *error))expectErrorBlock
+   initialProps:(NSDictionary<NSString *, id> *)initialProps
+configurationBlock:(void(^)(RCTRootView *rootView))configurationBlock
+expectErrorRegex:(NSString *)errorRegex
+{
+  BOOL(^expectErrorBlock)(NSString *error)  = ^BOOL(NSString *error){
+    return [error rangeOfString:errorRegex options:NSRegularExpressionSearch].location != NSNotFound;
+  };
+
+  [self runTest:test module:moduleName initialProps:initialProps configurationBlock:configurationBlock expectErrorBlock:expectErrorBlock];
+}
+
+- (void)runTest:(SEL)test module:(NSString *)moduleName
+   initialProps:(NSDictionary<NSString *, id> *)initialProps
+configurationBlock:(void(^)(RCTRootView *rootView))configurationBlock
+expectErrorBlock:(BOOL(^)(NSString *error))expectErrorBlock
 {
   __weak id weakJSContext;
 
   @autoreleasepool {
     __block NSString *error = nil;
-    RCTSetLogFunction(^(RCTLogLevel level, NSString *fileName, NSNumber *lineNumber, NSString *message) {
+    RCTSetLogFunction(^(RCTLogLevel level, RCTLogSource source, NSString *fileName, NSNumber *lineNumber, NSString *message) {
       if (level >= RCTLogLevelError) {
         error = message;
       }
@@ -96,8 +113,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
     RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge moduleName:moduleName initialProperties:initialProps];
     rootView.frame = CGRectMake(0, 0, 320, 2000); // Constant size for testing on multiple devices
 
-    NSString *testModuleName = RCTBridgeModuleNameForClass([RCTTestModule class]);
-    RCTTestModule *testModule = rootView.bridge.modules[testModuleName];
+    RCTTestModule *testModule = [rootView.bridge moduleForClass:[RCTTestModule class]];
     RCTAssert(_testController != nil, @"_testController should not be nil");
     testModule.controller = _testController;
     testModule.testSelector = test;
@@ -110,6 +126,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
     //[[[NSApplication sharedApplication].windows objectAtIndex:0] setContentView:rootView];
     //[[[NSApplication sharedApplication].windows objectAtIndex:0] makeKeyWindow];
 
+    if (configurationBlock) {
+      configurationBlock(rootView);
+    }
+
     NSDate *date = [NSDate dateWithTimeIntervalSinceNow:kTestTimeoutSeconds];
     while (date.timeIntervalSinceNow > 0 && testModule.status == RCTTestStatusPending && error == nil) {
       [[NSRunLoop mainRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
@@ -118,15 +138,19 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
     // Take a weak reference to the JS context, so we track its deallocation later
     // (we can only do this now, since it's been lazily initialized)
-    id jsExecutor = [bridge valueForKeyPath:@"batchedBridge.javaScriptExecutor"];
-    if ([jsExecutor isKindOfClass:[RCTContextExecutor class]]) {
-      weakJSContext = [jsExecutor valueForKey:@"context"];
+    id jsExecutor = [bridge.batchedBridge valueForKey:@"javaScriptExecutor"];
+    if ([jsExecutor isKindOfClass:[RCTJSCExecutor class]]) {
+      weakJSContext = [jsExecutor valueForKey:@"_context"];
     }
     [rootView removeFromSuperview];
 
     RCTSetLogFunction(RCTDefaultLogFunction);
 
+<<<<<<< HEAD
     NSArray *nonLayoutSubviews = [vcView.subviews filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id subview, NSDictionary *bindings) {
+=======
+    NSArray<UIView *> *nonLayoutSubviews = [vc.view.subviews filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id subview, NSDictionary *bindings) {
+>>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
       return ![NSStringFromClass([subview class]) isEqualToString:@"_UILayoutGuide"];
     }]];
     RCTAssert(nonLayoutSubviews.count == 0, @"There shouldn't be any other views: %@", nonLayoutSubviews);

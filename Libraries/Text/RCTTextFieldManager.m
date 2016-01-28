@@ -11,7 +11,6 @@
 
 #import "RCTBridge.h"
 #import "RCTShadowView.h"
-#import "RCTSparseArray.h"
 #import "RCTTextField.h"
 #import "RCTSecureTextField.h"
 
@@ -32,10 +31,30 @@ RCT_EXPORT_MODULE()
 
 - (BOOL)textField:(RCTTextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
+  // Only allow single keypresses for onKeyPress, pasted text will not be sent.
+  if (textField.textWasPasted) {
+    textField.textWasPasted = NO;
+  } else {
+    [textField sendKeyValueForString:string];
+  }
+
   if (textField.maxLength == nil || [string isEqualToString:@"\n"]) {  // Make sure forms can be submitted via return
     return YES;
   }
   return YES;
+}
+
+// This method allows us to detect a `Backspace` keyPress
+// even when there is no more text in the TextField
+- (BOOL)keyboardInputShouldDelete:(RCTTextField *)textField
+{
+  [self textField:textField shouldChangeCharactersInRange:NSMakeRange(0, 0) replacementString:@""];
+  return YES;
+}
+
+- (BOOL)textFieldShouldEndEditing:(RCTTextField *)textField
+{
+  return [textField textFieldShouldEndEditing:textField];
 }
 
 RCT_EXPORT_VIEW_PROPERTY(caretHidden, BOOL)
@@ -45,11 +64,6 @@ RCT_EXPORT_VIEW_PROPERTY(placeholder, NSString)
 RCT_EXPORT_VIEW_PROPERTY(placeholderTextColor, NSColor)
 RCT_EXPORT_VIEW_PROPERTY(text, NSString)
 RCT_EXPORT_VIEW_PROPERTY(maxLength, NSNumber)
-//RCT_EXPORT_VIEW_PROPERTY(clearButtonMode, NSTextFieldViewMode)
-//RCT_REMAP_VIEW_PROPERTY(clearTextOnFocus, clearsOnBeginEditing, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(selectTextOnFocus, BOOL)
-RCT_REMAP_VIEW_PROPERTY(color, textColor, NSColor)
-//RCT_REMAP_VIEW_PROPERTY(autoCapitalize, autocapitalizationType, UITextAutocapitalizationType)
 RCT_REMAP_VIEW_PROPERTY(textAlign, textAlignment, NSTextAlignment)
 RCT_CUSTOM_VIEW_PROPERTY(fontSize, CGFloat, RCTTextField)
 {
@@ -73,8 +87,8 @@ RCT_EXPORT_VIEW_PROPERTY(mostRecentEventCount, NSInteger)
 {
   NSNumber *reactTag = shadowView.reactTag;
   NSEdgeInsets padding = shadowView.paddingAsInsets;
-  return ^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
-    ((RCTTextField *)viewRegistry[reactTag]).contentInset = padding;
+  return ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, RCTTextField *> *viewRegistry) {
+    viewRegistry[reactTag].contentInset = padding;
   };
 }
 

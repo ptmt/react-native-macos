@@ -30,7 +30,7 @@ RCT_EXPORT_MODULE()
 - (RCTImageLoaderCancellationBlock)loadImageForURL:(NSURL *)imageURL
                                               size:(CGSize)size
                                              scale:(CGFloat)scale
-                                        resizeMode:(UIViewContentMode)resizeMode
+                                        resizeMode:(RCTResizeMode)resizeMode
                                    progressHandler:(RCTImageLoaderProgressBlock)progressHandler
                                  completionHandler:(RCTImageLoaderCompletionBlock)completionHandler
 {
@@ -50,7 +50,7 @@ RCT_EXPORT_MODULE()
   PHImageRequestOptions *imageOptions = [PHImageRequestOptions new];
 
   if (progressHandler) {
-    imageOptions.progressHandler = ^(double progress, NSError *error, BOOL *stop, NSDictionary *info) {
+    imageOptions.progressHandler = ^(double progress, NSError *error, BOOL *stop, NSDictionary<NSString *, id> *info) {
       static const double multiplier = 1e6;
       progressHandler(progress * multiplier, multiplier);
     };
@@ -71,7 +71,7 @@ RCT_EXPORT_MODULE()
   }
 
   PHImageContentMode contentMode = PHImageContentModeAspectFill;
-  if (resizeMode == UIViewContentModeScaleAspectFit) {
+  if (resizeMode == RCTResizeModeContain) {
     contentMode = PHImageContentModeAspectFit;
   }
 
@@ -80,7 +80,7 @@ RCT_EXPORT_MODULE()
                                              targetSize:targetSize
                                             contentMode:contentMode
                                                 options:imageOptions
-                                          resultHandler:^(UIImage *result, NSDictionary *info) {
+                                          resultHandler:^(UIImage *result, NSDictionary<NSString *, id> *info) {
     if (result) {
       completionHandler(nil, result);
     } else {

@@ -12,25 +12,17 @@
 #import "RCTDevMenu.h"
 
 #import "RCTAssert.h"
-#import "RCTBridge.h"
+#import "RCTBridge+Private.h"
 #import "RCTDefines.h"
 #import "RCTEventDispatcher.h"
 #import "RCTKeyCommands.h"
 #import "RCTLog.h"
-#import "RCTPerfStats.h"
 #import "RCTProfile.h"
 #import "RCTRootView.h"
 #import "RCTSourceCode.h"
 #import "RCTUtils.h"
 
 #if RCT_DEV
-
-@interface RCTBridge (Profiling)
-
-- (void)startProfiling;
-- (void)stopProfiling:(void (^)(NSData *))callback;
-
-@end
 
 static NSString *const RCTShowDevMenuNotification = @"RCTShowDevMenuNotification";
 static NSString *const RCTDevMenuSettingsKey = @"RCTDevMenu";
@@ -43,7 +35,7 @@ typedef NS_ENUM(NSInteger, RCTDevMenuType) {
 
 @interface RCTDevMenuItem ()
 
-@property (nonatomic, assign, readonly) RCTDevMenuType itemType;
+@property (nonatomic, assign, readonly) RCTDevMenuType type;
 @property (nonatomic, copy, readonly) NSString *key;
 @property (nonatomic, copy, readonly) NSString *selectedTitle;
 @property (nonatomic, copy) id value;
@@ -58,14 +50,14 @@ typedef NS_ENUM(NSInteger, RCTDevMenuType) {
   id _handler; // block
 }
 
-- (instancetype)initWithType:(RCTDevMenuType)itemType
+- (instancetype)initWithType:(RCTDevMenuType)type
                          key:(NSString *)key
                        title:(NSString *)title
                selectedTitle:(NSString *)selectedTitle
                      handler:(id /* block */)handler
 {
   if ((self = [super init])) {
-    _itemType = itemType;
+    _type = type;
     _key = [key copy];
     [self setTitle:title];
     _selectedTitle = [selectedTitle copy];
@@ -73,7 +65,7 @@ typedef NS_ENUM(NSInteger, RCTDevMenuType) {
     _value = nil;
     [self setAction:@selector(callHandler)];
     [self setTarget:self];
-    // [self keyEquivalent:] TODO: key equeiavalent
+    // [self keyEquivalent:] TODO: key keyEquivalent
   }
   return self;
 }
@@ -104,7 +96,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 - (void)callHandler
 {
-  switch (_itemType) {
+  switch (_type) {
     case RCTDevMenuTypeButton: {
       if (_handler) {
         ((void(^)())_handler)();
@@ -113,7 +105,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
     }
     case RCTDevMenuTypeToggle: {
       if (_handler) {
-        ((void(^)(BOOL selected))_handler)([_value boolValue]);
+        BOOL value = [_value boolValue];
+        _value = @(!value);
+        ((void(^)(BOOL selected))_handler)(!value);
       }
       break;
     }
@@ -135,8 +129,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   NSURLSessionDataTask *_updateTask;
   NSURL *_liveReloadURL;
   BOOL _jsLoaded;
-  NSArray *_presentedItems;
-  NSMutableArray *_extraMenuItems;
+  NSArray<RCTDevMenuItem *> *_presentedItems;
+  NSMutableArray<RCTDevMenuItem *> *_extraMenuItems;
+  NSString *_webSocketExecutorName;
+  NSString *_executorOverride;
 }
 
 @synthesize bridge = _bridge;
@@ -173,22 +169,6 @@ RCT_EXPORT_MODULE()
 
     __weak RCTDevMenu *weakSelf = self;
 
-    [_extraMenuItems addObject:[RCTDevMenuItem toggleItemWithKey:@"showFPS"
-                                               title:@"Show FPS Monitor"
-                                       selectedTitle:@"Hide FPS Monitor"
-                                             handler:^(BOOL showFPS)
-    {
-      RCTDevMenu *strongSelf = weakSelf;
-      if (strongSelf) {
-        strongSelf->_showFPS = showFPS;
-        if (showFPS) {
-          [strongSelf.bridge.perfStats show];
-        } else {
-          [strongSelf.bridge.perfStats hide];
-        }
-      }
-    }]];
-
     [_extraMenuItems addObject:[RCTDevMenuItem toggleItemWithKey:@"showInspector"
                                                  title:@"Show Inspector"
                                          selectedTitle:@"Hide Inspector"
@@ -196,6 +176,13 @@ RCT_EXPORT_MODULE()
     {
       [weakSelf.bridge.eventDispatcher sendDeviceEventWithName:@"toggleElementInspector" body:nil];
     }]];
+
+    _webSocketExecutorName = [_defaults objectForKey:@"websocket-executor-name"] ?: @"Chrome";
+
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+      _executorOverride = [_defaults objectForKey:@"executor-override"];
+    });
 
     // Delay setup until after Bridge init
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -227,7 +214,7 @@ RCT_EXPORT_MODULE()
                                      weakSelf.executorClass = Nil;
                                    }];
 
-
+     [self refreshMenu];
   }
   return self;
 }
@@ -270,8 +257,10 @@ RCT_EXPORT_MODULE()
 
   self.profilingEnabled = [_settings[@"profilingEnabled"] ?: @NO boolValue];
   self.liveReloadEnabled = [_settings[@"liveReloadEnabled"] ?: @NO boolValue];
-  self.showFPS = [_settings[@"showFPS"] ?: @NO boolValue];
-  self.executorClass = NSClassFromString(_settings[@"executorClass"]);
+  self.hotLoadingEnabled = [_settings[@"hotLoadingEnabled"] ?: @NO boolValue];
+  self.showFPS = [_settings[@"RCTPerfMonitorKey"] ?: @NO boolValue];
+  self.executorClass = NSClassFromString(_executorOverride ?: _settings[@"executorClass"]);
+  [self refreshMenu];
 }
 
 /**
@@ -292,7 +281,6 @@ RCT_EXPORT_MODULE()
       break;
     }
   }
-
   // Save the setting
   id currentValue = _settings[name];
   if (currentValue == value || [currentValue isEqual:value]) {
@@ -317,14 +305,14 @@ RCT_EXPORT_MODULE()
 
   // Check if live reloading is available
   _liveReloadURL = nil;
-  RCTSourceCode *sourceCodeModule = _bridge.modules[RCTBridgeModuleNameForClass([RCTSourceCode class])];
+  RCTSourceCode *sourceCodeModule = [_bridge moduleForClass:[RCTSourceCode class]];
   if (!sourceCodeModule.scriptURL) {
     if (!sourceCodeModule) {
       RCTLogWarn(@"RCTSourceCode module not found");
     } else {
       RCTLogWarn(@"RCTSourceCode module scriptURL has not been set");
     }
-  } else if (!(sourceCodeModule.scriptURL).fileURL) {
+  } else if (!sourceCodeModule.scriptURL.fileURL) {
     // Live reloading is disabled when running from bundled JS file
     _liveReloadURL = [[NSURL alloc] initWithString:@"/onchange" relativeToURL:sourceCodeModule.scriptURL];
   }
@@ -350,22 +338,10 @@ RCT_EXPORT_MODULE()
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)showOnShake
-{
-  if (_shakeToShow) {
-    [self show];
-  }
-}
 
 - (void)toggle
 {
-//  if (_actionSheet) {
-////    [_actionSheet dismissWithClickedButtonIndex:_actionSheet.cancelButtonIndex animated:YES];
-////    _actionSheet = nil;
-//  } else {
-//    [self show];
-//  }
-  [self show];
+  NSLog(@"showDeveloper menu is not implemented");
 }
 
 - (void)addItem:(NSString *)title handler:(void(^)(void))handler
@@ -381,9 +357,9 @@ RCT_EXPORT_MODULE()
   [self settingsDidChange];
 }
 
-- (NSArray *)menuItems
+- (NSArray<RCTDevMenuItem *> *)menuItems
 {
-  NSMutableArray *items = [NSMutableArray new];
+  NSMutableArray<RCTDevMenuItem *> *items = [NSMutableArray new];
 
   // Add built-in items
 
@@ -395,25 +371,23 @@ RCT_EXPORT_MODULE()
 
   Class chromeExecutorClass = NSClassFromString(@"RCTWebSocketExecutor");
   if (!chromeExecutorClass) {
-    [items addObject:[RCTDevMenuItem buttonItemWithTitle:@"Chrome Debugger Unavailable" handler:^{
-      NSAlert *alert = RCTAlertView(@"Chrome Debugger Unavailable", @"You need to include the RCTWebSocket library to enable Chrome debugging", nil, @"OK", nil);
+    [items addObject:[RCTDevMenuItem buttonItemWithTitle:[NSString stringWithFormat:@"%@ Debugger Unavailable", _webSocketExecutorName] handler:^{
+      NSAlert *alert = RCTAlertView(
+        [NSString stringWithFormat:@"%@ Debugger Unavailable", _webSocketExecutorName],
+        [NSString stringWithFormat:@"You need to include the RCTWebSocket library to enable %@ debugging", _webSocketExecutorName],
+        nil,
+        @"OK",
+        nil);
       [alert runModal];
     }]];
   } else {
     BOOL isDebuggingInChrome = _executorClass && _executorClass == chromeExecutorClass;
-    NSLog(@"isDebuggingInChrome %hhd", isDebuggingInChrome);
-    NSString *debugTitleChrome = isDebuggingInChrome ? @"Disable Chrome Debugging" : @"Debug in Chrome";
+    NSString *debugTitleChrome = isDebuggingInChrome ? [NSString stringWithFormat:@"Disable %@ Debugging", _webSocketExecutorName] : [NSString stringWithFormat:@"Debug in %@", _webSocketExecutorName];
+
     [items addObject:[RCTDevMenuItem buttonItemWithTitle:debugTitleChrome handler:^{
       weakSelf.executorClass = isDebuggingInChrome ? Nil : chromeExecutorClass;
     }]];
   }
-
-  Class safariExecutorClass = NSClassFromString(@"RCTWebViewExecutor");
-  BOOL isDebuggingInSafari = _executorClass && _executorClass == safariExecutorClass;
-  NSString *debugTitleSafari = isDebuggingInSafari ? @"Disable Safari Debugging" : @"Debug in Safari";
-  [items addObject:[RCTDevMenuItem buttonItemWithTitle:debugTitleSafari handler:^{
-    weakSelf.executorClass = isDebuggingInSafari ? Nil : safariExecutorClass;
-  }]];
 
   if (_liveReloadURL) {
     NSString *liveReloadTitle = _liveReloadEnabled ? @"Disable Live Reload" : @"Enable Live Reload";
@@ -427,36 +401,61 @@ RCT_EXPORT_MODULE()
     }]];
   }
 
+  if ([self hotLoadingAvailable]) {
+    NSString *hotLoadingTitle = _hotLoadingEnabled ? @"Disable Hot Loading" : @"Enable Hot Loading";
+    [items addObject:[RCTDevMenuItem buttonItemWithTitle:hotLoadingTitle handler:^{
+      weakSelf.hotLoadingEnabled = !_hotLoadingEnabled;
+    }]];
+  }
+
   [items addObjectsFromArray:_extraMenuItems];
 
   return items;
 }
 
-RCT_EXPORT_METHOD(show)
+//TODO: Use Unified Menu API, update settings, update menu titles
+- (NSMenu *)getDeveloperMenu
 {
-  if ([NSApp mainMenu].itemArray.lastObject && [[NSApp mainMenu].itemArray.lastObject.submenu.title isEqualToString:@"Developer"]) {
-    return;
+  if ([NSApp mainMenu].itemArray.lastObject && [[NSApp mainMenu].itemArray.lastObject.submenu.title isEqualToString:@"Developer Menu"]) {
+    return [NSApp mainMenu].itemArray.lastObject.submenu;
+  } else {
+    NSMenuItem *developerItemContainer = [[NSMenuItem alloc] init];
+    NSMenu *developerMenu = [[NSMenu alloc] initWithTitle:@"Developer Menu"];
+    [developerItemContainer setSubmenu:developerMenu];
+    [[NSApp mainMenu] addItem:developerItemContainer];
+    return developerMenu;
   }
-  NSMenuItem *developerItemContainer = [[NSMenuItem alloc] init]; //WithTitle:@"Developer" action:nil keyEquivalent:@"d"
-  NSMenu *developerMenu = [[NSMenu alloc] initWithTitle:@"Developer"];
-  [developerItemContainer setSubmenu:developerMenu];
+}
 
-  NSArray *items = [self menuItems];
+- (void)refreshMenu
+{
+  NSMenu *developerMenu = [self getDeveloperMenu];
+  [developerMenu removeAllItems];
+  NSArray<RCTDevMenuItem *> *items = [self menuItems];
   for (RCTDevMenuItem *item in items) {
-    [developerMenu addItem:item];
+    switch (item.type) {
+      case RCTDevMenuTypeButton: {
+        [developerMenu addItem:item];
+        break;
+      }
+      case RCTDevMenuTypeToggle: {
+        if (item.key == @"RCTPerfMonitorKey") {
+          item.value = _settings[@"RCTPerfMonitorKey"];
+        }
+        BOOL selected = [item.value boolValue];
+        NSMenu *selectedItem = [item copy]; // TODO: could you please make it elegant?
+        selectedItem.title = (selected ? item.selectedTitle : item.title);
+        [developerMenu addItem:selectedItem];
+        break;
+      }
+    }
+
   }
-
-  //TODO: update settings, update menu titles
-
-  [[NSApp mainMenu] addItem:developerItemContainer];
-
   return;
 }
 
 RCT_EXPORT_METHOD(reload)
 {
-  _jsLoaded = NO;
-  _liveReloadURL = nil;
   [_bridge reload];
 }
 
@@ -489,10 +488,31 @@ RCT_EXPORT_METHOD(reload)
   }
 }
 
+- (BOOL)hotLoadingAvailable
+{
+  return !_bridge.bundleURL.fileURL // Only works when running from server
+  && [_bridge.delegate respondsToSelector:@selector(bridgeSupportsHotLoading:)]
+  && [_bridge.delegate bridgeSupportsHotLoading:_bridge];
+}
+
+- (void)setHotLoadingEnabled:(BOOL)enabled
+{
+  _hotLoadingEnabled = enabled;
+  [self updateSetting:@"hotLoadingEnabled" value:@(_hotLoadingEnabled)];
+
+  BOOL actuallyEnabled = [self hotLoadingAvailable] && _hotLoadingEnabled;
+  if (RCTGetURLQueryParam(_bridge.bundleURL, @"hot").boolValue != actuallyEnabled) {
+    _bridge.bundleURL = RCTURLByReplacingQueryParam(_bridge.bundleURL, @"hot",
+                                                    actuallyEnabled ? @"true" : nil);
+    [_bridge reload];
+  }
+}
+
 - (void)setExecutorClass:(Class)executorClass
 {
   if (_executorClass != executorClass) {
     _executorClass = executorClass;
+    _executorOverride = nil;
     [self updateSetting:@"executorClass" value:NSStringFromClass(executorClass)];
   }
 
@@ -503,13 +523,12 @@ RCT_EXPORT_METHOD(reload)
     // needed to prevent overriding a custom executor with the default if a
     // custom executor has been set directly on the bridge
     if (executorClass == Nil &&
-        (_bridge.executorClass != NSClassFromString(@"RCTWebSocketExecutor") &&
-         _bridge.executorClass != NSClassFromString(@"RCTWebViewExecutor"))) {
+        _bridge.executorClass != NSClassFromString(@"RCTWebSocketExecutor")) {
       return;
     }
 
     _bridge.executorClass = executorClass;
-    [self reload];
+    [_bridge reload];
   }
 }
 
@@ -573,7 +592,7 @@ RCT_EXPORT_METHOD(reload)
 - (RCTDevMenu *)devMenu
 {
 #if RCT_DEV
-  return self.modules[RCTBridgeModuleNameForClass([RCTDevMenu class])];
+  return [self moduleForClass:[RCTDevMenu class]];
 #else
   return nil;
 #endif

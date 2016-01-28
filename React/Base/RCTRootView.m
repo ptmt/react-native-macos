@@ -8,11 +8,13 @@
  */
 
 #import "RCTRootView.h"
+#import "RCTRootViewDelegate.h"
+#import "RCTRootViewInternal.h"
 
 #import <objc/runtime.h>
 
 #import "RCTAssert.h"
-#import "RCTBridge.h"
+#import "RCTBridge+Private.h"
 #import "RCTEventDispatcher.h"
 #import "RCTKeyCommands.h"
 #import "RCTLog.h"
@@ -22,16 +24,9 @@
 #import "RCTUIManager.h"
 #import "RCTUtils.h"
 #import "RCTView.h"
-#import "RCTWebViewExecutor.h"
 #import "NSView+React.h"
 
 NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotification";
-
-@interface RCTBridge (RCTRootView)
-
-@property (nonatomic, weak, readonly) RCTBridge *batchedBridge;
-
-@end
 
 @interface RCTUIManager (RCTRootView)
 
@@ -42,6 +37,8 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 @interface RCTRootContentView : RCTView <RCTInvalidating>
 
 @property (nonatomic, readonly) BOOL contentHasAppeared;
+
+@property (nonatomic, readonly, strong) RCTTouchHandler *touchHandler;
 
 - (instancetype)initWithFrame:(CGRect)frame bridge:(RCTBridge *)bridge NS_DESIGNATED_INITIALIZER;
 
@@ -70,9 +67,10 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 
     _bridge = bridge;
     _moduleName = moduleName;
-    _initialProperties = [initialProperties copy];
+    _appProperties = [initialProperties copy];
     _loadingViewFadeDelay = 0.25;
     _loadingViewFadeDuration = 0.25;
+    _sizeFlexibility = RCTRootViewSizeFlexibilityNone;
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(javaScriptDidLoad:)
@@ -200,10 +198,15 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   _contentView = [[RCTRootContentView alloc] initWithFrame:self.bounds bridge:bridge];
   [self addSubview:_contentView];
 
+  [self runApplication:bridge];
+}
+
+- (void)runApplication:(RCTBridge *)bridge
+{
   NSString *moduleName = _moduleName ?: @"";
   NSDictionary *appParameters = @{
     @"rootTag": _contentView.reactTag,
-    @"initialProps": _initialProperties ?: @{},
+    @"initialProps": _appProperties ?: @{},
   };
 
   [bridge enqueueJSCall:@"AppRegistry.runApplication"
@@ -222,6 +225,39 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 //  };
 }
 
+- (void)setAppProperties:(NSDictionary *)appProperties
+{
+  RCTAssertMainThread();
+
+  if ([_appProperties isEqualToDictionary:appProperties]) {
+    return;
+  }
+
+  _appProperties = [appProperties copy];
+
+  if (_contentView && _bridge.valid && !_bridge.loading) {
+    [self runApplication:_bridge.batchedBridge];
+  }
+}
+
+- (void)setIntrinsicSize:(CGSize)intrinsicSize
+{
+  BOOL oldSizeHasAZeroDimension = _intrinsicSize.height == 0 || _intrinsicSize.width == 0;
+  BOOL newSizeHasAZeroDimension = intrinsicSize.height == 0 || intrinsicSize.width == 0;
+  BOOL bothSizesHaveAZeroDimension = oldSizeHasAZeroDimension && newSizeHasAZeroDimension;
+
+  BOOL sizesAreEqual = CGSizeEqualToSize(_intrinsicSize, intrinsicSize);
+
+  _intrinsicSize = intrinsicSize;
+
+  // Don't notify the delegate if the content remains invisible or its size has not changed
+  if (bothSizesHaveAZeroDimension || sizesAreEqual) {
+    return;
+  }
+
+  [_delegate rootViewDidChangeIntrinsicSize:self];
+}
+
 - (NSNumber *)reactTag
 {
   return _contentView.reactTag;
@@ -238,6 +274,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   [_contentView invalidate];
+}
+
+- (void)cancelTouches
+{
+  [[_contentView touchHandler] cancel];
 }
 
 @end
@@ -266,7 +307,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   if ((self = [super initWithFrame:frame])) {
     _bridge = bridge;
     [self setUp];
-    self.frame = frame;
     self.layer.backgroundColor = NULL;
   }
   return self;
@@ -347,7 +387,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
    */
   self.reactTag = [_bridge.uiManager allocateRootTag];
   [self addGestureRecognizer:[[RCTTouchHandler alloc] initWithBridge:_bridge]];
-
   [_bridge.uiManager registerRootView:self];
 }
 
@@ -357,7 +396,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
   //if (self.userInteractionEnabled) {
   //  self.userInteractionEnabled = NO;
     [(RCTRootView *)self.superview contentViewInvalidated];
-    [_bridge enqueueJSCall:@"ReactNative.unmountComponentAtNodeAndRemoveContainer"
+    [_bridge enqueueJSCall:@"AppRegistry.unmountApplicationComponentAtRootTag"
                       args:@[self.reactTag]];
   //}
 }

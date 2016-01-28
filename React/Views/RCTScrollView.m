@@ -14,6 +14,7 @@
 #import "RCTConvert.h"
 #import "RCTEventDispatcher.h"
 #import "RCTLog.h"
+#import "RCTRefreshControl.h"
 #import "RCTUIManager.h"
 #import "RCTUtils.h"
 #import "NSView+Private.h"
@@ -117,7 +118,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 - (RCTScrollEvent *)coalesceWithEvent:(RCTScrollEvent *)newEvent
 {
-  NSArray *updatedChildFrames = [_userData[@"updatedChildFrames"] arrayByAddingObjectsFromArray:newEvent->_userData[@"updatedChildFrames"]];
+  NSArray<NSDictionary *> *updatedChildFrames = [_userData[@"updatedChildFrames"] arrayByAddingObjectsFromArray:newEvent->_userData[@"updatedChildFrames"]];
 
   if (updatedChildFrames) {
     NSMutableDictionary *userData = [newEvent->_userData mutableCopy];
@@ -386,6 +387,15 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   return @"RCTScrollView";
 }
 
+//- (void)setRefreshControl:(UIRefreshControl *)refreshControl
+//{
+//  if (_refreshControl) {
+//    [_refreshControl removeFromSuperview];
+//  }
+//  _refreshControl = refreshControl;
+//  [self addSubview:_refreshControl];
+//}
+
 @end
 
 
@@ -395,10 +405,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   RCTCustomScrollView *_scrollView;
   NSView *_contentView;
   NSTimeInterval _lastScrollDispatchTime;
-  NSMutableArray *_cachedChildFrames;
+  NSMutableArray<NSValue *> *_cachedChildFrames;
   BOOL _allowNextScrollNoMatterWhat;
   CGRect _lastClippedToRect;
 }
+
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
 {
@@ -434,24 +445,31 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)insertReactSubview:(NSView *)view atIndex:(__unused NSInteger)atIndex
 {
-  RCTAssert(_contentView == nil, @"RCTScrollView may only contain a single subview");
-  _contentView = view;
-  dispatch_async( dispatch_get_main_queue(), ^{
+  if ([view isKindOfClass:[RCTRefreshControl class]]) {
+    //_scrollView.refreshControl = (RCTRefreshControl*)view;
+  } else {
+    RCTAssert(_contentView == nil, @"RCTScrollView may only contain a single subview");
+    _contentView = view;
     [_scrollView addSubview:view];
-    [view setNeedsDisplay:YES];
-  });
-
+  }
 }
 
 - (void)removeReactSubview:(NSView *)subview
 {
-  RCTAssert(_contentView == subview, @"Attempted to remove non-existent subview");
-  _contentView = nil;
-  [subview removeFromSuperview];
+  if ([subview isKindOfClass:[RCTRefreshControl class]]) {
+    //_scrollView.refreshControl = nil;
+  } else {
+    RCTAssert(_contentView == subview, @"Attempted to remove non-existent subview");
+    _contentView = nil;
+    [subview removeFromSuperview];
+  }
 }
 
-- (NSArray *)reactSubviews
+- (NSArray<NSView *> *)reactSubviews
 {
+//  if (_contentView && _scrollView.refreshControl) {
+//    return @[_contentView, _scrollView.refreshControl];
+//  }
   return _contentView ? @[_contentView] : @[];
 }
 
@@ -570,14 +588,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)delegateMethod:(NSScrollView *)scrollView           \
 {                                                           \
   [_eventDispatcher sendScrollEventWithType:eventName reactTag:self.reactTag scrollView:scrollView userData:nil]; \
-  if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
-    [_nativeMainScrollDelegate delegateMethod:scrollView]; \
+  if ([_nativeScrollDelegate respondsToSelector:_cmd]) { \
+    [_nativeScrollDelegate delegateMethod:scrollView]; \
   } \
 }
 
 #define RCT_FORWARD_SCROLL_EVENT(call) \
-if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
-  [_nativeMainScrollDelegate call]; \
+if ([_nativeScrollDelegate respondsToSelector:_cmd]) { \
+  [_nativeScrollDelegate call]; \
 }
 
 //RCT_SCROLL_EVENT_HANDLER(scrollViewDidEndScrollingAnimation, RCTScrollEventTypeEndDeceleration)
@@ -604,7 +622,7 @@ if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
 //      (_scrollEventThrottle > 0 && _scrollEventThrottle < (now - _lastScrollDispatchTime))) {
 
     // Calculate changed frames
-    NSArray *childFrames = [self calculateChildFramesData];
+    NSArray<NSDictionary *> *childFrames = [self calculateChildFramesData];
 
     // Dispatch event
     [_eventDispatcher sendScrollEventWithType:RCTScrollEventTypeMove
@@ -619,9 +637,9 @@ if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
   //RCT_FORWARD_SCROLL_EVENT(scrollViewDidScroll:self.scrollView);
 }
 
-- (NSArray *)calculateChildFramesData
+- (NSArray<NSDictionary *> *)calculateChildFramesData
 {
-    NSMutableArray *updatedChildFrames = [NSMutableArray new];
+    NSMutableArray<NSDictionary *> *updatedChildFrames = [NSMutableArray new];
     [[_contentView reactSubviews] enumerateObjectsUsingBlock:
      ^(NSView *subview, NSUInteger idx, __unused BOOL *stop) {
 
@@ -631,7 +649,7 @@ if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
       if (_cachedChildFrames.count <= idx) {
         frameChanged = YES;
         //[_cachedChildFrames addObject:[NSValue valueWithCGRect:newFrame]];
-      } else if (!CGRectEqualToRect(newFrame, [_cachedChildFrames[idx] CGRectValue])) {
+      } else if (!CGRectEqualToRect(newFrame, [_cachedChildFrames[idx] rectValue])) {
         frameChanged = YES;
         //_cachedChildFrames[idx] = [NSValue valueWithCGRect:newFrame];
       }
@@ -739,6 +757,7 @@ if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
 //  if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) {
 //    return [_nativeMainScrollDelegate scrollViewShouldScrollToTop:scrollView];
 //  }
+
   return YES;
 }
 
@@ -888,6 +907,35 @@ if ([_nativeMainScrollDelegate respondsToSelector:_cmd]) { \
 - (id)valueForUndefinedKey:(NSString *)key
 {
   return [_scrollView valueForKey:key];
+}
+
+- (void)setOnRefreshStart:(RCTDirectEventBlock)onRefreshStart
+{
+  NSLog(@"onRefreshStart is not implemented");
+  if (!onRefreshStart) {
+    _onRefreshStart = nil;
+    //_scrollView.refreshControl = nil;
+    return;
+  }
+  _onRefreshStart = [onRefreshStart copy];
+
+//  if (!_scrollView.refreshControl) {
+//    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+//    [refreshControl addTarget:self action:@selector(refreshControlValueChanged) forControlEvents:UIControlEventValueChanged];
+//    _scrollView.refreshControl = refreshControl;
+//  }
+}
+
+- (void)refreshControlValueChanged
+{
+  if (self.onRefreshStart) {
+    self.onRefreshStart(nil);
+  }
+}
+
+- (void)endRefreshing
+{
+  //[_scrollView.refreshControl endRefreshing];
 }
 
 @end

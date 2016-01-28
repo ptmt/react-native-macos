@@ -1,5 +1,6 @@
-
+/* @noflow */
 import React from 'react-native-desktop';
+/* $FlowFixMe(>=17.0.0) - config */
 import SimpleMarkdown from 'simple-markdown';
 
 const {
@@ -159,7 +160,7 @@ const generateRules = styles => {
             word = word + ' ';
           }
           if (!state.withinText) {
-            textStyles.push(styles.plainText);
+            textStyles.push(styles.text);
           }
           return React.createElement(Text, {
             style: textStyles
@@ -185,7 +186,7 @@ const generateRules = styles => {
             word = word + ' ';
           }
           if (!state.withinText) {
-            textStyles.push(styles.plainText);
+            textStyles.push(styles.text);
           }
           return React.createElement(Text, {
             style: textStyles
@@ -234,6 +235,9 @@ const styles = {
   inlineCode: {
     fontFamily: 'Monaco',
     //fontWeight: 'bold'
+  },
+  image: {
+
   },
   list: {
 

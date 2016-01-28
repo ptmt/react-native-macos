@@ -45,6 +45,7 @@ RCT_EXTERN NSString *const RCTUIManagerRootViewKey;
 @interface RCTUIManager : NSObject <RCTBridgeModule, RCTInvalidating>
 
 /**
+<<<<<<< HEAD
  * The UIIManager has the concept of a designated "main scroll view", which is
  * useful for apps built around a central scrolling content area (e.g. a
  * timeline).
@@ -58,6 +59,8 @@ RCT_EXTERN NSString *const RCTUIManagerRootViewKey;
 //@property (nonatomic, readwrite, weak) id<UIScrollViewDelegate> nativeMainScrollDelegate;
 
 /**
+=======
+>>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
  * Register a root view with the RCTUIManager.
  */
 - (void)registerRootView:(NSView *)rootView;
@@ -89,6 +92,23 @@ RCT_EXTERN NSString *const RCTUIManagerRootViewKey;
  * The view that is currently first responder, according to the JS context.
  */
 + (NSView *)JSResponder;
+
+/**
+ * Normally, UI changes are not applied until the complete batch of method
+ * invocations from JavaScript to native has completed.
+ *
+ * Setting this to YES will flush UI changes sooner, which could potentially
+ * result in inconsistent UI updates.
+ *
+ * The default is NO (recommended).
+ */
+@property (atomic, assign) BOOL unsafeFlushUIChangesBeforeBatchEnds;
+
+/**
+ * In some cases we might want to trigger layout from native side.
+ * React won't be aware of this, so we need to make sure it happens.
+ */
+- (void)setNeedsLayout;
 
 @end
 

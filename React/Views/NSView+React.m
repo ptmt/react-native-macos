@@ -56,7 +56,7 @@
   [subview removeFromSuperview];
 }
 
-- (NSArray *)reactSubviews
+- (NSArray<NSView *> *)reactSubviews
 {
   return self.subviews;
 }
@@ -81,6 +81,7 @@
     RCTLogError(@"Invalid layout for (%@)%@", self.reactTag, self);
     return;
   }
+
   self.frame = frame;
   // TODO: why position matters? It's only produce bugs
   //self.layer.position = position;
