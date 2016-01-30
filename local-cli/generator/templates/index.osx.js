@@ -24,7 +24,7 @@ var <%= name %> = React.createClass({
         </Text>
         <Text style={styles.instructions}>
           Press Cmd+R to reload,{'\n'}
-          Cmd+D for dev menu
+          Or use Developer Menu
         </Text>
       </View>
     );

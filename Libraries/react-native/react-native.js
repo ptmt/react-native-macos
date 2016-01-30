@@ -34,12 +34,8 @@ var ReactNative = {
   get PullToRefreshViewAndroid() { return require('PullToRefreshViewAndroid'); },
   get RecyclerViewBackedScrollView() { return require('RecyclerViewBackedScrollView'); },
   get RefreshControl() { return require('RefreshControl'); },
-
-  get SwitchIOS() { return require('SwitchIOS'); },
-  get TabBarIOS() { return require('TabBarIOS'); },
   get Text() { return require('Text'); },
   get TextInput() { return require('TextInput'); },
-
   get Touchable() { return require('Touchable'); },
   get TouchableHighlight() { return require('TouchableHighlight'); },
   get TouchableNativeFeedback() { return require('TouchableNativeFeedback'); },

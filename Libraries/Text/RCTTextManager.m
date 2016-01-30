@@ -82,7 +82,7 @@ RCT_EXPORT_SHADOW_PROPERTY(textShadowColor, NSColor)
       RCTShadowView *shadowView = queue[i];
       RCTAssert([shadowView isTextDirty], @"Don't process any nodes that don't have dirty text");
 
-      if ([shadowView.viewName hasSuffix:@"ShadowText"]) {
+      if ([shadowView isKindOfClass:[RCTShadowText class]]) {
         ((RCTShadowText *)shadowView).fontSizeMultiplier = 1; //TODO: accessability
         [(RCTShadowText *)shadowView recomputeText];
       } else if ([shadowView isKindOfClass:[RCTShadowRawText class]]) {
