@@ -7,11 +7,12 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
- #import <Cocoa/Cocoa.h>
+#import <Cocoa/Cocoa.h>
+#import "RCTBridge.h"
 
- @interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate>
 
- @property (strong, nonatomic) NSWindow *window;
- @property (nonatomic, readonly) RCTBridge *bridge;
+@property (strong, nonatomic) NSWindow *window;
+@property (nonatomic, readonly) RCTBridge *bridge;
 
- @end
+@end
