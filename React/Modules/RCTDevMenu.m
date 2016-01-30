@@ -416,8 +416,8 @@ RCT_EXPORT_MODULE()
 //TODO: Use Unified Menu API, update settings, update menu titles
 - (NSMenu *)getDeveloperMenu
 {
-  if ([NSApp mainMenu].itemArray.lastObject && [[NSApp mainMenu].itemArray.lastObject.submenu.title isEqualToString:@"Developer Menu"]) {
-    return [NSApp mainMenu].itemArray.lastObject.submenu;
+  if ([[NSApp mainMenu] indexOfItemWithTitle:@"Developer Menu"] > 0) {
+    return [[NSApp mainMenu] itemWithTitle:@"Developer Menu"];
   } else {
     NSMenuItem *developerItemContainer = [[NSMenuItem alloc] init];
     NSMenu *developerMenu = [[NSMenu alloc] initWithTitle:@"Developer Menu"];
