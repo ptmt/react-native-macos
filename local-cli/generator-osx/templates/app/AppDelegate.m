@@ -52,7 +52,7 @@
     _bridge = [[RCTBridge alloc] initWithDelegate:self
                                               launchOptions:nil];
 
-    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
+    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:_bridge
                                                      moduleName:@"<%= name %>"
                                               initialProperties:nil];
 
