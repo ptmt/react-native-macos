@@ -37,10 +37,19 @@
     return self;
 }
 
+/**
+ * Indicates whether Hot Loading is supported or not.
+ * Note: this method will be removed soon, once Hot Loading is supported on OSS.
+ */
+- (BOOL)bridgeSupportsHotLoading:(__unused RCTBridge *)bridge
+{
+  return YES;
+}
+
 - (void)applicationDidFinishLaunching:(__unused NSNotification *)aNotification
 {
 
-    RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self
+    _bridge = [[RCTBridge alloc] initWithDelegate:self
                                               launchOptions:nil];
 
     RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge

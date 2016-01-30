@@ -97,7 +97,7 @@ function generateWrapper(args, config) {
 
 function printUsage() {
   console.log([
-    'Usage: react-native <command>',
+    'Usage: react-native-desktop <command>',
     '',
     'Commands:'
   ].concat(Object.keys(documentedCommands).map(function(name) {
@@ -112,7 +112,7 @@ function printInitWarning() {
   return Promise.resolve().then(function() {
     console.log([
       'Looks like React Native project already exists in the current',
-      'folder. Run this command from a different folder or remove node_modules/react-native'
+      'folder. Run this command from a different folder or remove node_modules/react-native-desktop'
     ].join('\n'));
     process.exit(1);
   });
@@ -134,7 +134,7 @@ class CreateSuppressingTerminalAdapter extends TerminalAdapter {
  *                 generator.
  */
 function init(projectDir, argsOrName) {
-  console.log('Setting up new React Native app in ' + projectDir);
+  console.log('Setting up new React Native Desktop app in ' + projectDir);
   var env = yeoman.createEnv(
     undefined,
     undefined,

@@ -9,8 +9,9 @@
 
  #import <Cocoa/Cocoa.h>
 
- @interface AppDelegate : NSObject <NSApplicationDelegate>
+ @interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate>
 
  @property (strong, nonatomic) NSWindow *window;
+ @property (nonatomic, readonly) RCTBridge *bridge;
 
  @end
