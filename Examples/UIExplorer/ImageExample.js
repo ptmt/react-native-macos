@@ -146,21 +146,21 @@ exports.examples = [
       );
     },
   },
-  // {
-  //   title: 'Plain Static Image',
-  //   description: 'Static assets should be required by prefixing with `image!` ' +
-  //     'and are located in the app bundle.',
-  //   render: function() {
-  //     return (
-  //       <View style={styles.horizontal}>
-  //         <Image source={require('image!uie_thumb_normal')} style={styles.icon} />
-  //         <Image source={require('image!uie_thumb_selected')} style={styles.icon} />
-  //         <Image source={require('image!uie_comment_normal')} style={styles.icon} />
-  //         <Image source={require('image!uie_comment_highlighted')} style={styles.icon} />
-  //       </View>
-  //     );
-  //   },
-  // },
+  {
+    title: 'Plain Static Image',
+    description: 'Static assets should be required by prefixing with `image!` ' +
+      'and are located in the app bundle.',
+    render: function() {
+      return (
+        <View style={styles.horizontal}>
+          <Image source={require('image!uie_thumb_normal')} style={styles.icon} />
+          <Image source={require('image!uie_thumb_selected')} style={styles.icon} />
+          <Image source={require('image!uie_comment_normal')} style={styles.icon} />
+          <Image source={require('image!uie_comment_highlighted')} style={styles.icon} />
+        </View>
+      );
+    },
+  },
   {
     title: 'Image Loading Events',
     render: function() {
@@ -425,8 +425,8 @@ var styles = StyleSheet.create({
     marginBottom: 3,
   },
   icon: {
-    width: 15,
-    height: 15,
+    width: 17,
+    height: 40,
   },
   horizontal: {
     flexDirection: 'row',
