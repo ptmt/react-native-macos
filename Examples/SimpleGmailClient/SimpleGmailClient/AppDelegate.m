@@ -57,7 +57,7 @@
         NSMenu *rootMenu = [[NSMenu alloc] initWithTitle:@"" ];
         [containerItem setSubmenu:rootMenu];
         [mainMenu addItem:containerItem];
-        [rootMenu addItemWithTitle:@"Quit SimpleGmailClient" action:@selector((terminate)) keyEquivalent:@"Q"];
+        [rootMenu addItemWithTitle:@"Quit SimpleGmailClient" action:@selector(terminate:) keyEquivalent:@"q"];
         [NSApp setMainMenu:mainMenu];
     }
     return self;

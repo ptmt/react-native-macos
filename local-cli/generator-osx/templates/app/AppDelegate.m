@@ -114,7 +114,7 @@
     NSMenuItem *containerItem = [[NSMenuItem alloc] init];
     NSMenu *rootMenu = [[NSMenu alloc] initWithTitle:@"" ];
     [containerItem setSubmenu:rootMenu];
-    [rootMenu addItemWithTitle:@"Quit <%= name %>" action:@selector(terminate:) keyEquivalent:@"Q"];
+    [rootMenu addItemWithTitle:@"Quit <%= name %>" action:@selector(terminate:) keyEquivalent:@"q"];
     [[NSApp mainMenu] addItem:containerItem];
 }
 

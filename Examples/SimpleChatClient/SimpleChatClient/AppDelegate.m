@@ -129,7 +129,7 @@
     NSMenu *rootMenu = [[NSMenu alloc] initWithTitle:@"" ];
     [containerItem setSubmenu:rootMenu];
     [mainMenu addItem:containerItem];
-    [rootMenu addItemWithTitle:@"Quit SimpleChatClient" action:@selector(terminate) keyEquivalent:@"Q"];
+    [rootMenu addItemWithTitle:@"Quit SimpleChatClient" action:@selector(terminate:) keyEquivalent:@"q"];
     [NSApp setMainMenu:mainMenu];
 
     [self setUpEditMenu];
