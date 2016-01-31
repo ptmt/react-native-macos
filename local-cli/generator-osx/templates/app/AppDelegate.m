@@ -111,13 +111,11 @@
 
 - (void)setUpApplicationMenu
 {
-    NSMenu *mainMenu = [[NSMenu alloc] initWithTitle:@"" ];
     NSMenuItem *containerItem = [[NSMenuItem alloc] init];
     NSMenu *rootMenu = [[NSMenu alloc] initWithTitle:@"" ];
     [containerItem setSubmenu:rootMenu];
-    [mainMenu addItem:containerItem];
-    [rootMenu addItemWithTitle:@"Quit <%= name %>" action:@selector(terminate) keyEquivalent:@"Q"];
-
+    [rootMenu addItemWithTitle:@"Quit <%= name %>" action:@selector(terminate:) keyEquivalent:@"Q"];
+    [[NSApp mainMenu] addItem:containerItem];
 }
 
 - (id)firstResponder

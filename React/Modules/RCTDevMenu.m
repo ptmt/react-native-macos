@@ -22,6 +22,8 @@
 #import "RCTSourceCode.h"
 #import "RCTUtils.h"
 
+#define RCT_DEVMENU_TITLE @"Developer Menu"
+
 #if RCT_DEV
 
 static NSString *const RCTShowDevMenuNotification = @"RCTShowDevMenuNotification";
@@ -416,11 +418,12 @@ RCT_EXPORT_MODULE()
 //TODO: Use Unified Menu API, update settings, update menu titles
 - (NSMenu *)getDeveloperMenu
 {
-  if ([[NSApp mainMenu] indexOfItemWithTitle:@"Developer Menu"] > 0) {
-    return [[NSApp mainMenu] itemWithTitle:@"Developer Menu"];
+  if ([[NSApp mainMenu] indexOfItemWithTitle:RCT_DEVMENU_TITLE] > -1) {
+    return [[NSApp mainMenu] itemWithTitle:RCT_DEVMENU_TITLE].submenu;
   } else {
     NSMenuItem *developerItemContainer = [[NSMenuItem alloc] init];
-    NSMenu *developerMenu = [[NSMenu alloc] initWithTitle:@"Developer Menu"];
+    NSMenu *developerMenu = [[NSMenu alloc] initWithTitle:RCT_DEVMENU_TITLE];
+    developerItemContainer.title = RCT_DEVMENU_TITLE;
     [developerItemContainer setSubmenu:developerMenu];
     [[NSApp mainMenu] addItem:developerItemContainer];
     return developerMenu;
@@ -439,11 +442,11 @@ RCT_EXPORT_MODULE()
         break;
       }
       case RCTDevMenuTypeToggle: {
-        if (item.key == @"RCTPerfMonitorKey") {
+        if ([item.key isEqualToString:@"RCTPerfMonitorKey"]) {
           item.value = _settings[@"RCTPerfMonitorKey"];
         }
         BOOL selected = [item.value boolValue];
-        NSMenu *selectedItem = [item copy]; // TODO: could you please make it elegant?
+        NSMenuItem *selectedItem = [item copy]; // TODO: could you please make it elegant?
         selectedItem.title = (selected ? item.selectedTitle : item.title);
         [developerMenu addItem:selectedItem];
         break;
