@@ -94,9 +94,9 @@ static vm_size_t RCTGetResidentMemorySize(void)
 @implementation RCTPerfMonitor {
   RCTDevMenuItem *_devMenuItem;
   NSView *_container;
-  NSTextView *_memory;
-  NSTextView *_heap;
-  NSTextView *_views;
+  NSTextField *_memory;
+  NSTextField *_heap;
+  NSTextField *_views;
   NSTextField *_uiGraphLabel;
   NSTextField *_jsGraphLabel;
   NSTableView *_metrics;
@@ -166,10 +166,10 @@ RCT_EXPORT_MODULE()
   return _container;
 }
 
-- (NSTextView *)memory
+- (NSTextField *)memory
 {
   if (!_memory) {
-    _memory = [[NSTextView alloc] initWithFrame:CGRectMake(0, 0, 44, RCTPerfMonitorBarHeight)];
+    _memory = [[NSTextField alloc] initWithFrame:CGRectMake(0, 0, 44, RCTPerfMonitorBarHeight)];
     _memory.font = [NSFont systemFontOfSize:12];
     _memory.alignment = NSTextAlignmentCenter;
   }
@@ -177,10 +177,10 @@ RCT_EXPORT_MODULE()
   return _memory;
 }
 
-- (NSTextView *)heap
+- (NSTextField *)heap
 {
   if (!_heap) {
-    _heap = [[NSTextView alloc] initWithFrame:CGRectMake(44, 0, 44, RCTPerfMonitorBarHeight)];
+    _heap = [[NSTextField alloc] initWithFrame:CGRectMake(44, 0, 44, RCTPerfMonitorBarHeight)];
     _heap.font = [NSFont systemFontOfSize:12];
     _heap.alignment = NSCenterTextAlignment;
   }
@@ -188,10 +188,10 @@ RCT_EXPORT_MODULE()
   return _heap;
 }
 
-- (NSTextView *)views
+- (NSTextField *)views
 {
   if (!_views) {
-    _views = [[NSTextView alloc] initWithFrame:CGRectMake(88, 0, 44, RCTPerfMonitorBarHeight)];
+    _views = [[NSTextField alloc] initWithFrame:CGRectMake(88, 0, 44, RCTPerfMonitorBarHeight)];
     _views.font = [NSFont systemFontOfSize:12];
     _views.alignment = NSTextAlignmentCenter;
   }

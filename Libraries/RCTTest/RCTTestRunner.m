@@ -146,11 +146,7 @@ expectErrorBlock:(BOOL(^)(NSString *error))expectErrorBlock
 
     RCTSetLogFunction(RCTDefaultLogFunction);
 
-<<<<<<< HEAD
-    NSArray *nonLayoutSubviews = [vcView.subviews filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id subview, NSDictionary *bindings) {
-=======
-    NSArray<UIView *> *nonLayoutSubviews = [vc.view.subviews filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id subview, NSDictionary *bindings) {
->>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
+    NSArray<NSView *> *nonLayoutSubviews = [vcView.subviews filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id subview, NSDictionary *bindings) {
       return ![NSStringFromClass([subview class]) isEqualToString:@"_UILayoutGuide"];
     }]];
     RCTAssert(nonLayoutSubviews.count == 0, @"There shouldn't be any other views: %@", nonLayoutSubviews);

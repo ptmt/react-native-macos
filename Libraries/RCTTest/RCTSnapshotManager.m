@@ -37,12 +37,8 @@
 
 RCT_EXPORT_MODULE()
 
-<<<<<<< HEAD
-- (NSView *)view {
-=======
-- (UIView *)view
+- (NSView *)view
 {
->>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
   return [RCTSnapshotView new];
 }
 

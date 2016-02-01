@@ -28,11 +28,7 @@ trap cleanup EXIT
 SERVER_PID=$!
 xctool \
   -project Examples/UIExplorer/UIExplorer.xcodeproj \
-<<<<<<< HEAD
   -scheme UIExplorer \
   -sdk macosx10.11 \
   -destination 'platform=OS X,arch=x86_64' \
-=======
-  -scheme UIExplorer -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 5,OS=9.2' \
->>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
   test

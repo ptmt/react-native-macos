@@ -136,20 +136,12 @@ RCT_EXPORT_METHOD(test:(__unused NSString *)a
   __weak AllocationTestModule *weakModule;
   @autoreleasepool {
     AllocationTestModule *module = [AllocationTestModule new];
-<<<<<<< HEAD
-    RCTBridge *bridge = [[RCTBridge alloc] initWithBundleURL:nil
-                                moduleProvider:^{
-                                  return @[module];
-                                }
-                                 launchOptions:nil];
-
-=======
     RCTBridge *bridge = [[RCTBridge alloc] initWithBundleURL:_bundleURL
                                               moduleProvider:^{
                                                 return @[module];
                                               }
                                                launchOptions:nil];
->>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
+
     weakModule = module;
   }
 
@@ -235,10 +227,6 @@ RCT_EXPORT_METHOD(test:(__unused NSString *)a
   RUN_RUNLOOP_WHILE(batchedBridge != nil)
 
   XCTAssertNotNil(bridge, @"RCTBridge should not have been deallocated");
-<<<<<<< HEAD
-  //XCTAssertNil(batchedBridge, @"RCTBatchedBridge should have been deallocated");
-=======
-  XCTAssertNil(batchedBridge, @"RCTBatchedBridge should have been deallocated");
 
   // Wait to complete the test until the new batchedbridge is also deallocated
   @autoreleasepool {
@@ -248,7 +236,6 @@ RCT_EXPORT_METHOD(test:(__unused NSString *)a
 
   RUN_RUNLOOP_WHILE(batchedBridge != nil);
   XCTAssertNil(batchedBridge);
->>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
 }
 
 @end

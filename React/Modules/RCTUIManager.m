@@ -696,11 +696,7 @@ RCT_EXPORT_METHOD(removeRootView:(nonnull NSNumber *)rootReactTag)
 
   [self addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, NSView *> *viewRegistry){
     RCTAssertMainThread();
-//<<<<<<< HEAD
-//    NSView *rootView = viewRegistry[rootReactTag];
-//    [uiManager _purgeChildren:rootView.reactSubviews fromRegistry:viewRegistry];
-//    viewRegistry[rootReactTag] = nil;
-//=======
+
     NSView *rootView = viewRegistry[rootReactTag];
     [uiManager _purgeChildren:(NSArray<id<RCTComponent>> *)rootView.reactSubviews
                  fromRegistry:(NSMutableDictionary<NSNumber *, id<RCTComponent>> *)viewRegistry];
