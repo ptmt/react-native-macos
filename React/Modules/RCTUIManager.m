@@ -489,7 +489,7 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
 
   for (RCTShadowView *shadowView in viewsWithNewFrames) {
     [frameReactTags addObject:shadowView.reactTag];
-    [frames addObject:NSStringFromRect(shadowView.frame)];
+    [frames addObject:[NSValue valueWithRect:shadowView.frame]];
 
     [areNew addObject:@(shadowView.isNewView)];
     [parentsAreNew addObject:@(shadowView.superview.isNewView)];
@@ -551,7 +551,7 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
     for (NSUInteger ii = 0; ii < frames.count; ii++) {
       NSNumber *reactTag = frameReactTags[ii];
       NSView *view = viewRegistry[reactTag];
-      CGRect frame = NSRectFromString([frames objectAtIndex:ii]);
+      CGRect frame = [[frames objectAtIndex:ii] rectValue];
       BOOL isNew = [areNew[ii] boolValue];
 
       RCTAnimation *updateAnimation = isNew ? nil : _layoutAnimation.updateAnimation;
