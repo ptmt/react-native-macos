@@ -290,6 +290,10 @@ var TextInput = React.createClass({
      * @platform android
      */
     underlineColorAndroid: PropTypes.string,
+    /**
+     * Mapped to toolTip property of NSView.
+     */
+    toolTip: PropTypes.string,
   },
 
   /**

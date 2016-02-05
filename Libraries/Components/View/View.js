@@ -311,6 +311,12 @@ var View = React.createClass({
      * @platform android
      */
     needsOffscreenAlphaCompositing: PropTypes.bool,
+
+    /**
+     * Mapped to toolTip property of NSView. Used to show extra information when
+     * mouse hovering.
+     */
+    toolTip: PropTypes.string,
   },
 
   render: function() {

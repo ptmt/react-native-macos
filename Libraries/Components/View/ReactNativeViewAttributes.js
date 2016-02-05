@@ -34,6 +34,7 @@ ReactNativeViewAttributes.UIView = {
   collapsable: true,
   needsOffscreenAlphaCompositing: true,
   style: ReactNativeStyleAttributes,
+  toolTip: true,
 };
 
 ReactNativeViewAttributes.RCTView = {
