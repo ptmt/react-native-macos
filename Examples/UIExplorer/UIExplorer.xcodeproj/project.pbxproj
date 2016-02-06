@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		031631951BDF81F4003A8A7A /* libRCTImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0316318C1BDF6FC2003A8A7A /* libRCTImage.a */; };
 		0357AF381BD28D1E00CEDDCC /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDED91B0651EA00C62182 /* libRCTWebSocket.a */; };
+		0365856F1C6637EF00A1EC4B /* FlexibleSizeExampleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0365856C1C6637EF00A1EC4B /* FlexibleSizeExampleView.m */; };
+		036585701C6637EF00A1EC4B /* UpdatePropertiesExampleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0365856E1C6637EF00A1EC4B /* UpdatePropertiesExampleView.m */; };
 		038010341BCA7D2A00B1BE0C /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1341802B1AA91779003F314A /* libRCTNetwork.a */; };
 		038010671BCCAF2500B1BE0C /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 834C36D21AF8DA610019C93C /* libRCTSettings.a */; };
 		03911C6C1BCFFCB7006809D1 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 14AADF041AC3DB95002390C9 /* libReact.a */; };
@@ -117,6 +119,10 @@
 /* Begin PBXFileReference section */
 		004D289E1AAF61C70097A701 /* UIExplorerUnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UIExplorerUnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		031631871BDF6FC1003A8A7A /* RCTImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTImage.xcodeproj; path = ../../Libraries/Image/RCTImage.xcodeproj; sourceTree = "<group>"; };
+		0365856B1C6637EF00A1EC4B /* FlexibleSizeExampleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlexibleSizeExampleView.h; path = UIExplorer/NativeExampleViews/FlexibleSizeExampleView.h; sourceTree = "<group>"; };
+		0365856C1C6637EF00A1EC4B /* FlexibleSizeExampleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FlexibleSizeExampleView.m; path = UIExplorer/NativeExampleViews/FlexibleSizeExampleView.m; sourceTree = "<group>"; };
+		0365856D1C6637EF00A1EC4B /* UpdatePropertiesExampleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UpdatePropertiesExampleView.h; path = UIExplorer/NativeExampleViews/UpdatePropertiesExampleView.h; sourceTree = "<group>"; };
+		0365856E1C6637EF00A1EC4B /* UpdatePropertiesExampleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UpdatePropertiesExampleView.m; path = UIExplorer/NativeExampleViews/UpdatePropertiesExampleView.m; sourceTree = "<group>"; };
 		1300627E1B59179B0043FE5A /* RCTGzipTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTGzipTests.m; sourceTree = "<group>"; };
 		1323F1851C04AB9F0091BED0 /* bunny.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bunny.png; sourceTree = "<group>"; };
 		1323F1861C04AB9F0091BED0 /* flux@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flux@3x.png"; sourceTree = "<group>"; };
@@ -384,6 +390,10 @@
 		272E6B3A1BEA846C001FCF37 /* NativeExampleViews */ = {
 			isa = PBXGroup;
 			children = (
+				0365856B1C6637EF00A1EC4B /* FlexibleSizeExampleView.h */,
+				0365856C1C6637EF00A1EC4B /* FlexibleSizeExampleView.m */,
+				0365856D1C6637EF00A1EC4B /* UpdatePropertiesExampleView.h */,
+				0365856E1C6637EF00A1EC4B /* UpdatePropertiesExampleView.m */,
 			);
 			name = NativeExampleViews;
 			sourceTree = "<group>";
@@ -677,8 +687,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0365856F1C6637EF00A1EC4B /* FlexibleSizeExampleView.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				036585701C6637EF00A1EC4B /* UpdatePropertiesExampleView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

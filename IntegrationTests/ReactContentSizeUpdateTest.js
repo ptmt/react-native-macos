@@ -8,7 +8,7 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('react-native-desktop');
 var RCTNativeAppEventEmitter = require('RCTNativeAppEventEmitter');
 var Subscribable = require('Subscribable');
 var TimerMixin = require('react-timer-mixin');

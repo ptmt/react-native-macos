@@ -61,7 +61,7 @@ configurationBlock:nil
 
 // This list should be kept in sync with IntegrationTestsApp.js
 RCT_TEST(IntegrationTestHarnessTest)
-// RCT_TEST(AsyncStorageTest) -- Disabled until AsyncStorage will be completed
+RCT_TEST(AsyncStorageTest)
 RCT_TEST(TimersTest)
 RCT_TEST(AppEventsTest)
 //RCT_TEST(ImageSnapshotTest) // Disabled: #8985988

@@ -66,6 +66,7 @@ typedef void (^ControlBlock)(RCTRootView*);
 
 - (void)rootViewDidChangeIntrinsicSize:(RCTRootView *)rootView
 {
+  NSLog(@"rootViewDidChangeIntrisicSize");
   [rootView.bridge.eventDispatcher sendAppEventWithName:@"rootViewDidChangeIntrinsicSize"
                                                    body:@{@"width": @(rootView.intrinsicSize.width),
                                                           @"height": @(rootView.intrinsicSize.height)}];
@@ -138,12 +139,9 @@ static ControlBlock propertiesUpdateBlock()
 
 - (void)setUp
 {
-#if __LP64__
-  RCTAssert(NO, @"Tests should be run on 32-bit device simulators (e.g. iPhone 5)");
-#endif
 
   NSOperatingSystemVersion version = [NSProcessInfo processInfo].operatingSystemVersion;
-  RCTAssert((version.majorVersion == 8 && version.minorVersion >= 3) || version.majorVersion >= 9, @"Tests should be run on iOS 8.3+, found %zd.%zd.%zd", version.majorVersion, version.minorVersion, version.patchVersion);
+  RCTAssert((version.majorVersion == 10 && version.minorVersion >= 11) || version.majorVersion >= 3, @"Tests should be run on OX 10.11.x+, found %zd.%zd.%zd", version.majorVersion, version.minorVersion, version.patchVersion);
   _runner = RCTInitRunnerForApp(@"IntegrationTests/RCTRootViewIntegrationTestApp", nil);
 }
 

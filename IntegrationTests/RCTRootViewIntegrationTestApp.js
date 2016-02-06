@@ -10,9 +10,9 @@
  */
 'use strict';
 
-require('regenerator/runtime');
+//require('regenerator/runtime');
 
-var React = require('react-native');
+var React = require('react-native-desktop');
 
 var {
   AppRegistry,
@@ -29,7 +29,7 @@ var TESTS = [
   require('./ReactContentSizeUpdateTest'),
   require('./SizeFlexibilityUpdateTest'),
 ];
-
+//
 TESTS.forEach(
   (test) => AppRegistry.registerComponent(test.displayName, () => test)
 );

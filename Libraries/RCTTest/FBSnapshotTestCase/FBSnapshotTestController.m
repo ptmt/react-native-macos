@@ -291,7 +291,7 @@ typedef NS_ENUM(NSUInteger, FBTestSnapshotFileNameType) {
                                       error:errorPtr];
 }
 
-- (BOOL)compareSnapshotOfView:(NSImage *)view
+- (BOOL)compareSnapshotOfView:(NSView *)view
                      selector:(SEL)selector
                    identifier:(NSString *)identifier
                         error:(NSError **)errorPtr
@@ -350,7 +350,7 @@ typedef NS_ENUM(NSUInteger, FBTestSnapshotFileNameType) {
 - (NSImage *)_snapshotViewOrLayer:(id)viewOrLayer
 {
   CALayer *layer = nil;
-  
+
   if ([viewOrLayer isKindOfClass:[NSView class]]) {
     return [self _renderView:viewOrLayer];
   } else if ([viewOrLayer isKindOfClass:[CALayer class]]) {
@@ -373,23 +373,22 @@ typedef NS_ENUM(NSUInteger, FBTestSnapshotFileNameType) {
   UIGraphicsBeginImageContextWithOptions(bounds.size, NO, 0);
   CGContextRef context = UIGraphicsGetCurrentContext();
   NSAssert1(context, @"Could not generate context for layer %@", layer);
-  
+
   CGContextSaveGState(context);
   {
     [layer renderInContext:context];
   }
   CGContextRestoreGState(context);
-  
+
   NSImage *snapshot = UIGraphicsGetImageFromCurrentImageContext();
   UIGraphicsEndImageContext();
-  
+
   return snapshot;
 }
-        
+
 - (NSImage *)_renderView:(NSView *)view
 {
-  [view layout];
-  return [self _renderLayer:view.layer];
+  return [[NSImage alloc] initWithData:[view dataWithPDFInsideRect:[view bounds]]];
 }
 
 @end

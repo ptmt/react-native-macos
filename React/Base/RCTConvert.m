@@ -405,7 +405,7 @@ RCT_CGSTRUCT_CONVERTER(CGAffineTransform, (@[
     if (!(path = [self NSString:json[@"uri"]])) {
       return nil;
     }
-    //scale = [self CGFloat:json[@"scale"]];
+    scale = [self CGFloat:json[@"scale"]];
     isPackagerAsset = [self BOOL:json[@"__packager_asset"]];
   }
 
@@ -442,7 +442,7 @@ RCT_CGSTRUCT_CONVERTER(CGAffineTransform, (@[
       if (filePath.pathExtension.length == 0) {
         filePath = [filePath stringByAppendingPathExtension:@"png"];
       }
-      image = [[NSImage alloc] initWithContentsOfFile:path];
+      image = [[NSImage alloc] initWithContentsOfFile:filePath];
     }
   } else if ([scheme isEqualToString:@"data"]) {
     image = [[NSImage alloc] initWithData:[NSData dataWithContentsOfURL:URL]];

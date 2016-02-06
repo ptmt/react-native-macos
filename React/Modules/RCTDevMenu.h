@@ -49,7 +49,7 @@
 /**
  * Manually show the dev menu (can be called from JS).
  */
-- (void)show;
+//- (void)show;
 
 /**
  * Manually reload the application. Equivalent to calling [bridge reload]

@@ -100,6 +100,7 @@
 
     sourceURL = [NSURL URLWithString:@"http://localhost:8081/Examples/UIExplorer/UIExplorerApp.osx.bundle?platform=osx&dev=true"];
 
+    // sourceURL = [NSURL URLWithString:@"http://localhost:8081/IntegrationTests/RCTRootViewIntegrationTestApp.bundle?platform=osx&dev=true"];
     /**
      * OPTION 2
      * Load from pre-bundled file on disk. To re-generate the static bundle, `cd`

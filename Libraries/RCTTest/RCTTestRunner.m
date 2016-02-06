@@ -123,8 +123,6 @@ expectErrorBlock:(BOOL(^)(NSString *error))expectErrorBlock
     NSView * vcView = [NSView new];
     [vcView addSubview:rootView]; // Add as subview so it doesn't get resized
     [[[NSApplication sharedApplication] mainWindow] setContentView:vcView];
-    //[[[NSApplication sharedApplication].windows objectAtIndex:0] setContentView:rootView];
-    //[[[NSApplication sharedApplication].windows objectAtIndex:0] makeKeyWindow];
 
     if (configurationBlock) {
       configurationBlock(rootView);

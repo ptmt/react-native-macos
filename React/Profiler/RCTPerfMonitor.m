@@ -78,7 +78,6 @@ static vm_size_t RCTGetResidentMemorySize(void)
 @interface RCTPerfMonitor : NSObject <RCTBridgeModule, RCTInvalidating, NSTableViewDataSource, NSTableViewDelegate>
 
 @property (nonatomic, strong, readonly) RCTDevMenuItem *devMenuItem;
-//@property (nonatomic, strong, readonly) UIPanGestureRecognizer *gestureRecognizer;
 @property (nonatomic, strong, readonly) NSView *container;
 @property (nonatomic, strong, readonly) NSTextField *memory;
 @property (nonatomic, strong, readonly) NSTextField *heap;
@@ -139,11 +138,13 @@ RCT_EXPORT_MODULE()
                           selectedTitle:@"Hide Perf Monitor"
                                 handler:
                                 ^(BOOL selected) {
-                                  [_bridge.devMenu updateSetting:RCTPerfMonitorKey value:@(selected)];
+                                  //[_bridge.devMenu updateSetting:RCTPerfMonitorKey value:@(selected)];
+
                                   if (selected) {
-                                    [weakSelf show];
+                                   // [weakSelf show];
                                   } else {
                                     [weakSelf hide];
+                                    //;
                                   }
                                 }];
   }
@@ -289,8 +290,8 @@ RCT_EXPORT_MODULE()
 
   [self updateStats];
 
-  NSWindow *window = [NSApplication sharedApplication].mainWindow;
-  [window.contentView addSubview:self.container];
+//  NSWindow *window = [NSApplication sharedApplication].mainWindow;
+//  [window.contentView addSubview:self.container];
 
 
 //  _uiDisplayLink = [CADisplayLink displayLinkWithTarget:self

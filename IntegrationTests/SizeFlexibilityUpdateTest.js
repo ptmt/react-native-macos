@@ -8,7 +8,7 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('react-native-desktop');
 var RCTNativeAppEventEmitter = require('RCTNativeAppEventEmitter');
 var Subscribable = require('Subscribable');
 var { View } = React;
@@ -37,7 +37,6 @@ var SizeFlexibilityUpdateTest = React.createClass({
   },
 
   rootViewDidChangeIntrinsicSize: function(intrinsicSize) {
-
     if (finalState) {
       // If a test reaches its final state, it is not expected to do anything more
       TestModule.markTestPassed(false);
