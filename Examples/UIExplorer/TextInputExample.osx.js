@@ -28,7 +28,7 @@ var WithLabel = React.createClass({
     return (
       <View style={styles.labelContainer}>
         <View style={styles.label}>
-          <Text>{this.props.label}</Text>
+          <Text toolTip={this.props.label}>{this.props.label}</Text>
         </View>
         {this.props.children}
       </View>
@@ -116,6 +116,7 @@ class RewriteExample extends React.Component {
           }}
           style={styles.default}
           value={this.state.text}
+          toolTip={this.state.text}
         />
         <Text style={[styles.remainder, {color: remainderColor}]}>
           {remainder}
@@ -140,6 +141,7 @@ class RewriteExampleInvalidCharacters extends React.Component {
           }}
           style={styles.default}
           value={this.state.text}
+          toolTip={this.state.text}
         />
       </View>
     );
@@ -325,7 +327,7 @@ exports.examples = [
   {
     title: 'Auto-focus',
     render: function() {
-      return <TextInput autoFocus={true} style={styles.default} />;
+      return <TextInput autoFocus={true} style={styles.default} toolTip='Input text here:' />;
     }
   },
   {

@@ -101,6 +101,10 @@ const Text = React.createClass({
      * Specifies should fonts scale to respect Text Size accessibility setting on iOS.
      */
     allowFontScaling: React.PropTypes.bool,
+    /**
+     * Mapped to toolTip property of NSView.
+     */
+    toolTip: React.PropTypes.string,
   },
   getDefaultProps(): Object {
     return {
