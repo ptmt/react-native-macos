@@ -707,6 +707,55 @@ static void RCTUpdateShadowPathForView(RCTView *view)
   layer.mask = mask;
 }
 
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
+  NSPasteboard *pboard;
+  NSDragOperation sourceDragMask;
+  sourceDragMask = [sender draggingSourceOperationMask];
+  pboard = [sender draggingPasteboard];
+
+  _onDragEnter(@{
+                 @"sourceDragMask": @(sourceDragMask),
+                 });
+  if ( [[pboard types] containsObject:NSColorPboardType] ) {
+    if (sourceDragMask & NSDragOperationGeneric) {
+      return NSDragOperationGeneric;
+    }
+  }
+  if ( [[pboard types] containsObject:NSFilenamesPboardType] ) {
+    if (sourceDragMask & NSDragOperationLink) {
+      return NSDragOperationLink;
+    } else if (sourceDragMask & NSDragOperationCopy) {
+      return NSDragOperationCopy;
+    }
+  }
+  return NSDragOperationNone;
+}
+
+- (void)draggingExited:(id<NSDraggingInfo>)sender
+{
+  _onDragLeave(@{@"sourceDragMask": @([sender draggingSourceOperationMask])});
+}
+
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
+  NSPasteboard *pboard = [sender draggingPasteboard];
+
+  if ( [[pboard types] containsObject:NSFilenamesPboardType] ) {
+    NSArray *files = [pboard propertyListForType:NSFilenamesPboardType];
+    _onDrop(@{
+                   @"files": files,
+                   });
+//
+//    // Depending on the dragging source and modifier keys,
+//    // the file data may be copied or linked
+//    if (sourceDragMask & NSDragOperationLink) {
+//      [self addLinkToFiles:files];
+//    } else {
+//      [self addDataFromFiles:files];
+//    }
+  }
+  return YES;
+}
+
 #pragma mark Border Color
 
 #define setBorderColor(side)                                \

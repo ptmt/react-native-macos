@@ -86,11 +86,6 @@
   return self;
 }
 
-- (BOOL)opaque
-{
-  return NO;
-}
-
 - (BOOL)isFlipped
 {
   return YES;
@@ -104,15 +99,6 @@
   return [superDescription stringByReplacingCharactersInRange:semicolonRange withString:replacement];
 }
 
-- (void)updateLayer
-{
-  NSLog(@"updateLayer");
-}
-- (void)viewWillDraw
-{
-  [super viewWillDraw];
-}
-
 - (void)reactSetFrame:(CGRect)frame
 {
     [super reactSetFrame:frame];
@@ -120,6 +106,10 @@
 
 - (void)reactSetInheritedBackgroundColor:(NSColor *)inheritedBackgroundColor
 {
+  if (self.wantsLayer == NO) {
+    self.wantsLayer = YES;
+    self.layer = [[CALayer alloc] init];
+  }
   self.layer.backgroundColor = [inheritedBackgroundColor CGColor];
 }
 
@@ -156,7 +146,7 @@ static inline CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
 - (void)drawRect:(CGRect)dirtyRect
 {
   NSLayoutManager *layoutManager = _textStorage.layoutManagers.firstObject;
-  
+
   NSTextContainer *textContainer = layoutManager.textContainers.firstObject;
   CGRect textFrame = UIEdgeInsetsInsetRect(self.bounds, _contentInset);
   NSRange glyphRange = [layoutManager glyphRangeForTextContainer:textContainer];
@@ -172,8 +162,7 @@ static inline CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
     }
 
     [layoutManager enumerateEnclosingRectsForGlyphRange:range withinSelectedGlyphRange:range inTextContainer:textContainer usingBlock:^(CGRect enclosingRect, __unused BOOL *__) {
-      //NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:CGRectInset(enclosingRect, -2, -2) xRadius:-2 yRadius:-2];
-      NSBezierPath *path = [NSBezierPath bezierPathWithRect:CGRectInset(enclosingRect, 0, 0)];
+      NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:CGRectInset(enclosingRect, -2, -2) xRadius:2 yRadius:2];
       if (highlightPath) {
         [highlightPath appendBezierPath:path];
       } else {
@@ -215,24 +204,16 @@ static inline CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
   return reactTag;
 }
 
-- (void)viewDidChangeBackingProperties
-{
-  [super viewDidChangeBackingProperties];
-  [[self layer] setContentsScale:[[self window] backingScaleFactor]];
-  // Your code to provide content
-}
-
-
 - (void)viewDidMoveToWindow
 {
   [super viewDidMoveToWindow];
 
   if (!self.window) {
     self.layer.contents = nil;
-//    if (_highlightLayer) {
-//      [_highlightLayer removeFromSuperlayer];
-//      _highlightLayer = nil;
-//    }
+    if (_highlightLayer) {
+      [_highlightLayer removeFromSuperlayer];
+      _highlightLayer = nil;
+    }
   } else if (_textStorage.length) {
     [self setNeedsDisplay:YES];
   }

@@ -141,6 +141,15 @@ RCT_CUSTOM_VIEW_PROPERTY(shouldRasterizeIOS, BOOL, RCTView)
   view.layer.shouldRasterize = json ? [RCTConvert BOOL:json] : defaultView.layer.shouldRasterize;
   view.layer.rasterizationScale = view.layer.shouldRasterize ? [NSScreen mainScreen].backingScaleFactor : defaultView.layer.rasterizationScale;
 }
+RCT_CUSTOM_VIEW_PROPERTY(draggedTypes, NSArray*<NSString *>, RCTView)
+{
+  if (json) {
+    NSArray *types = [RCTConvert NSArray:json];
+    [view registerForDraggedTypes:types];
+  } else {
+    [view registerForDraggedTypes:defaultView.registeredDraggedTypes];
+  }
+}
 RCT_CUSTOM_VIEW_PROPERTY(opacity, float, RCTView)
 {
   if (json) {
@@ -231,6 +240,9 @@ RCT_CUSTOM_VIEW_PROPERTY(borderStyle, RCTBorderStyle, RCTView)
 }
 RCT_EXPORT_VIEW_PROPERTY(onAccessibilityTap, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onMagicTap, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onDragEnter, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onDragLeave, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onDrop, RCTDirectEventBlock)
 
 #define RCT_VIEW_BORDER_PROPERTY(SIDE)                                  \
 RCT_CUSTOM_VIEW_PROPERTY(border##SIDE##Width, CGFloat, RCTView)         \

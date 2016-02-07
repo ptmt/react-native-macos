@@ -14,7 +14,7 @@
 -(id)init
 {
     if(self = [super init]) {
-        NSRect contentSize = NSMakeRect(200, 500, 1000, 500); // TODO: should not be hardcoded
+        NSRect contentSize = NSMakeRect(200, 500, 1000, 500); // initial size of main NSWindow
 
         self.window = [[NSWindow alloc] initWithContentRect:contentSize
                                                   styleMask:NSTitledWindowMask | NSResizableWindowMask | NSFullSizeContentViewWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask

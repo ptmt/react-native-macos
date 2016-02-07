@@ -156,6 +156,16 @@ var View = React.createClass({
     ]),
 
     /**
+     * Enables Dran'n'Drop Support for certain types of PboardType
+     *
+     */
+    draggedTypes: PropTypes.arrayOf(
+      PropTypes.oneOf([
+        'NSFilenamesPboardType',
+        'NSColorPboardType'
+      ])
+    ),
+    /**
      * When `accessible` is true, the system will try to invoke this function
      * when the user performs accessibility tap gesture.
      */
@@ -188,6 +198,9 @@ var View = React.createClass({
     onStartShouldSetResponderCapture: PropTypes.func,
     onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,
+    onDragEnter: PropTypes.func,
+    onDragLeave: PropTypes.func,
+    onDrop: PropTypes.func,
     onMoveShouldSetResponder: PropTypes.func,
     onMoveShouldSetResponderCapture: PropTypes.func,
 
