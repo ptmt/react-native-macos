@@ -65,7 +65,7 @@ RCT_EXPORT_METHOD(alertWithArgs:(NSDictionary *)args
 {
   NSString *title = args[@"title"];
   NSString *message = args[@"message"];
-  NSString *type = args[@"type"];
+  //NSString *type = args[@"type"];
   NSArray *buttons = args[@"buttons"];
 
   if (!title && !message) {
@@ -80,10 +80,8 @@ RCT_EXPORT_METHOD(alertWithArgs:(NSDictionary *)args
     return;
   }
   
-  NSAlert *alertView = RCTAlertView(title, nil, self, nil, nil);
+  NSAlert *alertView = RCTAlertView(title, message, self, nil, nil);
   NSMutableArray *buttonKeys = [[NSMutableArray alloc] initWithCapacity:buttons.count];
-
-  [alertView setMessageText:message];
 
   NSInteger index = 0;
   for (NSDictionary *button in buttons) {
