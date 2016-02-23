@@ -39,7 +39,7 @@ if (!UIManager.setChildren) {
   UIManager.setChildren = function(containerTag, createdTags) {
     var indexes = this._cachedIndexArray(createdTags.length);
     UIManager.manageChildren(containerTag, null, null, createdTags, indexes, null);
-  } 
+  }
 }
 
 module.exports = UIManager;

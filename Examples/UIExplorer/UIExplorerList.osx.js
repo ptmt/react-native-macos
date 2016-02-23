@@ -57,7 +57,8 @@ var APIS = [
   require('./LayoutExample'),
   require('./TransformExample'),
   require('./XHRExample.osx'),
-  require('./DragnDropExample.osx')
+  require('./DragnDropExample.osx'),
+  require('./MenuExample.osx')
 ];
 
 type Props = {

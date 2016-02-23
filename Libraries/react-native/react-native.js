@@ -65,6 +65,7 @@ var ReactNative = {
   get LayoutAnimation() { return require('LayoutAnimation'); },
   get LinkingIOS() { return require('LinkingIOS'); },
   get NetInfo() { return require('NetInfo'); },
+  get MenuManager() { return require('MenuManager'); },
   get PanResponder() { return require('PanResponder'); },
   get PixelRatio() { return require('PixelRatio'); },
   get PushNotificationIOS() { return require('PushNotificationIOS'); },

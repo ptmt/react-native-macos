@@ -398,8 +398,8 @@ NSWindow *__nullable RCTKeyWindow(void)
 }
 
 NSAlert *__nullable RCTAlertView(NSString *title,
-                                     NSString *__nullable message,
-                                     id __nullable delegate,
+                                     NSString * message,
+                                     id delegate,
                                      NSString *__nullable cancelButtonTitle,
                                      NSArray<NSString *> *__nullable otherButtonTitles)
 {
@@ -408,7 +408,8 @@ NSAlert *__nullable RCTAlertView(NSString *title,
     return nil;
   }
   NSAlert *alertView = [[NSAlert alloc] init];
-  alertView.messageText = message;
+  alertView.messageText = title;
+  alertView.informativeText = message;
   alertView.delegate = delegate;
   if (cancelButtonTitle != nil) {
     [alertView addButtonWithTitle:cancelButtonTitle];
