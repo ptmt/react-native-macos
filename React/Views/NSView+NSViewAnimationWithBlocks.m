@@ -76,7 +76,7 @@ static CAMediaTimingFunction *CAMediaTimingFunctionFromNSViewAnimationCurve(NSVi
     }
 }
 
-- (void)animationDidStart:(CAAnimation *)theAnimation
+- (void)animationDidStart:(__unused CAAnimation *)theAnimation
 {
     if (!_didSendStartMessage) {
         if ([_animationDelegate respondsToSelector:_animationWillStartSelector]) {

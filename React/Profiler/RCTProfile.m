@@ -273,12 +273,12 @@ static void RCTProfileHookInstance(id instance)
   object_setClass(instance, proxyClass);
 }
 
-static UIView *(*originalCreateView)(RCTComponentData *, SEL, NSNumber *);
+static NSView *(*originalCreateView)(RCTComponentData *, SEL, NSNumber *);
 
-RCT_EXTERN UIView *RCTProfileCreateView(RCTComponentData *self, SEL _cmd, NSNumber *tag);
-UIView *RCTProfileCreateView(RCTComponentData *self, SEL _cmd, NSNumber *tag)
+RCT_EXTERN NSView *RCTProfileCreateView(RCTComponentData *self, SEL _cmd, NSNumber *tag);
+NSView *RCTProfileCreateView(RCTComponentData *self, SEL _cmd, NSNumber *tag)
 {
-  UIView *view = originalCreateView(self, _cmd, tag);
+  NSView *view = originalCreateView(self, _cmd, tag);
 
   RCTProfileHookInstance(view);
 

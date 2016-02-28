@@ -173,33 +173,6 @@ RCT_CUSTOM_VIEW_PROPERTY(transformMatrix, CATransform3D, RCTView)
   view.layer.edgeAntialiasingMask = !CATransform3DIsIdentity(transform);
 }
 
-//RCT_CUSTOM_VIEW_PROPERTY(pointerEvents, RCTPointerEvents, RCTView)
-//{
-//  if ([view respondsToSelector:@selector(setPointerEvents:)]) {
-//    view.pointerEvents = json ? [RCTConvert RCTPointerEvents:json] : defaultView.pointerEvents;
-//    return;
-//  }
-//
-//  if (!json) {
-//    view.userInteractionEnabled = defaultView.userInteractionEnabled;
-//    return;
-//  }
-//
-//  switch ([RCTConvert RCTPointerEvents:json]) {
-//    case RCTPointerEventsUnspecified:
-//      // Pointer events "unspecified" acts as if a stylesheet had not specified,
-//      // which is different than "auto" in CSS (which cannot and will not be
-//      // supported in `React`. "auto" may override a parent's "none".
-//      // Unspecified values do not.
-//      // This wouldn't override a container view's `userInteractionEnabled = NO`
-//      view.userInteractionEnabled = YES;
-//    case RCTPointerEventsNone:
-//      view.userInteractionEnabled = NO;
-//      break;
-//    default:
-//      RCTLogError(@"UIView base class does not support pointerEvent value: %@", json);
-//  }
-//}
 RCT_CUSTOM_VIEW_PROPERTY(removeClippedSubviews, BOOL, RCTView)
 {
   if ([view respondsToSelector:@selector(setRemoveClippedSubviews:)]) {

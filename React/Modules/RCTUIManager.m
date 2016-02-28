@@ -111,8 +111,8 @@ static NSViewAnimationOptions NSViewAnimationOptionsFromRCTAnimationType(RCTAnim
 
     _animationType = [RCTConvert RCTAnimationType:config[@"type"]];
     if (_animationType == RCTAnimationTypeSpring) {
-//      _springDamping = [RCTConvert CGFloat:config[@"springDamping"]];
-//      _initialVelocity = [RCTConvert CGFloat:config[@"initialVelocity"]];
+      _springDamping = [RCTConvert CGFloat:config[@"springDamping"]];
+      _initialVelocity = [RCTConvert CGFloat:config[@"initialVelocity"]];
     }
     _fromValue = config[@"fromValue"];
     _toValue = config[@"toValue"];
@@ -123,18 +123,8 @@ static NSViewAnimationOptions NSViewAnimationOptionsFromRCTAnimationType(RCTAnim
 - (void)performAnimations:(void (^)(void))animations
       withCompletionBlock:(void (^)(BOOL completed))completionBlock
 {
-  if (_animationType == RCTAnimationTypeSpring) {
 
-//    [NSView animateWithDuration:_duration
-//                          delay:_delay
-//         usingSpringWithDamping:_springDamping
-//          initialSpringVelocity:_initialVelocity
-//                        options:NSViewAnimationOptionBeginFromCurrentState
-//                     animations:animations
-//                     completion:completionBlock];
-
-  } else {
-
+  // TODO: RCTAnimationTypeSpring (see https://github.com/facebook/pop/tree/master/pop)
     NSViewAnimationOptions options = NSViewAnimationOptionBeginFromCurrentState |
       NSViewAnimationOptionsFromRCTAnimationType(_animationType);
 
@@ -143,7 +133,6 @@ static NSViewAnimationOptions NSViewAnimationOptionsFromRCTAnimationType(RCTAnim
                         options:options
                      animations:animations
                      completion:completionBlock];
-  }
 }
 
 @end
@@ -848,20 +837,10 @@ RCT_EXPORT_METHOD(createView:(nonnull NSNumber *)reactTag
   // the view, but it's the only way that makes sense given our threading model
   NSColor *backgroundColor = shadowView.backgroundColor;
 
-//<<<<<<< HEAD
-//  [self addUIBlock:^(RCTUIManager *uiManager, RCTSparseArray *viewRegistry){
-//    id<RCTComponent> view = [componentData createViewWithTag:reactTag props:props];
-//    if ([view respondsToSelector:@selector(setBackgroundColor:)]) {
-//      [(RCTView *)view setBackgroundColor:backgroundColor]; //TODO:
-//    }
-//    [componentData setProps:props forView:view];
-//    if ([view respondsToSelector:@selector(reactBridgeDidFinishTransaction)]) {
-//      [uiManager->_bridgeTransactionListeners addObject:view];
-//=======
   [self addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, NSView *> *viewRegistry){
     NSView *view = [componentData createViewWithTag:reactTag];
     if (view) {
-      if ([view respondsToSelector:@selector(layer:)]) {
+      if ([view respondsToSelector:@selector(layer)]) {
         ((NSView *)view).layer.backgroundColor = [backgroundColor CGColor];
       }
       [componentData setProps:props forView:view];
