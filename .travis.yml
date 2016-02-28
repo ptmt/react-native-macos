@@ -45,7 +45,7 @@ script:
   elif [ "$TEST_TYPE" = cli ]
   then
 
-    npm test -- '\/(local|private|react-native)-cli\/'
+    npm test -- '\/(local|private|react-native-desktop)-cli\/'
 
   elif [ "$TEST_TYPE" = build_website ]
   then
