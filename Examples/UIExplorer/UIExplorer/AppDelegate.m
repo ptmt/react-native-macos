@@ -112,10 +112,6 @@
 
     //sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 
-  #if RUNNING_ON_CI
-     sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
-  #endif
-
   return sourceURL;
 }
 
@@ -127,4 +123,3 @@
 }
 
 @end
-

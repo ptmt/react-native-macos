@@ -37,7 +37,8 @@ exports.description = 'Dragging APIs';
 var DragExample = React.createClass({
   getInitialState() {
     return {
-      dragOver: false
+      dragOver: false,
+      files: []
     }
   },
   render() {
