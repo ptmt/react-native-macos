@@ -391,20 +391,19 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 }
 
 - (void)insertReactSubview:(NSView *)view atIndex:(NSInteger)atIndex
-{;
+{
   if (_reactSubviews == nil) {
-    dispatch_async( dispatch_get_main_queue(), ^{
-      [self addSubview:view];
-      [view setNeedsDisplay:YES];
-    });
-
+    // TODO: race conditions here?
+    NSMutableArray *array = [self.subviews mutableCopy];
+    [array insertObject:view atIndex:atIndex];
+    self.subviews = array;
+    [view setNeedsDisplay:YES];
   } else {
     [_reactSubviews insertObject:view atIndex:atIndex];
 
     // Find a suitable view to use for clipping
     NSView *clipView = [self react_findClipView];
     if (clipView) {
-
       // If possible, don't add subviews if they are clipped
       [self mountOrUnmountSubview:view withClipRect:clipView.bounds relativeToView:clipView];
 
@@ -420,6 +419,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 {
   [_reactSubviews removeObject:subview];
   [subview removeFromSuperview];
+  [subview layout];
 }
 
 - (NSArray<NSView *> *)reactSubviews
