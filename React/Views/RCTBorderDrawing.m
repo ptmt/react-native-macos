@@ -284,14 +284,14 @@ static NSImage *RCTGetSolidBorderImage(RCTCornerRadii cornerRadii,
   const RCTCornerInsets cornerInsets = RCTGetCornerInsets(cornerRadii, borderInsets);
 
   const BOOL makeStretchable =
-  (borderInsets.left + cornerInsets.topLeft.width +
-   borderInsets.right + cornerInsets.bottomRight.width <= viewSize.width) &&
-  (borderInsets.left + cornerInsets.bottomLeft.width +
-   borderInsets.right + cornerInsets.topRight.width <= viewSize.width) &&
-  (borderInsets.top + cornerInsets.topLeft.height +
-   borderInsets.bottom + cornerInsets.bottomRight.height <= viewSize.height) &&
-  (borderInsets.top + cornerInsets.topRight.height +
-   borderInsets.bottom + cornerInsets.bottomLeft.height <= viewSize.height);
+    (borderInsets.left + cornerInsets.topLeft.width +
+     borderInsets.right + cornerInsets.bottomRight.width <= viewSize.width) &&
+    (borderInsets.left + cornerInsets.bottomLeft.width +
+     borderInsets.right + cornerInsets.topRight.width <= viewSize.width) &&
+    (borderInsets.top + cornerInsets.topLeft.height +
+     borderInsets.bottom + cornerInsets.bottomRight.height <= viewSize.height) &&
+    (borderInsets.top + cornerInsets.topRight.height +
+     borderInsets.bottom + cornerInsets.bottomLeft.height <= viewSize.height);
 
   const NSEdgeInsets edgeInsets = (NSEdgeInsets){
     borderInsets.top + MAX(cornerInsets.topLeft.height, cornerInsets.topRight.height),
@@ -300,11 +300,12 @@ static NSImage *RCTGetSolidBorderImage(RCTCornerRadii cornerRadii,
     borderInsets.right + MAX(cornerInsets.bottomRight.width, cornerInsets.topRight.width)
   };
 
-  const CGSize size = makeStretchable ? (CGSize){
-    // 1pt for the middle stretchable area along each axis
-    edgeInsets.left + 1 + edgeInsets.right,
-    edgeInsets.top + 1 + edgeInsets.bottom
-  } : viewSize;
+  const CGSize size = viewSize;
+//  makeStretchable ? (CGSize){
+//    // 1pt for the middle stretchable area along each axis
+//    edgeInsets.left + 1 + edgeInsets.right,
+//    edgeInsets.top + 1 + edgeInsets.bottom
+//  } : viewSize;
 
   CGContextRef ctx = RCTUIGraphicsBeginImageContext(size, backgroundColor, hasCornerRadii, drawToEdge);
   const CGRect rect = {.size = size};
@@ -462,21 +463,24 @@ static NSImage *RCTGetSolidBorderImage(RCTCornerRadii cornerRadii,
   UIGraphicsEndImageContext();
 
   if (makeStretchable) {
-    //NSLog(@"Strechable solid borders is not implemented");
+    /*
+     * Strechable solid borders is not implemented
+     * image = [image resizableImageWithCapInsets:edgeInsets];
+     **/
 
-    NSInteger left = edgeInsets.left;
-    NSInteger top = edgeInsets.top;
-    NSImage *strechableImage = [[NSImage alloc] initWithSize:image.size];
-    [strechableImage lockFocus];
-    NSSize imgSize = image.size;
-
-
-    [image drawAtPoint:NSMakePoint(0, 0) fromRect:NSMakeRect(0, 0, left, top) operation:NSCompositeSourceOver fraction:1];
-    [image drawInRect:NSMakeRect(left, 0, imgSize.width-2*left, top) fromRect:NSMakeRect(left, 0, imgSize.width-2*left, top) operation:NSCompositeSourceOver fraction:1];
-    [image drawAtPoint:NSMakePoint(0 + imgSize.width - left, 0) fromRect:NSMakeRect(imgSize.width-left, 0, left, top) operation:NSCompositeSourceOver fraction:1];
-    [strechableImage unlockFocus];
-
-    image = strechableImage;
+//    NSInteger left = edgeInsets.left;
+//    NSInteger top = edgeInsets.top;
+//    NSImage *strechableImage = [[NSImage alloc] initWithSize:viewSize];
+//    [strechableImage lockFocus];
+//    NSSize imgSize = viewSize;
+//
+//
+//    [image drawAtPoint:NSMakePoint(0, 0) fromRect:NSMakeRect(0, 0, left, top) operation:NSCompositeSourceOver fraction:1];
+//    [image drawInRect:NSMakeRect(left, 0, imgSize.width-2*left, top) fromRect:NSMakeRect(left, 0, imgSize.width-2*left, top) operation:NSCompositeSourceOver fraction:1];
+//    [image drawAtPoint:NSMakePoint(0 + imgSize.width - left, 0) fromRect:NSMakeRect(imgSize.width-left, 0, left, top) operation:NSCompositeSourceOver fraction:1];
+//    [strechableImage unlockFocus];
+//
+//    image = strechableImage;
 
   }
 
