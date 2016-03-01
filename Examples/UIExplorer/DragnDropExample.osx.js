@@ -49,8 +49,8 @@ var DragExample = React.createClass({
         onDragEnter={() => this.setState({dragOver: true})}
         onDragLeave={() => this.setState({dragOver: false})}
         onDrop={(e) => this.setState({files: e.nativeEvent.files, dragOver: false})}>
-        <Text style={{fontSize: 14, color: 'white'}}>
-          {this.state.files ? this.state.files : 'Drag here a file'}
+        <Text style={{fontSize: 14, color: 'black'}}>
+          {this.state.files.length > 0 ? this.state.files : 'Drag here a file'}
         </Text>
 
       </View>

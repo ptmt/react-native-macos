@@ -40,7 +40,7 @@ var TextInputState = {
   focusTextInput: function(textFieldID: ?number) {
     if (this._currentlyFocusedID !== textFieldID && textFieldID !== null) {
       this._currentlyFocusedID = textFieldID;
-      if (Platform.OS === 'ios') {
+      if (Platform.OS === 'ios' || Platform.OS === 'osx') {
         UIManager.focus(textFieldID);
       } else if (Platform.OS === 'android') {
         UIManager.dispatchViewManagerCommand(
