@@ -130,11 +130,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return NO;
 }
 
-- (BOOL)wantsDefaultClipping
-{
-  return NO;
-}
-
 - (void)setLoadingView:(NSView *)loadingView
 {
   _loadingView = loadingView;

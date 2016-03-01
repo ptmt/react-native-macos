@@ -49,4 +49,9 @@
 - (void)reactDidMakeFirstResponder;
 - (BOOL)reactRespondsToTouch:(NSEvent *)touch;
 
+/**
+ * UIView alternative
+ */
+@property (nonatomic, assign) BOOL clipsToBounds;
+
 @end

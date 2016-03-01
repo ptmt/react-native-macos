@@ -51,7 +51,7 @@ static NSView *RCTViewHitTest(NSView *view, CGPoint point)
   // we do support clipsToBounds, so if that's enabled
   // we'll update the clipping
 
-  if (self.wantsDefaultClipping && self.subviews.count > 0) {
+  if (self.clipsToBounds && self.subviews.count > 0) {
     clipRect = [clipView convertRect:clipRect toView:self];
     clipRect = CGRectIntersection(clipRect, self.bounds);
     clipView = self;
@@ -127,6 +127,7 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
     _borderBottomRightRadius = -1;
     self.needsLayout = NO;
     _borderStyle = RCTBorderStyleSolid;
+    self.clipsToBounds = NO;
   }
 
   return self;
@@ -148,10 +149,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   return YES;
 }
 
-//- (BOOL)wantsDefaultClipping
-//{
-//  return NO;
-//}
+- (BOOL)wantsDefaultClipping
+{
+  return self.clipsToBounds;
+}
 
 - (void)setPointerEvents:(RCTPointerEvents)pointerEvents
 {
@@ -301,7 +302,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)mountOrUnmountSubview:(NSView *)view withClipRect:(CGRect)clipRect relativeToView:(NSView *)clipView
 {
-  if (view.wantsDefaultClipping) {
+  if (view.clipsToBounds) {
 
     // View has cliping enabled, so we can easily test if it is partially
     // or completely within the clipRect, and mount or unmount it accordingly
@@ -365,7 +366,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   // Convert clipping rect to local coordinates
   clipRect = [clipView convertRect:clipRect toView:self];
   clipView = self;
-  if (self.wantsDefaultClipping) {
+  if (self.clipsToBounds) {
     clipRect = CGRectIntersection(clipRect, self.bounds);
   }
 
@@ -573,7 +574,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   // the content. For this reason, only use iOS border drawing when clipping
   // or when the border is hidden.
 
-  (borderInsets.top == 0 || CGColorGetAlpha(borderColors.top) == 0 || self.wantsDefaultClipping);
+  (borderInsets.top == 0 || CGColorGetAlpha(borderColors.top) == 0 || self.clipsToBounds);
 
   // iOS clips to the outside of the border, but CSS clips to the inside. To
   // solve this, we'll need to add a container view inside the main view to
@@ -686,7 +687,7 @@ static void RCTUpdateShadowPathForView(RCTView *view)
   CALayer *mask = nil;
   CGFloat cornerRadius = 0;
 
-  if (self.wantsDefaultClipping) {
+  if (self.clipsToBounds) {
 
     const RCTCornerRadii cornerRadii = [self cornerRadii];
     if (RCTCornerRadiiAreEqual(cornerRadii)) {
@@ -741,17 +742,7 @@ static void RCTUpdateShadowPathForView(RCTView *view)
 
   if ( [[pboard types] containsObject:NSFilenamesPboardType] ) {
     NSArray *files = [pboard propertyListForType:NSFilenamesPboardType];
-    _onDrop(@{
-                   @"files": files,
-                   });
-//
-//    // Depending on the dragging source and modifier keys,
-//    // the file data may be copied or linked
-//    if (sourceDragMask & NSDragOperationLink) {
-//      [self addLinkToFiles:files];
-//    } else {
-//      [self addDataFromFiles:files];
-//    }
+    _onDrop(@{@"files": files });
   }
   return YES;
 }
