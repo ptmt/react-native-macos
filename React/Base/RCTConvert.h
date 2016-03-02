@@ -62,7 +62,6 @@ typedef NSURL RCTFileURL;
 + (NSUnderlineStyle)NSUnderlineStyle:(id)json;
 + (NSWritingDirection)NSWritingDirection:(id)json;
 
-//+ (UITextAutocapitalizationType)UITextAutocapitalizationType:(id)json;
 //+ (UITextFieldViewMode)UITextFieldViewMode:(id)json;
 //+ (UIKeyboardType)UIKeyboardType:(id)json;
 //+ (UIKeyboardAppearance)UIKeyboardAppearance:(id)json;

@@ -30,6 +30,7 @@ var createReactNativeComponentClass = require('createReactNativeComponentClass')
 var emptyFunction = require('emptyFunction');
 var invariant = require('invariant');
 var requireNativeComponent = require('requireNativeComponent');
+var processColor = require('processColor');
 
 var onlyMultiline = {
   onTextInput: true, // not supported in Open Source yet
@@ -80,20 +81,6 @@ var TextInput = React.createClass({
   propTypes: {
     ...View.propTypes,
     /**
-     * Can tell TextInput to automatically capitalize certain characters.
-     *
-     * - characters: all characters,
-     * - words: first letter of each word
-     * - sentences: first letter of each sentence (default)
-     * - none: don't auto capitalize anything
-     */
-    autoCapitalize: PropTypes.oneOf([
-      'none',
-      'sentences',
-      'words',
-      'characters',
-    ]),
-    /**
      * If false, disables auto-correct. The default value is true.
      */
     autoCorrect: PropTypes.bool,
@@ -103,33 +90,13 @@ var TextInput = React.createClass({
      */
     autoFocus: PropTypes.bool,
     /**
+     * Type of border
+     */
+    bezeled: PropTypes.bool,
+    /**
      * If false, text is not editable. The default value is true.
      */
     editable: PropTypes.bool,
-    /**
-     * Determines which keyboard to open, e.g.`numeric`.
-     *
-     * The following values work across platforms:
-     * - default
-     * - numeric
-     * - email-address
-     */
-    keyboardType: PropTypes.oneOf([
-      // Cross-platform
-      'default',
-      'email-address',
-      'numeric',
-      'phone-pad',
-      // iOS-only
-      'ascii-capable',
-      'numbers-and-punctuation',
-      'url',
-      'number-pad',
-      'name-phone-pad',
-      'decimal-pad',
-      'twitter',
-      'web-search',
-    ]),
     /**
      * Determines the color of the keyboard.
      * @platform ios
@@ -445,6 +412,7 @@ var TextInput = React.createClass({
           onSelectionChange={onSelectionChange}
           onTextInput={this._onTextInput}
           onSelectionChangeShouldSetResponder={emptyFunction.thatReturnsTrue}
+          placeholderTextColor={processColor(props.placeholderTextColor)}
           text={this._getText()}
         />;
     }

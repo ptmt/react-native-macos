@@ -91,6 +91,7 @@ class UIExplorerListBase extends React.Component {
       <View style={styles.searchRow}>
         <TextInput
           clearButtonMode="always"
+          bazeled={false}
           onChangeText={this.search.bind(this)}
           placeholder="Search..."
           //placeholderTextColor={'#ccc'}
@@ -198,9 +199,7 @@ var styles = StyleSheet.create({
   searchRow: {
     backgroundColor: '#eee',
     padding: 5,
-    borderColor: '#ccc',
-    borderRadius: 0,
-    borderWidth: 1,
+  
   },
   searchTextInput: {
     fontWeight: '200',

@@ -59,12 +59,14 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_VIEW_PROPERTY(caretHidden, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(autoCorrect, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(bezeled, BOOL)
 RCT_REMAP_VIEW_PROPERTY(editable, enabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(placeholder, NSString)
 RCT_EXPORT_VIEW_PROPERTY(placeholderTextColor, NSColor)
 RCT_EXPORT_VIEW_PROPERTY(text, NSString)
 RCT_EXPORT_VIEW_PROPERTY(maxLength, NSNumber)
 RCT_REMAP_VIEW_PROPERTY(textAlign, textAlignment, NSTextAlignment)
+RCT_REMAP_VIEW_PROPERTY(color, textColor, NSColor)
 RCT_CUSTOM_VIEW_PROPERTY(fontSize, CGFloat, RCTTextField)
 {
   view.font = [RCTConvert NSFont:view.font withSize:json ?: @(defaultView.font.pointSize)];
