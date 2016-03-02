@@ -48,6 +48,15 @@
   _jsRequestingFirstResponder = NO;
 }
 
+- (void)drawRect:(NSRect)rect
+{
+  if ([[self string] isEqualToString:@""] && self != [[self window] firstResponder]) {
+    [_placeholderAttributedString drawWithRect:rect options:NSStringDrawingOneShot];
+  }
+  [super drawRect:rect];
+}
+
+
 @end
 
 @implementation RCTTextView
@@ -55,7 +64,6 @@
   RCTEventDispatcher *_eventDispatcher;
   NSString *_placeholder;
   RCTUITextView *_textView;
-  NSTextView *_placeholderView;
   NSInteger _nativeEventCount;
   CGFloat _padding;
   RCTText *_richTextView;
@@ -79,14 +87,18 @@
     _padding = 0;
 
     _textView = [[RCTUITextView alloc] initWithFrame:CGRectZero];
-    _textView.backgroundColor = [NSColor clearColor];
-//    _textView.scrollsToTop = NO;
-//    _textView.scrollEnabled = NO;
+    _textView.drawsBackground = NO;
+    [_textView setVerticallyResizable:YES];
+    _textView.editable = YES;
     _textView.delegate = self;
+    _textView.wantsLayer = YES;
 
     _scrollView = [[NSScrollView alloc] initWithFrame:CGRectZero];
-    //_scrollView.scrollsToTop = NO; TODO:
-    [_scrollView addSubview:_textView];
+    [_scrollView setBorderType:NSNoBorder];
+    [_scrollView setHasVerticalScroller:YES];
+    [_scrollView setHasHorizontalScroller:NO];
+    [_scrollView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+    [_scrollView setDocumentView:_textView];
 
     _previousSelectionRanges = _textView.selectedRanges;
 
@@ -201,7 +213,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   NSSize adjustedTextContainerInset = CGSizeMake(_padding, _padding);
 
   _textView.textContainerInset = adjustedTextContainerInset;
-  _placeholderView.textContainerInset = adjustedTextContainerInset;
 }
 
 
@@ -216,19 +227,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)updatePlaceholder
 {
   if (_placeholder) {
-    _placeholderView = [[NSTextView alloc] initWithFrame:self.bounds];
-    _placeholderView.editable = NO;
-    _placeholderView.backgroundColor = [NSColor clearColor];
-    [_placeholderView.textStorage setAttributedString:
-      [[NSAttributedString alloc] initWithString:_placeholder attributes:@{
-        NSFontAttributeName : (_textView.font ? _textView.font : [self defaultPlaceholderFont]),
-        NSForegroundColorAttributeName : _placeholderTextColor
-      }]];
-
-    [self addSubview:_placeholderView];
-    [self _setPlaceholderVisibility];
+    _textView.placeholderAttributedString = [[NSAttributedString alloc]
+                                             initWithString:_placeholder
+                                             attributes:@{NSFontAttributeName : (_textView.font ? _textView.font : [self defaultPlaceholderFont]), NSForegroundColorAttributeName : _placeholderTextColor}];
   }
+
+
 }
+
 
 - (NSFont *)font
 {
@@ -269,7 +275,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)setPadding:(CGFloat )padding
 {
- // NSLog(@"padding %@", padding);
   _padding = padding;
   [self updateFrames];
 }
@@ -328,25 +333,22 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   if (_maxLength == nil) {
     return YES;
   }
-  return NO;
-//  NSUInteger allowedLength = _maxLength.integerValue - textView.text.length + range.length;
-//  if (text.length > allowedLength) {
-//    if (text.length > 1) {
-//      // Truncate the input string so the result is exactly maxLength
-//      NSString *limitedString = [text substringToIndex:allowedLength];
-//      NSMutableString *newString = [textView string].mutableCopy;
-//      [newString replaceCharactersInRange:range withString:limitedString];
-//      [textView setString:newString];
-//      // Collapse selection at end of insert to match normal paste behavior
-////      UITextPosition *insertEnd = [textView positionFromPosition:textView.beginningOfDocument
-////                                                          offset:(range.location + allowedLength)];
-////      textView.selectedTextRange = [textView textRangeFromPosition:insertEnd toPosition:insertEnd];
-//      [self textViewDidChange:textView];
-//    }
-//    return NO;
-//  } else {
-//    return YES;
-//  }
+  //return NO;
+  NSUInteger allowedLength = _maxLength.integerValue - textView.string.length + range.length;
+  if (text.length > allowedLength) {
+    if (text.length > 1) {
+      // Truncate the input string so the result is exactly maxLength
+      NSString *limitedString = [text substringToIndex:allowedLength];
+      NSMutableString *newString = [textView string].mutableCopy;
+      [newString replaceCharactersInRange:range withString:limitedString];
+      [textView setString:newString];
+      // Collapse selection at end of insert to match normal paste behavior
+      [self textViewDidChange:textView];
+    }
+    return NO;
+  } else {
+    return YES;
+  }
 }
 
 - (void)textViewDidChangeSelection:(RCTUITextView *)textView
@@ -378,7 +380,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     [_textView setString:text];
     [_textView setSelectedRanges:previousRanges];
     [self _setPlaceholderVisibility];
-    [self updateContentSize];
+    //[self updateContentSize];
   } else if (eventLag > RCTTextUpdateLagWarningThreshold) {
     RCTLogWarn(@"Native TextInput(%@) is %zd events ahead of JS - try to make your JS faster.", self.text, eventLag);
   }
@@ -386,11 +388,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)_setPlaceholderVisibility
 {
-  if (_textView.string.length > 0) {
-    [_placeholderView setHidden:YES];
-  } else {
-    [_placeholderView setHidden:NO];
-  }
 }
 
 - (NSFont *)defaultPlaceholderFont
@@ -403,30 +400,26 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return [NSColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.098/255.0 alpha:0.22];
 }
 
-//- (void)setAutoCorrect:(BOOL)autoCorrect
-//{
-//  //_textView.autocorrectionType = (autoCorrect ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo);
-//}
-
-//- (BOOL)autoCorrect
-//{
-//  return _textView.autocorrectionType == UITextAutocorrectionTypeYes;
-//}
-
-- (void)textDidChange:(NSNotification *)aNotification
+- (void)textViewDidChange:(RCTUITextView *)textView
 {
-
+  [self _setPlaceholderVisibility];
   _nativeEventCount++;
-  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeChange
-                                 reactTag:self.reactTag
-                                     text:[_textView string]
-                                      key:nil
-                               eventCount:_nativeEventCount];
+
+  if (!self.reactTag) {
+    return;
+  }
+
+  NSDictionary *event = @{
+                          @"text": self.text,
+                          @"target": self.reactTag,
+                          @"eventCount": @(_nativeEventCount),
+                          };
+  [_eventDispatcher sendInputEventWithName:@"change" body:event];
 }
 
 - (void)textDidEndEditing:(NSNotification *)aNotification
 {
-  [self updateContentSize];
+  //[self updateContentSize];
   [self _setPlaceholderVisibility];
   _nativeEventCount++;
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeEnd
@@ -439,20 +432,13 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)textDidBeginEditing:(NSNotification *)aNotification
 {
-  //[self hidePlaceholder];
   if (_clearTextOnFocus) {
     [_textView setString:@""];
-    //[self _setPlaceholderVisibility];
   }
+  [self _setPlaceholderVisibility];
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeFocus
                                  reactTag:self.reactTag
                                      text:[_textView string]
-                                      key:nil
-                               eventCount:_nativeEventCount];
-
-  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeBlur
-                                 reactTag:self.reactTag
-                                     text:nil
                                       key:nil
                                eventCount:_nativeEventCount];
 }
@@ -464,7 +450,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (BOOL)canBecomeFirstResponder
 {
-  return [_textView canBecomeFirstResponder];
+  return YES;//[_textView canBecomeFirstResponder];
 }
 
 - (void)reactWillMakeFirstResponder

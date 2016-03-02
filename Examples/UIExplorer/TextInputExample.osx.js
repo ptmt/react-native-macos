@@ -280,7 +280,7 @@ var styles = StyleSheet.create({
   multilineWithFontStyles: {
     color: 'blue',
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 14,
     fontFamily: 'Cochin',
     height: 60,
   },
@@ -343,39 +343,6 @@ exports.examples = [
     }
   },
   {
-    title: 'Auto-capitalize',
-    render: function() {
-      return (
-        <View>
-          <WithLabel label="none">
-            <TextInput
-              autoCapitalize="none"
-              style={styles.default}
-            />
-          </WithLabel>
-          <WithLabel label="sentences">
-            <TextInput
-              autoCapitalize="sentences"
-              style={styles.default}
-            />
-          </WithLabel>
-          <WithLabel label="words">
-            <TextInput
-              autoCapitalize="words"
-              style={styles.default}
-            />
-          </WithLabel>
-          <WithLabel label="characters">
-            <TextInput
-              autoCapitalize="characters"
-              style={styles.default}
-            />
-          </WithLabel>
-        </View>
-      );
-    }
-  },
-  {
     title: 'Auto-correct',
     render: function() {
       return (
@@ -391,83 +358,18 @@ exports.examples = [
     }
   },
   {
-    title: 'Keyboard types',
+    title: 'Bezeled borders',
     render: function() {
-      var keyboardTypes = [
-        'default',
-        'ascii-capable',
-        'numbers-and-punctuation',
-        'url',
-        'number-pad',
-        'phone-pad',
-        'name-phone-pad',
-        'email-address',
-        'decimal-pad',
-        'twitter',
-        'web-search',
-        'numeric',
-      ];
-      var examples = keyboardTypes.map((type) => {
-        return (
-          <WithLabel key={type} label={type}>
-            <TextInput
-              keyboardType={type}
-              style={styles.default}
-            />
+      return (
+        <View>
+          <WithLabel label="true">
+            <TextInput bezeled={true} style={styles.default} defaultValue="abc" />
           </WithLabel>
-        );
-      });
-      return <View>{examples}</View>;
-    }
-  },
-  {
-    title: 'Keyboard appearance',
-    render: function() {
-      var keyboardAppearance = [
-        'default',
-        'light',
-        'dark',
-      ];
-      var examples = keyboardAppearance.map((type) => {
-        return (
-          <WithLabel key={type} label={type}>
-            <TextInput
-              keyboardAppearance={type}
-              style={styles.default}
-            />
+          <WithLabel label="false">
+            <TextInput bezeled={false} style={styles.default} defaultValue="abc" />
           </WithLabel>
-        );
-      });
-      return <View>{examples}</View>;
-    }
-  },
-  {
-    title: 'Return key types',
-    render: function() {
-      var returnKeyTypes = [
-        'default',
-        'go',
-        'google',
-        'join',
-        'next',
-        'route',
-        'search',
-        'send',
-        'yahoo',
-        'done',
-        'emergency-call',
-      ];
-      var examples = returnKeyTypes.map((type) => {
-        return (
-          <WithLabel key={type} label={type}>
-            <TextInput
-              returnKeyType={type}
-              style={styles.default}
-            />
-          </WithLabel>
-        );
-      });
-      return <View>{examples}</View>;
+        </View>
+      );
     }
   },
   {
@@ -492,11 +394,11 @@ exports.examples = [
       return (
         <View>
           <TextInput
-            style={[styles.default, {color: 'blue'}]}
+            style={[styles.default, {color: 'blue', fontWeight: 'bold'}]}
             defaultValue="Blue"
           />
           <TextInput
-            style={[styles.default, {color: 'green'}]}
+            style={[styles.default, {color: 'green', fontWeight: 'bold'}]}
             defaultValue="Green"
           />
         </View>
