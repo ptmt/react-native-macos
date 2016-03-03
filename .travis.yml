@@ -30,37 +30,12 @@ script:
   if [ "$TEST_TYPE" = objc ]
   then
 
-    ./scripts/objc-test.sh
+    travis_retry ./scripts/objc-test.sh
 
   elif [ "$TEST_TYPE" = js ]
   then
 
-    flow check && npm test -- '\/Libraries\/'
-
-  elif [ "$TEST_TYPE" = packager ]
-  then
-
-    npm test -- '\/packager\/'
-
-  elif [ "$TEST_TYPE" = cli ]
-  then
-
-    npm test -- '\/(local|private|react-native-desktop)-cli\/'
-
-  elif [ "$TEST_TYPE" = build_website ]
-  then
-
-    cd website
-    $(which npm) install
-    ./setup.sh
-    if [ "$TRAVIS_PULL_REQUEST" = false ] && [ "$TRAVIS_BRANCH" = master ]; then
-      # Automatically publish the website
-      echo "machine github.com login reactjs-bot password $GITHUB_TOKEN" >~/.netrc
-      ./publish.sh
-    else
-      # Make sure the website builds without error
-      node server/generate.js
-    fi
+    flow check && npm test
 
   elif [ "$TEST_TYPE" = e2e ]
   then
@@ -74,9 +49,6 @@ env:
   matrix:
     - TEST_TYPE=objc
     - TEST_TYPE=js
-    - TEST_TYPE=packager
-    - TEST_TYPE=cli
-  #  - TEST_TYPE=build_website
   #  - TEST_TYPE=e2e
   global:
 

@@ -9,10 +9,7 @@
 .*/node_modules/node-haste/.*
 
 # Examples
-.*/Examples/SimpleChatClient/node_modules/react/.* # <- should not be here
-.*/Examples/SimpleChatClient/node_modules/react-redux/node_modules/invariant/.*
-.*/Examples/SimpleChatClient/node_modules/simple-markdown/.*
-.*/Examples/SimpleChatClient/node_modules/fbjs/.*
+.*/Examples/SimpleChatClient/*.*
 
 # Ignore react-tools where there are overlaps, but don't ignore anything that
 # react-native relies on
