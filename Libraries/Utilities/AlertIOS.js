@@ -78,6 +78,9 @@ class AlertIOS {
       this.prompt(title, message, callbackOrButtons, type);
       return;
     }
+    if (!callbackOrButtons) {
+      callbackOrButtons = [{text: 'OK'}]
+    }
     this.prompt(title, message, callbackOrButtons, 'default');
   }
 
