@@ -25,6 +25,7 @@ var TimerMixin = require('react-timer-mixin');
 var TouchableWithoutFeedback = require('TouchableWithoutFeedback');
 var UIManager = require('UIManager');
 var View = require('View');
+var NativeModules = require('NativeModules');
 
 var createReactNativeComponentClass = require('createReactNativeComponentClass');
 var emptyFunction = require('emptyFunction');
@@ -543,6 +544,7 @@ var TextInput = React.createClass({
 var styles = StyleSheet.create({
   input: {
     alignSelf: 'stretch',
+    height: NativeModules.ButtonManager.ComponentHeight
   },
 });
 

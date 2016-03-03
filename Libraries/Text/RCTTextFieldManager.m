@@ -94,6 +94,15 @@ RCT_EXPORT_VIEW_PROPERTY(mostRecentEventCount, NSInteger)
   };
 }
 
+- (NSDictionary<NSString *, id> *)constantsToExport
+{
+  RCTTextField *view = [RCTTextField new];
+  return @{
+     @"ComponentHeight": @(view.intrinsicContentSize.height),
+     @"ComponentWidth": @(view.intrinsicContentSize.width)
+  };
+}
+
 @end
 
 @interface RCTSecureTextFieldManager() <NSTextFieldDelegate>
