@@ -21,6 +21,12 @@ RCT_ENUM_CONVERTER(NSDatePickerMode, (@{
   @"range": @(NSRangeDateMode),
 }), NSSingleDateMode, integerValue)
 
+RCT_ENUM_CONVERTER(NSDatePickerStyle, (@{
+  @"textField": @(NSTextFieldDatePickerStyle),
+  @"clockAndCalendar": @(NSClockAndCalendarDatePickerStyle),
+  @"textFieldAndStepper": @(NSTextFieldAndStepperDatePickerStyle),
+}), NSTextFieldAndStepperDatePickerStyle, integerValue)
+
 @end
 
 @implementation RCTDatePickerManager
@@ -37,6 +43,7 @@ RCT_REMAP_VIEW_PROPERTY(minimumDate, minDate, NSDate)
 RCT_REMAP_VIEW_PROPERTY(maximumDate, maxDate, NSDate)
 RCT_EXPORT_VIEW_PROPERTY(minuteInterval, NSInteger)
 RCT_EXPORT_VIEW_PROPERTY(onChange, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(datePickerStyle, NSDatePickerStyle)
 RCT_REMAP_VIEW_PROPERTY(mode, datePickerMode, NSDatePickerMode)
 RCT_REMAP_VIEW_PROPERTY(timeZoneOffsetInMinutes, timeZone, NSTimeZone)
 

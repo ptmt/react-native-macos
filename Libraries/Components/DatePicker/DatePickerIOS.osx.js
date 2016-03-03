@@ -76,6 +76,8 @@ var DatePickerIOS = React.createClass({
      */
     mode: PropTypes.oneOf(['single', 'range']),
 
+    datePickerStyle: PropTypes.oneOf(['textField', 'clockAndCalendar', 'textFieldAndStepper']),
+
     /**
      * The interval at which minutes can be selected.
      */
@@ -100,7 +102,7 @@ var DatePickerIOS = React.createClass({
   _onChange: function(event: Event) {
     var nativeTimeStamp = event.nativeEvent.timestamp;
     this.props.onDateChange && this.props.onDateChange(
-      new Date(nativeTimeStamp)
+      new Date(nativeTimeStamp), event.nativeEvent.timeInterval
     );
     this.props.onChange && this.props.onChange(event);
 
@@ -122,8 +124,9 @@ var DatePickerIOS = React.createClass({
       <View style={props.style}>
         <RCTDatePickerIOS
           ref={ picker => this._picker = picker }
-          style={styles.datePickerIOS}
+          style={[styles.datePickerIOS, props.innerStyle]}
           date={props.date.getTime()}
+          datePickerStyle={props.datePickerStyle}
           maximumDate={
             props.maximumDate ? props.maximumDate.getTime() : undefined
           }
@@ -147,8 +150,6 @@ var styles = StyleSheet.create({
   },
 });
 
-var RCTDatePickerIOS = requireNativeComponent('RCTDatePicker', DatePickerIOS, {
-  nativeOnly: { onChange: true },
-});
+var RCTDatePickerIOS = requireNativeComponent('RCTDatePicker');
 
 module.exports = DatePickerIOS;
