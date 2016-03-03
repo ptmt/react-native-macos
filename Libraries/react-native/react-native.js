@@ -15,6 +15,7 @@ var ReactNative = {
   // Components
   get ActivityIndicatorIOS() { return require('ActivityIndicatorIOS'); },
   get ART() { return require('ReactNativeART'); },
+  get Button() { return require('Button'); },
   get DatePickerIOS() { return require('DatePickerIOS'); },
   get Image() { return require('Image'); },
   get ImageEditor() { return require('ImageEditor'); },

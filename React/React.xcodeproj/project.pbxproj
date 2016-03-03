@@ -23,6 +23,8 @@
 		0381CED61C575AE4000D6939 /* RCTView.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E067501A70F44B002CDEE1 /* RCTView.m */; };
 		0381CED71C575AF2000D6939 /* RCTKeyCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = 13A1F71D1A75392D00D3D453 /* RCTKeyCommands.m */; };
 		039780C41BD7947B00452D23 /* UIImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 039780C31BD7947B00452D23 /* UIImageUtils.m */; };
+		03FC2C431C873A850023C9CA /* RCTButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FC2C401C873A850023C9CA /* RCTButton.m */; };
+		03FC2C441C873A850023C9CA /* RCTButtonManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FC2C421C873A850023C9CA /* RCTButtonManager.m */; };
 		131B6AF41AF1093D00FFC3E0 /* RCTSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 131B6AF11AF1093D00FFC3E0 /* RCTSegmentedControl.m */; };
 		133CAE8E1B8E5CFD00F6AD92 /* RCTDatePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 133CAE8D1B8E5CFD00F6AD92 /* RCTDatePicker.m */; };
 		134FCB3D1A6E7F0800051CC8 /* RCTJSCExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = 134FCB3A1A6E7F0800051CC8 /* RCTJSCExecutor.m */; };
@@ -120,6 +122,10 @@
 		0381CEC21C54FD4E000D6939 /* NSView+React.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSView+React.m"; sourceTree = "<group>"; };
 		039780C21BD7947B00452D23 /* UIImageUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageUtils.h; sourceTree = "<group>"; };
 		039780C31BD7947B00452D23 /* UIImageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageUtils.m; sourceTree = "<group>"; };
+		03FC2C3F1C873A850023C9CA /* RCTButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTButton.h; sourceTree = "<group>"; };
+		03FC2C401C873A850023C9CA /* RCTButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTButton.m; sourceTree = "<group>"; };
+		03FC2C411C873A850023C9CA /* RCTButtonManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTButtonManager.h; sourceTree = "<group>"; };
+		03FC2C421C873A850023C9CA /* RCTButtonManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTButtonManager.m; sourceTree = "<group>"; };
 		131B6AF01AF1093D00FFC3E0 /* RCTSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTSegmentedControl.h; sourceTree = "<group>"; };
 		131B6AF11AF1093D00FFC3E0 /* RCTSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTSegmentedControl.m; sourceTree = "<group>"; };
 		131B6AF21AF1093D00FFC3E0 /* RCTSegmentedControlManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTSegmentedControlManager.h; sourceTree = "<group>"; };
@@ -315,7 +321,6 @@
 				037F19491C7CB71B003555DA /* RCTMenuManager.m */,
 				032625A61BBCF725001C8FC1 /* RCTRedBox.h */,
 				58114A4F1AAE93D500E7D092 /* RCTAsyncLocalStorage.h */,
-				13F17A841B8493E5007D4C75 /* RCTRedBox.m */,
 				000E6CE91AB0E97F000CDF4D /* RCTSourceCode.h */,
 				000E6CEA1AB0E980000CDF4D /* RCTSourceCode.m */,
 				13B07FED1A69327A00A75B9A /* RCTTiming.h */,
@@ -332,6 +337,10 @@
 		13B07FF31A6947C200A75B9A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				03FC2C3F1C873A850023C9CA /* RCTButton.h */,
+				03FC2C401C873A850023C9CA /* RCTButton.m */,
+				03FC2C411C873A850023C9CA /* RCTButtonManager.h */,
+				03FC2C421C873A850023C9CA /* RCTButtonManager.m */,
 				0381CEC01C54FD4E000D6939 /* NSView+Private.h */,
 				0381CEC11C54FD4E000D6939 /* NSView+React.h */,
 				0381CEC21C54FD4E000D6939 /* NSView+React.m */,
@@ -640,6 +649,7 @@
 				13BB3D021BECD54500932C10 /* RCTImageSource.m in Sources */,
 				58C571C11AA56C1900CDF9C8 /* RCTDatePickerManager.m in Sources */,
 				1450FF8A1BCFF28A00208362 /* RCTProfileTrampoline-x86_64.S in Sources */,
+				03FC2C441C873A850023C9CA /* RCTButtonManager.m in Sources */,
 				037F194A1C7CB71B003555DA /* RCTMenuManager.m in Sources */,
 				14F7A0EC1BDA3B3C003C6C10 /* RCTPerfMonitor.m in Sources */,
 				1450FF881BCFF28A00208362 /* RCTProfileTrampoline-arm64.S in Sources */,
@@ -679,6 +689,7 @@
 				13E0674A1A70F434002CDEE1 /* RCTUIManager.m in Sources */,
 				1450FF861BCFF28A00208362 /* RCTProfile.m in Sources */,
 				13AB90C11B6FA36700713B4F /* RCTComponentData.m in Sources */,
+				03FC2C431C873A850023C9CA /* RCTButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

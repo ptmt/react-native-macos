@@ -29,6 +29,7 @@ var UIExplorerListBase = require('./UIExplorerListBase');
 
 var COMPONENTS = [
   require('./ActivityIndicatorIOSExample'),
+  require('./ButtonExample'),
   require('./DatePickerIOSExample'),
   require('./ImageExample'),
   require('./LayoutEventsExample'),
