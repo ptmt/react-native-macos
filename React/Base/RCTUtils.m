@@ -245,13 +245,10 @@ void RCTExecuteOnMainThread(dispatch_block_t block, BOOL sync)
 
 CGFloat RCTScreenScale()
 {
-  static CGFloat scale;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    RCTExecuteOnMainThread(^{
-      scale = [NSScreen mainScreen].backingScaleFactor;
-    }, YES);
-  });
+  static CGFloat scale = 1.0;
+  RCTExecuteOnMainThread(^{
+    scale = [NSScreen mainScreen].backingScaleFactor;
+  }, YES);
 
   return scale;
 }
