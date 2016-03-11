@@ -59,7 +59,7 @@ CGRect RCTTargetRect(CGSize sourceSize, CGSize destSize,
 
   // Calculate target aspect ratio if needed (don't bother if resizeMode == stretch)
   CGFloat targetAspect = 0.0;
-  if (resizeMode != UIViewContentModeScaleToFill) {
+  if (resizeMode != RCTResizeModeStretch) {
     targetAspect = destSize.width / destSize.height;
     if (aspect == targetAspect) {
       resizeMode = RCTResizeModeStretch;

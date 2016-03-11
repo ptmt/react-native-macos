@@ -289,20 +289,13 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   }
 }
 
-@end
-
-@implementation RCTBridge(Deprecated)
-
-NSString *const RCTDidCreateNativeModules = @"RCTDidCreateNativeModules";
-
-- (NSDictionary *)modules
+- (void)enqueueJSCall:(NSString *)moduleDotMethod args:(NSArray *)args
 {
-  return self.batchedBridge.modules;
+  [self.batchedBridge enqueueJSCall:moduleDotMethod args:args];
 }
 
 - (void)enqueueCallback:(NSNumber *)cbID args:(NSArray *)args
 {
   [self.batchedBridge enqueueCallback:cbID args:args];
 }
-
 @end

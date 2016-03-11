@@ -37,7 +37,7 @@ RCTDefineImageDecoder(RCTImageLoaderTestsDecoder2)
 
 - (void)testImageLoading
 {
-  UIImage *image = [UIImage new];
+  NSImage *image = [NSImage new];
 
   id<RCTImageURLLoader> loader = [[RCTImageLoaderTestsURLLoader1 alloc] initWithPriority:1.0 canLoadImageURLHandler:^BOOL(__unused NSURL *requestURL) {
     return YES;
@@ -60,7 +60,7 @@ RCTDefineImageDecoder(RCTImageLoaderTestsDecoder2)
 
 - (void)testImageLoaderUsesImageURLLoaderWithHighestPriority
 {
-  UIImage *image = [UIImage new];
+  NSImage *image = [NSImage new];
 
   id<RCTImageURLLoader> loader1 = [[RCTImageLoaderTestsURLLoader1 alloc] initWithPriority:1.0 canLoadImageURLHandler:^BOOL(__unused NSURL *requestURL) {
     return YES;
@@ -91,7 +91,7 @@ RCTDefineImageDecoder(RCTImageLoaderTestsDecoder2)
 - (void)testImageDecoding
 {
   NSData *data = [NSData dataWithBytesNoCopy:blackGIF length:sizeof(blackGIF) freeWhenDone:NO];
-  UIImage *image = [[UIImage alloc] initWithData:data];
+  NSImage *image = [[NSImage alloc] initWithData:data];
 
   id<RCTImageDataDecoder> decoder = [[RCTImageLoaderTestsDecoder1 alloc] initWithPriority:1.0 canDecodeImageDataHandler:^BOOL(__unused NSData *imageData) {
     return YES;
@@ -113,7 +113,7 @@ RCTDefineImageDecoder(RCTImageLoaderTestsDecoder2)
 - (void)testImageLoaderUsesImageDecoderWithHighestPriority
 {
   NSData *data = [NSData dataWithBytesNoCopy:blackGIF length:sizeof(blackGIF) freeWhenDone:NO];
-  UIImage *image = [[UIImage alloc] initWithData:data];
+  NSImage *image = [[NSImage alloc] initWithData:data];
 
   id<RCTImageDataDecoder> decoder1 = [[RCTImageLoaderTestsDecoder1 alloc] initWithPriority:1.0 canDecodeImageDataHandler:^BOOL(__unused NSData *imageData) {
     return YES;

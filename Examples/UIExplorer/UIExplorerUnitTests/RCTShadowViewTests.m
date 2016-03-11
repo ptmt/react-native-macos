@@ -93,7 +93,7 @@
   [self.parentView collectRootUpdatedFrames];
 
   XCTAssertTrue(CGRectEqualToRect([self.parentView measureLayoutRelativeToAncestor:self.parentView], CGRectMake(0, 0, 440, 440)));
-  XCTAssertTrue(UIEdgeInsetsEqualToEdgeInsets([self.parentView paddingAsInsets], UIEdgeInsetsMake(10, 10, 10, 10)));
+
 
   XCTAssertTrue(CGRectEqualToRect([headerView measureLayoutRelativeToAncestor:self.parentView], CGRectMake(10, 10, 420, 100)));
   XCTAssertTrue(CGRectEqualToRect([mainView measureLayoutRelativeToAncestor:self.parentView], CGRectMake(10, 120, 420, 200)));
@@ -112,7 +112,7 @@
                                    style->dimensions[CSS_HEIGHT] = 10;
                                  }
             assertRelativeLayout:CGRectMake(0, 0, 3, 10)
-        withIntrinsicContentSize:CGSizeMake(3, UIViewNoIntrinsicMetric)];
+        withIntrinsicContentSize:CGSizeMake(3, NSViewNoInstrinsicMetric)];
 }
 
 - (void)testAssignsSuggestedHeightDimension
@@ -123,7 +123,7 @@
                                    style->dimensions[CSS_WIDTH] = 10;
                                  }
             assertRelativeLayout:CGRectMake(0, 0, 10, 4)
-        withIntrinsicContentSize:CGSizeMake(UIViewNoIntrinsicMetric, 4)];
+        withIntrinsicContentSize:CGSizeMake(NSViewNoInstrinsicMetric, 4)];
 }
 
 - (void)testDoesNotOverrideDimensionStyleWithSuggestedDimensions
@@ -159,9 +159,7 @@
   [self.parentView collectRootUpdatedFrames];
   CGRect actualRect = [view measureLayoutRelativeToAncestor:self.parentView];
   XCTAssertTrue(CGRectEqualToRect(expectedRect, actualRect),
-                @"Expected layout to be %@, got %@",
-                NSStringFromCGRect(expectedRect),
-                NSStringFromCGRect(actualRect));
+                @"Layouts are different");
 }
 
 - (RCTShadowView *)_shadowViewWithStyle:(void(^)(css_style_t *style))styleBlock
@@ -173,11 +171,6 @@
   shadowView.cssNode->style = style;
 
   return shadowView;
-}
-
-static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeInsets insets2) {
-  return CGRectEqualToRect(CGRectMake(insets1.left, insets1.top, insets1.right, insets1.bottom),
-                           CGRectMake(insets2.left, insets2.top, insets2.right, insets2.bottom));
 }
 
 @end

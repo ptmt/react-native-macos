@@ -57,6 +57,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		035D95A71C9352CC00B095A8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
+			remoteInfo = UIExplorer;
+		};
 		13417FE71AA91428003F314A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 13417FE31AA91428003F314A /* RCTImage.xcodeproj */;
@@ -462,6 +469,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				035D95A81C9352CC00B095A8 /* PBXTargetDependency */,
 			);
 			name = UIExplorerUnitTests;
 			productName = UIExplorerTests;
@@ -704,6 +712,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		035D95A81C9352CC00B095A8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 13B07F861A680F5B00A75B9A /* UIExplorer */;
+			targetProxy = 035D95A71C9352CC00B095A8 /* PBXContainerItemProxy */;
+		};
 		143BC59C1B21E3E100462512 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 13B07F861A680F5B00A75B9A /* UIExplorer */;
@@ -853,7 +866,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.React.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/UIExplorer.app/UIExplorer";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/UIExplorer.app/Contents/MacOS/UIExplorer";
 			};
 			name = Debug;
 		};
@@ -879,7 +892,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.React.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/UIExplorer.app/UIExplorer";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/UIExplorer.app/Contents/MacOS/UIExplorer";
 			};
 			name = Release;
 		};
@@ -938,6 +951,7 @@
 					"$(SRCROOT)/../../Libraries/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -997,6 +1011,7 @@
 					"$(SRCROOT)/../../Libraries/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				VALIDATE_PRODUCT = YES;
