@@ -11,11 +11,6 @@
 
 NSData *UIImagePNGRepresentation(NSImage *image)
 {
-  //  CFMutableDataRef data = CFDataCreateMutable(NULL, 0);
-  //  CGImageDestinationRef dest = CGImageDestinationCreateWithData(data, kUTTypePNG, 1, NULL);
-  //  CGImageDestinationAddImage(dest, image.CGImage, NULL);
-  //  CGImageDestinationFinalize(dest);
-  //  CFRelease(dest);
   CGImageSourceRef source = CGImageSourceCreateWithData((CFDataRef)[image TIFFRepresentation], NULL);
   CGImageRef maskRef =  CGImageSourceCreateImageAtIndex(source, 0, NULL);
 

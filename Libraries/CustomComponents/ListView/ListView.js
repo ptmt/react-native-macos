@@ -35,7 +35,6 @@ var StaticRenderer = require('StaticRenderer');
 var TimerMixin = require('react-timer-mixin');
 
 var isEmpty = require('isEmpty');
-var logError = require('logError');
 var merge = require('merge');
 
 var PropTypes = React.PropTypes;
@@ -148,11 +147,15 @@ var ListView = React.createClass({
      */
     onEndReached: PropTypes.func,
     /**
-     * Threshold in pixels for onEndReached.
+     * Threshold in pixels (virtual, not physical) for calling onEndReached.
      */
     onEndReachedThreshold: PropTypes.number,
     /**
-     * Number of rows to render per event loop.
+     * Number of rows to render per event loop. Note: if your 'rows' are actually
+     * cells, i.e. they don't span the full width of your view (as in the
+     * ListViewGridLayoutExample), you should set the pageSize to be a multiple
+     * of the number of cells per row, otherwise you're likely to see gaps at
+     * the edge of the ListView as new pages are loaded.
      */
     pageSize: PropTypes.number,
     /**
@@ -227,8 +230,9 @@ var ListView = React.createClass({
   },
 
   /**
-   * Provides a handle to the underlying scroll responder to support operations
-   * such as scrollTo.
+   * Provides a handle to the underlying scroll responder.
+   * Note that the view in `SCROLLVIEW_REF` may not be a `ScrollView`, so we
+   * need to check that it responds to `getScrollResponder` before calling it.
    */
   getScrollResponder: function() {
     return this.refs[SCROLLVIEW_REF] &&
@@ -236,12 +240,15 @@ var ListView = React.createClass({
       this.refs[SCROLLVIEW_REF].getScrollResponder();
   },
 
-  scrollTo: function(destY, destX) {
-    this.getScrollResponder().scrollResponderScrollTo(destX || 0, destY || 0);
+  scrollTo: function(...args) {
+    this.refs[SCROLLVIEW_REF] &&
+      this.refs[SCROLLVIEW_REF].scrollTo &&
+      this.refs[SCROLLVIEW_REF].scrollTo(...args);
   },
 
   setNativeProps: function(props) {
-    this.refs[SCROLLVIEW_REF].setNativeProps(props);
+    this.refs[SCROLLVIEW_REF] &&
+      this.refs[SCROLLVIEW_REF].setNativeProps(props);
   },
 
   /**
@@ -292,26 +299,20 @@ var ListView = React.createClass({
   },
 
   componentWillReceiveProps: function(nextProps) {
-    if (this.props.dataSource !== nextProps.dataSource) {
+    if (this.props.dataSource !== nextProps.dataSource ||
+        this.props.initialListSize !== nextProps.initialListSize) {
       this.setState((state, props) => {
         this._prevRenderedRowsCount = 0;
         return {
           curRenderedRowsCount: Math.min(
-            state.curRenderedRowsCount + props.pageSize,
+            Math.max(
+              state.curRenderedRowsCount,
+              props.initialListSize
+            ),
             props.dataSource.getRowCount()
           ),
         };
-      });
-    }
-    if (this.props.initialListSize !== nextProps.initialListSize) {
-      this.setState((state, props) => {
-        return {
-          curRenderedRowsCount: Math.max(
-            state.curRenderedRowsCount,
-            props.initialListSize
-          ),
-        };
-      });
+      }, () => this._renderMoreRowsIfNeeded());
     }
   },
 
@@ -367,7 +368,7 @@ var ListView = React.createClass({
           rowIDs[rowIdx] :
           rowIDs.length - 1 - rowIdx;
 
-        var comboID = sectionID + rowID;
+        var comboID = sectionID + '_' + rowID;
         var shouldUpdateRow = rowCount >= this._prevRenderedRowsCount &&
           dataSource.rowShouldUpdate(sectionIdx, rowIdx);
 
@@ -407,8 +408,10 @@ var ListView = React.createClass({
             rowID,
             adjacentRowHighlighted
           );
-          bodyComponents.push(separator);
-          totalIndex++;
+          if (separator) {
+            bodyComponents.push(separator);
+            totalIndex++;
+          }
         }
         if (++rowCount === this.state.curRenderedRowsCount) {
           break;
@@ -532,11 +535,7 @@ var ListView = React.createClass({
   },
 
   _getDistanceFromEnd: function(scrollProperties) {
-    var maxLength = Math.max(
-      scrollProperties.contentLength,
-      scrollProperties.visibleLength
-    );
-    return maxLength - scrollProperties.visibleLength - scrollProperties.offset;
+    return scrollProperties.contentLength - scrollProperties.visibleLength - scrollProperties.offset;
   },
 
   _updateVisibleRows: function(updatedFrames) {

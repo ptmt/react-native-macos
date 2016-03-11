@@ -23,6 +23,17 @@
 
 @end
 
+@interface RCTImageStoreManager (Deprecated)
+
+/**
+ * These methods are deprecated - use the data-based alternatives instead.
+ */
+- (NSString *)storeImage:(NSImage *)image __deprecated;
+- (NSImage *)imageForTag:(NSString *)imageTag __deprecated;
+- (void)getImageForTag:(NSString *)imageTag withBlock:(void (^)(NSImage *image))block __deprecated;
+
+@end
+
 @interface RCTBridge (RCTImageStoreManager)
 
 @property (nonatomic, readonly) RCTImageStoreManager *imageStoreManager;

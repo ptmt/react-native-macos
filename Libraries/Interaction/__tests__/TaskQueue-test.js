@@ -49,7 +49,7 @@ describe('TaskQueue', () => {
       return new Promise(resolve => {
         setTimeout(() => {
           expect(++sequenceId).toBe(1);
-          resolve(1);
+          resolve();
         }, 1);
       });
     });

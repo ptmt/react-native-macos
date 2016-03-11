@@ -10,11 +10,10 @@
 #import "RCTConvert.h"
 #import "AppKit/AppKit.h"
 
-
 typedef NS_ENUM(NSInteger, RCTResizeMode) {
-  RCTResizeModeCover = 1,
-  RCTResizeModeContain = 2, // TODO: actual NSImageResizingMode
-  RCTResizeModeStretch = 3,
+  RCTResizeModeCover = 0,
+  RCTResizeModeContain = 1,
+  RCTResizeModeStretch = 2,
 };
 
 @interface RCTConvert(RCTResizeMode)

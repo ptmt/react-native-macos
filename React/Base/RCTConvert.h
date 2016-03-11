@@ -62,14 +62,6 @@ typedef NSURL RCTFileURL;
 + (NSUnderlineStyle)NSUnderlineStyle:(id)json;
 + (NSWritingDirection)NSWritingDirection:(id)json;
 
-//+ (UITextFieldViewMode)UITextFieldViewMode:(id)json;
-//+ (UIKeyboardType)UIKeyboardType:(id)json;
-//+ (UIKeyboardAppearance)UIKeyboardAppearance:(id)json;
-//+ (UIReturnKeyType)UIReturnKeyType:(id)json;
-//
-//+ (UIViewContentMode)UIViewContentMode:(id)json;
-//+ (UIBarStyle)UIBarStyle:(id)json;
-
 + (CGFloat)CGFloat:(id)json;
 + (CGPoint)CGPoint:(id)json;
 + (CGSize)CGSize:(id)json;

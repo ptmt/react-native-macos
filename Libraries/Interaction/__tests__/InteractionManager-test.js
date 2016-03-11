@@ -6,6 +6,7 @@
 
 jest
   .autoMockOff()
+  .mock('ErrorUtils')
   .mock('BatchedBridge');
 
 function expectToBeCalledOnce(fn) {
@@ -264,7 +265,6 @@ describe('promise tasks', () => {
     jest.runAllTimers();
     // runAllTimers doesn't actually run all timers with nested timer functions
     // inside Promises, so we have to call it extra times.
-    jest.runAllTimers();
     jest.runAllTimers();
     jest.runAllTimers();
 

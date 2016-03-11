@@ -11,16 +11,6 @@
 #import "RCTViewManager.h"
 #import "RCTConvert.h"
 
-@interface RCTConvert (NSScrollView)
-
-//+ (UIScrollViewKeyboardDismissMode)UIScrollViewKeyboardDismissMode:(id)json;
-
-@end
-
-@interface RCTScrollViewManager : RCTViewManager
-
-@end
-
 /**
  * Workaround for a AppKit NSScrollView
  *

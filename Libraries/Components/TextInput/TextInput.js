@@ -28,8 +28,8 @@ var View = require('View');
 var NativeModules = require('NativeModules');
 
 var createReactNativeComponentClass = require('createReactNativeComponentClass');
-var emptyFunction = require('emptyFunction');
-var invariant = require('invariant');
+var emptyFunction = require('fbjs/lib/emptyFunction');
+var invariant = require('fbjs/lib/invariant');
 var requireNativeComponent = require('requireNativeComponent');
 var processColor = require('processColor');
 

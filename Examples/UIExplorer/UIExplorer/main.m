@@ -15,7 +15,7 @@
 #import <Cocoa/Cocoa.h>
 #import "AppDelegate.h"
 
-int main(int argc, char * argv[]) {
+int main(__unused int argc, __unused char * argv[]) {
   @autoreleasepool {
     NSApplication * application = [NSApplication sharedApplication];
     NSMenu *mainMenu = [[NSMenu alloc] initWithTitle:@"Application"];

@@ -23,8 +23,12 @@
 
 NSString *const RCTErrorUnspecified = @"EUNSPECIFIED";
 
-NSString *__nullable RCTJSONStringify(id __nullable jsonObject, NSError **error)
+static NSString *__nullable _RCTJSONStringifyNoRetry(id __nullable jsonObject, NSError **error)
 {
+  if (!jsonObject) {
+    return nil;
+  }
+
   static SEL JSONKitSelector = NULL;
   static NSSet<Class> *collectionTypes;
   static dispatch_once_t onceToken;
@@ -38,17 +42,48 @@ NSString *__nullable RCTJSONStringify(id __nullable jsonObject, NSError **error)
     }
   });
 
-  // Use JSONKit if available and object is not a fragment
-  if (JSONKitSelector && [collectionTypes containsObject:[jsonObject classForCoder]]) {
-    return ((NSString *(*)(id, SEL, int, NSError **))objc_msgSend)(jsonObject, JSONKitSelector, 0, error);
-  }
+  @try {
 
-  // Use Foundation JSON method
-  NSData *jsonData = jsonObject ? [NSJSONSerialization
-                                   dataWithJSONObject:jsonObject
-                                   options:(NSJSONWritingOptions)NSJSONReadingAllowFragments
-                                   error:error] : nil;
-  return jsonData ? [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] : nil;
+    // Use JSONKit if available and object is not a fragment
+    if (JSONKitSelector && [collectionTypes containsObject:[jsonObject classForCoder]]) {
+      return ((NSString *(*)(id, SEL, int, NSError **))objc_msgSend)(jsonObject, JSONKitSelector, 0, error);
+    }
+
+    // Use Foundation JSON method
+    NSData *jsonData = [NSJSONSerialization
+                        dataWithJSONObject:jsonObject options:(NSJSONWritingOptions)NSJSONReadingAllowFragments
+                        error:error];
+
+    return jsonData ? [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] : nil;
+  }
+  @catch (NSException *exception) {
+
+    // Convert exception to error
+    if (error) {
+      *error = [NSError errorWithDomain:RCTErrorDomain code:0 userInfo:@{
+        NSLocalizedDescriptionKey: exception.description ?: @""
+      }];
+    }
+    return nil;
+  }
+}
+
+NSString *__nullable RCTJSONStringify(id __nullable jsonObject, NSError **error)
+{
+  if (error) {
+    return _RCTJSONStringifyNoRetry(jsonObject, error);
+  } else {
+    NSError *localError;
+    NSString *json = _RCTJSONStringifyNoRetry(jsonObject, &localError);
+    if (localError) {
+      RCTLogError(@"RCTJSONStringify() encountered the following error: %@",
+                  localError.localizedDescription);
+      // Sanitize the data, then retry. This is slow, but it prevents uncaught
+      // data issues from crashing in production
+      return _RCTJSONStringifyNoRetry(RCTJSONClean(jsonObject), NULL);
+    }
+    return json;
+  }
 }
 
 static id __nullable _RCTJSONParse(NSString *__nullable jsonString, BOOL mutable, NSError **error)
@@ -134,6 +169,14 @@ id RCTJSONClean(id object)
   });
 
   if ([validLeafTypes containsObject:[object classForCoder]]) {
+    if ([object isKindOfClass:[NSNumber class]]) {
+      return @(RCTZeroIfNaN([object doubleValue]));
+    }
+    if ([object isKindOfClass:[NSString class]]) {
+      if ([object UTF8String] == NULL) {
+        return (id)kCFNull;
+      }
+    }
     return object;
   }
 
@@ -203,16 +246,11 @@ void RCTExecuteOnMainThread(dispatch_block_t block, BOOL sync)
 CGFloat RCTScreenScale()
 {
   static CGFloat scale;
-  scale = 1;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    if (![NSThread isMainThread]) {
-      dispatch_sync(dispatch_get_main_queue(), ^{
-        scale = [NSScreen mainScreen].backingScaleFactor;
-      });
-    } else {
+    RCTExecuteOnMainThread(^{
       scale = [NSScreen mainScreen].backingScaleFactor;
-    }
+    }, YES);
   });
 
   return scale;
@@ -397,9 +435,20 @@ NSWindow *__nullable RCTKeyWindow(void)
   return RCTSharedApplication().keyWindow;
 }
 
+BOOL RCTForceTouchAvailable(void)
+{
+  static BOOL forceSupported;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    forceSupported = NO;
+  });
+  //TODO:
+  return forceSupported;
+}
+
 NSAlert *__nullable RCTAlertView(NSString *title,
-                                     NSString * message,
-                                     id delegate,
+                                     NSString *__nullable message,
+                                     id __nullable delegate,
                                      NSString *__nullable cancelButtonTitle,
                                      NSArray<NSString *> *__nullable otherButtonTitles)
 {
@@ -535,6 +584,51 @@ BOOL RCTIsXCAssetURL(NSURL *__nullable imageURL)
     return NO;
   }
   return YES;
+}
+
+RCT_EXTERN NSString *__nullable RCTTempFilePath(NSString *extension, NSError **error)
+{
+  static NSError *setupError = nil;
+  static NSString *directory;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    directory = [NSTemporaryDirectory() stringByAppendingPathComponent:@"ReactNative"];
+    // If the temporary directory already exists, we'll delete it to ensure
+    // that temp files from the previous run have all been deleted. This is not
+    // a security measure, it simply prevents the temp directory from using too
+    // much space, as the circumstances under which iOS clears it automatically
+    // are not well-defined.
+    NSFileManager *fileManager = [NSFileManager new];
+    if ([fileManager fileExistsAtPath:directory]) {
+      [fileManager removeItemAtPath:directory error:NULL];
+    }
+    if (![fileManager fileExistsAtPath:directory]) {
+      NSError *localError = nil;
+      if (![fileManager createDirectoryAtPath:directory
+                  withIntermediateDirectories:YES
+                                   attributes:nil
+                                        error:&localError]) {
+        // This is bad
+        RCTLogError(@"Failed to create temporary directory: %@", localError);
+        setupError = localError;
+        directory = nil;
+      }
+    }
+  });
+
+  if (!directory || setupError) {
+    if (error) {
+      *error = setupError;
+    }
+    return nil;
+  }
+
+  // Append a unique filename
+  NSString *filename = [NSUUID new].UUIDString;
+  if (extension) {
+    filename = [filename stringByAppendingPathExtension:extension];
+  }
+  return [directory stringByAppendingPathComponent:filename];
 }
 
 static void RCTGetRGBAColorComponents(CGColorRef color, CGFloat rgba[4])

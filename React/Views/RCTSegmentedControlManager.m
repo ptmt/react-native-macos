@@ -38,12 +38,7 @@ RCT_EXPORT_VIEW_PROPERTY(selectedIndex, NSInteger)
 //RCT_EXPORT_VIEW_PROPERTY(momentary, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(enabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(onChange, RCTBubblingEventBlock)
-<<<<<<< HEAD
-RCT_CUSTOM_VIEW_PROPERTY(tintColor, NSColor, __unused RCTSegmentedControl)
-=======
 
-- (NSDictionary<NSString *, id> *)constantsToExport
->>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
 {
   //[view.cell setControlTint:[RCTConvert NSColor:json]];
 }

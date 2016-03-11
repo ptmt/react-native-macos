@@ -96,7 +96,34 @@ var TextEventsExample = React.createClass({
   }
 });
 
+class AutoExpandingTextInput extends React.Component {
+  state: any;
+
+  constructor(props) {
+    super(props);
+    this.state = {text: '', height: 0};
+  }
+  render() {
+    return (
+      <TextInput
+        {...this.props}
+        multiline={true}
+        onChange={(event) => {
+          this.setState({
+            text: event.nativeEvent.text,
+            height: event.nativeEvent.contentSize.height,
+          });
+        }}
+        style={[styles.default, {height: Math.max(35, this.state.height)}]}
+        value={this.state.text}
+      />
+    );
+  }
+}
+
 class RewriteExample extends React.Component {
+  state: any;
+
   constructor(props) {
     super(props);
     this.state = {text: ''};
@@ -127,6 +154,8 @@ class RewriteExample extends React.Component {
 }
 
 class RewriteExampleInvalidCharacters extends React.Component {
+  state: any;
+
   constructor(props) {
     super(props);
     this.state = {text: ''};
@@ -149,6 +178,8 @@ class RewriteExampleInvalidCharacters extends React.Component {
 }
 
 class TokenizedTextExample extends React.Component {
+  state: any;
+
   constructor(props) {
     super(props);
     this.state = {text: 'Hello #World'};
@@ -343,6 +374,12 @@ exports.examples = [
     }
   },
   {
+    title: 'Auto-capitalize',
+    render: function() {
+      return <RewriteExampleInvalidCharacters />;
+    }
+  },
+  {
     title: 'Auto-correct',
     render: function() {
       return (
@@ -400,6 +437,25 @@ exports.examples = [
           <TextInput
             style={[styles.default, {color: 'green', fontWeight: 'bold'}]}
             defaultValue="Green"
+          />
+        </View>
+      );
+    }
+  },
+  {
+    title: 'Colored highlight/cursor for text input',
+    render: function() {
+      return (
+        <View>
+          <TextInput
+            style={styles.default}
+            selectionColor={"green"}
+            defaultValue="Highlight me"
+          />
+          <TextInput
+            style={styles.default}
+            selectionColor={"rgba(86, 76, 205, 1)"}
+            defaultValue="Highlight me"
           />
         </View>
       );

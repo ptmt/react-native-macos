@@ -72,24 +72,22 @@ RCT_EXPORT_MODULE()
     _paused = YES;
     _timers = [NSMutableDictionary new];
 
-//    for (NSString *name in @[UIApplicationWillResignActiveNotification,
-//                             UIApplicationDidEnterBackgroundNotification,
-//                             UIApplicationWillTerminateNotification]) {
-//
-//      [[NSNotificationCenter defaultCenter] addObserver:self
-//                                               selector:@selector(stopTimers)
-//                                                   name:name
-//                                                 object:nil];
-//    }
-//
-//    for (NSString *name in @[UIApplicationDidBecomeActiveNotification,
-//                             UIApplicationWillEnterForegroundNotification]) {
-//
-//      [[NSNotificationCenter defaultCenter] addObserver:self
-//                                               selector:@selector(startTimers)
-//                                                   name:name
-//                                                 object:nil];
-//    }
+    for (NSString *name in @[NSApplicationDidResignActiveNotification,
+                             NSApplicationWillTerminateNotification]) {
+
+      [[NSNotificationCenter defaultCenter] addObserver:self
+                                               selector:@selector(stopTimers)
+                                                   name:name
+                                                 object:nil];
+    }
+
+    for (NSString *name in @[NSApplicationDidBecomeActiveNotification]) {
+
+      [[NSNotificationCenter defaultCenter] addObserver:self
+                                               selector:@selector(startTimers)
+                                                   name:name
+                                                 object:nil];
+    }
   }
   return self;
 }
@@ -174,15 +172,7 @@ RCT_EXPORT_METHOD(createTimer:(nonnull NSNumber *)callbackID
     return;
   }
 
-  NSTimeInterval jsSchedulingOverhead = -jsSchedulingTime.timeIntervalSinceNow;
-  if (jsSchedulingOverhead < 0) {
-    RCTLogWarn(@"jsSchedulingOverhead (%ims) should be positive", (int)(jsSchedulingOverhead * 1000));
-
-    /**
-     * Probably debugging on device, set to 0 so we don't ignore the interval
-     */
-    jsSchedulingOverhead = 0;
-  }
+  NSTimeInterval jsSchedulingOverhead = MAX(-jsSchedulingTime.timeIntervalSinceNow, 0);
 
   NSTimeInterval targetTime = jsDuration - jsSchedulingOverhead;
   if (jsDuration < 0.018) { // Make sure short intervals run each frame

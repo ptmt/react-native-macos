@@ -37,6 +37,7 @@ var SizeFlexibilityUpdateTest = React.createClass({
   },
 
   rootViewDidChangeIntrinsicSize: function(intrinsicSize) {
+
     if (finalState) {
       // If a test reaches its final state, it is not expected to do anything more
       TestModule.markTestPassed(false);

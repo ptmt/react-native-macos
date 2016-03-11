@@ -100,4 +100,6 @@ RCT_EXTERN BOOL RCTImageHasAlpha(CGImageRef image);
 RCT_EXTERN NSImage *__nullable RCTGetPlaceholderImage(CGSize size,
                                                       NSColor *__nullable color);
 
+RCT_EXTERN CGImageRef RCTGetCGImage(NSImage *image);
+
 NS_ASSUME_NONNULL_END

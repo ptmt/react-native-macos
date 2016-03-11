@@ -24,6 +24,14 @@
                                 bridge:(RCTBridge *)bridge;
 
 /**
+ * Calls `constantsToExport` on the module and stores the result. Note that
+ * this will init the module if it has not already been created. This method
+ * can be called on any thread, but may block the main thread briefly if the
+ * module implements `constantsToExport`.
+ */
+- (void)gatherConstants;
+
+/**
  * Sets the bridge for the module instance. This is only needed when using the
  * `initWithModuleInstance:bridge:` constructor. Otherwise, the bridge will be set
  * automatically when the module is first accessed.
@@ -52,6 +60,16 @@
 @property (nonatomic, assign, readonly) BOOL hasInstance;
 
 /**
+ * Returns YES if module instance must be created on the main thread.
+ */
+@property (nonatomic, assign, readonly) BOOL requiresMainThreadSetup;
+
+/**
+ * Returns YES if module has constants to export.
+ */
+@property (nonatomic, assign, readonly) BOOL hasConstantsToExport;
+
+/**
  * Returns the current module instance. Note that this will init the instance
  * if it has not already been created. To check if the module instance exists
  * without causing it to be created, use `hasInstance` instead.
@@ -65,9 +83,8 @@
 @property (nonatomic, strong, readonly) dispatch_queue_t methodQueue;
 
 /**
- * Returns the module config. Note that this will init the module if it has
- * not already been created. This method can be called on any thread, but will
- * block the main thread briefly if the module implements `constantsToExport`.
+ * Returns the module config. Calls `gatherConstants` internally, so the same
+ * usage caveats apply.
  */
 @property (nonatomic, copy, readonly) NSArray *config;
 

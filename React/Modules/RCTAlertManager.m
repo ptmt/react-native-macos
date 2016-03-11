@@ -75,11 +75,11 @@ RCT_EXPORT_METHOD(alertWithArgs:(NSDictionary *)args
     RCTLogError(@"Must have at least one button.");
     return;
   }
-  
+
   if (RCTRunningInAppExtension()) {
     return;
   }
-  
+
   NSAlert *alertView = RCTAlertView(title, message, self, nil, nil);
   NSMutableArray *buttonKeys = [[NSMutableArray alloc] initWithCapacity:buttons.count];
 
@@ -101,30 +101,5 @@ RCT_EXPORT_METHOD(alertWithArgs:(NSDictionary *)args
 
   [alertView runModal];
 }
-
-#pragma mark - UIAlertViewDelegate
-//
-//- (void)alertView:(NSAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-//{
-//  NSUInteger index = [_alerts indexOfObject:alertView];
-//  RCTAssert(index != NSNotFound, @"Dismissed alert was not recognised");
-//
-//  RCTResponseSenderBlock callback = _alertCallbacks[index];
-//  NSArray *buttonKeys = _alertButtonKeys[index];
-//  NSArray *args;
-//
-//  if (alertView.alertViewStyle == UIAlertViewStylePlainTextInput) {
-//    args = @[buttonKeys[buttonIndex], [alertView textFieldAtIndex:0].text];
-//  } else {
-//    args = @[buttonKeys[buttonIndex]];
-//  }
-//
-//  callback(args);
-//
-//  [_alerts removeObjectAtIndex:index];
-//  [_alertCallbacks removeObjectAtIndex:index];
-//  [_alertButtonKeys removeObjectAtIndex:index];
-//}
-
 
 @end

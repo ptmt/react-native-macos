@@ -88,11 +88,6 @@ extern NSString *const RCTContentDidAppearNotification;
  * If not specified, it will default to using RCTJSCExecutor.
  * Changes will take effect next time the bundle is reloaded.
  */
-@property (nonatomic, strong) Class executorClass;
-
-/**
- * The size flexibility mode of the root view.
- */
 @property (nonatomic, assign) RCTRootViewSizeFlexibility sizeFlexibility;
 
 /**

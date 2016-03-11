@@ -14,6 +14,7 @@
 #import "RCTDefines.h"
 #import "RCTUtils.h"
 
+
 #if RCT_DEV
 
 static BOOL isEnabled = YES;
@@ -22,6 +23,7 @@ static BOOL isEnabled = YES;
 {
   NSWindow *_window;
   NSTextField *_label;
+  NSView *_back;
   NSDate *_showDate;
 }
 
@@ -55,14 +57,13 @@ RCT_EXPORT_MODULE()
   [self showWithURL:bridge.bundleURL];
 }
 
-- (void)showWithURL:(NSURL *)URL
+RCT_EXPORT_METHOD(showMessage:(NSString *)message color:(NSColor *)color backgroundColor:(NSColor *)backgroundColor)
 {
   if (!isEnabled) {
     return;
   }
 
   dispatch_async(dispatch_get_main_queue(), ^{
-
     _showDate = [NSDate date];
     if (!_window && !RCTRunningInTestEnvironment()) {
       CGFloat screenWidth = [NSScreen mainScreen].frame.size.width;
@@ -72,45 +73,44 @@ RCT_EXPORT_MODULE()
                  backing:NSBackingStoreBuffered
                  defer:NO];
 
-      [_window setOpaque:NO];
-      [_window setAlphaValue:0.5];
-      [_window setBackgroundColor:[NSColor blackColor]];
+      CGRect frame = _window.frame;
+      frame.origin.y = -10;
+      [_window setOpaque:YES];
+      [_window setAlphaValue:0.7];
+      [_window setBackgroundColor:backgroundColor];
       [_window setLevel:NSScreenSaverWindowLevel + 1];
 
-      _label = [[NSTextField alloc] initWithFrame:_window.frame];
-      _label.font = [NSFont systemFontOfSize:19.0];
+      _label = [[NSTextField alloc] initWithFrame:frame];
+      _label.font = [NSFont systemFontOfSize:22.0];
       _label.textColor = [NSColor blackColor];
+      _label.bordered = NO;
+      _label.editable = NO;
+      _label.selectable = NO;
       [_label setBackgroundColor:[NSColor clearColor]];
       [_label setAlignment:NSCenterTextAlignment];
-
-      [_window setContentView:_label];
+      _back = [[NSView alloc] initWithFrame:_window.frame];
+      [_back.layer setBackgroundColor:[backgroundColor CGColor]];
+      [_back addSubview:_label];
+      [_window setContentView:_back];
       [_window makeKeyAndOrderFront:nil];
     }
 
-    NSString *source;
-    if (URL.fileURL) {
-      _window.backgroundColor = [NSColor greenColor];
-      _label.textColor = [NSColor whiteColor];
-      source = @"pre-bundled file";
-    } else {
-      _window.backgroundColor = [NSColor blackColor];
-      _label.textColor = [NSColor grayColor];
-      source = [NSString stringWithFormat:@"%@:%@", URL.host, URL.port];
-    }
 
-    [_label setStringValue:[NSString stringWithFormat:@"Loading from %@...", source]];
-    //_window.hidden = NO;
+    [_label setStringValue:message];
+    //[_label setTextColor:color];
+    [_label setBackgroundColor:backgroundColor];
+    [_back.layer setBackgroundColor:[backgroundColor CGColor]];
+
   });
 }
 
-- (void)hide
+RCT_EXPORT_METHOD(hide)
 {
   if (!isEnabled) {
     return;
   }
 
   dispatch_async(dispatch_get_main_queue(), ^{
-
     const NSTimeInterval MIN_PRESENTED_TIME = 0.6;
     NSTimeInterval presentedTime = [[NSDate date] timeIntervalSinceDate:_showDate];
     NSTimeInterval delay = MAX(0, MIN_PRESENTED_TIME - presentedTime);
@@ -118,13 +118,33 @@ RCT_EXPORT_MODULE()
     CGRect windowFrame = _window.frame;
 
     [NSAnimationContext beginGrouping];
-    [[NSAnimationContext currentContext] setDuration:0.25];
+    [[NSAnimationContext currentContext] setDuration:0.35];
     [_window setFrame: CGRectOffset(windowFrame, 0, -windowFrame.size.height) display:YES animate:YES];
     [NSAnimationContext endGrouping];
     [_window setFrame: windowFrame display:NO animate:YES];
     _window = nil;
 
   });
+}
+
+- (void)showWithURL:(NSURL *)URL
+{
+  NSColor *color;
+  NSColor *backgroundColor;
+  NSString *source;
+  if (URL.fileURL) {
+    color = [NSColor grayColor];
+    backgroundColor = [NSColor blackColor];
+    source = @"pre-bundled file";
+  } else {
+    color = [NSColor whiteColor];
+    backgroundColor = [NSColor colorWithHue:1./3 saturation:1 brightness:.35 alpha:1];
+    source = [NSString stringWithFormat:@"%@:%@", URL.host, URL.port];
+  }
+
+  [self showMessage:[NSString stringWithFormat:@"Loading from %@...", source]
+              color:color
+    backgroundColor:backgroundColor];
 }
 
 @end

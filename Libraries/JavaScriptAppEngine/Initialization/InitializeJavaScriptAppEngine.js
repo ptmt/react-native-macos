@@ -96,13 +96,6 @@ function setUpErrorHandler() {
   ErrorUtils.setGlobalHandler(handleError);
 }
 
-function setUpFlowChecker() {
-  if (__DEV__) {
-    var checkFlowAtRuntime = require('checkFlowAtRuntime');
-    checkFlowAtRuntime();
-  }
-}
-
 /**
  * Sets up a set of window environment wrappers that ensure that the
  * BatchedBridge is flushed after each tick. In both the case of the
@@ -200,7 +193,7 @@ function setUpNumber() {
 function setUpDevTools() {
   // not when debugging in chrome
   if (__DEV__) { // TODO(9123099) Strip `__DEV__ &&`
-    if (!window.document && require('Platform').OS === 'ios') {
+    if (!window.document && (require('Platform').OS === 'ios' || require('Platform').OS === 'osx')) {
       var setupDevtools = require('setupDevtools');
       setupDevtools();
     }
@@ -219,7 +212,6 @@ setUpMapAndSet();
 setUpProduct();
 setUpWebSockets();
 setUpProfile();
-setUpFlowChecker();
 setUpNumber();
 setUpDevTools();
 

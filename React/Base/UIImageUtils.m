@@ -21,20 +21,18 @@ NSData *UIImagePNGRepresentation(NSImage *image)
   return pngData;
 }
 
-NSData *UIImageJPEGRepresentation(NSImage *image)
+NSData *UIImageJPEGRepresentation(NSImage *image, float quality)
 {
-  //  CFMutableDataRef data = CFDataCreateMutable(NULL, 0);
-  //  CGImageDestinationRef dest = CGImageDestinationCreateWithData(data, kUTTypePNG, 1, NULL);
-  //  CGImageDestinationAddImage(dest, image.CGImage, NULL);
-  //  CGImageDestinationFinalize(dest);
-  //  CFRelease(dest);
   CGImageSourceRef source = CGImageSourceCreateWithData((CFDataRef)[image TIFFRepresentation], NULL);
   CGImageRef maskRef =  CGImageSourceCreateImageAtIndex(source, 0, NULL);
 
   NSBitmapImageRep *newRep = [[NSBitmapImageRep alloc] initWithCGImage:maskRef];
 
-  NSData *jpgData = [newRep representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                                              [NSNumber numberWithBool:YES], NSImageProgressive, nil]];
+  NSNumber *compressionFactor = [NSNumber numberWithFloat:quality];
+  NSDictionary *imageProps = [NSDictionary dictionaryWithObject:compressionFactor
+                                                         forKey:NSImageCompressionFactor];
+
+  NSData *jpgData = [newRep representationUsingType:NSJPEGFileType properties:imageProps];
   return jpgData;
 }
 

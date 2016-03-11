@@ -20,7 +20,7 @@
 
 @property (nonatomic, assign) NSEdgeInsets capInsets;
 @property (nonatomic, strong) NSImage *defaultImage;
-@property (nonatomic, assign) NSImageResizingMode contentMode;
+@property (nonatomic, assign) NSImageScaling contentMode;
 @property (nonatomic, copy) NSString *src;
 @property (nonatomic, strong) RCTImageSource *source;
 

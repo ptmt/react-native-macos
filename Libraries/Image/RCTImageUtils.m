@@ -268,7 +268,7 @@ NSImage *__nullable RCTDecodeImageWithData(NSData *data,
   }
 
   // Return image
-  NSImage *image = [[NSImage alloc] initWithCGImage:imageRef size:sourceSize];
+  NSImage *image = [[NSImage alloc] initWithCGImage:imageRef size:targetSize];
   CGImageRelease(imageRef);
   return image;
 }
@@ -307,6 +307,13 @@ NSData *__nullable RCTGetImageData(CGImageRef image, float quality)
   return (__bridge_transfer NSData *)imageData;
 }
 
+CGImageRef RCTGetCGImage(NSImage *image)
+{
+//  CGImageSourceRef source = CGImageSourceCreateWithData((CFDataRef)[image TIFFRepresentation], NULL);
+//  return CGImageSourceCreateImageAtIndex(source, 0, NULL);
+  return [image CGImageForProposedRect:nil context:nil hints:nil];
+}
+
 NSImage *__nullable RCTTransformImage(NSImage *image,
                                       CGSize destSize,
                                       CGFloat destScale,
@@ -316,12 +323,13 @@ NSImage *__nullable RCTTransformImage(NSImage *image,
     return nil;
   }
 
-  UIGraphicsBeginImageContextWithOptions(destSize, NO, destScale);
+  BOOL opaque = !RCTImageHasAlpha(RCTGetCGImage(image));
+  UIGraphicsBeginImageContextWithOptions(destSize, opaque, destScale);
   CGContextRef currentContext = UIGraphicsGetCurrentContext();
   CGContextConcatCTM(currentContext, transform);
-  //[image drawAtPoint:CGPointZero];
+  [image drawInRect:NSMakeRect(0, 0, destSize.width, destSize.height)];
   NSImage *result = UIGraphicsGetImageFromCurrentImageContext();
-  UIGraphicsGetCurrentContext();
+  UIGraphicsEndImageContext();
   return result;
 }
 

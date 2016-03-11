@@ -189,6 +189,62 @@ describe('resolveAssetSource', () => {
     });
   });
 
+  describe('bundle was loaded from file on Android', () => {
+    beforeEach(() => {
+      NativeModules.SourceCode.scriptURL =
+        'file:///sdcard/Path/To/Simulator/main.bundle';
+      Platform.OS = 'android';
+    });
+
+    it('uses pre-packed image', () => {
+      expectResolvesAsset({
+        __packager_asset: true,
+        fileSystemLocation: '/root/app/module/a',
+        httpServerLocation: '/assets/AwesomeModule/Subdir',
+        width: 100,
+        height: 200,
+        scales: [1],
+        hash: '5b6f00f',
+        name: '!@Logo#1_€',
+        type: 'png',
+      }, {
+        __packager_asset: true,
+        width: 100,
+        height: 200,
+        uri: 'file:///sdcard/Path/To/Simulator/drawable-mdpi/awesomemodule_subdir_logo1_.png',
+        scale: 1,
+      });
+    });
+  });
+
+  describe('bundle was loaded from raw file on Android', () => {
+    beforeEach(() => {
+      NativeModules.SourceCode.scriptURL =
+        '/sdcard/Path/To/Simulator/main.bundle';
+      Platform.OS = 'android';
+    });
+
+    it('uses sideloaded image', () => {
+      expectResolvesAsset({
+        __packager_asset: true,
+        fileSystemLocation: '/root/app/module/a',
+        httpServerLocation: '/assets/AwesomeModule/Subdir',
+        width: 100,
+        height: 200,
+        scales: [1],
+        hash: '5b6f00f',
+        name: '!@Logo#1_€',
+        type: 'png',
+      }, {
+        __packager_asset: true,
+        width: 100,
+        height: 200,
+        uri: 'file:///sdcard/Path/To/Simulator/drawable-mdpi/awesomemodule_subdir_logo1_.png',
+        scale: 1,
+      });
+    });
+  });
+
 });
 
 describe('resolveAssetSource.pickScale', () => {

@@ -54,12 +54,10 @@ RCT_EXPORT_MODULE()
 
 - (dispatch_queue_t)methodQueue
 {
+  RCTAssert(_bridge, @"Bridge not set");
+  RCTAssert(_bridge.uiManager || !_bridge.valid, @"UIManager not initialized");
+  RCTAssert(_bridge.uiManager.methodQueue || !_bridge.valid, @"UIManager.methodQueue not initialized");
   return _bridge.uiManager.methodQueue;
-}
-
-- (NSView *)viewWithProps:(__unused NSDictionary *)props
-{
-  return [self view];
 }
 
 - (NSView *)view
@@ -100,6 +98,11 @@ RCT_EXPORT_MODULE()
 - (NSArray<NSString *> *)customDirectEventTypes
 {
   return @[];
+}
+
+- (NSDictionary<NSString *, id> *)constantsToExport
+{
+  return @{@"forceTouchAvailable": @(RCTForceTouchAvailable())};
 }
 
 - (RCTViewManagerUIBlock)uiBlockToAmendWithShadowView:(__unused RCTShadowView *)shadowView

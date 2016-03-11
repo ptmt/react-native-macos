@@ -10,6 +10,7 @@
 #import <AppKit/AppKit.h>
 
 #import "RCTComponent.h"
+#import "RCTImageSource.h"
 
 @interface RCTButton : NSButton
 

@@ -45,22 +45,6 @@ RCT_EXTERN NSString *const RCTUIManagerRootViewKey;
 @interface RCTUIManager : NSObject <RCTBridgeModule, RCTInvalidating>
 
 /**
-<<<<<<< HEAD
- * The UIIManager has the concept of a designated "main scroll view", which is
- * useful for apps built around a central scrolling content area (e.g. a
- * timeline).
- */
-@property (nonatomic, weak) id<RCTScrollableProtocol> mainScrollView;
-
-/**
- * Allows native environment code to respond to "the main scroll view" events.
- * see `RCTUIManager`'s `setMainScrollViewTag`.
- */
-//@property (nonatomic, readwrite, weak) id<UIScrollViewDelegate> nativeMainScrollDelegate;
-
-/**
-=======
->>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
  * Register a root view with the RCTUIManager.
  */
 - (void)registerRootView:(NSView *)rootView;
@@ -75,6 +59,12 @@ RCT_EXTERN NSString *const RCTUIManagerRootViewKey;
  * or some other layout event outside of the React-managed view hierarchy.
  */
 - (void)setFrame:(CGRect)frame forView:(NSView *)view;
+
+/**
+ * Set the natural size of a view, which is used when no explicit size is set.
+ * Use UIViewNoIntrinsicMetric to ignore a dimension.
+ */
+- (void)setIntrinsicContentSize:(CGSize)size forView:(NSView *)view;
 
 /**
  * Update the background color of a root view. This is usually triggered by

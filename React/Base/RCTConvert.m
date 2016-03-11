@@ -105,7 +105,7 @@ RCT_CUSTOM_CONVERTER(NSData *, NSData, [json dataUsingEncoding:NSUTF8StringEncod
       path = path.stringByExpandingTildeInPath;
     } else if (!path.absolutePath) {
       // Assume it's a resource path
-      path = [[NSBundle bundleForClass:[self class]].resourcePath stringByAppendingPathComponent:path];
+      path = [[NSBundle mainBundle].resourcePath stringByAppendingPathComponent:path];
     }
     if (!(URL = [NSURL fileURLWithPath:path])) {
       RCTLogConvertError(json, @"a valid URL");
@@ -120,8 +120,31 @@ RCT_CUSTOM_CONVERTER(NSData *, NSData, [json dataUsingEncoding:NSUTF8StringEncod
 
 + (NSURLRequest *)NSURLRequest:(id)json
 {
-  NSURL *URL = [self NSURL:json];
-  return URL ? [NSURLRequest requestWithURL:URL] : nil;
+  if ([json isKindOfClass:[NSString class]]) {
+    NSURL *URL = [self NSURL:json];
+    return URL ? [NSURLRequest requestWithURL:URL] : nil;
+  }
+  if ([json isKindOfClass:[NSDictionary class]]) {
+    NSURL *URL = [self NSURL:json[@"uri"] ?: json[@"url"]];
+    if (!URL) {
+      return nil;
+    }
+    NSData *body = [self NSData:json[@"body"]];
+    NSString *method = [self NSString:json[@"method"]].uppercaseString ?: @"GET";
+    NSDictionary *headers = [self NSDictionary:json[@"headers"]];
+    if ([method isEqualToString:@"GET"] && headers == nil && body == nil) {
+      return [NSURLRequest requestWithURL:URL];
+    }
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+    request.HTTPBody = body;
+    request.HTTPMethod = method;
+    request.allHTTPHeaderFields = headers;
+    return [request copy];
+  }
+  if (json) {
+    RCTLogConvertError(json, @"a valid URLRequest");
+  }
+  return nil;
 }
 
 + (RCTFileURL *)RCTFileURL:(id)json
@@ -385,77 +408,23 @@ RCT_CGSTRUCT_CONVERTER(CGAffineTransform, (@[
   return [self NSColor:json].CGColor;
 }
 
-+ (NSImage *)NSImage:(id)json
+#if !defined(__IPHONE_8_2) || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_8_2
 
-{
-  // TODO: we might as well cache the result of these checks (and possibly the
-  // image itself) so as to reduce overhead on subsequent checks of the same input
+// These constants are defined in iPhone SDK 8.2, but the app cannot run on
+// iOS < 8.2 unless we redefine them here. If you target iOS 8.2 or above
+// as a base target, the standard constants will be used instead.
 
-  if (!json) {
-    return nil;
-  }
+#define UIFontWeightUltraLight -0.8
+#define UIFontWeightThin -0.6
+#define UIFontWeightLight -0.4
+#define UIFontWeightRegular 0
+#define UIFontWeightMedium 0.23
+#define UIFontWeightSemibold 0.3
+#define UIFontWeightBold 0.4
+#define UIFontWeightHeavy 0.56
+#define UIFontWeightBlack 0.62
 
-  NSImage *image;
-  NSString *path;
-  CGFloat scale = 0.0;
-  BOOL isPackagerAsset = NO;
-  if ([json isKindOfClass:[NSString class]]) {
-    path = json;
-  } else if ([json isKindOfClass:[NSDictionary class]]) {
-    if (!(path = [self NSString:json[@"uri"]])) {
-      return nil;
-    }
-    scale = [self CGFloat:json[@"scale"]];
-    isPackagerAsset = [self BOOL:json[@"__packager_asset"]];
-  }
-
-  NSURL *URL = [self NSURL:path];
-  NSString *scheme = URL.scheme.lowercaseString;
-  if (path && [scheme isEqualToString:@"file"]) {
-    if (RCT_DEBUG || [NSThread currentThread] == [NSThread mainThread]) {
-      if ([URL.path hasPrefix:[NSBundle mainBundle].resourcePath]) {
-        // Image may reside inside a .car file, in which case we have no choice
-        // but to use +[NSImage imageNamed] - but this method isn't thread safe
-        static NSMutableDictionary *XCAssetMap = nil;
-        if (!XCAssetMap) {
-          XCAssetMap = [NSMutableDictionary new];
-        }
-        NSNumber *isAsset = XCAssetMap[path];
-        if (!isAsset || isAsset.boolValue) {
-          image = [NSImage imageNamed:path];
-          if (RCT_DEBUG && image) {
-            // If we succeeded in loading the image via imageNamed, and the
-            // method wasn't called on the main thread, that's a coding error
-            RCTAssertMainThread();
-          }
-        }
-        if (!isAsset) {
-          // Avoid calling `+imageNamed` again in future if it's not needed.
-          XCAssetMap[path] = @(image != nil);
-        }
-      }
-    }
-
-    if (!image) {
-      // Attempt to load from the file system
-      NSString *filePath = URL.path;
-      if (filePath.pathExtension.length == 0) {
-        filePath = [filePath stringByAppendingPathExtension:@"png"];
-      }
-      image = [[NSImage alloc] initWithContentsOfFile:filePath];
-    }
-  } else if ([scheme isEqualToString:@"data"]) {
-    image = [[NSImage alloc] initWithData:[NSData dataWithContentsOfURL:URL]];
-  } else {
-    RCTLogConvertError(json, @"an image. Only local files or data URIs are supported");
-  }
-
-//  if (scale > 0) {
-//    image = [[NSImage alloc] imageWithCGImage:[image CGImageForProposedRect:nil context:nil hints:nil]
-//                                scale:scale];
-//  }
-  return image;
-}
+#endif
 
 typedef CGFloat RCTFontWeight;
 RCT_ENUM_CONVERTER(RCTFontWeight, (@{
@@ -836,3 +805,77 @@ RCT_ENUM_CONVERTER(RCTAnimationType, (@{
 
 @end
 
+@implementation RCTConvert (Deprecated)
+
+/* This method is only used when loading images synchronously, e.g. for tabbar icons */
++ (NSImage *)NSImage:(id)json
+{
+  if (!json) {
+    return nil;
+  }
+
+  RCTImageSource *imageSource = [self RCTImageSource:json];
+  if (!imageSource) {
+    return nil;
+  }
+
+  __block NSImage *image;
+  if (![NSThread isMainThread]) {
+    // It seems that none of the UIImage loading methods can be guaranteed
+    // thread safe, so we'll pick the lesser of two evils here and block rather
+    // than run the risk of crashing
+    RCTLogWarn(@"Calling [RCTConvert NSImage:] on a background thread is not recommended");
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      image = [self NSImage:json];
+    });
+    return image;
+  }
+
+  NSURL *URL = imageSource.imageURL;
+  NSString *scheme = URL.scheme.lowercaseString;
+  if ([scheme isEqualToString:@"file"]) {
+    NSString *assetName = RCTBundlePathForURL(URL);
+    image = [NSImage imageNamed:assetName];
+    if (!image) {
+      // Attempt to load from the file system
+      NSString *filePath = URL.path;
+      if (filePath.pathExtension.length == 0) {
+        filePath = [filePath stringByAppendingPathExtension:@"png"];
+      }
+      image = [[NSImage alloc] initWithContentsOfFile:filePath];
+    }
+  } else if ([scheme isEqualToString:@"data"]) {
+    image = [[NSImage alloc] initWithData:[NSData dataWithContentsOfURL:URL]];
+  } else if ([scheme isEqualToString:@"http"] && imageSource.packagerAsset) {
+    image = [[NSImage alloc] initWithData:[NSData dataWithContentsOfURL:URL]];
+  } else {
+    RCTLogConvertError(json, @"an image. Only local files or data URIs are supported");
+  }
+
+  CGFloat scale = imageSource.scale;
+  CGImageRef imageRef;
+  if (!scale && imageSource.size.width) {
+    // If no scale provided, set scale to image width / source width
+    imageRef = [image CGImageForProposedRect:nil context:nil hints:nil];
+    scale = CGImageGetWidth(imageRef) / imageSource.size.width;
+  }
+
+  if (scale) {
+    imageRef = [image CGImageForProposedRect:nil context:nil hints:nil];
+    image = [[NSImage alloc] initWithCGImage:imageRef size:NSMakeSize(image.size.width/scale, image.size.height/scale)];
+  }
+
+  if (!CGSizeEqualToSize(imageSource.size, CGSizeZero) &&
+      !CGSizeEqualToSize(imageSource.size, image.size)) {
+    RCTLogError(@"Image source size %f x %f does not match loaded image size %f x %f", imageSource.size.width, imageSource.size.height, image.size.width, image.size.height);
+  }
+
+  return image;
+}
+
++ (CGImageRef)CGImage:(id)json
+{
+  return [[self NSImage:json] CGImageForProposedRect:nil context:nil hints:nil];
+}
+
+@end

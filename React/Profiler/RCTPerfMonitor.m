@@ -333,11 +333,6 @@ RCT_EXPORT_MODULE()
 
   [self stopLogs];
 
-//  [_uiDisplayLink invalidate];
-//  [_jsDisplayLink invalidate];
-
-//  _uiDisplayLink = nil;
-//  _jsDisplayLink = nil;
 }
 
 - (void)redirectLogs
@@ -454,17 +449,6 @@ RCT_EXPORT_MODULE()
       }
     });
 }
-
-//- (void)gesture:(UIPanGestureRecognizer *)gestureRecognizer
-//{
-//  CGPoint translation = [gestureRecognizer translationInView:self.container.superview];
-//  self.container.center = CGPointMake(
-//    self.container.center.x + translation.x,
-//    self.container.center.y + translation.y
-//  );
-//  [gestureRecognizer setTranslation:CGPointMake(0, 0)
-//                             inView:self.container.superview];
-//}
 
 - (void)tap
 {

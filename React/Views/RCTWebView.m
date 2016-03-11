@@ -13,6 +13,7 @@
 #import <WebKit/WebKit.h>
 
 #import "RCTAutoInsetsProtocol.h"
+#import "RCTConvert.h"
 #import "RCTEventDispatcher.h"
 #import "RCTLog.h"
 #import "RCTUtils.h"
@@ -21,7 +22,7 @@
 
 NSString *const RCTJSNavigationScheme = @"react-js-navigation";
 
-@interface RCTWebView () <WebResourceLoadDelegate, RCTAutoInsetsProtocol>
+@interface RCTWebView () <WebFrameLoadDelegate, RCTAutoInsetsProtocol>
 
 @property (nonatomic, copy) RCTDirectEventBlock onLoadingStart;
 @property (nonatomic, copy) RCTDirectEventBlock onLoadingFinish;
@@ -36,6 +37,11 @@ NSString *const RCTJSNavigationScheme = @"react-js-navigation";
   NSString *_injectedJavaScript;
 }
 
+- (void)dealloc
+{
+  _webView.frameLoadDelegate = nil;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if ((self = [super initWithFrame:frame])) {
@@ -46,7 +52,7 @@ NSString *const RCTJSNavigationScheme = @"react-js-navigation";
     _automaticallyAdjustContentInsets = YES;
     _contentInset = NSEdgeInsetsZero;
     _webView = [[WebView alloc] initWithFrame:self.bounds];
-    [_webView setResourceLoadDelegate:self];//_webView.delegate = self;
+    [_webView setFrameLoadDelegate:self];
     [self addSubview:_webView];
   }
   return self;
@@ -69,32 +75,38 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   [_webView reload:self];
 }
 
-//- (NSURL *)URL
-//{
-//  return _webView.re.URL;
-//}
-//
-//- (void)setURL:(NSURL *)URL
-//{
-//  // Because of the way React works, as pages redirect, we actually end up
-//  // passing the redirect urls back here, so we ignore them if trying to load
-//  // the same url. We'll expose a call to 'reload' to allow a user to load
-//  // the existing page.
-//  if ([URL isEqual:_webView.request.URL]) {
-//    return;
-//  }
-//  if (!URL) {
-//    // Clear the webview
-//    [_webView loadHTMLString:@"" baseURL:nil];
-//    return;
-//  }
-//  [_webView loadRequest:[NSURLRequest requestWithURL:URL]];
-//}
-//
-//- (void)setHTML:(NSString *)HTML
-//{
-//  [_webView loadHTMLString:HTML baseURL:nil];
-//}
+- (void)setSource:(NSDictionary *)source
+{
+  if (![_source isEqualToDictionary:source]) {
+    _source = [source copy];
+
+    // Check for a static html source first
+    NSString *html = [RCTConvert NSString:source[@"html"]];
+    if (html) {
+      NSURL *baseURL = [RCTConvert NSURL:source[@"baseUrl"]];
+      if (!baseURL) {
+        baseURL = [NSURL URLWithString:@"about:blank"];
+      }
+      [_webView.mainFrame loadHTMLString:html baseURL:baseURL];
+      return;
+    }
+
+    NSURLRequest *request = [RCTConvert NSURLRequest:source];
+    // Because of the way React works, as pages redirect, we actually end up
+    // passing the redirect urls back here, so we ignore them if trying to load
+    // the same url. We'll expose a call to 'reload' to allow a user to load
+    // the existing page.
+    if ([request.URL isEqual:_webView.mainFrameURL]) {
+      return;
+    }
+    if (!request.URL) {
+      // Clear the webview
+      [_webView.mainFrame loadHTMLString:@"" baseURL:nil];
+      return;
+    }
+    [_webView.mainFrame loadRequest:request];
+  }
+}
 
 - (void)layout
 {
@@ -110,6 +122,16 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 //                      updateOffset:NO];
 }
 
+- (void)setScalesPageToFit:(BOOL)scalesPageToFit
+{
+  NSLog(@"setScalesPageToFit is not implemented");
+}
+
+- (BOOL)scalesPageToFit
+{
+  return YES;
+}
+
 - (void)setBackgroundColor:(NSColor *)backgroundColor
 {
   CGFloat alpha = CGColorGetAlpha(backgroundColor.CGColor);
@@ -117,10 +139,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   [[_webView layer] setBackgroundColor:[backgroundColor CGColor]];
 }
 
-//- (NSColor *)backgroundColor
-//{
-//  return _webView.layer.backgroundColor
-//}
+- (NSColor *)backgroundColor
+{
+  return _webView.layer.backgroundColor;
+}
 
 - (NSMutableDictionary<NSString *, id> *)baseEvent
 {
@@ -144,44 +166,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 #pragma mark - UIWebViewDelegate methods
 
-/*
-- (BOOL)webView:(__unused UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request
- navigationType:(UIWebViewNavigationType)navigationType
-{
-  BOOL isJSNavigation = [request.URL.scheme isEqualToString:RCTJSNavigationScheme];
-
-  // skip this for the JS Navigation handler
-  if (!isJSNavigation && _onShouldStartLoadWithRequest) {
-    NSMutableDictionary<NSString *, id> *event = [self baseEvent];
-    [event addEntriesFromDictionary: @{
-      @"url": (request.URL).absoluteString,
-      @"navigationType": @(navigationType)
-    }];
-    if (![self.delegate webView:self
-      shouldStartLoadForRequest:event
-                   withCallback:_onShouldStartLoadWithRequest]) {
-      return NO;
-    }
-  }
-
-  if (_onLoadingStart) {
-    // We have this check to filter out iframe requests and whatnot
-    BOOL isTopFrame = [request.URL isEqual:request.mainDocumentURL];
-    if (isTopFrame) {
-      NSMutableDictionary<NSString *, id> *event = [self baseEvent];
-      [event addEntriesFromDictionary: @{
-        @"url": (request.URL).absoluteString,
-        @"navigationType": @(navigationType)
-      }];
-      _onLoadingStart(event);
-    }
-  }
-
-  // JS Navigation handler
-  return !isJSNavigation;
-}
-
-- (void)webView:(__unused UIWebView *)webView didFailLoadWithError:(NSError *)error
+- (void)webView:(__unused WebView *)sender didFailLoadWithError:(NSError *)error
+       forFrame:(__unused WebFrame *)frame
 {
   if (_onLoadingError) {
     if ([error.domain isEqualToString:NSURLErrorDomain] && error.code == NSURLErrorCancelled) {
@@ -202,10 +188,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
+- (void)webView:(__unused WebView *)sender didFinishLoadForFrame:(WebFrame *)frame
 {
   if (_injectedJavaScript != nil) {
-    NSString *jsEvaluationValue = [webView stringByEvaluatingJavaScriptFromString:_injectedJavaScript];
+    NSString *jsEvaluationValue = [frame.webView stringByEvaluatingJavaScriptFromString:_injectedJavaScript];
 
     NSMutableDictionary<NSString *, id> *event = [self baseEvent];
     event[@"jsEvaluationValue"] = jsEvaluationValue;
@@ -213,10 +199,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     _onLoadingFinish(event);
   }
   // we only need the final 'finishLoad' call so only fire the event when we're actually done loading.
-  else if (_onLoadingFinish && !webView.loading && ![webView.request.URL.absoluteString isEqualToString:@"about:blank"]) {
+
+  else if (_onLoadingFinish && ![frame.webView.mainFrameURL isEqualToString:@"about:blank"]) {
     _onLoadingFinish([self baseEvent]);
   }
 }
- */
 
 @end

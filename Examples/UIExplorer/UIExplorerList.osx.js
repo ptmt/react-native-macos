@@ -47,7 +47,7 @@ var COMPONENTS = [
   require('./TouchableExample'),
   require('./TransparentHitTestExample'),
   require('./ViewExample'),
-//  require('./WebViewExample'),
+  require('./WebViewExample'),
 ];
 
 var APIS = [

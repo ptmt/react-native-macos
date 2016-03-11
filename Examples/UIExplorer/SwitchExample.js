@@ -125,10 +125,7 @@ var EventSwitchExample = React.createClass({
   }
 });
 
-exports.title = '<Switch>';
-exports.displayName = 'SwitchExample';
-exports.description = 'Native boolean input';
-exports.examples = [
+var examples = [
   {
     title: 'Switches can be set to true or false',
     render(): ReactElement { return <BasicSwitchExample />; }
@@ -148,7 +145,7 @@ exports.examples = [
 ];
 
 if (React.Platform.OS === 'ios') {
-  exports.examples.push({
+  examples.push({
     title: 'Custom colors can be provided',
     render(): ReactElement { return <ColorSwitchExample />; }
   });
@@ -157,3 +154,4 @@ if (React.Platform.OS === 'ios') {
 exports.title = '<Switch>';
 exports.displayName = 'SwitchExample';
 exports.description = 'Native boolean input';
+exports.examples = examples;

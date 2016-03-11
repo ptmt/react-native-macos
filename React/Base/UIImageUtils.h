@@ -27,7 +27,7 @@ typedef NS_ENUM(NSInteger, UIViewContentMode) {
 
 
 NSData *UIImagePNGRepresentation(NSImage *image);
-NSData *UIImageJPEGRepresentation(NSImage *image);
+NSData *UIImageJPEGRepresentation(NSImage *image, float quality);
 
 void UIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale);
 

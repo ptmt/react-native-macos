@@ -19,7 +19,9 @@ var StyleSheet = require('StyleSheet');
 var Subscribable = require('Subscribable');
 var View = require('View');
 
-var invariant = require('invariant');
+var invariant = require('fbjs/lib/invariant');
+
+var YellowBox = __DEV__ ? require('YellowBox') : null;
 
 var YellowBox = __DEV__ ? require('YellowBox') : null;
 
@@ -107,7 +109,7 @@ var AppContainer = React.createClass({
 });
 
 function renderApplication<D, P, S>(
-  RootComponent: ReactClass<D, P, S>,
+  RootComponent: ReactClass<P>,
   initialProps: P,
   rootTag: any
 ) {

@@ -96,7 +96,7 @@ RCT_EXPORT_VIEW_PROPERTY(mostRecentEventCount, NSInteger)
 
 - (NSDictionary<NSString *, id> *)constantsToExport
 {
-  RCTTextField *view = [RCTTextField new];
+  RCTTextField *view = [[RCTTextField alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
   return @{
      @"ComponentHeight": @(view.intrinsicContentSize.height),
      @"ComponentWidth": @(view.intrinsicContentSize.width)
