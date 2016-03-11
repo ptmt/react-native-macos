@@ -148,15 +148,15 @@ exports.examples = [
   },
   {
     title: 'Plain Static Image',
-    description: 'Static assets should be required by prefixing with `image!` ' +
-      'and are located in the app bundle.',
+    description: 'Static assets should be placed in the source code tree, and ' +
+    'required in the same way as JavaScript modules.',
     render: function() {
       return (
         <View style={styles.horizontal}>
-          <Image source={require('image!uie_thumb_normal')} style={styles.icon} />
-          <Image source={require('image!uie_thumb_selected')} style={styles.icon} />
-          <Image source={require('image!uie_comment_normal')} style={styles.icon} />
-          <Image source={require('image!uie_comment_highlighted')} style={styles.icon} />
+          <Image source={require('./uie_thumb_normal.png')} style={styles.icon} />
+          <Image source={require('./uie_thumb_selected.png')} style={styles.icon} />
+          <Image source={require('./uie_comment_normal.png')} style={styles.icon} />
+          <Image source={require('./uie_comment_highlighted.png')} style={styles.icon} />
         </View>
       );
     },
@@ -186,6 +186,20 @@ exports.examples = [
       );
     },
     platform: 'osx',
+  },
+  {
+    title: 'defaultSource',
+    description: 'Show a placeholder image when a network image is loading',
+    render: function() {
+      return (
+        <Image
+          defaultSource={require('./bunny.png')}
+          source={{uri: 'http://facebook.github.io/origami/public/images/birds.jpg'}}
+          style={styles.base}
+        />
+      );
+    },
+    platform: 'ios',
   },
   {
     title: 'Border Color',
@@ -312,42 +326,96 @@ exports.examples = [
     },
   },
   {
+    title: 'Tint Color',
+    description: 'The `tintColor` style prop changes all the non-alpha ' +
+      'pixels to the tint color.',
+    render: function() {
+      return (
+        <View>
+          <View style={styles.horizontal}>
+            <Image
+              source={require('./uie_thumb_normal.png')}
+              style={[styles.icon, {borderRadius: 5, tintColor: '#5ac8fa' }]}
+            />
+            <Image
+              source={require('./uie_thumb_normal.png')}
+              style={[styles.icon, styles.leftMargin, {borderRadius: 5, tintColor: '#4cd964' }]}
+            />
+            <Image
+              source={require('./uie_thumb_normal.png')}
+              style={[styles.icon, styles.leftMargin, {borderRadius: 5, tintColor: '#ff2d55' }]}
+            />
+            <Image
+              source={require('./uie_thumb_normal.png')}
+              style={[styles.icon, styles.leftMargin, {borderRadius: 5, tintColor: '#8e8e93' }]}
+            />
+          </View>
+          <Text style={styles.sectionText}>
+            It also works with downloaded images:
+          </Text>
+          <View style={styles.horizontal}>
+            <Image
+              source={smallImage}
+              style={[styles.base, {borderRadius: 5, tintColor: '#5ac8fa' }]}
+            />
+            <Image
+              source={smallImage}
+              style={[styles.base, styles.leftMargin, {borderRadius: 5, tintColor: '#4cd964' }]}
+            />
+            <Image
+              source={smallImage}
+              style={[styles.base, styles.leftMargin, {borderRadius: 5, tintColor: '#ff2d55' }]}
+            />
+            <Image
+              source={smallImage}
+              style={[styles.base, styles.leftMargin, {borderRadius: 5, tintColor: '#8e8e93' }]}
+            />
+          </View>
+        </View>
+      );
+    },
+  },
+  {
     title: 'Resize Mode',
     description: 'The `resizeMode` style prop controls how the image is ' +
       'rendered within the frame.',
     render: function() {
       return (
-        <View style={styles.horizontal}>
-          <View>
-            <Text style={[styles.resizeModeText]}>
-              Contain
-            </Text>
-            <Image
-              style={styles.resizeMode}
-              resizeMode={Image.resizeMode.contain}
-              source={fullImage}
-            />
-          </View>
-          <View style={styles.leftMargin}>
-            <Text style={[styles.resizeModeText]}>
-              Cover
-            </Text>
-            <Image
-              style={styles.resizeMode}
-              resizeMode={Image.resizeMode.cover}
-              source={fullImage}
-            />
-          </View>
-          <View style={styles.leftMargin}>
-            <Text style={[styles.resizeModeText]}>
-              Stretch
-            </Text>
-            <Image
-              style={styles.resizeMode}
-              resizeMode={Image.resizeMode.stretch}
-              source={fullImage}
-            />
-          </View>
+        <View>
+          {[smallImage, fullImage].map((image, index) => {
+            return <View style={styles.horizontal} key={index}>
+              <View>
+                <Text style={[styles.resizeModeText]}>
+                  Contain
+                </Text>
+                <Image
+                  style={styles.resizeMode}
+                  resizeMode={Image.resizeMode.contain}
+                  source={image}
+                />
+              </View>
+              <View style={styles.leftMargin}>
+                <Text style={[styles.resizeModeText]}>
+                  Cover
+                </Text>
+                <Image
+                  style={styles.resizeMode}
+                  resizeMode={Image.resizeMode.cover}
+                  source={image}
+                />
+              </View>
+              <View style={styles.leftMargin}>
+                <Text style={[styles.resizeModeText]}>
+                  Stretch
+                </Text>
+                <Image
+                  style={styles.resizeMode}
+                  resizeMode={Image.resizeMode.stretch}
+                  source={image}
+                />
+            </View>
+          </View>;
+        })}
         </View>
       );
     },
@@ -382,6 +450,13 @@ exports.examples = [
       return <ImageSizeExample source={fullImage} />;
     },
     platform: 'osx',
+  },
+  {
+    title: 'Image Size',
+    render: function() {
+      return <ImageSizeExample source={fullImage} />;
+    },
+    platform: 'ios',
   },
 ];
 

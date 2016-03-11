@@ -153,7 +153,7 @@ class UIExplorerListBase extends React.Component {
     this.props.onPressRow && this.props.onPressRow(example);
   }
 
-  static makeRenderable(example: any): ReactClass<any, any, any> {
+  static makeRenderable(example: any): ReactClass<any> {
     return example.examples ?
       createExamplePage(null, example) :
       example;
@@ -199,7 +199,7 @@ var styles = StyleSheet.create({
   searchRow: {
     backgroundColor: '#eee',
     padding: 5,
-  
+
   },
   searchTextInput: {
     fontWeight: '200',

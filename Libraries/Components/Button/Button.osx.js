@@ -85,7 +85,9 @@ const Button = React.createClass({
   render: function() {
     const { props } = this;
     return (
-      <RCTButton {...props} image={resolveAssetSource(props.image)} style={[styles.defaultButton, props.style]}/>
+      <RCTButton {...props}
+        image={props.image}
+        style={[styles.defaultButton, props.style]}/>
     );
   }
 });

@@ -10,7 +10,7 @@
  */
 'use strict';
 
-//require('regenerator/runtime');
+require('regenerator/runtime');
 
 var React = require('react-native-desktop');
 

@@ -15,7 +15,8 @@
 #import "RCTBridge.h"
 #import "RCTBridge+Private.h"
 #import "RCTDefines.h"
-//#import "RCTRedBox.h"
+#import "RCTRedBox.h"
+#import "RCTUtils.h"
 
 static NSString *const RCTLogFunctionStack = @"RCTLogFunctionStack";
 
@@ -201,12 +202,11 @@ void _RCTLogNativeInternal(RCTLogLevel level, const char *fileName, int lineNumb
 
 #if RCT_DEBUG
 
-    // Log to red box
-    if (level >= RCTLOG_REDBOX_LEVEL) {
+    // Log to red box in debug mode.
+    if ([NSApplication sharedApplication] && level >= RCTLOG_REDBOX_LEVEL) {
       NSArray<NSString *> *stackSymbols = [NSThread callStackSymbols];
       NSMutableArray<NSDictionary *> *stack =
         [NSMutableArray arrayWithCapacity:(stackSymbols.count - 1)];
-
       [stackSymbols enumerateObjectsUsingBlock:^(NSString *frameSymbols, NSUInteger idx, __unused BOOL *stop) {
         if (idx > 0) { // don't include the current frame
           NSString *address = [[frameSymbols componentsSeparatedByString:@"0x"][1] componentsSeparatedByString:@" "][0];
@@ -227,8 +227,10 @@ void _RCTLogNativeInternal(RCTLogLevel level, const char *fileName, int lineNumb
       });
     }
 
-    // Log to JS executor
-    [[RCTBridge currentBridge] logMessage:message level:level ? @(RCTLogLevels[level]) : @"info"];
+    if (!RCTRunningInTestEnvironment()) {
+      // Log to JS executor
+      [[RCTBridge currentBridge] logMessage:message level:level ? @(RCTLogLevels[level]) : @"info"];
+    }
 
 #endif
 

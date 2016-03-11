@@ -82,9 +82,9 @@ exports.examples = [
     description: 'four different styles (circular, disclosure, roundedDisclosure, helpButton)',
     render() {
       return <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-        <Button bezelStyle={'circular'} image={require('image!uie_thumb_normal')} style={styles.icon} />
-        <Button bezelStyle={'disclosure'} image={require('image!uie_thumb_normal')} style={styles.icon} />
-        <Button bezelStyle={'roundedDisclosure'} image={require('image!uie_thumb_normal')} style={styles.icon} />
+        <Button bezelStyle={'circular'} image={require('./uie_thumb_normal.png')} style={styles.icon} />
+        <Button bezelStyle={'disclosure'} image={require('./uie_thumb_normal.png')} style={styles.icon} />
+        <Button bezelStyle={'roundedDisclosure'} image={require('./uie_thumb_normal.png')} style={styles.icon} />
         <Button bezelStyle={'helpButton'} title={''} style={styles.icon} />
       </View>;
     }

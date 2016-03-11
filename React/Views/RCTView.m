@@ -17,21 +17,6 @@
 #import "NSView+React.h"
 #import "UIImageUtils.h"
 
-static NSView *RCTViewHitTest(NSView *view, CGPoint point)
-{
-  for (NSView *subview in [view.subviews reverseObjectEnumerator]) {
-    if (!subview.isHidden && subview.layer.opacity > 0) { //subview.alpha > 0
-      CGPoint convertedPoint = [subview convertPoint:point fromView:nil];
-
-      NSView *subviewHitTestView = [subview hitTest:convertedPoint];
-      if (subviewHitTestView != nil) {
-        return subviewHitTestView;
-      }
-    }
-  }
-  return nil;
-}
-
 @implementation NSView (RCTViewUnmounting)
 
 - (void)react_remountAllSubviews
@@ -127,7 +112,6 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
     _borderBottomRightRadius = -1;
     self.needsLayout = NO;
     _borderStyle = RCTBorderStyleSolid;
-    self.clipsToBounds = NO;
   }
 
   return self;
@@ -482,7 +466,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
     [self.layer setBackgroundColor:[backgroundColor CGColor]];
   }
   [self setNeedsDisplay:YES];
-  //_backgroundColor = backgroundColor; // TODO: why does it stop working when color is constantly changing
+  _backgroundColor = backgroundColor; // TODO: why does it stop working when color is constantly changing
 }
 
 - (NSEdgeInsets)bordersAsInsets
@@ -628,10 +612,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
   layer.contents = (id)image;
   layer.contentsCenter = contentsCenter;
-  //layer.contentsScale = image.;
   layer.magnificationFilter = kCAFilterNearest;
   layer.needsDisplayOnBoundsChange = YES;
-  layer.magnificationFilter = kCAFilterNearest;
 
   // TODO: make it resizable
 //  const BOOL isResizable = !UIEdgeInsetsEqualToEdgeInsets(image.capInsets, NSEdgeInsetsZero);

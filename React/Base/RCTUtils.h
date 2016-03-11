@@ -24,7 +24,7 @@ RCT_EXTERN NSString *__nullable RCTJSONStringify(id __nullable jsonObject, NSErr
 RCT_EXTERN id __nullable RCTJSONParse(NSString *__nullable jsonString, NSError **error);
 RCT_EXTERN id __nullable RCTJSONParseMutable(NSString *__nullable jsonString, NSError **error);
 
-// Strip non JSON-safe values from an object graph
+// Sanitize a JSON object by stripping invalid types and/or NaN values
 RCT_EXTERN id RCTJSONClean(id object);
 
 // Get MD5 hash of a string
@@ -70,29 +70,22 @@ RCT_EXTERN BOOL RCTRunningInTestEnvironment(void);
 RCT_EXTERN BOOL RCTRunningInAppExtension(void);
 
 // Returns the shared UIApplication instance, or nil if running in an App Extension
-RCT_EXTERN NSApplication *RCTSharedApplication(void);
+RCT_EXTERN NSApplication *__nullable RCTSharedApplication(void);
+
+// Returns the current main window, useful if you need to access the root view
+// or view controller, e.g. to present a modal view controller or alert.
+RCT_EXTERN NSWindow *__nullable RCTKeyWindow(void);
+
+// Does this device support force touch (aka 3D Touch)?
+RCT_EXTERN BOOL RCTForceTouchAvailable(void);
 
 // Return a UIAlertView initialized with the given values
 // or nil if running in an app extension
-RCT_EXTERN NSAlert *RCTAlertView(NSString *title, NSString *message, id delegate, NSString *cancelButtonTitle, NSArray *otherButtonTitles);
-
-// Return YES if image has an alpha component
-RCT_EXTERN BOOL RCTImageHasAlpha(CGImageRef image);
-//
-//RCT_EXTERN UIApplication *__nullable RCTSharedApplication(void);
-//
-//// Returns the current main window, useful if you need to access the root view
-//// or view controller, e.g. to present a modal view controller or alert.
-//RCT_EXTERN UIWindow *__nullable RCTKeyWindow(void);
-//
-//// Return a UIAlertView initialized with the given values
-//// or nil if running in an app extension
-//RCT_EXTERN UIAlertView *__nullable RCTAlertView(NSString *title,
-//                                                NSString *__nullable message,
-//                                                id __nullable delegate,
-//                                                NSString *__nullable cancelButtonTitle,
-//                                                NSArray<NSString *> *__nullable otherButtonTitles);
-//>>>>>>> ae45d8bd4cc7b0fc810c3f21dcf2c7188ae3097d
+RCT_EXTERN NSAlert *__nullable RCTAlertView(NSString *title,
+                                            NSString *__nullable message,
+                                            id __nullable delegate,
+                                            NSString *__nullable cancelButtonTitle,
+                                            NSArray<NSString *> *__nullable otherButtonTitles);
 
 // Create an NSError in the RCTErrorDomain
 RCT_EXTERN NSError *RCTErrorWithMessage(NSString *message);
@@ -116,6 +109,9 @@ RCT_EXTERN NSString *__nullable RCTBundlePathForURL(NSURL *__nullable URL);
 
 // Determines if a given image URL actually refers to an XCAsset
 RCT_EXTERN BOOL RCTIsXCAssetURL(NSURL *__nullable imageURL);
+
+// Creates a new, unique temporary file path with the specified extension
+RCT_EXTERN NSString *__nullable RCTTempFilePath(NSString *__nullable extension, NSError **error);
 
 // Converts a CGColor to a hex string
 RCT_EXTERN NSString *RCTColorToHexString(CGColorRef color);

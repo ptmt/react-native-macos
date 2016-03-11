@@ -51,7 +51,7 @@ RCT_EXPORT_MODULE()
   if (!_url) {
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     NSInteger port = [standardDefaults integerForKey:@"websocket-executor-port"] ?: 8081;
-    NSString *URLString = [NSString stringWithFormat:@"http://localhost:%zd/debugger-proxy", port];
+    NSString *URLString = [NSString stringWithFormat:@"http://localhost:%zd/debugger-proxy?role=client", port];
     _url = [RCTConvert NSURL:URLString];
   }
 
@@ -63,8 +63,7 @@ RCT_EXPORT_MODULE()
   [_socket setDelegateDispatchQueue:_jsQueue];
 
   NSURL *startDevToolsURL = [NSURL URLWithString:@"/launch-chrome-devtools" relativeToURL:_url];
-  NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:[[NSURLRequest alloc] initWithURL:startDevToolsURL]];
-  [task resume];
+  [NSURLConnection connectionWithRequest:[NSURLRequest requestWithURL:startDevToolsURL] delegate:nil];
 
   if (![self connectToProxy]) {
     RCTLogError(@"Connection to %@ timed out. Are you running node proxy? If "

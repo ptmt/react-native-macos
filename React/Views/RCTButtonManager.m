@@ -65,7 +65,7 @@ RCT_EXPORT_VIEW_PROPERTY(image, NSImage)
 RCT_EXPORT_VIEW_PROPERTY(alternateImage, NSImage)
 RCT_EXPORT_VIEW_PROPERTY(onClick, RCTBubblingEventBlock)
 
-RCT_CUSTOM_VIEW_PROPERTY(type, NSButtonType, NSButton)
+RCT_CUSTOM_VIEW_PROPERTY(type, NSButtonType, __unused NSButton)
 {
   if (json) {
     [view setButtonType:[RCTConvert NSButtonType:json]];

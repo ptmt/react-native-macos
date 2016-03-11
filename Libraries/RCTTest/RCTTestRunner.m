@@ -128,6 +128,10 @@ expectErrorBlock:(BOOL(^)(NSString *error))expectErrorBlock
       configurationBlock(rootView);
     }
 
+    if (configurationBlock) {
+      configurationBlock(rootView);
+    }
+
     NSDate *date = [NSDate dateWithTimeIntervalSinceNow:kTestTimeoutSeconds];
     while (date.timeIntervalSinceNow > 0 && testModule.status == RCTTestStatusPending && error == nil) {
       [[NSRunLoop mainRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];

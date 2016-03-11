@@ -25,7 +25,7 @@ var View = require('View');
 
 var ensureComponentIsNative = require('ensureComponentIsNative');
 var ensurePositiveDelayProps = require('ensurePositiveDelayProps');
-var keyOf = require('keyOf');
+var keyOf = require('fbjs/lib/keyOf');
 var merge = require('merge');
 var onlyChild = require('onlyChild');
 
@@ -180,6 +180,10 @@ var TouchableHighlight = React.createClass({
     return this.props.pressRetentionOffset || PRESS_RETENTION_OFFSET;
   },
 
+  touchableGetHitSlop: function() {
+    return this.props.hitSlop;
+  },
+
   touchableGetHighlightDelayMS: function() {
     return this.props.delayPressIn;
   },
@@ -193,7 +197,7 @@ var TouchableHighlight = React.createClass({
   },
 
   _showUnderlay: function() {
-    if (!this.isMounted()) {
+    if (!this.isMounted() || !this._hasPressHandler()) {
       return;
     }
 
@@ -205,7 +209,7 @@ var TouchableHighlight = React.createClass({
   _hideUnderlay: function() {
     this.clearTimeout(this._hideTimeout);
     this._hideTimeout = null;
-    if (this.refs[UNDERLAY_REF]) {
+    if (this._hasPressHandler() && this.refs[UNDERLAY_REF]) {
       this.refs[CHILD_REF].setNativeProps(INACTIVE_CHILD_PROPS);
       this.refs[UNDERLAY_REF].setNativeProps({
         ...INACTIVE_UNDERLAY_PROPS,
@@ -215,15 +219,26 @@ var TouchableHighlight = React.createClass({
     }
   },
 
+  _hasPressHandler: function() {
+    return !!(
+      this.props.onPress ||
+      this.props.onPressIn ||
+      this.props.onPressOut ||
+      this.props.onLongPress
+    );
+  },
+
   render: function() {
     return (
       <View
         accessible={true}
+        accessibilityLabel={this.props.accessibilityLabel}
         accessibilityComponentType={this.props.accessibilityComponentType}
         accessibilityTraits={this.props.accessibilityTraits}
         ref={UNDERLAY_REF}
         style={this.state.underlayStyle}
         onLayout={this.props.onLayout}
+        hitSlop={this.props.hitSlop}
         onStartShouldSetResponder={this.touchableHandleStartShouldSetResponder}
         onResponderTerminationRequest={this.touchableHandleResponderTerminationRequest}
         onResponderGrant={this.touchableHandleResponderGrant}

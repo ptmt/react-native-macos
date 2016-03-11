@@ -58,6 +58,7 @@ static BOOL RCTShouldReloadImageForSizeChange(CGSize currentSize, CGSize idealSi
   RCTImageLoaderCancellationBlock _reloadImageCancellationBlock;
 }
 
+
 - (instancetype)initWithBridge:(RCTBridge *)bridge
 {
   if ((self = [super initWithFrame:NSZeroRect])) {
@@ -78,13 +79,13 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)coder)
     return;
   }
 
-  // Apply rendering mode
+// Apply rendering mode
 //  if (_renderingMode != image.renderingMode) {
 //    image = [image imageWithRenderingMode:_renderingMode];
 //  }
 
-  // Applying capInsets of 0 will switch the "resizingMode" of the image to "tile" which is undesired
-  // TODO:
+// Applying capInsets of 0 will switch the "resizingMode" of the image to "tile" which is undesired
+// TODO:
 //  if (!NSEdgeInsetsEqualToEdgeInsets(NSEdgeInsetsZero, _capInsets)) {
 //    image = [image resizableImageWithCapInsets:_capInsets];
 //  }
@@ -98,11 +99,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)coder)
 
 - (void)setImage:(NSImage *)image
 {
-//  image = image ?: _defaultImage;
-//  if (image != super.image) {
-//    super.image = image;
-//    [self updateImage];
-//  }
+  
+  image = image ?: _defaultImage;
+  if (image != super.image) {
+    super.image = image;
+    [self updateImage];
+  }
   CGFloat desiredScaleFactor = [[RCTSharedApplication() mainWindow] backingScaleFactor];
   CGFloat actualScaleFactor = [image recommendedLayerContentsScale:desiredScaleFactor];
 
@@ -133,14 +135,6 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
   }
 }
 
-//- (void)setRenderingMode:(UIImageRenderingMode)renderingMode
-//{
-//  if (_renderingMode != renderingMode) {
-//    _renderingMode = renderingMode;
-//    [self updateImage];
-//  }
-//}
-
 - (void)setSource:(RCTImageSource *)source
 {
   if (![source isEqual:_source]) {
@@ -155,14 +149,15 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
   return UIEdgeInsetsEqualToEdgeInsets(_capInsets, NSEdgeInsetsZero);
 }
 
-//- (void)setContentMode:(NSViewContentMode)mode
-//{
-//  if (self.contentMode != contentMode) {
-//    super.contentMode = contentMode;
-//    if ([self sourceNeedsReload]) {
-//      [self reloadImage];
-//    }
-//}
+- (void)setContentMode:(NSImageScaling)contentMode
+{
+  if (_contentMode != contentMode) {
+    super.imageScaling = contentMode;
+    if ([self sourceNeedsReload]) {
+      [self reloadImage];
+    }
+  }
+}
 
 - (void)cancelImageLoad
 {
@@ -256,14 +251,13 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
     [self reloadImage];
   } else if ([self sourceNeedsReload]) {
     CGSize imageSize = self.image.size;
-
-    // TODO: replace 1.0 with real scale
+    // TODO: scale should not be hardcoded
     CGSize idealSize = RCTTargetSize(imageSize, 1.0f, frame.size,
                                      RCTScreenScale(), (RCTResizeMode)self.contentMode, YES);
 
     if (RCTShouldReloadImageForSizeChange(imageSize, idealSize)) {
       if (RCTShouldReloadImageForSizeChange(_targetSize, idealSize)) {
-        RCTLogInfo(@"[PERF IMAGEVIEW] Reloading image %@ as size %f x %f", _source.imageURL, idealSize.width, idealSize.height);
+        RCTLogInfo(@"[PERF IMAGEVIEW] Reloading image %@ as size %f %f", _source.imageURL, idealSize.width, idealSize.height);
 
         // If the existing image or an image being loaded are not the right
         // size, reload the asset in case there is a better size available.

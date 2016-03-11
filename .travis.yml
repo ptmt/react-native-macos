@@ -3,9 +3,9 @@ language: objective-c
 osx_image: xcode7.2
 
 cache:
-    directories:
-        - node_modules
-        - .nvm
+  directories:
+    - node_modules
+    - .nvm
 
 before_install:
   - brew update || brew update
@@ -19,7 +19,7 @@ install:
   - nvm install 5
   - rm -Rf "${TMPDIR}/jest_preprocess_cache"
   - npm config set spin=false
-  - npm install -g flow-bin@`node -p "require('fs').readFileSync('.flowconfig', 'utf8').split('[version]')[1].trim()"`
+  - npm config set progress=false
   - npm install
   - node --version
   - npm --version
@@ -34,10 +34,8 @@ script:
 
   elif [ "$TEST_TYPE" = js ]
   then
-
     flow check && npm test
-
-  elif [ "$TEST_TYPE" = e2e ]
+  elif [ "$TEST_TYPE" = e2e-objc ]
   then
     ./scripts/e2e-test.sh
   else
@@ -49,10 +47,12 @@ env:
   matrix:
     - TEST_TYPE=objc
     - TEST_TYPE=js
-  #  - TEST_TYPE=e2e
   global:
+    #- TEST_TYPE=e2e-objc
+
 
 branches:
   only:
     - master
     - /^.*-stable$/
+    

@@ -76,9 +76,7 @@ RCT_EXPORT_MODULE()
 {
   RCTAssertParam(block);
   dispatch_async(_methodQueue, ^{
-    CGImageSourceRef source = CGImageSourceCreateWithData((CFDataRef)[image TIFFRepresentation], NULL);
-    CGImageRef maskRef =  CGImageSourceCreateImageAtIndex(source, 0, NULL);
-    NSString *imageTag = [self _storeImageData:RCTGetImageData(maskRef, 0.75)];
+    NSString *imageTag = [self _storeImageData:RCTGetImageData(RCTGetCGImage(image), 0.75)];
     dispatch_async(dispatch_get_main_queue(), ^{
       block(imageTag);
     });
@@ -187,6 +185,44 @@ RCT_EXPORT_METHOD(addImageFromBase64:(NSString *)base64String
   if (requestToken) {
     ((void (^)(void))requestToken)();
   }
+}
+
+@end
+
+@implementation RCTImageStoreManager (Deprecated)
+
+- (NSString *)storeImage:(NSImage *)image
+{
+  RCTAssertMainThread();
+  RCTLogWarn(@"RCTImageStoreManager.storeImage() is deprecated and has poor performance. Use an alternative method instead.");
+  __block NSString *imageTag;
+  dispatch_sync(_methodQueue, ^{
+    imageTag = [self _storeImageData:RCTGetImageData(RCTGetCGImage(image), 0.75)];
+  });
+  return imageTag;
+}
+
+- (NSImage *)imageForTag:(NSString *)imageTag
+{
+  RCTAssertMainThread();
+  RCTLogWarn(@"RCTImageStoreManager.imageForTag() is deprecated and has poor performance. Use an alternative method instead.");
+  __block NSData *imageData;
+  dispatch_sync(_methodQueue, ^{
+    imageData = _store[imageTag];
+  });
+  return [[NSImage alloc] initWithData:imageData];
+}
+
+- (void)getImageForTag:(NSString *)imageTag withBlock:(void (^)(NSImage *image))block
+{
+  RCTAssertParam(block);
+  dispatch_async(_methodQueue, ^{
+    NSData *imageData = _store[imageTag];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      // imageWithData: is not thread-safe, so we can't do this on methodQueue
+      block([[NSImage alloc] initWithData:imageData]);
+    });
+  });
 }
 
 @end

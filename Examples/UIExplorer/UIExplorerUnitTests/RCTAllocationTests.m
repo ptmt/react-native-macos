@@ -141,7 +141,6 @@ RCT_EXPORT_METHOD(test:(__unused NSString *)a
                                                 return @[module];
                                               }
                                                launchOptions:nil];
-
     weakModule = module;
   }
 
@@ -226,6 +225,7 @@ RCT_EXPORT_METHOD(test:(__unused NSString *)a
   RUN_RUNLOOP_WHILE(batchedBridge != nil)
 
   XCTAssertNotNil(bridge, @"RCTBridge should not have been deallocated");
+  //XCTAssertNil(batchedBridge, @"RCTBatchedBridge should have been deallocated");
 
   // Wait to complete the test until the new batchedbridge is also deallocated
   @autoreleasepool {
@@ -234,7 +234,6 @@ RCT_EXPORT_METHOD(test:(__unused NSString *)a
   }
 
   RUN_RUNLOOP_WHILE(batchedBridge != nil);
-  // TODO: Fix deallocating problem
   //XCTAssertNil(batchedBridge);
 }
 

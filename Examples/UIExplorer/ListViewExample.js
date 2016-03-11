@@ -30,7 +30,7 @@ var UIExplorerPage = require('./UIExplorerPage');
 
 var ListViewSimpleExample = React.createClass({
   statics: {
-    title: '<ListView> - Simple',
+    title: '<ListView>',
     description: 'Performant, scrollable list of data.'
   },
 
@@ -50,7 +50,7 @@ var ListViewSimpleExample = React.createClass({
   render: function() {
     return (
       <UIExplorerPage
-        title={'<ListView> - Simple'}
+        title={this.props.navigator ? null : '<ListView>'}
         noSpacer={true}
         noScroll={true}>
         <ListView
@@ -113,7 +113,6 @@ var THUMB_URLS = [
   require('./Thumbnails/superlike.png'),
   require('./Thumbnails/victory.png'),
   ];
-
 var LOREM_IPSUM = 'Lorem ipsum dolor sit amet, ius ad pertinax oportere accommodare, an vix civibus corrumpit referrentur. Te nam case ludus inciderint, te mea facilisi adipiscing. Sea id integre luptatum. In tota sale consequuntur nec. Erat ocurreret mei ei. Eu paulo sapientem vulputate est, vel an accusam intellegam interesset. Nam eu stet pericula reprimique, ea vim illud modus, putant invidunt reprehendunt ne qui.';
 
 /* eslint no-bitwise: 0 */

@@ -9,6 +9,7 @@
 
 #import "RCTBorderDrawing.h"
 #import "RCTLog.h"
+#import "UIImageUtils.h"
 
 static const CGFloat RCTViewBorderThreshold = 0.001;
 
@@ -174,81 +175,6 @@ NS_INLINE CGRect NSEdgeInsetsInsetRect(NSRect rect, NSEdgeInsets insets) {
 
 static NSMutableArray *contextStack = nil;
 static NSMutableArray *imageContextStack = nil;
-
-
-static void UIGraphicsPushContext(CGContextRef ctx)
-{
-  if (!contextStack) {
-    contextStack = [[NSMutableArray alloc] initWithCapacity:1];
-  }
-
-  if ([NSGraphicsContext currentContext]) {
-    [contextStack addObject:[NSGraphicsContext currentContext]];
-  }
-
-  [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:(void *)ctx flipped:YES]];
-}
-
-static void UIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale)
-{
-  if (scale == 0.f) {
-    scale = [NSScreen mainScreen].backingScaleFactor ?: 1;
-  }
-
-  const size_t width = size.width * scale;
-  const size_t height = size.height * scale;
-
-  if (width > 0 && height > 0) {
-    if (!imageContextStack) {
-      imageContextStack = [[NSMutableArray alloc] initWithCapacity:1];
-    }
-
-    [imageContextStack addObject:[NSNumber numberWithFloat:scale]];
-
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef ctx = CGBitmapContextCreate(NULL, width, height, 8, 4*width, colorSpace, (opaque? kCGImageAlphaNoneSkipFirst : kCGImageAlphaPremultipliedFirst));
-    CGContextConcatCTM(ctx, CGAffineTransformMake(1, 0, 0, -1, 0, height));
-    CGContextScaleCTM(ctx, scale, scale);
-    CGColorSpaceRelease(colorSpace);
-    UIGraphicsPushContext(ctx);
-    CGContextRelease(ctx);
-  }
-}
-
-static CGContextRef UIGraphicsGetCurrentContext()
-{
-  return [[NSGraphicsContext currentContext] graphicsPort];
-}
-
-
-static NSImage *UIGraphicsGetImageFromCurrentImageContext()
-{
-  if ([imageContextStack lastObject]) {
-//    const CGFloat scale = [[imageContextStack lastObject] floatValue];
-    CGImageRef theCGImage = CGBitmapContextCreateImage(UIGraphicsGetCurrentContext());
-    NSImage *image = [[NSImage alloc] initWithCGImage:theCGImage size:NSZeroSize];
-    CGImageRelease(theCGImage);
-    return image;
-  } else {
-    return nil;
-  }
-}
-
-static void UIGraphicsPopContext()
-{
-  if ([contextStack lastObject]) {
-    [NSGraphicsContext setCurrentContext:[contextStack lastObject]];
-    [contextStack removeLastObject];
-  }
-}
-
-static void UIGraphicsEndImageContext()
-{
-  if ([imageContextStack lastObject]) {
-    [imageContextStack removeLastObject];
-    UIGraphicsPopContext();
-  }
-}
 
 
 NS_INLINE BOOL RCTCornerRadiiAreAboveThreshold(RCTCornerRadii cornerRadii) {

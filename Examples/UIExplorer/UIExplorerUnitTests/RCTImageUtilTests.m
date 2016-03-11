@@ -137,9 +137,8 @@ RCTAssertEqualSizes(a.size, b.size); \
 {
   CGSize size = {45, 22};
   CGFloat expectedScale = 1.0;
-  UIImage *image = RCTGetPlaceholderImage(size, nil);
+  NSImage *image = RCTGetPlaceholderImage(size, nil);
   RCTAssertEqualSizes(size, image.size);
-  XCTAssertEqual(expectedScale, image.scale);
 }
 
 - (void)testPlaceholderNonintegralSize
@@ -150,11 +149,10 @@ RCTAssertEqualSizes(a.size, b.size); \
     round(size.width * expectedScale),
     round(size.height * expectedScale)
   };
-  UIImage *image = RCTGetPlaceholderImage(size, nil);
+  NSImage *image = RCTGetPlaceholderImage(size, nil);
   RCTAssertEqualSizes(size, image.size);
-  XCTAssertEqual(pixelSize.width, CGImageGetWidth(image.CGImage));
-  XCTAssertEqual(pixelSize.height, CGImageGetHeight(image.CGImage));
-  XCTAssertEqual(expectedScale, image.scale);
+  XCTAssertEqual(pixelSize.width, CGImageGetWidth(RCTGetCGImage(image)));
+  XCTAssertEqual(pixelSize.height, CGImageGetHeight(RCTGetCGImage(image)));
 }
 
 - (void)testPlaceholderSquareImage
@@ -162,11 +160,10 @@ RCTAssertEqualSizes(a.size, b.size); \
   CGSize size = {333, 333};
   CGFloat expectedScale = 1.0/333;
   CGSize pixelSize = {1, 1};
-  UIImage *image = RCTGetPlaceholderImage(size, nil);
+  NSImage *image = RCTGetPlaceholderImage(size, nil);
   RCTAssertEqualSizes(size, image.size);
-  XCTAssertEqual(pixelSize.width, CGImageGetWidth(image.CGImage));
-  XCTAssertEqual(pixelSize.height, CGImageGetHeight(image.CGImage));
-  XCTAssertEqual(expectedScale, image.scale);
+  XCTAssertEqual(pixelSize.width, CGImageGetWidth(RCTGetCGImage(image)));
+  XCTAssertEqual(pixelSize.height, CGImageGetHeight(RCTGetCGImage(image)));
 }
 
 - (void)testPlaceholderNonsquareImage
@@ -174,11 +171,10 @@ RCTAssertEqualSizes(a.size, b.size); \
   CGSize size = {640, 480};
   CGFloat expectedScale = 1.0/160;
   CGSize pixelSize = {4, 3};
-  UIImage *image = RCTGetPlaceholderImage(size, nil);
+  NSImage *image = RCTGetPlaceholderImage(size, nil);
   RCTAssertEqualSizes(size, image.size);
-  XCTAssertEqual(pixelSize.width, CGImageGetWidth(image.CGImage));
-  XCTAssertEqual(pixelSize.height, CGImageGetHeight(image.CGImage));
-  XCTAssertEqual(expectedScale, image.scale);
+  XCTAssertEqual(pixelSize.width, CGImageGetWidth(RCTGetCGImage(image)));
+  XCTAssertEqual(pixelSize.height, CGImageGetHeight(RCTGetCGImage(image)));
 }
 
 @end

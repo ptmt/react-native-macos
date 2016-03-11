@@ -71,7 +71,6 @@ module.exports = yeoman.generators.NamedBase.extend({
   },
 
   writing: function() {
-
     if (this.options.upgrade) {
       // never upgrade index.*.js files
       return;

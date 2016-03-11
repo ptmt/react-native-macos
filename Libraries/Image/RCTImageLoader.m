@@ -41,8 +41,14 @@
 {
   NSArray<id<RCTImageURLLoader>> *_loaders;
   NSArray<id<RCTImageDataDecoder>> *_decoders;
+  NSOperationQueue *_imageDecodeQueue;
   dispatch_queue_t _URLCacheQueue;
   NSURLCache *_URLCache;
+  NSMutableArray *_pendingTasks;
+  NSInteger _activeTasks;
+  NSMutableArray *_pendingDecodes;
+  NSInteger _scheduledDecodes;
+  NSUInteger _activeBytes;
 }
 
 @synthesize bridge = _bridge;
@@ -51,52 +57,34 @@ RCT_EXPORT_MODULE()
 
 - (void)setUp
 {
-  // Get image loaders and decoders
-  NSMutableArray<id<RCTImageURLLoader>> *loaders = [NSMutableArray array];
-  NSMutableArray<id<RCTImageDataDecoder>> *decoders = [NSMutableArray array];
-  for (Class moduleClass in _bridge.moduleClasses) {
-    if ([moduleClass conformsToProtocol:@protocol(RCTImageURLLoader)]) {
-      [loaders addObject:[_bridge moduleForClass:moduleClass]];
-    }
-    if ([moduleClass conformsToProtocol:@protocol(RCTImageDataDecoder)]) {
-      [decoders addObject:[_bridge moduleForClass:moduleClass]];
-    }
-  }
+  // Set defaults
+  _maxConcurrentLoadingTasks = _maxConcurrentLoadingTasks ?: 4;
+  _maxConcurrentDecodingTasks = _maxConcurrentDecodingTasks ?: 2;
+  _maxConcurrentDecodingBytes = _maxConcurrentDecodingBytes ?: 30 * 1024 *1024; // 30MB
 
-  // Sort loaders in reverse priority order (highest priority first)
-  [loaders sortUsingComparator:^NSComparisonResult(id<RCTImageURLLoader> a, id<RCTImageURLLoader> b) {
-    float priorityA = [a respondsToSelector:@selector(loaderPriority)] ? [a loaderPriority] : 0;
-    float priorityB = [b respondsToSelector:@selector(loaderPriority)] ? [b loaderPriority] : 0;
-    if (priorityA > priorityB) {
-      return NSOrderedAscending;
-    } else if (priorityA < priorityB) {
-      return NSOrderedDescending;
-    } else {
-      return NSOrderedSame;
-    }
-  }];
-
-  // Sort decoders in reverse priority order (highest priority first)
-  [decoders sortUsingComparator:^NSComparisonResult(id<RCTImageDataDecoder> a, id<RCTImageDataDecoder> b) {
-    float priorityA = [a respondsToSelector:@selector(decoderPriority)] ? [a decoderPriority] : 0;
-    float priorityB = [b respondsToSelector:@selector(decoderPriority)] ? [b decoderPriority] : 0;
-    if (priorityA > priorityB) {
-      return NSOrderedAscending;
-    } else if (priorityA < priorityB) {
-      return NSOrderedDescending;
-    } else {
-      return NSOrderedSame;
-    }
-  }];
-
-  _loaders = loaders;
-  _decoders = decoders;
+  _URLCacheQueue = dispatch_queue_create("com.facebook.react.ImageLoaderURLCacheQueue", DISPATCH_QUEUE_SERIAL);
 }
 
 - (id<RCTImageURLLoader>)imageURLLoaderForURL:(NSURL *)URL
 {
-  if (!_loaders) {
+  if (!_maxConcurrentLoadingTasks) {
     [self setUp];
+  }
+
+  if (!_loaders) {
+    // Get loaders, sorted in reverse priority order (highest priority first)
+    RCTAssert(_bridge, @"Bridge not set");
+    _loaders = [[_bridge modulesConformingToProtocol:@protocol(RCTImageURLLoader)] sortedArrayUsingComparator:^NSComparisonResult(id<RCTImageURLLoader> a, id<RCTImageURLLoader> b) {
+      float priorityA = [a respondsToSelector:@selector(loaderPriority)] ? [a loaderPriority] : 0;
+      float priorityB = [b respondsToSelector:@selector(loaderPriority)] ? [b loaderPriority] : 0;
+      if (priorityA > priorityB) {
+        return NSOrderedAscending;
+      } else if (priorityA < priorityB) {
+        return NSOrderedDescending;
+      } else {
+        return NSOrderedSame;
+      }
+    }];
   }
 
   if (RCT_DEBUG) {
@@ -136,8 +124,24 @@ RCT_EXPORT_MODULE()
 
 - (id<RCTImageDataDecoder>)imageDataDecoderForData:(NSData *)data
 {
-  if (!_decoders) {
+  if (!_maxConcurrentLoadingTasks) {
     [self setUp];
+  }
+
+  if (!_decoders) {
+    // Get decoders, sorted in reverse priority order (highest priority first)
+    RCTAssert(_bridge, @"Bridge not set");
+    _decoders = [[_bridge modulesConformingToProtocol:@protocol(RCTImageDataDecoder)] sortedArrayUsingComparator:^NSComparisonResult(id<RCTImageDataDecoder> a, id<RCTImageDataDecoder> b) {
+      float priorityA = [a respondsToSelector:@selector(decoderPriority)] ? [a decoderPriority] : 0;
+      float priorityB = [b respondsToSelector:@selector(decoderPriority)] ? [b decoderPriority] : 0;
+      if (priorityA > priorityB) {
+        return NSOrderedAscending;
+      } else if (priorityA < priorityB) {
+        return NSOrderedDescending;
+      } else {
+        return NSOrderedSame;
+      }
+    }];
   }
 
   if (RCT_DEBUG) {
@@ -190,7 +194,7 @@ static NSImage *RCTResizeImageIfNeeded(NSImage *image,
   CGRect targetSize = RCTTargetRect(image.size, size, scale, resizeMode);
   CGAffineTransform transform = RCTTransformFromTargetRect(image.size, targetSize);
   image = RCTTransformImage(image, size, scale, transform);
-  image.reactKeyframeAnimation = animation; // TODO:
+  image.reactKeyframeAnimation = animation;
   return image;
 }
 
@@ -203,6 +207,50 @@ static NSImage *RCTResizeImageIfNeeded(NSImage *image,
                      resizeMode:RCTResizeModeStretch
                   progressBlock:nil
                 completionBlock:callback];
+}
+
+- (void)dequeueTasks
+{
+  dispatch_async(_URLCacheQueue, ^{
+
+    // Remove completed tasks
+    for (RCTNetworkTask *task in _pendingTasks.reverseObjectEnumerator) {
+      switch (task.status) {
+        case RCTNetworkTaskFinished:
+          [_pendingTasks removeObject:task];
+          _activeTasks--;
+          break;
+        case RCTNetworkTaskPending:
+        case RCTNetworkTaskInProgress:
+          // Do nothing
+          break;
+      }
+    }
+
+    // Start queued decode
+    NSInteger activeDecodes = _scheduledDecodes - _pendingDecodes.count;
+    while (activeDecodes == 0 || (_activeBytes <= _maxConcurrentDecodingBytes &&
+                                  activeDecodes <= _maxConcurrentDecodingTasks)) {
+      dispatch_block_t decodeBlock = _pendingDecodes.firstObject;
+      if (decodeBlock) {
+        [_pendingDecodes removeObjectAtIndex:0];
+        decodeBlock();
+      } else {
+        break;
+      }
+    }
+
+    // Start queued tasks
+    for (RCTNetworkTask *task in _pendingTasks) {
+      if (MAX(_activeTasks, _scheduledDecodes) >= _maxConcurrentLoadingTasks) {
+        break;
+      }
+      if (task.status == RCTNetworkTaskPending) {
+        [task start];
+        _activeTasks++;
+      }
+    }
+  });
 }
 
 /**
@@ -243,7 +291,7 @@ static NSImage *RCTResizeImageIfNeeded(NSImage *image,
 
   // All access to URL cache must be serialized
   if (!_URLCacheQueue) {
-    _URLCacheQueue = dispatch_queue_create("com.facebook.react.ImageLoaderURLCacheQueue", DISPATCH_QUEUE_SERIAL);
+    [self setUp];
   }
   dispatch_async(_URLCacheQueue, ^{
 
@@ -329,8 +377,7 @@ static NSImage *RCTResizeImageIfNeeded(NSImage *image,
     }
 
     // Download image
-    RCTNetworkTask *task = [_bridge.networking networkTaskWithRequest:request completionBlock:
-                            ^(NSURLResponse *response, NSData *data, NSError *error) {
+    RCTNetworkTask *task = [_bridge.networking networkTaskWithRequest:request completionBlock:^(NSURLResponse *response, NSData *data, NSError *error) {
       if (error) {
         completionHandler(error, nil);
         return;
@@ -350,14 +397,26 @@ static NSImage *RCTResizeImageIfNeeded(NSImage *image,
         // Process image data
         processResponse(response, data, nil);
 
+        //clean up
+        [weakSelf dequeueTasks];
+
       });
 
     }];
     task.downloadProgressBlock = progressHandler;
-    [task start];
+
+    if (!_pendingTasks) {
+      _pendingTasks = [NSMutableArray new];
+    }
+    [_pendingTasks addObject:task];
+    if (MAX(_activeTasks, _scheduledDecodes) < _maxConcurrentLoadingTasks) {
+      [task start];
+      _activeTasks++;
+    }
 
     cancelLoad = ^{
       [task cancel];
+      [weakSelf dequeueTasks];
     };
 
   });
@@ -470,6 +529,7 @@ static NSImage *RCTResizeImageIfNeeded(NSImage *image,
 
   id<RCTImageDataDecoder> imageDecoder = [self imageDataDecoderForData:data];
   if (imageDecoder) {
+    NSLog(@"imageDecoder");
     return [imageDecoder decodeImageData:data
                                     size:size
                                    scale:scale
@@ -477,32 +537,72 @@ static NSImage *RCTResizeImageIfNeeded(NSImage *image,
                        completionHandler:completionHandler];
   } else {
 
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-      if (cancelled) {
-        return;
-      }
-      NSImage *image = RCTDecodeImageWithData(data, size, scale, resizeMode);
+    if (!_URLCacheQueue) {
+      [self setUp];
+    }
+    dispatch_async(_URLCacheQueue, ^{
+      dispatch_block_t decodeBlock = ^{
+
+        // Calculate the size, in bytes, that the decompressed image will require
+        NSInteger decodedImageBytes = (size.width * scale) * (size.height * scale) * 4;
+
+        // Mark these bytes as in-use
+        _activeBytes += decodedImageBytes;
+
+        // Do actual decompression on a concurrent background queue
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+          if (!cancelled) {
+
+            // Decompress the image data (this may be CPU and memory intensive)
+            NSImage *image = RCTDecodeImageWithData(data, size, scale, resizeMode);
 
 #if RCT_DEV
 
-      CGSize imagePixelSize = RCTSizeInPixels(image.size, 1.0f); //TODO: different scaling logic here
-      CGSize screenPixelSize = RCTSizeInPixels(RCTScreenSize(), RCTScreenScale());
-      if (imagePixelSize.width * imagePixelSize.height >
-          screenPixelSize.width * screenPixelSize.height) {
-        RCTLogInfo(@"[PERF ASSETS] Loading image at size %f x %f, which is larger "
-                   "than the screen size %f x %f", imagePixelSize.width, imagePixelSize.height,
-                   screenPixelSize.width, screenPixelSize.height);
-      }
+            CGSize imagePixelSize = RCTSizeInPixels(image.size, 1.0f); // TODO: actual scale
+            CGSize screenPixelSize = RCTSizeInPixels(RCTScreenSize(), RCTScreenScale());
+            if (imagePixelSize.width * imagePixelSize.height >
+                screenPixelSize.width * screenPixelSize.height) {
+              RCTLogInfo(@"[PERF ASSETS] Loading image at size %f x %f, which is larger "
+                         "than the screen size %f x %f", imagePixelSize.width, imagePixelSize.height, screenPixelSize.width, screenPixelSize.height);
+            }
 
 #endif
 
-      if (image) {
-        completionHandler(nil, image);
-      } else {
-        NSString *errorMessage = [NSString stringWithFormat:@"Error decoding image data <NSData %p; %tu bytes>", data, data.length];
-        NSError *finalError = RCTErrorWithMessage(errorMessage);
-        completionHandler(finalError, nil);
+            if (image) {
+              completionHandler(nil, image);
+            } else {
+              NSString *errorMessage = [NSString stringWithFormat:@"Error decoding image data <NSData %p; %tu bytes>", data, data.length];
+              NSError *finalError = RCTErrorWithMessage(errorMessage);
+              completionHandler(finalError, nil);
+            }
+          }
+
+          // We're no longer retaining the uncompressed data, so now we'll mark
+          // the decoding as complete so that the loading task queue can resume.
+          dispatch_async(_URLCacheQueue, ^{
+            _scheduledDecodes--;
+            _activeBytes -= decodedImageBytes;
+            [self dequeueTasks];
+          });
+        });
+      };
+
+      // The decode operation retains the compressed image data until it's
+      // complete, so we'll mark it as having started, in order to block
+      // further image loads from happening until we're done with the data.
+      _scheduledDecodes++;
+
+      if (!_pendingDecodes) {
+        _pendingDecodes = [NSMutableArray new];
       }
+      NSInteger activeDecodes = _scheduledDecodes - _pendingDecodes.count - 1;
+      if (activeDecodes == 0 || (_activeBytes <= _maxConcurrentDecodingBytes &&
+                                 activeDecodes <= _maxConcurrentDecodingTasks)) {
+        decodeBlock();
+      } else {
+        [_pendingDecodes addObject:decodeBlock];
+      }
+
     });
 
     return ^{
@@ -530,8 +630,8 @@ static NSImage *RCTResizeImageIfNeeded(NSImage *image,
                         } else {
                           NSImage *image = imageOrData;
                           size = (CGSize){
-                            image.size.width,
-                            image.size.height,
+                            image.size.width * 1.0f, // TODO: actual scale
+                            image.size.height * 1.0f,
                           };
                         }
                         completionBlock(error, size);
@@ -571,7 +671,7 @@ static NSImage *RCTResizeImageIfNeeded(NSImage *image,
       imageData = UIImagePNGRepresentation(image);
     } else {
       mimeType = @"image/jpeg";
-      imageData = UIImageJPEGRepresentation(image);
+      imageData = UIImageJPEGRepresentation(image, 0.8f);
     }
 
     NSURLResponse *response = [[NSURLResponse alloc] initWithURL:request.URL
