@@ -33,10 +33,10 @@ script:
 
   elif [ "$TEST_TYPE" = js ]
   then
-    flow check && npm test
+    npm run flow && npm test
   elif [ "$TEST_TYPE" = e2e-objc ]
   then
-    ./scripts/e2e-test.sh
+    ./scripts/e2e-test.sh  --osx
   else
     echo "Unknown test type: $TEST_TYPE"
     exit 1
