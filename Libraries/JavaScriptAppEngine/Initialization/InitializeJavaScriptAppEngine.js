@@ -179,6 +179,7 @@ function setUpProfile() {
 function setUpProcessEnv() {
   GLOBAL.process = GLOBAL.process || {};
   GLOBAL.process.env = GLOBAL.process.env || {};
+  GLOBAL.process.argv = GLOBAL.process.argv || '';
   if (!GLOBAL.process.env.NODE_ENV) {
     GLOBAL.process.env.NODE_ENV = __DEV__ ? 'development' : 'production';
   }
