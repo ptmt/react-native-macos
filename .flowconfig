@@ -10,6 +10,7 @@
 
 # Examples
 .*/Examples/SimpleChatClient/*.*
+.*/Examples/SimpleGmailClient/*.*
 
 # Ugh
 .*/node_modules/babel.*
