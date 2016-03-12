@@ -5,8 +5,6 @@ general:
 machine:
   xcode:
     version: 7.2
-  node:
-    version: 5.6.0
 
 dependencies:
   pre:
