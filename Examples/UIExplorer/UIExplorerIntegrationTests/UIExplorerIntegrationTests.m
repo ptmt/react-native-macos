@@ -66,7 +66,7 @@ RCT_TEST(TimersTest)
 RCT_TEST(AppEventsTest)
 //RCT_TEST(ImageSnapshotTest) // Disabled: #8985988
 //RCT_TEST(LayoutEventsTest) // Disabled due to flakiness: #8686784
-RCT_TEST(SimpleSnapshotTest)
+//RCT_TEST(SimpleSnapshotTest) // disabled because AppKit vs UIKit
 RCT_TEST(PromiseTest)
 
 

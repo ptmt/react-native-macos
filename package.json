@@ -27,6 +27,7 @@
         "fbjs",
         "react",
         "react-native",
+        "react-native-desktop",
         "parse",
         "react-transform-hmr"
       ],
