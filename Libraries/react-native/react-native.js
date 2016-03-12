@@ -74,7 +74,6 @@ var ReactNative = {
   get StatusBarIOS() { return require('StatusBarIOS'); },
   get StyleSheet() { return require('StyleSheet'); },
   get UIManager() { return require('UIManager'); },
-  get VibrationIOS() { return require('VibrationIOS'); },
 
   // Plugins
   get DeviceEventEmitter() { return require('RCTDeviceEventEmitter'); },
