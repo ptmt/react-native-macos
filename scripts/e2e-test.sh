@@ -26,8 +26,8 @@ export REACT_PACKAGER_LOG="$TEMP/server.log"
 # To make sure we actually installed the local version
 # of react-native, we will create a temp file inside the template
 # and check that it exists after `react-native init`
-MARKER_IOS=$(mktemp $ROOT/local-cli/generator-ios/templates/app/XXXXXXXX)
-MARKER_ANDROID=$(mktemp $ROOT/local-cli/generator-android/templates/src/XXXXXXXX)
+MARKER_OSX=$(mktemp $ROOT/local-cli/generator-osx/templates/app/XXXXXXXX)
+
 
 function cleanup {
   EXIT_CODE=$?
@@ -41,8 +41,7 @@ function cleanup {
     [ -f $REACT_PACKAGER_LOG ] && cat $REACT_PACKAGER_LOG
   fi
 
-  rm $MARKER_IOS
-  rm $MARKER_ANDROID
+  rm $MARKER_OSX
   [ $SINOPIA_PID ] && kill -9 $SINOPIA_PID
   [ $SERVER_PID ] && kill -9 $SERVER_PID
   [ -f ~/.npmrc.bak ] && mv ~/.npmrc.bak ~/.npmrc
@@ -68,20 +67,30 @@ SINOPIA_PID=$!
 
 # Make sure to remove old version of react-native in
 # case it was cached
-npm unpublish react-native --force
-npm unpublish react-native-cli --force
+npm unpublish react-native-desktop --force
+npm unpublish react-native-desktop-cli --force
 npm publish $ROOT
-npm publish $ROOT/react-native-cli
+npm publish $ROOT/react-native-desktop-cli
 
-npm install -g react-native-cli
-react-native init EndToEndTest
+npm install -g react-native-desktop-cli
+react-native-desktop init EndToEndTest
 cd EndToEndTest
 
 case $1 in
 "--packager"*)
   echo "Running a basic packager test"
   # Check the packager produces a bundle (doesn't throw an error)
-  react-native bundle --platform android --dev true --entry-file index.android.js --bundle-output android-bundle.js
+  react-native-desktop bundle --platform osx --dev true --entry-file index.osx.js --bundle-output osx-bundle.js
+  ;;
+"--osx"*)
+  echo "Running an OSX app"
+  cd osx
+  # Make sure we installed local version of react-native
+  ls EndToEndTest/`basename $MARKER_IOS` > /dev/null
+  ../node_modules/react-native-desktop/packager/packager.sh --nonPersistent &
+  SERVER_PID=$!
+  # Start the app on the simulator
+  xctool -scheme EndToEndTest -sdk iphonesimulator test
   ;;
 "--ios"*)
   echo "Running an iOS app"

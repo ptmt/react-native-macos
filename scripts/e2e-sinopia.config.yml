@@ -5,11 +5,11 @@ uplinks:
     url: https://registry.npmjs.org/
 
 packages:
-  'react-native':
+  'react-native-desktop':
     allow_access: $all
     allow_publish: $all
 
-  'react-native-cli':
+  'react-native-desktop-cli':
     allow_access: $all
     allow_publish: $all
 

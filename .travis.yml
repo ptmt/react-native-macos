@@ -34,6 +34,7 @@ script:
   elif [ "$TEST_TYPE" = js ]
   then
     npm run flow && npm test
+    ./scripts/e2e-test.sh  --packager
   elif [ "$TEST_TYPE" = e2e-objc ]
   then
     ./scripts/e2e-test.sh  --osx
