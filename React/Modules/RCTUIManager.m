@@ -619,8 +619,11 @@ extern NSString *RCTBridgeModuleNameForClass(Class cls);
 
       // Update without animation
       } else {
-        [view reactSetFrame:frame];
-
+        // Workaround for https://github.com/ptmt/react-native-desktop/issues/47
+        // Need to speedup layout or make cancelling mechanism
+        if (!view.isReactRootView) {
+          [view reactSetFrame:frame];
+        }
         RCTViewManagerUIBlock updateBlock = updateBlocks[reactTag];
         if (updateBlock) {
           updateBlock(self, _viewRegistry);

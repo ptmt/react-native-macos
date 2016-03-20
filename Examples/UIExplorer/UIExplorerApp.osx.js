@@ -90,7 +90,7 @@ var styles = StyleSheet.create({
     backgroundColor: '#333'
   },
   rightPanel: {
-    width: 450,
+    flex: 1,
   },
   welcomeWrapper: {
     flex: 1,
