@@ -453,7 +453,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)setBackgroundColor:(NSColor *)backgroundColor
 {
-  if ([_backgroundColor isEqual:backgroundColor] || backgroundColor == NULL) {
+  if ([_backgroundColor isEqual:backgroundColor]) {
+    return;
+  }
+  if ([backgroundColor isEqual:NULL]) {
+    [self setWantsLayer:NO];
+    self.layer = NULL;
     return;
   }
   if (![self wantsLayer] || self.layer == NULL) {
