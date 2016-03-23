@@ -66,6 +66,7 @@ RCT_EXPORT_METHOD(addItemToSubmenu:(NSString *)title
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
+
   if (!item || ![item valueForKey:@"title"]) {
     reject(@"Item requires title, key and callback", nil, nil);
   }
@@ -73,16 +74,27 @@ RCT_EXPORT_METHOD(addItemToSubmenu:(NSString *)title
   NSMenu *menu = [self ensureSubmenu:title];
   if ([menu indexOfItemWithTitle:item[@"title"]] == -1) {
     NSMenuItem *menuItem = [[NSMenuItem alloc] init];
+
     menuItem.title = item[@"title"];
     if ([item valueForKey:@"key"]) {
        menuItem.keyEquivalent = item[@"key"];
     }
-    menuItem.enabled = YES;
-    menuItem.action = @selector(callback:);
-    [menuItem setTarget:self];
-    [menu addItem:menuItem];
+
+    if ([item valueForKey:@"firstResponder"]) {
+      menuItem.action = NSSelectorFromString([item valueForKey:@"firstResponder"]);
+      [menuItem setTarget:nil];
+    } else {
+      menuItem.action = @selector(callback:);
+      [menuItem setTarget:self];
+
+    }
+       [menu addItem:menuItem];
+    if ([item valueForKey:@"separator"]) {
+      [menu addItem:[NSMenuItem separatorItem]];
+    }
     resolve(@[]);
   }
 }
+
 
 @end
