@@ -13,12 +13,12 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('react-native-desktop');
 var {
   Linking,
   StyleSheet,
   Text,
-  TouchableNativeFeedback,
+  TouchableHighlight,
   View,
 } = React;
 var UIExplorerBlock = require('./UIExplorerBlock');
@@ -41,12 +41,12 @@ var OpenURLButton = React.createClass({
 
   render: function() {
     return (
-      <TouchableNativeFeedback
+      <TouchableHighlight
         onPress={this.handleClick}>
         <View style={styles.button}>
           <Text style={styles.text}>Open {this.props.url}</Text>
         </View>
-      </TouchableNativeFeedback>
+      </TouchableHighlight>
     );
   }
 });
@@ -55,12 +55,18 @@ var IntentAndroidExample = React.createClass({
 
   statics: {
     title: 'Linking',
-    description: 'Shows how to use Linking to open URLs.',
+    description: 'Shows how to use Linking to parse argv and open URLs.',
   },
 
   render: function() {
     return (
       <UIExplorerBlock title="Open external URLs">
+        <View style={{margin: 20}}>
+          <Text>Linking.getArgv(): {JSON.stringify(Linking.getArgv())}</Text>
+        </View>
+        <View style={{margin: 20}}>
+          <Text>process.argv: {JSON.stringify(process.argv)}</Text>
+        </View>
         <OpenURLButton url={'https://www.facebook.com'} />
         <OpenURLButton url={'http://www.facebook.com'} />
         <OpenURLButton url={'http://facebook.com'} />

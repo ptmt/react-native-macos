@@ -64,7 +64,7 @@ var ReactNative = {
   get IntentAndroid() { return require('IntentAndroid'); },
   get InteractionManager() { return require('InteractionManager'); },
   get LayoutAnimation() { return require('LayoutAnimation'); },
-  get LinkingIOS() { return require('LinkingIOS'); },
+  get Linking() { return require('Linking'); },
   get NetInfo() { return require('NetInfo'); },
   get MenuManager() { return require('MenuManager'); },
   get PanResponder() { return require('PanResponder'); },

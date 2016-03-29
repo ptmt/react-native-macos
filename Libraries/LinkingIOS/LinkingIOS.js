@@ -15,7 +15,9 @@ var Linking = require('Linking');
 var RCTLinkingManager = require('NativeModules').LinkingManager;
 var invariant = require('fbjs/lib/invariant');
 
-var _initialURL = RCTLinkingManager && RCTLinkingManager.initialURL;
+var _argv = RCTLinkingManager && RCTLinkingManager.argv;
+
+//GLOBAL.process.argv = GLOBAL.process.argv || '';
 
 /**
  * NOTE: `LinkingIOS` is being deprecated. Use `Linking` instead.
@@ -150,9 +152,7 @@ class LinkingIOS {
    */
   static popInitialURL(): ?string {
     console.warn('"LinkingIOS.popInitialURL" is deprecated. Use the promise based "Linking.getInitialURL" instead.');
-    var initialURL = _initialURL;
-    _initialURL = null;
-    return initialURL;
+    return _argv;
   }
 }
 

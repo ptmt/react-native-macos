@@ -33,9 +33,8 @@ RCT_EXPORT_MODULE()
 
 - (NSDictionary<NSString *, id> *)constantsToExport
 {
-  NSURL *initialURL = _bridge.launchOptions[@"l"];
-  return @{};
-  //return @{@"initialURL": RCTNullIfNil(initialURL.absoluteString)};
+  NSString *argv = _bridge.launchOptions[@"argv"];
+  return @{@"argv": RCTNullIfNil(argv)};
 }
 
 - (void)dealloc

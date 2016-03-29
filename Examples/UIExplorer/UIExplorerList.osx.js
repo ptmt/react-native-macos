@@ -56,10 +56,11 @@ var APIS = [
   require('./AsyncStorageExample'),
   require('./BorderExample'),
   require('./LayoutExample'),
+  require('./LinkingExample'),
   require('./TransformExample'),
   require('./XHRExample.osx'),
   require('./DragnDropExample.osx'),
-  require('./MenuExample.osx')
+  require('./MenuExample.osx'),
 ];
 
 type Props = {

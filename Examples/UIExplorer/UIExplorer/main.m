@@ -15,13 +15,21 @@
 #import <Cocoa/Cocoa.h>
 #import "AppDelegate.h"
 
-int main(__unused int argc, __unused char * argv[]) {
+int main(__unused int argc, __unused char* argv[]) {
   @autoreleasepool {
     NSApplication * application = [NSApplication sharedApplication];
     NSMenu *mainMenu = [[NSMenu alloc] initWithTitle:@"Application"];
     [NSApp setMainMenu:mainMenu];
     AppDelegate * appDelegate = [[AppDelegate alloc] init];
     [application setDelegate:appDelegate];
+    if (argc > 1) {
+      NSMutableArray *argvArray = [[NSMutableArray alloc] init];
+      for (int i = 1; i < argc; i++) {
+        [argvArray addObject:[[NSString alloc] initWithUTF8String:argv[i]]];
+      }
+      [appDelegate setArgv:argvArray];
+    }
+
     [application run];
     return EXIT_SUCCESS;
   }

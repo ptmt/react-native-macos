@@ -25,6 +25,9 @@ const _notifHandlers = new Map();
 
 const DEVICE_NOTIF_EVENT = 'openURL';
 
+// polyfill
+process.argv = LinkingManagerIOS && LinkingManagerIOS.argv;
+
 /**
  * `Linking` gives you a general interface to interact with both incoming
  * and outgoing app links.
@@ -196,6 +199,10 @@ class Linking {
     } else {
       return Promise.resolve(LinkingManagerIOS.initialURL);
     }
+  }
+
+  static getArgv() {
+    return LinkingManagerIOS.argv;
   }
 
   static _validateURL(url: string) {

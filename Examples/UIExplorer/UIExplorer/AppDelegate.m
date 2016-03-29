@@ -54,11 +54,11 @@
   return self;
 }
 
-- (void)applicationDidFinishLaunching:(NSDictionary *)launchOptions
+- (void)applicationDidFinishLaunching:(NSNotification * __unused)aNotification
 {
 
   _bridge = [[RCTBridge alloc] initWithDelegate:self
-                                  launchOptions:launchOptions];
+                                  launchOptions:@{@"argv": [self argv]}];
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:_bridge
                                                    moduleName:@"UIExplorerApp"
