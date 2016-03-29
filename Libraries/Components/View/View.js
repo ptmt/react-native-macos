@@ -197,6 +197,12 @@ const View = React.createClass({
     testID: PropTypes.string,
 
     /**
+     * A nonlocalized string that defines the type of interface element represented
+     * by the accessibility element. Used in end-to-end tests.
+     */
+    testRole: PropTypes.string,
+
+    /**
      * For most touch interactions, you'll simply want to wrap your component in
      * `TouchableHighlight` or `TouchableOpacity`. Check out `Touchable.js`,
      * `ScrollResponder.js` and `ResponderEventPlugin.js` for more discussion.

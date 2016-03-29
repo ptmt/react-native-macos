@@ -98,6 +98,11 @@ const Text = React.createClass({
      */
     testID: React.PropTypes.string,
     /**
+     * A nonlocalized string that defines the type of interface element represented
+     * by the accessibility element. Used in end-to-end tests.
+     */
+    testRole: React.PropTypes.string,
+    /**
      * Specifies should fonts scale to respect Text Size accessibility setting on iOS.
      * @platform ios
      */
@@ -110,6 +115,7 @@ const Text = React.createClass({
   getDefaultProps(): Object {
     return {
       accessible: true,
+      testRole: 'AXText',
       allowFontScaling: true,
     };
   },
