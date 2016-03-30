@@ -175,7 +175,7 @@ function createProject(name, verbose) {
       start: 'node node_modules/react-native-desktop/local-cli/cli.js start'
     }
   };
-  fs.writeFileSync(path.join(root, 'package.json'), JSON.stringify(packageJson));
+  fs.writeFileSync(path.join(root, 'package.json'), JSON.stringify(packageJson, null, 2));
   process.chdir(root);
 
   console.log('Installing react-native-desktop package from npm...');
