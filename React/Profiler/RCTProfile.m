@@ -346,9 +346,9 @@ void RCTProfileUnhookModules(RCTBridge *bridge)
 
 @implementation RCTProfile
 
-+ (void)vsync
++ (void)vsync:(NSTimer *)timer
 {
-  RCTProfileImmediateEvent(0, @"VSYNC", [[NSDate init] timeIntervalSince1970], 'g');
+  RCTProfileImmediateEvent(0, @"VSYNC", CACurrentMediaTime(), 'g');
 }
 
 @end
@@ -412,7 +412,7 @@ void RCTProfileInit(RCTBridge *bridge)
 
   RCTProfileHookModules(bridge);
 
-  // TODO: replace NSTimer
+  // TODO: replace NSTimer with hardcoded timeInterval
   RCTProfileDisplayLink = [NSTimer
                            timerWithTimeInterval:0.01
                            target:[RCTProfile class]

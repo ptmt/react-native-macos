@@ -1023,7 +1023,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithBundleURL:(__unused NSURL *)bundleUR
 
   [self updateJSDisplayLinkState];
 
-  RCTProfileImmediateEvent(0, @"JS Thread Tick", [[NSDate date] timeIntervalSince1970], 'g');
+  RCTProfileImmediateEvent(0, @"JS Thread Tick", CACurrentMediaTime(), 'g');
 
   RCT_PROFILE_END_EVENT(0, @"objc_call", nil);
 }
