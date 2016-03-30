@@ -23,10 +23,16 @@ react-native-desktop init MyProject
 cd MyProject
 open osx/MyProject.xcodeproj
 ```
-Since it's simply just a fork, you can follow [the same steps](http://facebook.github.io/react-native/docs/getting-started.html#content) from the original React Native.
+Since it's simply just a fork, you can follow [the same instruction](http://facebook.github.io/react-native/docs/getting-started.html#content) from the original React Native.
 Feel free to ask anything on `#react-native-desktop` channel if you run into problems (and you probably will).
 
+## Patreon
+
+Support development on Patreon: https://www.patreon.com/skelet
+
 ## Screenshots and examples 
+
+This is outdated screenshots of UIExplorer. It doesn't look flawless since most of them ported from iOS. 
 
 ![uiexplorer](https://cloud.githubusercontent.com/assets/1004115/10608147/311445b0-7757-11e5-9ef7-2e76107e4bb7.png)
 
