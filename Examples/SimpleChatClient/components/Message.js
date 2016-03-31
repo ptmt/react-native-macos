@@ -41,7 +41,7 @@ class Preview extends React.Component {
     return (
       <View style={{flex: 1, margin: 10, borderColor: '#eee', borderWidth: 1, padding: 3}}>
         <Text style={{fontSize: 12, textAlign:'center', fontWeight: 'bold'}}>{this.props.title}</Text>
-        <View style={{flexDirection: 'row', flex: 1, justifyContent: 'center', alignContent: 'center'}}>
+        <View style={{flexDirection: 'row', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <Image resizeMode={'contain'} source={{uri: this.props.thumbnail.url}} style={{margin: 5, width: 80, height: 80}} />
           <Text style={{fontSize: 12, color: '#777', margin: 10, width: 200}}>{this.props.description}</Text>
         </View>

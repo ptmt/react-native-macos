@@ -79,35 +79,9 @@
 {
     NSURL *sourceURL;
 
-    /**
-     * Loading JavaScript code - uncomment the one you want.
-     *
-     * OPTION 1
-     * Load from development server. Start the server from the repository root:
-     *
-     * $ npm start
-     *
-     * To run on device, change `localhost` to the IP address of your computer
-     * (you can get this by typing `ifconfig` into the terminal and selecting the
-     * `inet` value under `en0:`) and make sure your computer and iOS device are
-     * on the same Wi-Fi network.
-     */
-
+#if DEBUG
     sourceURL = [NSURL URLWithString:@"http://localhost:8081/Examples/SimpleChatClient/index.osx.bundle?platform=osx&dev=true"];
-
-    /**
-     * OPTION 2
-     * Load from pre-bundled file on disk. To re-generate the static bundle, `cd`
-     * to your Xcode project folder and run
-     *
-     * $ curl 'http://localhost:8081/Examples/SimpleChatClient/index.osx.bundle?platform=osx&dev=false&minify=true' -o SimpleChatClient/main.jsbundle
-     *
-     * then add the `main.jsbundle` file to your project and uncomment this line:
-     */
-
-    //sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
-
-#if RUNNING_ON_CI
+#else
     sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
 

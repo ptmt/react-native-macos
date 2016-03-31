@@ -20,7 +20,6 @@
   NSMutableArray *_reactSubviews;
   BOOL _jsRequestingFirstResponder;
   NSInteger _nativeEventCount;
-  NSString * _placeholderString;
 }
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
@@ -31,7 +30,8 @@
     self.delegate = self;
     self.drawsBackground = NO;
     self.bordered = NO;
-    
+    self.bezeled = YES;
+
     _reactSubviews = [NSMutableArray new];
   }
   return self;
@@ -49,24 +49,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     //self.selectedTextRange = selection; // maintain cursor position/selection - this is robust to out of bounds
   } else if (eventLag > RCTTextUpdateLagWarningThreshold) {
     RCTLogWarn(@"Native TextInput(%@) is %zd events ahead of JS - try to make your JS faster.", [self stringValue], eventLag);
-  }
-}
-
-
-- (void)setPlaceholderTextColor:(NSColor *)placeholderTextColor
-{
-  if (placeholderTextColor != nil && ![_placeholderTextColor isEqual:placeholderTextColor]) {
-    _placeholderTextColor = placeholderTextColor;
-    [self setNeedsDisplay:YES];
-  }
-}
-
-- (void)setPlaceholder:(NSString *)placeholder
-{
-  if (placeholder != nil && ![_placeholderString isEqual:placeholder]) {
-    _placeholderString = placeholder;
-    [self setPlaceholderString:placeholder];
-    [self setNeedsDisplay:YES];
   }
 }
 

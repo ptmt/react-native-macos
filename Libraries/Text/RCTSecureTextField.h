@@ -13,11 +13,8 @@
 
 @interface RCTSecureTextField : NSSecureTextField <NSTextFieldDelegate>
 
-@property (nonatomic, assign) BOOL caretHidden;
-@property (nonatomic, assign) BOOL autoCorrect;
 @property (nonatomic, assign) BOOL selectTextOnFocus;
 @property (nonatomic, assign) NSEdgeInsets contentInset;
-@property (nonatomic, strong) NSColor *placeholderTextColor;
 @property (nonatomic, assign) NSInteger mostRecentEventCount;
 @property (nonatomic, strong) NSNumber *maxLength;
 

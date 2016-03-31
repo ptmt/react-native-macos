@@ -13,7 +13,7 @@
 
 @end
 
-@interface RCTSecureTextFieldManager : RCTViewManager
+@interface RCTSecureTextFieldManager : RCTTextFieldManager
 
 @end
 

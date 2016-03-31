@@ -21,7 +21,7 @@ class SigninForm extends React.Component {
   constructor() {
     super();
     this.state = {
-      width: new Animated.Value(0),
+      height: new Animated.Value(-1000),
       rotate: new Animated.Value(0.5),
       x: new Animated.Value(0),
       animatedColor: new Animated.Value(0)
@@ -29,9 +29,9 @@ class SigninForm extends React.Component {
   }
   componentDidMount() {
     Animated.sequence([
-      Animated.delay(1000),
-      Animated.spring(this.state.width, {
-        toValue: 1
+      Animated.delay(500),
+      Animated.spring(this.state.height, {
+        toValue: 0
       })
     ]).start();
   }
@@ -63,7 +63,7 @@ class SigninForm extends React.Component {
   }
   render() {
     const animatedStyles = {
-      transform: [{scaleX: this.state.width}],
+      transform: [{translateY: this.state.height}],
       left: this.state.x.interpolate({
        inputRange: [0, 0.5, 1],
        outputRange: [0, 20, 0]  // 0 : 150, 0.5 : 75, 1 : 0
@@ -163,7 +163,7 @@ var styles = StyleSheet.create({
     borderColor: '#0f0f0f',
     width: 250,
     fontSize: 16,
-    color: 'white',
+    color: 'black',
   },
   input: {
     borderBottomWidth: 1,

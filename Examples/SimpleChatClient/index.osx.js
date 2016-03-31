@@ -7,13 +7,13 @@ import { Provider } from 'react-redux';
 import logger from 'redux-logger';
 import thunk from 'redux-thunk';
 import storage from 'redux-storage';
-import createEngine from 'redux-storage/engines/reactNativeAsyncStorage';
+import createEngine from './rndesktopStorage';
 
 import reducer from './reducers';
 import { SIGNIN_REQUEST, SIGNIN_FAILURE } from './actions';
 import App from './components/App';
 
-const engine = createEngine(React.AsyncStorage)('chat');
+const engine = createEngine('chat');
 const wrappedReducer = storage.reducer(reducer);
 const storageMiddleware = storage.createMiddleware(engine, [ SIGNIN_REQUEST, SIGNIN_FAILURE ]);
 
