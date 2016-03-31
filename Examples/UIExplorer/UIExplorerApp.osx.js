@@ -56,21 +56,10 @@ class UIExplorerApp extends React.Component {
 }
 
 class Welcome extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      onHover: false
-    };
-  }
   render() {
-    var backgroundStyles = this.state.onHover ? { backgroundColor: 'black'} : {};
     return (
       <View style={styles.welcomeWrapper}>
-        <TouchableHighlight style={backgroundStyles}
-        onMouseEnter={() => this.setState({onHover: true})}
-        onMouseLeave={() => this.setState({onHover: false})}>
-          <Text style={styles.welcomeText}>Choose an example on the left side</Text>
-        </TouchableHighlight>
+        <Text style={styles.welcomeText}>Choose an example on the left side</Text>
       </View>
     );
   }
@@ -79,7 +68,6 @@ class Welcome extends React.Component {
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ddd',
     flexDirection: 'row'
   },
   itemWrapper: {
@@ -87,10 +75,10 @@ var styles = StyleSheet.create({
   },
   leftPanel: {
     width: 300,
-    backgroundColor: '#333'
   },
   rightPanel: {
     flex: 1,
+    backgroundColor: '#fff'
   },
   welcomeWrapper: {
     flex: 1,

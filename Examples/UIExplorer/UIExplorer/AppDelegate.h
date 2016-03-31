@@ -16,11 +16,12 @@
 
 @class RCTBridge;
 
-@interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate, NSToolbarDelegate, NSWindowDelegate>
 
 @property (strong, nonatomic) NSWindow *window;
-@property (strong) NSArray<NSString *> *argv;
-@property(assign) Class<NSWindowRestoration> restorationClass;
+@property (strong, nonatomic) NSArray<NSString *> *argv;
+@property (assign, nonatomic) Class<NSWindowRestoration> restorationClass;
 @property (nonatomic, readonly) RCTBridge *bridge;
+@property (strong, nonatomic) NSURL *sourceURL;
 
 @end

@@ -13,43 +13,51 @@
  */
 
 #import "AppDelegate.h"
+#import <Cocoa/Cocoa.h>
 
 #import "RCTBridge.h"
 #import "RCTJavaScriptLoader.h"
 #import "RCTRootView.h"
-#import <Cocoa/Cocoa.h>
+#import "RCTEventDispatcher.h"
 
-@interface AppDelegate() <RCTBridgeDelegate>
+@interface AppDelegate() <RCTBridgeDelegate, NSSearchFieldDelegate>
 
 @end
+
 
 @implementation AppDelegate
 
 -(id)init
 {
   if(self = [super init]) {
+
+    // -- Init Window
     NSRect contentSize = NSMakeRect(200, 500, 1000, 500); // TODO: should not be hardcoded
 
     self.window = [[NSWindow alloc] initWithContentRect:contentSize
-                                              styleMask:NSTitledWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask
+                                              styleMask:NSTitledWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask | NSFullSizeContentViewWindowMask
                                                 backing:NSBackingStoreBuffered
                                                   defer:NO];
     NSWindowController *windowController = [[NSWindowController alloc] initWithWindow:self.window];
 
     [[self window] setTitle:@"UIExplorerApp"];
+    [[self window] setTitleVisibility:NSWindowTitleHidden];
+    [[self window] setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameVibrantLight ]];
+    [windowController showWindow:self.window];
 
     [windowController setShouldCascadeWindows:NO];
     [windowController setWindowFrameAutosaveName:@"UIExplorer"];
+    [self setDefaultURL];
 
-    [windowController showWindow:self.window];
+    // -- Init Toolbar
+    NSToolbar *toolbar = [[NSToolbar alloc] initWithIdentifier:@"mainToolbar"];
+    [toolbar setDelegate:self];
+    [toolbar setSizeMode:NSToolbarSizeModeRegular];
 
-    NSMenu *mainMenu = [[NSMenu alloc] initWithTitle:@"" ];
-    NSMenuItem *containerItem = [[NSMenuItem alloc] init];
-    NSMenu *rootMenu = [[NSMenu alloc] initWithTitle:@"" ];
-    [containerItem setSubmenu:rootMenu];
-    [mainMenu addItem:containerItem];
-    [rootMenu addItemWithTitle:@"Quit UIExplorer" action:@selector(terminate:) keyEquivalent:@"q"];
-    [NSApp setMainMenu:mainMenu];
+    [self.window setToolbar:toolbar];
+
+    // -- Init Menu
+    [self setUpMainMenu];
   }
   return self;
 }
@@ -69,50 +77,24 @@
   [self.window setContentView:rootView];
 }
 
-
-/**
- * Indicates whether Hot Loading is supported or not.
- * Note: this method will be removed soon, once Hot Loading is supported on OSS.
- */
-- (BOOL)bridgeSupportsHotLoading:(__unused RCTBridge *)bridge
+- (void)setDefaultURL
 {
-  return YES;
+#if DEBUG
+  _sourceURL = [NSURL URLWithString:@"http://localhost:8081/Examples/UIExplorer/UIExplorerApp.osx.bundle?platform=osx&dev=true"];
+#else
+  _sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+#endif
 }
 
+- (void)resetBridgeToDefault
+{
+  [self setDefaultURL];
+  [_bridge reload];
+}
 
 - (NSURL *)sourceURLForBridge:(__unused RCTBridge *)bridge
 {
-    NSURL *sourceURL;
-
-    /**
-     * Loading JavaScript code - uncomment the one you want.
-     *
-     * OPTION 1
-     * Load from development server. Start the server from the repository root:
-     *
-     * $ npm start
-     *
-     * To run on device, change `localhost` to the IP address of your computer
-     * (you can get this by typing `ifconfig` into the terminal and selecting the
-     * `inet` value under `en0:`) and make sure your computer and iOS device are
-     * on the same Wi-Fi network.
-     */
-
-    sourceURL = [NSURL URLWithString:@"http://localhost:8081/Examples/UIExplorer/UIExplorerApp.osx.bundle?platform=osx&dev=true"];
-
-    /**
-     * OPTION 2
-     * Load from pre-bundled file on disk. To re-generate the static bundle, `cd`
-     * to your Xcode project folder and run
-     *
-     * $ curl 'http://localhost:8081/Examples/UIExplorer/UIExplorerApp.osx.bundle?platform=osx&dev=false' -o main.jsbundle
-     *
-     * then add the `main.jsbundle` file to your project and uncomment this line:
-     */
-
-    //sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
-
-  return sourceURL;
+  return _sourceURL;
 }
 
 - (void)loadSourceForBridge:(RCTBridge *)bridge
@@ -120,6 +102,106 @@
 {
   [RCTJavaScriptLoader loadBundleAtURL:[self sourceURLForBridge:bridge]
                             onComplete:loadCallback];
+}
+
+- (NSArray *)toolbarAllowedItemIdentifiers:(__unused NSToolbar *)toolbar
+{
+  return @[NSToolbarFlexibleSpaceItemIdentifier, @"searchBar", NSToolbarFlexibleSpaceItemIdentifier, @"resetButton"];
+}
+
+- (NSArray *)toolbarDefaultItemIdentifiers:(__unused NSToolbar *)toolbar
+{
+  return @[NSToolbarFlexibleSpaceItemIdentifier, @"searchBar", NSToolbarFlexibleSpaceItemIdentifier, @"resetButton"];
+}
+
+- (NSToolbarItem *)toolbar:(NSToolbar * __unused)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL __unused)flag {
+
+  if ([itemIdentifier isEqualToString:@"searchBar"]) {
+    NSSearchField *searchField = [[NSSearchField alloc] init];
+    [searchField setFrameSize:NSMakeSize(400, searchField.intrinsicContentSize.height)];
+    [searchField setDelegate:self];
+    [searchField setAction:@selector(searchURLorQuery:)];
+    NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
+    [item setView:searchField];
+    return item;
+  }
+
+  if ([itemIdentifier isEqualToString:@"resetButton"]) {
+    NSButton *button = [[NSButton alloc] initWithFrame:NSMakeRect(0, 0, 50, 33)];
+    [button setBezelStyle:NSRoundedBezelStyle];
+    [button setImage:[NSImage imageNamed:NSImageNameRefreshTemplate]];
+    [button setTarget:self];
+    [button setAction:@selector(resetBridgeToDefault)];
+    NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
+    [item setView:button];
+    [item setAction:@selector(resetBridgeToDefault)];
+
+    return item;
+  }
+  return nil;
+
+}
+
+- (IBAction)searchURLorQuery:(id)sender {
+  if ([[sender stringValue] containsString:@"http"]) {
+    _sourceURL =[NSURL URLWithString:[sender stringValue]];
+    _bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:nil];
+    NSString * moduleName = [_sourceURL.lastPathComponent stringByReplacingOccurrencesOfString:@".osx.bundle" withString:@""];
+    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:_bridge
+                                                     moduleName:moduleName
+                                              initialProperties:nil];
+    NSLog(@"moduleName: %@", moduleName);
+    [self.window setContentView:rootView];
+  } else {
+    [_bridge.eventDispatcher sendDeviceEventWithName:@"onSearchExample"
+                                                body:@{@"query": [sender stringValue]}
+    ];
+  }
+}
+
+- (void) setUpMainMenu
+{
+  NSMenu *mainMenu = [[NSMenu alloc] initWithTitle:@"" ];
+  NSMenuItem *containerItem = [[NSMenuItem alloc] init];
+  NSMenu *rootMenu = [[NSMenu alloc] initWithTitle:@"" ];
+  [containerItem setSubmenu:rootMenu];
+  [mainMenu addItem:containerItem];
+  [rootMenu addItemWithTitle:@"Quit UIExplorer" action:@selector(terminate:) keyEquivalent:@"q"];
+  [NSApp setMainMenu:mainMenu];
+
+  NSMenuItem *editItemContainer = [[NSMenuItem alloc] init];
+  NSMenu *editMenu = [[NSMenu alloc] initWithTitle:@"Edit"];
+  [editItemContainer setSubmenu:editMenu];
+  [editMenu setAutoenablesItems:NO];
+  [editMenu addItem:[self addEditMenuItem:@"Undo" action:@selector(undo) key:@"z" ]];
+  [editMenu addItem:[self addEditMenuItem:@"Redo" action:@selector(redo) key:@"Z" ]];
+  [editMenu addItem:[self addEditMenuItem:@"Cut" action:@selector(cut:) key:@"x" ]];
+  [editMenu addItem:[self addEditMenuItem:@"Copy" action:@selector(copy:) key:@"c" ]];
+  [editMenu addItem:[self addEditMenuItem:@"Paste" action:@selector(paste:) key:@"v" ]];
+  [editMenu addItem:[self addEditMenuItem:@"SelectAll" action:@selector(selectAll:) key:@"a" ]];
+  [[NSApp mainMenu] addItem:editItemContainer];
+}
+
+- (NSMenuItem *)addEditMenuItem:(NSString *)title
+                         action:(SEL _Nullable)action
+                            key:(NSString *)key
+{
+  NSMenuItem * menuItem = [[NSMenuItem alloc] init];
+  [menuItem setTitle:title];
+  [menuItem setEnabled:YES];
+  [menuItem setAction:action];
+  [menuItem setKeyEquivalent:key];
+  return menuItem;
+}
+
+- (void)undo
+{
+  [[[self window] undoManager] undo];
+}
+
+- (void)redo
+{
+  [[[self window] undoManager] redo];
 }
 
 @end

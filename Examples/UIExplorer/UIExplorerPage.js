@@ -64,7 +64,6 @@ var UIExplorerPage = React.createClass({
 
 var styles = StyleSheet.create({
   container: {
-    backgroundColor: '#e9eaed',
     flex: 1,
   },
   spacer: {

@@ -20,11 +20,12 @@ var {
   StyleSheet,
   Text,
   TextInput,
-  TouchableHighlight,
+  TouchableOpacity,
   ScrollView,
   View,
 } = React;
 var createExamplePage = require('./createExamplePage');
+var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 
 // var ds = new ListView.DataSource({
 //   rowHasChanged: (r1, r2) => r1 !== r2,
@@ -37,9 +38,9 @@ class ListView extends React.Component {
       var apiRows = this.props.dataSource.apis.map((c, i) => this.props.renderRow(c, i));
       return (
         <ScrollView showsVerticalScrollIndicator={true}>
-          {this.props.renderSectionHeader(null, 'Components:')}
+          {this.props.renderSectionHeader(null, 'Components')}
           {componentRows}
-          {this.props.renderSectionHeader(null, 'APIs:')}
+          {this.props.renderSectionHeader(null, 'APIs')}
           {apiRows}
         </ScrollView>
       );
@@ -63,16 +64,17 @@ class UIExplorerListBase extends React.Component {
   }
 
   componentDidMount(): void {
+    RCTDeviceEventEmitter.addListener(
+      'onSearchExample',
+      (e) => this.search(e.query)
+    );
     this.search(this.state.searchText);
   }
 
   render() {
-    var topView = this.props.renderAdditionalView &&
-      this.props.renderAdditionalView(this.renderRow.bind(this), this.renderTextInput.bind(this));
-
     return (
       <View style={styles.listContainer}>
-        {topView}
+
         <ListView
           style={styles.list}
           dataSource={this.state.dataSource}
@@ -86,46 +88,30 @@ class UIExplorerListBase extends React.Component {
     );
   }
 
-  renderTextInput(searchTextInputStyle: any) {
-    return (
-      <View style={styles.searchRow}>
-        <TextInput
-          clearButtonMode="always"
-          bazeled={false}
-          onChangeText={this.search.bind(this)}
-          placeholder="Search..."
-          //placeholderTextColor={'#ccc'}
-          style={[styles.searchTextInput, searchTextInputStyle]}
-          testID="explorer_search"
-          value={this.state.searchText} />
-      </View>
-    );
-  }
-
   _renderSectionHeader(data: any, section: string) {
     return (
       <Text style={styles.sectionHeader}>
-        {section.toUpperCase()}
+        {section}
       </Text>
     );
   }
 
   renderRow(example: any, i: number) {
     var selected = this.state.selected === example.title ? styles.selectedRow : {};
-    var hovered = this.state.hovered === example.title ? styles.hoveredRow : {};
     return (
-      <TouchableHighlight onPress={() => this.onPressRow(example)}
-      onMouseEnter={() => this.setState({hovered: example.title})}
-      key={i} style={[styles.row, hovered, selected]}>
-        <View>
+      <TouchableOpacity activeOpacity={0.8}
+        onPress={() => this.onPressRow(example)}
+        key={i}
+        style={[styles.row, selected]}>
+
           <Text style={styles.rowTitleText}>
             {example.title}
           </Text>
           <Text style={styles.rowDetailText}>
             {example.description}
           </Text>
-        </View>
-      </TouchableHighlight>
+
+      </TouchableOpacity>
     );
   }
 
@@ -165,23 +151,21 @@ var styles = StyleSheet.create({
     flex: 1,
   },
   list: {
-    backgroundColor: '#eeeeee',
   },
   sectionHeader: {
-    padding: 5,
-    fontWeight: '300',
-    fontSize: 11,
-    color: 'white'
+    paddingHorizontal: 7,
+    paddingTop: 7,
+    fontWeight: '600',
+    fontSize: 10,
+    color: '#777',
+    letterSpacing: -0.2
   },
   group: {
-    backgroundColor: 'white',
   },
   row: {
-    backgroundColor: 'white',
     justifyContent: 'center',
     paddingHorizontal: 15,
     paddingVertical: 8,
-    //borderBottomColor: 'white'
   },
   separator: {
     height: StyleSheet.hairlineWidth,
@@ -189,25 +173,15 @@ var styles = StyleSheet.create({
     marginLeft: 15,
   },
   rowTitleText: {
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: 13,
+    fontWeight: '400',
   },
   rowDetailText: {
     fontSize: 10,
     color: '#888',
   },
-  searchRow: {
-    backgroundColor: '#eee',
-    padding: 5,
-
-  },
-  searchTextInput: {
-    fontWeight: '200',
-    fontSize: 12,
-    //textAlign: 'center'
-  },
   selectedRow: {
-    backgroundColor: '#fffd7e'
+    backgroundColor: '#ddd'
   },
   hoveredRow: {
     backgroundColor: '#ddd'
