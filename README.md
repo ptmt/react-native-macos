@@ -8,22 +8,23 @@ Build OS X desktop apps using React Native.
 
 ```jsx
 <View>
-  <Button onClick={() => alert('clicked')}/>
+  <Button onClick={() => alert('clicked')} />
 </View>
 ```
 <img width="407" alt="screenshot 2016-03-03 17 18 33" src="https://cloud.githubusercontent.com/assets/1004115/13496949/fe98e5e2-e163-11e5-9ded-0b4449950c8f.png">
 
 ## Getting started
 
-**Disclaimer**. It's recommended to have previous experience of developing apps with React Native.
+**Disclaimer**. Having previous experience with React Native highly recommended. There is no success story for any RN desktop app yet, so it's not proven by production. 
 
 ``` bash
-npm install react-native-desktop-cli -g
-react-native-desktop init MyProject
-cd MyProject
-open osx/MyProject.xcodeproj
+$ npm install react-native-desktop-cli -g
+$ react-native-desktop init MyProject
+$ cd MyProject
+$ open osx/MyProject.xcodeproj
 ```
-Since it's simply just a fork, you can follow [the same instruction](http://facebook.github.io/react-native/docs/getting-started.html#content) from the original React Native.
+Since it's simply just a fork, you can follow [the same instruction on facebook.github.io/react-native](http://facebook.github.io/react-native/docs/getting-started.html#content).
+
 Feel free to ask anything on `#react-native-desktop` channel if you run into problems (and you probably will).
 
 ## Patreon
