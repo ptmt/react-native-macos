@@ -11,8 +11,8 @@
 #import "AppKit/AppKit.h"
 
 typedef NS_ENUM(NSInteger, RCTResizeMode) {
-  RCTResizeModeCover = 0,
-  RCTResizeModeContain = 1,
+  RCTResizeModeContain = 0,
+  RCTResizeModeCover = 1,
   RCTResizeModeStretch = 2,
 };
 
