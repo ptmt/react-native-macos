@@ -28,6 +28,8 @@ int main(__unused int argc, char* argv[]) {
         [argvArray addObject:[[NSString alloc] initWithUTF8String:argv[i]]];
       }
       [appDelegate setArgv:argvArray];
+    } else {
+      [appDelegate setArgv:[[NSArray alloc] init]];
     }
 
     [application run];

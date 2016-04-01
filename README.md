@@ -15,7 +15,7 @@ Build OS X desktop apps using React Native.
 
 ## Getting started
 
-**Disclaimer**. Having previous experience with React Native highly recommended. There is no success story for any RN desktop app yet, so it's not proven by production. 
+**Disclaimer**. Having previous experience with React Native highly recommended. There is no success story for any RN desktop app yet, so it's not proven by production.
 
 ``` bash
 $ npm install react-native-desktop-cli -g
@@ -33,7 +33,7 @@ Support development on Patreon: https://www.patreon.com/reactnativedesktop
 
 ## Examples
 
-[Download UIExplorer](https://github.com/ptmt/react-native-desktop/files/198284/UIExplorer.zip)
+[Download UIExplorer](https://github.com/ptmt/react-native-desktop/files/199128/UIExplorer.zip)
 
 UIExplorer includes a set of examples and allows to you load external js bundle by http. Just copy&paste URL into SearchField.
 

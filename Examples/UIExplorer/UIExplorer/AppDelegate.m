@@ -204,4 +204,8 @@
   [[[self window] undoManager] redo];
 }
 
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication * __unused)theApplication {
+  return YES;
+}
+
 @end

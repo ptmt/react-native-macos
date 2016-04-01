@@ -504,6 +504,7 @@
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
+				031465E81CAE4FC70005E5B6 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -692,6 +693,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		031465E81CAE4FC70005E5B6 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [$CONFIGURATION -eq Debug]\n  then\n    echo \"Skipping bundling for Debug\"\n    exit 0;\nfi\n\nset -x\n\nDEST=$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH\n\nnode \"../../local-cli/cli.js\" bundle \\\n--entry-file Examples/UIExplorer/UIExplorerApp.osx.js \\\n--platform osx \\\n--dev false \\\n--bundle-output \"$DEST/main.jsbundle\" \\\n--assets-dest \"$DEST\"";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		004D289A1AAF61C70097A701 /* Sources */ = {
