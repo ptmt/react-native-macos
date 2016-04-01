@@ -1,6 +1,6 @@
 ## React Native Desktop
 
-Build OS X desktop apps using React Native.
+Build OS X desktop apps using React Native and Cocoa.
 
 [![Build Status](https://travis-ci.org/ptmt/react-native-desktop.svg)](https://travis-ci.org/ptmt/react-native-desktop)
 [![npm version](https://badge.fury.io/js/react-native-desktop.svg)](https://badge.fury.io/js/react-native-desktop)
@@ -15,8 +15,6 @@ Build OS X desktop apps using React Native.
 
 ## Getting started
 
-**Disclaimer**. Having previous experience with React Native highly recommended. There is no success story for any RN desktop app yet, so it's not proven by production.
-
 ``` bash
 $ npm install react-native-desktop-cli -g
 $ react-native-desktop init MyProject
@@ -25,17 +23,19 @@ $ open osx/MyProject.xcodeproj
 ```
 Since it's simply just a fork, you can follow [the same instruction on facebook.github.io/react-native](http://facebook.github.io/react-native/docs/getting-started.html#content).
 
+**Disclaimer**. Having previous experience with React Native highly recommended. There is no success story for any RN desktop app yet, so it's not proven by production use.
+
 Feel free to ask anything on `#react-native-desktop` channel if you run into problems (and you probably will).
 
-## Patreon
+## Sponsorship
 
-Support development on Patreon: https://www.patreon.com/reactnativedesktop
+Support for development on Patreon: https://www.patreon.com/reactnativedesktop
 
 ## Examples
 
 [Download UIExplorer](https://github.com/ptmt/react-native-desktop/files/199128/UIExplorer.zip)
 
-UIExplorer includes a set of examples and allows to you load external js bundle by http. Just copy&paste URL into SearchField.
+UIExplorer includes a set of examples and allows to you load external javascript bundle by http. Just copy&paste URL into SearchField.
 
 
 ![screenshot 2016-03-31 21 06 33](https://cloud.githubusercontent.com/assets/1004115/14185918/91648d8c-f784-11e5-82b6-fcd08b74b89a.png)
