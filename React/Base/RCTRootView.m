@@ -66,6 +66,10 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 
   if ((self = [super initWithFrame:CGRectZero])) {
 
+    // TODO: Turn on layer backing just to avoid https://github.com/ptmt/react-native-desktop/issues/47
+    // Maybe we could turn it off after the bug fixed in the future.
+    [self setWantsLayer:YES];
+    
     [self setNeedsLayout:NO];
     [self setMaterial:NSVisualEffectMaterialLight];
 
@@ -120,11 +124,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)setBackgroundColor:(NSColor *)backgroundColor
 {
-  if (![super wantsLayer]) {
-    CALayer *viewLayer = [CALayer layer];
-    [super setWantsLayer:YES];
-    [super setLayer:viewLayer];
-  }
   [super.layer setBackgroundColor:[backgroundColor CGColor]];
 }
 
