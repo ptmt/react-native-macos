@@ -33,7 +33,7 @@ module.exports = [
     default: false
   }, {
     command: 'bridge-config',
-    description: 'File name of a a JSON export of __fbBatchedBridgeConfig. Used by Prepack. Ex. ./bridgeconfig.json',
+    description: 'File name of a JSON export of __fbBatchedBridgeConfig. Used by Prepack. Ex. ./bridgeconfig.json',
     type: 'string'
   }, {
     command: 'bundle-output',
