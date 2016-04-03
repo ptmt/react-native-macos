@@ -69,7 +69,7 @@ RCT_CUSTOM_VIEW_PROPERTY(type, NSButtonType, __unused NSButton)
 {
   if (json) {
     [view setButtonType:[RCTConvert NSButtonType:json]];
-  } 
+  }
 }
 
 - (NSDictionary<NSString *, id> *)constantsToExport

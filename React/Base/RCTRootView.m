@@ -69,7 +69,7 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
     // TODO: Turn on layer backing just to avoid https://github.com/ptmt/react-native-desktop/issues/47
     // Maybe we could turn it off after the bug fixed in the future.
     [self setWantsLayer:YES];
-    
+
     [self setNeedsLayout:NO];
     [self setMaterial:NSVisualEffectMaterialLight];
 

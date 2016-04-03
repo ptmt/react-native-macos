@@ -16,7 +16,7 @@ case "$CONFIGURATION" in
     # builds on the simulator since the packager is supposed to be running anyways.
     echo "Skipping bundling for Debug"
     exit 0;
-    
+
     ;;
   "")
     echo "$0 must be invoked by Xcode"

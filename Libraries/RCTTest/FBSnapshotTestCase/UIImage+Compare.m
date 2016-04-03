@@ -47,7 +47,7 @@
 //    free(imagePixels);
 //    return NO;
 //  }
-//    
+//
 //  CGContextRef referenceImageContext = CGBitmapContextCreate(referenceImagePixels,
 //                                                             CGImageGetWidth(self.CGImage),
 //                                                             CGImageGetHeight(self.CGImage),
@@ -64,11 +64,11 @@
 //                                                    CGImageGetColorSpace(image.CGImage),
 //                                                    (CGBitmapInfo)kCGImageAlphaPremultipliedLast
 //                                                    );
-//    
+//
 //  CGFloat scaleFactor = [UIScreen mainScreen].scale;
 //  CGContextScaleCTM(referenceImageContext, scaleFactor, scaleFactor);
 //  CGContextScaleCTM(imageContext, scaleFactor, scaleFactor);
-//    
+//
 //  if (!referenceImageContext || !imageContext) {
 //    CGContextRelease(referenceImageContext);
 //    CGContextRelease(imageContext);
@@ -76,12 +76,12 @@
 //    free(imagePixels);
 //    return NO;
 //  }
-//    
+//
 //  CGContextDrawImage(referenceImageContext, CGRectMake(0.0f, 0.0f, self.size.width, self.size.height), self.CGImage);
 //  CGContextDrawImage(imageContext, CGRectMake(0.0f, 0.0f, image.size.width, image.size.height), image.CGImage);
 //  CGContextRelease(referenceImageContext);
 //  CGContextRelease(imageContext);
-//    
+//
 //  BOOL imageEqual = (memcmp(referenceImagePixels, imagePixels, referenceImageSizeBytes) == 0);
 //  free(referenceImagePixels);
 //  free(imagePixels);
