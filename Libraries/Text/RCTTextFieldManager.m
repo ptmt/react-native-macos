@@ -112,7 +112,7 @@ RCT_EXPORT_VIEW_PROPERTY(mostRecentEventCount, NSInteger)
 
 
 // TODO: extract common logic into one place
-@implementation RCTSecureTextFieldManager 
+@implementation RCTSecureTextFieldManager
 
 RCT_EXPORT_MODULE()
 

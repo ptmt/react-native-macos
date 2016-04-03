@@ -160,7 +160,7 @@ describe('resolveAssetSource', () => {
       });
     });
   });
-  
+
   describe('bundle was loaded from file on Android', () => {
     beforeEach(() => {
       NativeModules.SourceCode.scriptURL =

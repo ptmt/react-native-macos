@@ -99,7 +99,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)coder)
 
 - (void)setImage:(NSImage *)image
 {
-  
+
   image = image ?: _defaultImage;
   if (image != super.image) {
     super.image = image;

@@ -30,7 +30,7 @@ var ImageStylePropTypes = {
   borderRadius: ReactPropTypes.number,
   overflow: ReactPropTypes.oneOf(['visible', 'hidden']),
 
-  /** 
+  /**
    * iOS-Specific style to "tint" an image.
    * Changes the color of all the non-transparent pixels to the tintColor.
    * @platform ios

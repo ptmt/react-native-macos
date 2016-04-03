@@ -28,7 +28,7 @@ const MenuManagerExample = React.createClass({
       }]
     };
   },
-  
+
   _addNewSubmenu() {
     MenuManager.addSubmenu(this.state.title, this.state.items);
   },
