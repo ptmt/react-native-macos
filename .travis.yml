@@ -2,21 +2,12 @@ language: objective-c
 
 osx_image: xcode7.3
 
-cache:
-  directories:
-    - node_modules
-    - .nvm
-
-before_install:
-  - brew update || brew update
-  - brew outdated xctool || brew upgrade xctool
-
 install:
   - brew reinstall nvm
   - mkdir -p .nvm
   - export NVM_DIR="$PWD/.nvm"
   - source $(brew --prefix nvm)/nvm.sh
-  - nvm install 5
+  - nvm install 4.4.0
   - rm -Rf "${TMPDIR}/jest_preprocess_cache"
   - npm config set spin=false
   - npm config set progress=false
@@ -28,12 +19,10 @@ script:
 - |
   if [ "$TEST_TYPE" = objc ]
   then
-
     travis_retry ./scripts/objc-test.sh
-
   elif [ "$TEST_TYPE" = js ]
   then
-    npm run flow && npm test
+    npm run flow && npm test -- --maxWorkers=1
     ./scripts/e2e-test.sh  --packager
   elif [ "$TEST_TYPE" = e2e-objc ]
   then
