@@ -75,6 +75,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   [_webView reload:self];
 }
 
+- (void)reactSetFrame:(CGRect)frame
+{
+  [super reactSetFrame:frame];
+  [_webView setFrame:frame];
+}
+
 - (void)setSource:(NSDictionary *)source
 {
   if (![_source isEqualToDictionary:source]) {
@@ -120,11 +126,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 //  [RCTView autoAdjustInsetsForView:self
 //                    withScrollView:_webView.scrollView
 //                      updateOffset:NO];
-}
-
-- (void)setScalesPageToFit:(BOOL)scalesPageToFit
-{
-  NSLog(@"setScalesPageToFit is not implemented");
 }
 
 - (BOOL)scalesPageToFit

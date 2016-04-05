@@ -178,43 +178,6 @@ var Button = React.createClass({
   }
 });
 
-var ScaledWebView = React.createClass({
-
-  getInitialState: function() {
-    return {
-      scalingEnabled: true,
-    }
-  },
-
-  render: function() {
-    return (
-      <View>
-        <WebView
-          style={{
-            backgroundColor: BGWASH,
-            height: 200,
-          }}
-          source={{uri: 'https://facebook.github.io/react/'}}
-          scalesPageToFit={this.state.scalingEnabled}
-        />
-        <View style={styles.buttons}>
-        { this.state.scalingEnabled ?
-          <Button
-            text="Scaling:ON"
-            enabled={true}
-            onPress={() => this.setState({scalingEnabled: false})}
-          /> :
-          <Button
-            text="Scaling:OFF"
-            enabled={true}
-            onPress={() => this.setState({scalingEnabled: true})}
-          /> }
-        </View>
-      </View>
-    );
-  },
-})
-
 var styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -336,10 +299,6 @@ exports.examples = [
   {
     title: 'Simple Browser',
     render(): ReactElement { return <WebViewExample />; }
-  },
-  {
-    title: 'Scale Page to Fit',
-    render(): ReactElement { return <ScaledWebView/>; }
   },
   {
     title: 'Bundled HTML',
