@@ -41,3 +41,5 @@ rn-cli.config.js
 
 # OS X
 .DS_Store
+Packages
+.build

@@ -12,7 +12,6 @@
 #import <pthread.h>
 
 #import <JavaScriptCore/JavaScriptCore.h>
-//#import <UIKit/UIDevice.h>
 
 #import "RCTAssert.h"
 #import "RCTBridge+Private.h"
