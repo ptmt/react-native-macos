@@ -1,0 +1,15 @@
+[package]
+name = "uiexplorer"
+version = "0.1.0"
+authors = ["Dmitriy Loktev <unknownliveid@hotmail.com>"]
+
+[dependencies]
+rustc-serialize = "0.3"
+time = "0.1.35"
+react-gtk-rs = { path = "../react-gtk-rs" }
+glib = "^0"
+gdk = "^0"
+gdk-pixbuf = "^0"
+gtk = "^0"
+cairo-rs = "^0"
+libc = "0.2.0"

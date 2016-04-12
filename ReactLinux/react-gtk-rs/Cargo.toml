@@ -1,0 +1,11 @@
+[package]
+name = "react-gtk-rs"
+version = "0.1.0"
+authors = ["Dmitriy Loktev <unknownliveid@hotmail.com>"]
+repository = "https://github.com/ptmt/react-native-desktop"
+
+[dependencies]
+
+[dependencies.gtk]
+version = "0.0.7"
+features = ["v3_10"]
