@@ -37,8 +37,8 @@
 {
   NSAssert(CGSizeEqualToSize(self.size, image.size), @"Images must be same size.");
 
-  CGImageRef source = RCTGetCGImage(self);
-  CGImageRef dest = RCTGetCGImage(image);
+  CGImageRef source = RCTGetCGImageRef(self);
+  CGImageRef dest = RCTGetCGImageRef(image);
   // The images have the equal size, so we could use the smallest amount of bytes because of byte padding
   size_t minBytesPerRow = MIN(CGImageGetBytesPerRow(source), CGImageGetBytesPerRow(dest));
   size_t referenceImageSizeBytes = CGImageGetHeight(source) * minBytesPerRow;
