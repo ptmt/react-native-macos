@@ -124,7 +124,7 @@
     "react-native-desktop": "local-cli/wrong-react-native.js"
   },
   "peerDependencies": {
-    "react": "^0.14.5"
+    "react": "^15.0.1"
   },
   "dependencies": {
     "absolute-path": "^0.0.0",
@@ -142,7 +142,7 @@
     "connect": "^2.8.3",
     "debug": "^2.2.0",
     "event-target-shim": "^1.0.5",
-    "fbjs": "^0.7.2",
+    "fbjs": "^0.8.0",
     "fbjs-scripts": "^0.4.0",
     "graceful-fs": "^4.1.2",
     "image-size": "^0.3.5",
@@ -185,6 +185,6 @@
     "flow-bin": "0.22.1",
     "jest-cli": "0.9.0-fb2",
     "portfinder": "0.4.0",
-    "react": "^0.14.5"
+    "react": "^15.0.1"
   }
 }
