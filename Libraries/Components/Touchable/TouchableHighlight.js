@@ -98,7 +98,7 @@ var TouchableHighlight = React.createClass({
   getDefaultProps: () => DEFAULT_PROPS,
 
   // Performance optimization to avoid constantly re-generating these objects.
-  computeSyntheticState: function(props) {
+  _computeSyntheticState: function(props) {
     return {
       activeProps: {
         style: {
@@ -119,7 +119,7 @@ var TouchableHighlight = React.createClass({
 
   getInitialState: function() {
     return merge(
-      this.touchableGetInitialState(), this.computeSyntheticState(this.props)
+      this.touchableGetInitialState(), this._computeSyntheticState(this.props)
     );
   },
 
@@ -137,7 +137,7 @@ var TouchableHighlight = React.createClass({
     if (nextProps.activeOpacity !== this.props.activeOpacity ||
         nextProps.underlayColor !== this.props.underlayColor ||
         nextProps.style !== this.props.style) {
-      this.setState(this.computeSyntheticState(nextProps));
+      this.setState(this._computeSyntheticState(nextProps));
     }
   },
 
@@ -255,6 +255,7 @@ var TouchableHighlight = React.createClass({
             ref: CHILD_REF,
           }
         )}
+        {Touchable.renderDebugView({color: 'green', hitSlop: this.props.hitSlop})}
       </View>
     );
   }

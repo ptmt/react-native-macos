@@ -16,9 +16,6 @@ const crypto = require('crypto');
 
 const SOURCEMAPPING_URL = '\n\/\/# sourceMappingURL=';
 
-const getCode = x => x.code;
-const getNameAndCode = ({name, code}) => ({name, code});
-
 class Bundle extends BundleBase {
   constructor({sourceMapUrl, minify} = {}) {
     super();
@@ -28,6 +25,8 @@ class Bundle extends BundleBase {
     this._numPrependedModules = 0;
     this._numRequireCalls = 0;
     this._minify = minify;
+
+    this._ramBundle = null; // cached RAM Bundle
   }
 
   addModule(resolver, resolutionResponse, module, moduleTransport) {
@@ -67,14 +66,16 @@ class Bundle extends BundleBase {
   }
 
   _addRequireCall(moduleId) {
-    const code = ';require("' + moduleId + '");';
+    const code = `;require(${JSON.stringify(moduleId)});`;
     const name = 'require-' + moduleId;
     super.addModule(new ModuleTransport({
       name,
+      id: this._numRequireCalls - 1,
       code,
       virtual: true,
       sourceCode: code,
       sourcePath: name + '.js',
+      meta: {preloaded: true},
     }));
     this._numRequireCalls += 1;
   }
@@ -105,7 +106,46 @@ class Bundle extends BundleBase {
     return source;
   }
 
-  getUnbundle() {
+  getUnbundle(type) {
+    if (this._ramBundle) {
+      return this._ramBundle;
+    }
+
+    switch (type) {
+      case 'INDEX':
+        this._ramBundle = this._getAsIndexedFileUnbundle();
+        break;
+      case 'ASSETS':
+        this._ramBundle = this._getAsAssetsUnbundle();
+        break;
+      default:
+        throw new Error('Unkown RAM Bundle type:', type);
+    }
+
+    return this._ramBundle;
+  }
+
+  _getAsIndexedFileUnbundle() {
+    const modules = this.getModules();
+
+    // separate modules we need to preload from the ones we don't
+    const shouldPreload = (module) => module.meta && module.meta.preloaded;
+    const preloaded = modules.filter(module => shouldPreload(module));
+    const notPreloaded = modules.filter(module => !shouldPreload(module));
+
+    // code that will be executed on bridge start up
+    const startupCode = preloaded.map(({code}) => code).join('\n');
+
+    return {
+      // include copy of all modules on the order they're writen on the bundle:
+      // polyfills, preloaded, additional requires, non preloaded
+      allModules: preloaded.concat(notPreloaded),
+      startupCode,  // no entries on the index for these modules, only the code
+      modules: notPreloaded, // we include both the code and entries on the index
+    };
+  }
+
+  _getAsAssetsUnbundle() {
     const allModules = this.getModules().slice();
     const prependedModules = this._numPrependedModules;
     const requireCalls = this._numRequireCalls;
@@ -113,20 +153,20 @@ class Bundle extends BundleBase {
     const modules =
       allModules
         .splice(prependedModules, allModules.length - requireCalls - prependedModules);
-    const startupCode = allModules.map(getCode).join('\n');
+    const startupCode = allModules.map(({code}) => code).join('\n');
 
     return {
       startupCode,
-      modules: modules.map(getNameAndCode)
+      startupModules: allModules,
+      modules,
     };
   }
 
   /**
-   * I found a neat trick in the sourcemap spec that makes it easy
-   * to concat sourcemaps. The `sections` field allows us to combine
-   * the sourcemap easily by adding an offset. Tested on chrome.
-   * Seems like it's not yet in Firefox but that should be fine for
-   * now.
+   * Combine each of the sourcemaps multiple modules have into a single big
+   * one. This works well thanks to a neat trick defined on the sourcemap spec
+   * that makes use of of the `sections` field to combine sourcemaps by adding
+   * an offset. This is supported only by Chrome for now.
    */
   _getCombinedSourceMaps(options) {
     const result = {

@@ -15,20 +15,21 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   Text,
   TextInput,
   View,
   StyleSheet,
-} = React;
+} = ReactNative;
 
 var WithLabel = React.createClass({
   render: function() {
     return (
       <View style={styles.labelContainer}>
         <View style={styles.label}>
-          <Text toolTip={this.props.label}>{this.props.label}</Text>
+          <Text>{this.props.label}</Text>
         </View>
         {this.props.children}
       </View>
@@ -143,7 +144,6 @@ class RewriteExample extends React.Component {
           }}
           style={styles.default}
           value={this.state.text}
-          toolTip={this.state.text}
         />
         <Text style={[styles.remainder, {color: remainderColor}]}>
           {remainder}
@@ -170,7 +170,6 @@ class RewriteExampleInvalidCharacters extends React.Component {
           }}
           style={styles.default}
           value={this.state.text}
-          toolTip={this.state.text}
         />
       </View>
     );
@@ -311,7 +310,7 @@ var styles = StyleSheet.create({
   multilineWithFontStyles: {
     color: 'blue',
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 18,
     fontFamily: 'Cochin',
     height: 60,
   },
@@ -358,7 +357,13 @@ exports.examples = [
   {
     title: 'Auto-focus',
     render: function() {
-      return <TextInput autoFocus={true} style={styles.default} toolTip='Input text here:' />;
+      return (
+        <TextInput
+          autoFocus={true}
+          style={styles.default}
+          accessibilityLabel="I am the accessibility label for text input"
+        />
+      );
     }
   },
   {
@@ -376,7 +381,34 @@ exports.examples = [
   {
     title: 'Auto-capitalize',
     render: function() {
-      return <RewriteExampleInvalidCharacters />;
+      return (
+        <View>
+          <WithLabel label="none">
+            <TextInput
+              autoCapitalize="none"
+              style={styles.default}
+            />
+          </WithLabel>
+          <WithLabel label="sentences">
+            <TextInput
+              autoCapitalize="sentences"
+              style={styles.default}
+            />
+          </WithLabel>
+          <WithLabel label="words">
+            <TextInput
+              autoCapitalize="words"
+              style={styles.default}
+            />
+          </WithLabel>
+          <WithLabel label="characters">
+            <TextInput
+              autoCapitalize="characters"
+              style={styles.default}
+            />
+          </WithLabel>
+        </View>
+      );
     }
   },
   {
@@ -395,15 +427,92 @@ exports.examples = [
     }
   },
   {
-    title: 'Bezeled borders',
+    title: 'Keyboard types',
+    render: function() {
+      var keyboardTypes = [
+        'default',
+        'ascii-capable',
+        'numbers-and-punctuation',
+        'url',
+        'number-pad',
+        'phone-pad',
+        'name-phone-pad',
+        'email-address',
+        'decimal-pad',
+        'twitter',
+        'web-search',
+        'numeric',
+      ];
+      var examples = keyboardTypes.map((type) => {
+        return (
+          <WithLabel key={type} label={type}>
+            <TextInput
+              keyboardType={type}
+              style={styles.default}
+            />
+          </WithLabel>
+        );
+      });
+      return <View>{examples}</View>;
+    }
+  },
+  {
+    title: 'Keyboard appearance',
+    render: function() {
+      var keyboardAppearance = [
+        'default',
+        'light',
+        'dark',
+      ];
+      var examples = keyboardAppearance.map((type) => {
+        return (
+          <WithLabel key={type} label={type}>
+            <TextInput
+              keyboardAppearance={type}
+              style={styles.default}
+            />
+          </WithLabel>
+        );
+      });
+      return <View>{examples}</View>;
+    }
+  },
+  {
+    title: 'Return key types',
+    render: function() {
+      var returnKeyTypes = [
+        'default',
+        'go',
+        'google',
+        'join',
+        'next',
+        'route',
+        'search',
+        'send',
+        'yahoo',
+        'done',
+        'emergency-call',
+      ];
+      var examples = returnKeyTypes.map((type) => {
+        return (
+          <WithLabel key={type} label={type}>
+            <TextInput
+              returnKeyType={type}
+              style={styles.default}
+            />
+          </WithLabel>
+        );
+      });
+      return <View>{examples}</View>;
+    }
+  },
+  {
+    title: 'Enable return key automatically',
     render: function() {
       return (
         <View>
           <WithLabel label="true">
-            <TextInput bezeled={true} style={styles.default} defaultValue="abc" />
-          </WithLabel>
-          <WithLabel label="false">
-            <TextInput bezeled={false} style={styles.default} defaultValue="abc" />
+            <TextInput enablesReturnKeyAutomatically={true} style={styles.default} />
           </WithLabel>
         </View>
       );
@@ -431,11 +540,11 @@ exports.examples = [
       return (
         <View>
           <TextInput
-            style={[styles.default, {color: 'blue', fontWeight: 'bold'}]}
+            style={[styles.default, {color: 'blue'}]}
             defaultValue="Blue"
           />
           <TextInput
-            style={[styles.default, {color: 'green', fontWeight: 'bold'}]}
+            style={[styles.default, {color: 'green'}]}
             defaultValue="Green"
           />
         </View>
@@ -569,10 +678,25 @@ exports.examples = [
           <TextInput
             placeholder="multiline with children"
             multiline={true}
+            enablesReturnKeyAutomatically={true}
             returnKeyType="go"
             style={styles.multiline}>
             <View style={styles.multilineChild}/>
           </TextInput>
+        </View>
+      );
+    }
+  },
+  {
+    title: 'Auto-expanding',
+    render: function() {
+      return (
+        <View>
+          <AutoExpandingTextInput
+            placeholder="height increases with content"
+            enablesReturnKeyAutomatically={true}
+            returnKeyType="default"
+          />
         </View>
       );
     }

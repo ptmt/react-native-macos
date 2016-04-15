@@ -12,7 +12,8 @@
 
 require('regenerator/runtime');
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 
 var {
   AppRegistry,
@@ -21,7 +22,7 @@ var {
   Text,
   TouchableOpacity,
   View,
-} = React;
+} = ReactNative;
 
 /* Keep this list in sync with RCTRootViewIntegrationTests.m */
 var TESTS = [
@@ -29,7 +30,7 @@ var TESTS = [
   require('./ReactContentSizeUpdateTest'),
   require('./SizeFlexibilityUpdateTest'),
 ];
-//
+
 TESTS.forEach(
   (test) => AppRegistry.registerComponent(test.displayName, () => test)
 );

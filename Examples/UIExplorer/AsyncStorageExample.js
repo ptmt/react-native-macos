@@ -15,13 +15,14 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   AsyncStorage,
   PickerIOS,
   Text,
   View
-} = React;
+} = ReactNative;
 var PickerItemIOS = PickerIOS.Item;
 
 var STORAGE_KEY = '@AsyncStorageExample:key';

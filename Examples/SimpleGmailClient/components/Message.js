@@ -1,12 +1,13 @@
 /* @flow */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');;
 var {
   View,
   Text,
   StyleSheet,
-} = React;
+} = ReactNative;
 
 class Message extends React.Component {
   constructor() {

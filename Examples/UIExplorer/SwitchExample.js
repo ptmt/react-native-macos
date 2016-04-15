@@ -15,12 +15,14 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
+  Platform,
   Switch,
   Text,
   View
-} = React;
+} = ReactNative;
 
 var BasicSwitchExample = React.createClass({
   getInitialState() {
@@ -144,7 +146,7 @@ var examples = [
   }
 ];
 
-if (React.Platform.OS === 'ios') {
+if (Platform.OS === 'ios') {
   examples.push({
     title: 'Custom colors can be provided',
     render(): ReactElement { return <ColorSwitchExample />; }

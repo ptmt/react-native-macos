@@ -1,7 +1,8 @@
 /* @flow */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');;
 var {
   View,
   Text,
@@ -10,7 +11,7 @@ var {
   TextInput,
   TouchableOpacity,
   LinkingIOS
-} = React;
+} = ReactNative;
 
 // Yes this is my api credentials restricted only for Gmail API.
 var CLIENT_ID = '588257598045-mlcll7rfg8vud8glu411f8v92u560pbt.apps.googleusercontent.com';

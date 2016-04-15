@@ -14,19 +14,19 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   Animated,
   StyleSheet,
   Text,
   View,
-} = React;
+} = ReactNative;
 
 var Flip = React.createClass({
   getInitialState() {
     return {
       theta: new Animated.Value(45),
-      scale: new Animated.Value(2),
     };
   },
 
@@ -81,7 +81,6 @@ var Flip = React.createClass({
 var styles = StyleSheet.create({
   container: {
     height: 500,
-    flex: 1,
   },
   box1: {
     left: 0,
@@ -94,7 +93,7 @@ var styles = StyleSheet.create({
       {translateY: 50},
       {rotate: '30deg'},
       {scaleX: 2},
-      {scaleY: -2},
+      {scaleY: 2},
     ],
     width: 50,
   },
@@ -105,7 +104,7 @@ var styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     transform: [
-      {scaleX: 3},
+      {scaleX: 2},
       {scaleY: 2},
       {translateX: 100},
       {translateY: 50},
@@ -213,7 +212,7 @@ exports.examples = [
   },
   {
     title: 'Translate, Rotate, Scale',
-    description: "translateX: 100, translateY: 50, rotate: '30deg', scaleX: 2, scaleY: -2",
+    description: "translateX: 100, translateY: 50, rotate: '30deg', scaleX: 2, scaleY: 2",
     render() {
       return (
         <View style={styles.container}>
@@ -224,7 +223,7 @@ exports.examples = [
   },
   {
     title: 'Scale, Translate, Rotate, ',
-    description: "scaleX: 3, scaleY: 2, translateX: 100, translateY: 50, rotate: '30deg'",
+    description: "scaleX: 2, scaleY: 2, translateX: 100, translateY: 50, rotate: '30deg'",
     render() {
       return (
         <View style={styles.container}>

@@ -15,13 +15,14 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   StyleSheet,
   Text,
   TouchableHighlight,
   View,
-} = React;
+} = ReactNative;
 
 class XHRExampleHeaders extends React.Component {
 

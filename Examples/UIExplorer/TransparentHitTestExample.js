@@ -11,12 +11,13 @@
 
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   Text,
   View,
   TouchableOpacity,
-} = React;
+} = ReactNative;
 
 var TransparentHitTestExample = React.createClass({
   render: function() {

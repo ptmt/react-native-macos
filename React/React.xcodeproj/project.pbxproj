@@ -22,6 +22,8 @@
 		0381CED61C575AE4000D6939 /* RCTView.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E067501A70F44B002CDEE1 /* RCTView.m */; };
 		0381CED71C575AF2000D6939 /* RCTKeyCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = 13A1F71D1A75392D00D3D453 /* RCTKeyCommands.m */; };
 		039780C41BD7947B00452D23 /* UIImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 039780C31BD7947B00452D23 /* UIImageUtils.m */; };
+		03E97EBF1CC1252200671308 /* RCTDisplayLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E97EBE1CC1252200671308 /* RCTDisplayLink.m */; };
+		03E97EC21CC149D100671308 /* RCTRootShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E97EC11CC149D100671308 /* RCTRootShadowView.m */; };
 		03FC2C431C873A850023C9CA /* RCTButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FC2C401C873A850023C9CA /* RCTButton.m */; };
 		03FC2C441C873A850023C9CA /* RCTButtonManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FC2C421C873A850023C9CA /* RCTButtonManager.m */; };
 		131B6AF41AF1093D00FFC3E0 /* RCTSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 131B6AF11AF1093D00FFC3E0 /* RCTSegmentedControl.m */; };
@@ -114,6 +116,10 @@
 		0381CEC21C54FD4E000D6939 /* NSView+React.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSView+React.m"; sourceTree = "<group>"; };
 		039780C21BD7947B00452D23 /* UIImageUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageUtils.h; sourceTree = "<group>"; };
 		039780C31BD7947B00452D23 /* UIImageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageUtils.m; sourceTree = "<group>"; };
+		03E97EBD1CC1252200671308 /* RCTDisplayLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTDisplayLink.h; sourceTree = "<group>"; };
+		03E97EBE1CC1252200671308 /* RCTDisplayLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTDisplayLink.m; sourceTree = "<group>"; };
+		03E97EC01CC149D100671308 /* RCTRootShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTRootShadowView.h; sourceTree = "<group>"; };
+		03E97EC11CC149D100671308 /* RCTRootShadowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTRootShadowView.m; sourceTree = "<group>"; };
 		03FC2C3F1C873A850023C9CA /* RCTButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTButton.h; sourceTree = "<group>"; };
 		03FC2C401C873A850023C9CA /* RCTButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTButton.m; sourceTree = "<group>"; };
 		03FC2C411C873A850023C9CA /* RCTButtonManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTButtonManager.h; sourceTree = "<group>"; };
@@ -321,6 +327,8 @@
 		13B07FF31A6947C200A75B9A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				03E97EC01CC149D100671308 /* RCTRootShadowView.h */,
+				03E97EC11CC149D100671308 /* RCTRootShadowView.m */,
 				03FC2C3F1C873A850023C9CA /* RCTButton.h */,
 				03FC2C401C873A850023C9CA /* RCTButton.m */,
 				03FC2C411C873A850023C9CA /* RCTButtonManager.h */,
@@ -444,6 +452,8 @@
 		83CBBA491A601E3B00E9B192 /* Base */ = {
 			isa = PBXGroup;
 			children = (
+				03E97EBD1CC1252200671308 /* RCTDisplayLink.h */,
+				03E97EBE1CC1252200671308 /* RCTDisplayLink.m */,
 				6A15FB0C1BDF663500531DFB /* RCTRootViewInternal.h */,
 				83CBBA4A1A601E3B00E9B192 /* RCTAssert.h */,
 				83CBBA4B1A601E3B00E9B192 /* RCTAssert.m */,
@@ -598,6 +608,7 @@
 				14A43DF31C20B1C900794BC8 /* RCTJSCProfiler.m in Sources */,
 				133CAE8E1B8E5CFD00F6AD92 /* RCTDatePicker.m in Sources */,
 				14C2CA761B3AC64F00E6CBB2 /* RCTFrameUpdate.m in Sources */,
+				03E97EC21CC149D100671308 /* RCTRootShadowView.m in Sources */,
 				13B07FEF1A69327A00A75B9A /* RCTAlertManager.m in Sources */,
 				83CBBACC1A6023D300E9B192 /* RCTConvert.m in Sources */,
 				0357AF4B1BD2901200CEDDCC /* RCTDevMenu.m in Sources */,
@@ -655,6 +666,7 @@
 				039780C41BD7947B00452D23 /* UIImageUtils.m in Sources */,
 				0357AF9E1BD5317D00CEDDCC /* RCTWebViewManager.m in Sources */,
 				13E0674A1A70F434002CDEE1 /* RCTUIManager.m in Sources */,
+				03E97EBF1CC1252200671308 /* RCTDisplayLink.m in Sources */,
 				1450FF861BCFF28A00208362 /* RCTProfile.m in Sources */,
 				13AB90C11B6FA36700713B4F /* RCTComponentData.m in Sources */,
 				03FC2C431C873A850023C9CA /* RCTButton.m in Sources */,

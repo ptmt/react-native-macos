@@ -15,17 +15,18 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
+var { PropTypes } = React;
 var {
   Image,
   MapView,
-  PropTypes,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-} = React;
+} = ReactNative;
 
 var regionText = {
   latitude: '0',

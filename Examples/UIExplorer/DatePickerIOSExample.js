@@ -15,14 +15,15 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   DatePickerIOS,
   StyleSheet,
   Text,
   TextInput,
   View,
-} = React;
+} = ReactNative;
 
 var DatePickerExample = React.createClass({
   getDefaultProps: function () {
@@ -35,13 +36,12 @@ var DatePickerExample = React.createClass({
   getInitialState: function() {
     return {
       date: this.props.date,
-      timeInterval: 0,
       timeZoneOffsetInHours: this.props.timeZoneOffsetInHours,
     };
   },
 
-  onDateChange: function(date, timeInterval) {
-    this.setState({date: date, timeInterval});
+  onDateChange: function(date) {
+    this.setState({date: date});
   },
 
   onTimezoneChange: function(event) {
@@ -64,11 +64,6 @@ var DatePickerExample = React.createClass({
             this.state.date.toLocaleTimeString()
           }</Text>
         </WithLabel>
-        <WithLabel label="TimeInterval:">
-          <Text>{
-            this.state.timeInterval
-          }</Text>
-        </WithLabel>
         <WithLabel label="Timezone:">
           <TextInput
             onChange={this.onTimezoneChange}
@@ -77,36 +72,17 @@ var DatePickerExample = React.createClass({
           />
           <Text> hours from UTC</Text>
         </WithLabel>
-        <Heading label="Clock and Calendar" />
+        <Heading label="Date + time picker" />
         <DatePickerIOS
           date={this.state.date}
-          mode="single"
-          datePickerStyle="clockAndCalendar"
-          innerStyle={{height: 180, width: 300}}
+          mode="datetime"
           timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
           onDateChange={this.onDateChange}
         />
-        <Heading label="Clock and Calendar with range" />
+        <Heading label="Date picker" />
         <DatePickerIOS
           date={this.state.date}
-          mode="range"
-          datePickerStyle="clockAndCalendar"
-          innerStyle={{height: 180, width: 300}}
-          timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
-          onDateChange={this.onDateChange}
-        />
-        <Heading label="TextField with a stepper" />
-        <DatePickerIOS
-          date={this.state.date}
-          mode="single"
-          timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
-          onDateChange={this.onDateChange}
-        />
-        <Heading label="TextField without a stepper" />
-        <DatePickerIOS
-          date={this.state.date}
-          mode="single"
-          datePickerStyle="textField"
+          mode="date"
           timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
           onDateChange={this.onDateChange}
         />

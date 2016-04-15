@@ -15,6 +15,7 @@ var Inspector = require('Inspector');
 var Portal = require('Portal');
 var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 var React = require('React');
+var ReactNative = require('ReactNative');
 var StyleSheet = require('StyleSheet');
 var Subscribable = require('Subscribable');
 var View = require('View');
@@ -43,7 +44,7 @@ var AppContainer = React.createClass({
   toggleElementInspector: function() {
     this.setState({
       inspectorVisible: !this.state.inspectorVisible,
-      rootNodeHandle: React.findNodeHandle(this.refs.main),
+      rootNodeHandle: ReactNative.findNodeHandle(this.refs.main),
     });
   },
 
@@ -117,7 +118,7 @@ function renderApplication<D, P, S>(
     rootTag,
     'Expect to have a valid rootTag, instead got ', rootTag
   );
-  React.render(
+  ReactNative.render(
     <AppContainer
       rootComponent={RootComponent}
       initialProps={initialProps}

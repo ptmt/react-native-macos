@@ -3,13 +3,14 @@
 */
 'use strict';
 
-const React = require('react-native-desktop');
+const React = require('React');
+const ReactNative = require('react-native-desktop');
 
 const {
   Button,
   View,
   Image
-} = React;
+} = ReactNative;
 
 const BEZEL_STYLES = ["rounded", "regularSquare", "thickSquare", "thickerSquare", "disclosure",
   "shadowlessSquare", "circular", "texturedSquare", "helpButton", "smallSquare", "texturedRounded",

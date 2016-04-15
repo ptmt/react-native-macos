@@ -15,13 +15,14 @@
  */
 'use strict';
 
-const React = require('react-native-desktop');
+const React = require('React');
+const ReactNative = require('react-native-desktop');
 const {
   NetInfo,
   Text,
   View,
   TouchableWithoutFeedback,
-} = React;
+} = ReactNative;
 
 const ConnectionInfoSubscription = React.createClass({
   getInitialState() {

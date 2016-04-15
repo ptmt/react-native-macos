@@ -1,7 +1,8 @@
 /* @flow */
 'use strict';
 
-import React from 'react-native-desktop';
+import React from 'react';
+import ReactNative from 'react-native-desktop';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import logger from 'redux-logger';
@@ -39,4 +40,4 @@ class SimpleChatClient extends React.Component {
 }
 
 
-React.AppRegistry.registerComponent('SimpleChatClient', () => SimpleChatClient);
+ReactNative.AppRegistry.registerComponent('SimpleChatClient', () => SimpleChatClient);

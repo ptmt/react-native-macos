@@ -1,12 +1,13 @@
 /* @flow */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');;
 var {
   View,
   StyleSheet,
   TextInput,
-} = React;
+} = ReactNative;
 
 
 class SearchBox extends React.Component {

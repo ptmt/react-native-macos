@@ -13,17 +13,19 @@
  *
  * @flow
  */
-
 'use strict';
 
-var React = require('React');
-var Text = require('Text');
-var View = require('View');
+const React = require('React');
+const ReactNative = require('react-native-desktop');
+const {
+  Text,
+  View,
+} = ReactNative;
 
-var SetPropertiesExampleApp = React.createClass({
+class SetPropertiesExampleApp extends React.Component {
 
-  render: function() {
-    var wrapperStyle = {
+  render() {
+    const wrapperStyle = {
       backgroundColor: this.props.color,
       flex: 1,
       alignItems: 'center',
@@ -37,7 +39,8 @@ var SetPropertiesExampleApp = React.createClass({
         </Text>
       </View>
     );
-  },
-});
+  }
+
+}
 
 module.exports = SetPropertiesExampleApp;

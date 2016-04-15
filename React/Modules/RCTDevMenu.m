@@ -173,12 +173,12 @@ RCT_EXPORT_MODULE()
     __weak RCTDevMenu *weakSelf = self;
 
     [_extraMenuItems addObject:[RCTDevMenuItem toggleItemWithKey:@"showInspector"
-                                                 title:@"Show Inspector"
-                                         selectedTitle:@"Hide Inspector"
-                                               handler:^(__unused BOOL enabled)
-    {
-      [weakSelf.bridge.eventDispatcher sendDeviceEventWithName:@"toggleElementInspector" body:nil];
-    }]];
+                                                           title:@"Show Inspector"
+                                                   selectedTitle:@"Hide Inspector"
+                                                         handler:^(__unused BOOL enabled)
+                                {
+                                  [weakSelf.bridge.eventDispatcher sendDeviceEventWithName:@"toggleElementInspector" body:nil];
+                                }]];
 
     _webSocketExecutorName = [_defaults objectForKey:@"websocket-executor-name"] ?: @"Chrome";
 
@@ -218,7 +218,7 @@ RCT_EXPORT_MODULE()
                                      weakSelf.executorClass = Nil;
                                    }];
 
-     [self refreshMenu];
+    [self refreshMenu];
   }
   return self;
 }
@@ -425,11 +425,11 @@ RCT_EXPORT_MODULE()
   if (!chromeExecutorClass) {
     [items addObject:[RCTDevMenuItem buttonItemWithTitle:[NSString stringWithFormat:@"%@ Debugger Unavailable", _webSocketExecutorName] handler:^{
       NSAlert *alert = RCTAlertView(
-        [NSString stringWithFormat:@"%@ Debugger Unavailable", _webSocketExecutorName],
-        [NSString stringWithFormat:@"You need to include the RCTWebSocket library to enable %@ debugging", _webSocketExecutorName],
-        nil,
-        @"OK",
-        nil);
+                                    [NSString stringWithFormat:@"%@ Debugger Unavailable", _webSocketExecutorName],
+                                    [NSString stringWithFormat:@"You need to include the RCTWebSocket library to enable %@ debugging", _webSocketExecutorName],
+                                    nil,
+                                    @"OK",
+                                    nil);
       [alert runModal];
     }]];
   } else {
@@ -605,21 +605,21 @@ RCT_EXPORT_METHOD(reload)
   _updateTask = [[NSURLSession sharedSession] dataTaskWithURL:_liveReloadURL completionHandler:
                  ^(__unused NSData *data, NSURLResponse *response, NSError *error) {
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-      RCTDevMenu *strongSelf = weakSelf;
-      if (strongSelf && strongSelf->_liveReloadEnabled) {
-        NSHTTPURLResponse *HTTPResponse = (NSHTTPURLResponse *)response;
-        if (!error && HTTPResponse.statusCode == 205) {
-          [strongSelf reload];
-        } else {
-          strongSelf->_updateTask = nil;
-          [strongSelf checkForUpdates];
-        }
-      }
-    });
-
-  }];
-
+                   dispatch_async(dispatch_get_main_queue(), ^{
+                     RCTDevMenu *strongSelf = weakSelf;
+                     if (strongSelf && strongSelf->_liveReloadEnabled) {
+                       NSHTTPURLResponse *HTTPResponse = (NSHTTPURLResponse *)response;
+                       if (!error && HTTPResponse.statusCode == 205) {
+                         [strongSelf reload];
+                       } else {
+                         strongSelf->_updateTask = nil;
+                         [strongSelf checkForUpdates];
+                       }
+                     }
+                   });
+                   
+                 }];
+  
   [_updateTask resume];
 }
 

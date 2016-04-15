@@ -10,15 +10,16 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var TimerMixin = require('react-timer-mixin');
 
 var {
   StyleSheet,
   Text,
   View,
-} = React;
-var { TestModule  } = React.NativeModules;
+} = ReactNative;
+var { TestModule  } = ReactNative.NativeModules;
 
 var TimersTest = React.createClass({
   mixins: [TimerMixin],

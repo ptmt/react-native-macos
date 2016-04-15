@@ -13,12 +13,12 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var ReactNative = require('react-native-desktop');
 var {
   Image,
   StyleSheet,
   View
-} = React;
+} = ReactNative;
 
 var styles = StyleSheet.create({
   box: {

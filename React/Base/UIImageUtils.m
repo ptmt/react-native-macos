@@ -117,3 +117,9 @@ void UIGraphicsEndImageContext()
     UIGraphicsPopContext();
   }
 }
+
+CGImageRef RCTGetCGImageRef(NSImage *image)
+{
+  return [image CGImageForProposedRect:nil context:nil hints:nil];
+}
+

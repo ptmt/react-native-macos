@@ -13,14 +13,15 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('React');
+var ReactNative = require('react-native-desktop');;
 var {
   IntentAndroid,
   StyleSheet,
   Text,
   TouchableNativeFeedback,
   View,
-} = React;
+} = ReactNative;
 var UIExplorerBlock = require('./UIExplorerBlock');
 
 var OpenURLButton = React.createClass({

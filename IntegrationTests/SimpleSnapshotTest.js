@@ -10,15 +10,15 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
-
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var requestAnimationFrame = require('fbjs/lib/requestAnimationFrame');
 
 var {
   StyleSheet,
   View,
-} = React;
-var { TestModule } = React.NativeModules;
+} = ReactNative;
+var { TestModule } = ReactNative.NativeModules;
 
 var SimpleSnapshotTest = React.createClass({
   componentDidMount() {

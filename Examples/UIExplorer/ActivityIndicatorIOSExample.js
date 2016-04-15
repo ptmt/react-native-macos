@@ -15,12 +15,13 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   ActivityIndicatorIOS,
   StyleSheet,
   View,
-} = React;
+} = ReactNative;
 var TimerMixin = require('react-timer-mixin');
 
 var ToggleAnimatingActivityIndicator = React.createClass({
@@ -68,7 +69,7 @@ exports.examples = [
     render: function() {
       return (
         <ActivityIndicatorIOS
-          style={[styles.centering, styles.gray, {height: 20}]}
+          style={[styles.centering, styles.gray, {height: 40}]}
           color="white"
           />
       );

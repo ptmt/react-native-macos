@@ -64,11 +64,6 @@ typedef NSArray<id<RCTBridgeModule>> *(^RCTBridgeModuleProviderBlock)(void);
 RCT_EXTERN NSString *RCTBridgeModuleNameForClass(Class bridgeModuleClass);
 
 /**
- * This function checks if a class has been registered
- */
-RCT_EXTERN BOOL RCTBridgeModuleClassIsRegistered(Class);
-
-/**
  * Async batched bridge used to communicate with the JavaScript application.
  */
 @interface RCTBridge : NSObject <RCTInvalidating>

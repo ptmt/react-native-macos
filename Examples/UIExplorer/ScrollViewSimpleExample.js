@@ -15,13 +15,14 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity
-} = React;
+} = ReactNative;
 
 var NUM_ITEMS = 20;
 

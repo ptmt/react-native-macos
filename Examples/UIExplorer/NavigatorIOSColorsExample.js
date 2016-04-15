@@ -13,14 +13,15 @@
 */
 'use strict';
 
-var React = require('react-native');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   NavigatorIOS,
   StatusBar,
   StyleSheet,
   Text,
   View
-} = React;
+} = ReactNative;
 
 var EmptyPage = React.createClass({
 

@@ -15,7 +15,8 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');;
 var {
   Animated,
   LayoutAnimation,
@@ -23,7 +24,7 @@ var {
   StyleSheet,
   Text,
   View,
-} = React;
+} = ReactNative;
 var UIExplorerButton = require('./UIExplorerButton');
 
 var animations = {

@@ -15,7 +15,8 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   PixelRatio,
   Image,
@@ -25,8 +26,9 @@ var {
   TouchableOpacity,
   UIManager,
   Platform,
+  TouchableNativeFeedback,
   View,
-} = React;
+} = ReactNative;
 
 exports.displayName = (undefined: ?string);
 exports.description = 'Touchable and onPress examples.';
@@ -43,14 +45,14 @@ exports.examples = [
     return (
       <View>
         <View style={styles.row}>
-          <TouchableOpacity
-              style={styles.wrapper}
-              onPress={() => console.log('stock THW image - highlight')}>
-              <Image
-                source={heartImage}
-                style={styles.image}
-              />
-            </TouchableOpacity>
+          <TouchableHighlight
+            style={styles.wrapper}
+            onPress={() => console.log('stock THW image - highlight')}>
+            <Image
+              source={heartImage}
+              style={styles.image}
+            />
+          </TouchableHighlight>
           <TouchableHighlight
             style={styles.wrapper}
             activeOpacity={1}
@@ -67,22 +69,19 @@ exports.examples = [
       </View>
     );
   },
-},
-{
+}, {
   title: '<Text onPress={fn}> with highlight',
   render: function(): ReactElement {
     return <TextOnPressBox />;
   },
-},
-{
+}, {
   title: 'Touchable feedback events',
   description: '<Touchable*> components accept onPress, onPressIn, ' +
     'onPressOut, and onLongPress as props.',
   render: function(): ReactElement {
     return <TouchableFeedbackEvents />;
   },
-},
-{
+}, {
   title: 'Touchable delay for events',
   description: '<Touchable*> components also accept delayPressIn, ' +
     'delayPressOut, and delayLongPress as props. These props impact the ' +
@@ -90,16 +89,28 @@ exports.examples = [
   render: function(): ReactElement {
     return <TouchableDelayEvents />;
   },
-},
-{
-  title: 'Hover effects',
-  description: '<View> components also accept onMouseEnter, ' +
-    'onMouseLeave to simulate hover effect',
+}, {
+  title: '3D Touch / Force Touch',
+  description: 'iPhone 6s and 6s plus support 3D touch, which adds a force property to touches',
   render: function(): ReactElement {
-    return <Hoverable />;
+    return <ForceTouchExample />;
   },
-}
-];
+  platform: 'ios',
+}, {
+   title: 'Touchable Hit Slop',
+   description: '<Touchable*> components accept hitSlop prop which extends the touch area ' +
+     'without changing the view bounds.',
+   render: function(): ReactElement {
+     return <TouchableHitSlop />;
+   },
+ }, {
+   title: 'Disabled Touchable*',
+   description: '<Touchable*> components accept disabled prop which prevents ' +
+     'any interaction with component',
+   render: function(): ReactElement {
+     return <TouchableDisabled />;
+   },
+ }];
 
 var TextOnPressBox = React.createClass({
   getInitialState: function() {
@@ -132,23 +143,6 @@ var TextOnPressBox = React.createClass({
             {textLog}
           </Text>
         </View>
-      </View>
-    );
-  }
-});
-
-var Hoverable = React.createClass({
-  getInitialState: function() {
-    return {
-      hovered: false,
-    };
-  },
-  render: function() {
-    return (
-      <View style={{backgroundColor: this.state.hovered ? 'lightgray' : 'transparent'}}
-        onMouseEnter={() => this.setState({hovered: true})}
-        onMouseLeave={() => this.setState({hovered: false})}>
-        <Text>Hover this</Text>
       </View>
     );
   }
@@ -342,6 +336,33 @@ var TouchableDisabled = React.createClass({
             Disabled TouchableHighlight
           </Text>
         </TouchableHighlight>
+
+        {Platform.OS === 'android' &&
+          <TouchableNativeFeedback
+            style={[styles.row, styles.block]}
+            onPress={() => console.log('custom TNF has been clicked')}
+            background={TouchableNativeFeedback.SelectableBackground()}>
+            <View>
+              <Text style={[styles.button, styles.nativeFeedbackButton]}>
+                Enabled TouchableNativeFeedback
+              </Text>
+            </View>
+          </TouchableNativeFeedback>
+        }
+
+        {Platform.OS === 'android' &&
+          <TouchableNativeFeedback
+            disabled={true}
+            style={[styles.row, styles.block]}
+            onPress={() => console.log('custom TNF has been clicked')}
+            background={TouchableNativeFeedback.SelectableBackground()}>
+            <View>
+              <Text style={[styles.disabledButton, styles.nativeFeedbackButton]}>
+                Disabled TouchableNativeFeedback
+              </Text>
+            </View>
+          </TouchableNativeFeedback>
+        }
       </View>
     );
   }
@@ -404,6 +425,13 @@ var styles = StyleSheet.create({
     padding: 10,
     margin: 10,
     height: 120,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: '#f0f0f0',
+    backgroundColor: '#f9f9f9',
+  },
+  forceTouchBox: {
+    padding: 10,
+    margin: 10,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: '#f0f0f0',
     backgroundColor: '#f9f9f9',

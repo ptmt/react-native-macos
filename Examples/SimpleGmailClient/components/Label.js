@@ -1,12 +1,13 @@
 /* @flow */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');;
 var {
   Text,
   StyleSheet,
   TouchableHighlight,
-} = React;
+} = ReactNative;
 
 class Label extends React.Component {
   constructor() {

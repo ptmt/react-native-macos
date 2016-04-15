@@ -27,7 +27,8 @@ CGFloat const ZINDEX_STICKY_HEADER = 50;
 - (instancetype)initWithType:(RCTScrollEventType)type
                     reactTag:(NSNumber *)reactTag
                   scrollView:(NSScrollView *)scrollView
-                    userData:(NSDictionary *)userData NS_DESIGNATED_INITIALIZER;
+                    userData:(NSDictionary *)userData
+               coalescingKey:(uint16_t)coalescingKey NS_DESIGNATED_INITIALIZER;
 
 @end
 
@@ -36,6 +37,7 @@ CGFloat const ZINDEX_STICKY_HEADER = 50;
   RCTScrollEventType _type;
   NSScrollView *_scrollView;
   NSDictionary *_userData;
+  uint16_t _coalescingKey;
 }
 
 @synthesize viewTag = _viewTag;
@@ -44,6 +46,7 @@ CGFloat const ZINDEX_STICKY_HEADER = 50;
                     reactTag:(NSNumber *)reactTag
                   scrollView:(NSScrollView *)scrollView
                     userData:(NSDictionary *)userData
+               coalescingKey:(uint16_t)coalescingKey
 {
   RCTAssertParam(reactTag);
 
@@ -52,8 +55,15 @@ CGFloat const ZINDEX_STICKY_HEADER = 50;
     _viewTag = reactTag;
     _scrollView = scrollView;
     _userData = userData;
+    _coalescingKey = coalescingKey;
+
   }
   return self;
+}
+
+- (uint16_t)coalescingKey
+{
+  return _coalescingKey;
 }
 
 RCT_NOT_IMPLEMENTED(- (instancetype)init)
@@ -135,20 +145,17 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 @end
 
-@implementation RCTEventDispatcher (RCTScrollView)
+@implementation RCTEventDispatcher (RCTNativeScrollView)
 
-- (void)sendScrollEventWithType:(RCTScrollEventType)type
-                       reactTag:(NSNumber *)reactTag
-                     scrollView:(NSScrollView *)scrollView
-                       userData:(NSDictionary *)userData
+- (void)sendFakeScrollEvent:(NSNumber *)reactTag
 {
-  RCTScrollEvent *scrollEvent = [[RCTScrollEvent alloc] initWithType:type
-                                                            reactTag:reactTag
-                                                         scrollView:scrollView
-                                                            userData:userData];
-  [self sendEvent:scrollEvent];
+  RCTScrollEvent *fakeScrollEvent = [[RCTScrollEvent alloc] initWithType:RCTScrollEventTypeMove
+                                                                reactTag:reactTag
+                                                              scrollView:nil
+                                                                userData:nil
+                                                           coalescingKey:0];
+  [self sendEvent:fakeScrollEvent];
 }
-
 @end
 
 
@@ -163,6 +170,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   NSTimeInterval _lastScrollDispatchTime;
   BOOL _allowNextScrollNoMatterWhat;
   CGRect _lastClippedToRect;
+  uint16_t _coalescingKey;
 
 }
 
@@ -381,16 +389,17 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     // Calculate changed frames
     NSArray *childFrames = [self calculateChildFramesData];
 
+    RCTScrollEvent *scrollEvent = [[RCTScrollEvent alloc] initWithType:RCTScrollEventTypeMove
+                                                              reactTag:self.reactTag
+                                                            scrollView:self
+                                                              userData:@{@"updatedChildFrames": childFrames}
+                                                         coalescingKey:_coalescingKey];
     // Dispatch event
-    [_eventDispatcher sendScrollEventWithType:RCTScrollEventTypeMove
-                                   reactTag:self.reactTag
-                                 scrollView:self
-                                   userData:@{@"updatedChildFrames": childFrames}];
+    [_eventDispatcher sendEvent:scrollEvent];
 
-
-      // Update dispatch time
-      _lastScrollDispatchTime = now;
-      _allowNextScrollNoMatterWhat = NO;
+    // Update dispatch time
+    _lastScrollDispatchTime = now;
+    _allowNextScrollNoMatterWhat = NO;
   }
 
 }

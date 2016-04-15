@@ -15,7 +15,8 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   StyleSheet,
   Text,
@@ -23,7 +24,7 @@ var {
   TouchableOpacity,
   ScrollView,
   View,
-} = React;
+} = ReactNative;
 var createExamplePage = require('./createExamplePage');
 var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 

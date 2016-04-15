@@ -16,7 +16,8 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   Image,
   LayoutAnimation,
@@ -25,7 +26,7 @@ var {
   Text,
   TouchableOpacity,
   View,
-} = React;
+} = ReactNative;
 
 var NativeModules = require('NativeModules');
 var {

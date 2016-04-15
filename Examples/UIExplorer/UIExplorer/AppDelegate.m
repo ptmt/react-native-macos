@@ -155,7 +155,7 @@
   } else {
     [_bridge.eventDispatcher sendDeviceEventWithName:@"onSearchExample"
                                                 body:@{@"query": [sender stringValue]}
-    ];
+     ];
   }
 }
 

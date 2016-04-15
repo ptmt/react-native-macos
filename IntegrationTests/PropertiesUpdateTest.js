@@ -8,12 +8,13 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   View,
-} = React;
+} = ReactNative;
 
-var { TestModule } = React.addons;
+var { TestModule } = ReactNative.NativeModules;
 
 var PropertiesUpdateTest = React.createClass({
 

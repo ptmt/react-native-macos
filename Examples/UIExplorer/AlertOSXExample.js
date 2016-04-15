@@ -15,14 +15,15 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   StyleSheet,
   View,
   Text,
   TouchableHighlight,
   AlertIOS,
-} = React;
+} = ReactNative;
 
 var { SimpleAlertExampleBlock } = require('./AlertExample');
 
@@ -37,7 +38,7 @@ exports.examples = [{
 },
 {
   title: 'Prompt Options',
-  render(): React.Component {
+  render(): ReactElement {
     return <PromptOptions />;
   }
 },
@@ -85,9 +86,13 @@ exports.examples = [{
 }];
 
 class PromptOptions extends React.Component {
+  state: any;
+  customButtons: Array<Object>;
+
   constructor(props) {
     super(props);
 
+    // $FlowFixMe this seems to be a Flow bug, `saveResponse` is defined below
     this.saveResponse = this.saveResponse.bind(this);
 
     this.customButtons = [{

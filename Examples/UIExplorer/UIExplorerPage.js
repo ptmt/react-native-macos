@@ -16,12 +16,13 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   ScrollView,
   StyleSheet,
   View,
-} = React;
+} = ReactNative;
 
 var UIExplorerTitle = require('./UIExplorerTitle');
 
@@ -39,7 +40,7 @@ var UIExplorerPage = React.createClass({
     if (this.props.noScroll) {
       ContentWrapper = (View: ReactClass<any>);
     } else {
-      ContentWrapper = (View: ReactClass<any>);
+      ContentWrapper = (ScrollView: ReactClass<any>);
       wrapperProps.automaticallyAdjustContentInsets = !this.props.title;
       wrapperProps.keyboardShouldPersistTaps = true;
       wrapperProps.keyboardDismissMode = 'interactive';
@@ -49,7 +50,7 @@ var UIExplorerPage = React.createClass({
       null;
     var spacer = this.props.noSpacer ? null : <View style={styles.spacer} />;
     return (
-      <ScrollView style={styles.container}>
+      <View style={styles.container}>
         {title}
         <ContentWrapper
           style={styles.wrapper}
@@ -57,13 +58,14 @@ var UIExplorerPage = React.createClass({
             {this.props.children}
             {spacer}
         </ContentWrapper>
-      </ScrollView>
+      </View>
     );
   },
 });
 
 var styles = StyleSheet.create({
   container: {
+    backgroundColor: '#e9eaed',
     flex: 1,
   },
   spacer: {
