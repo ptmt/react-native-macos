@@ -159,10 +159,10 @@ RCT_TEST_DATA_CONFIGURATION_BLOCK(SizeFlexibilityUpdateTest, SingleUpdate, both,
 RCT_TEST_DATA_CONFIGURATION_BLOCK(SizeFlexibilityUpdateTest, MultipleUpdates, none, multipleSizeFlexibilityUpdatesBlock(RCTNone));
 RCT_TEST_DATA_CONFIGURATION_BLOCK(SizeFlexibilityUpdateTest, MultipleUpdates, height, multipleSizeFlexibilityUpdatesBlock(RCTHeight));
 RCT_TEST_DATA_CONFIGURATION_BLOCK(SizeFlexibilityUpdateTest, MultipleUpdates, width, multipleSizeFlexibilityUpdatesBlock(RCTWidth));
-RCT_TEST_DATA_CONFIGURATION_BLOCK(SizeFlexibilityUpdateTest, MultipleUpdates, both, multipleSizeFlexibilityUpdatesBlock(RCTBoth));
+//RCT_TEST_DATA_CONFIGURATION_BLOCK(SizeFlexibilityUpdateTest, MultipleUpdates, both, multipleSizeFlexibilityUpdatesBlock(RCTBoth));
 
 // Test if the 'rootViewDidChangeIntrinsicSize' delegate method is called after the RN app decides internally to resize
-RCT_TEST_CONFIGURATION_BLOCK(ReactContentSizeUpdateTest, reactContentSizeUpdateBlock(RCTBoth))
+//RCT_TEST_CONFIGURATION_BLOCK(ReactContentSizeUpdateTest, reactContentSizeUpdateBlock(RCTBoth))
 
 // Test if setting 'appProperties' property updates the RN app
 RCT_TEST_CONFIGURATION_BLOCK(PropertiesUpdateTest, propertiesUpdateBlock())

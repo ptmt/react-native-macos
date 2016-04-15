@@ -880,8 +880,8 @@ RCT_EXPORT_METHOD(createView:(nonnull NSNumber *)reactTag
     NSView *view = [componentData createViewWithTag:reactTag];
     if (view) {
       [componentData setProps:props forView:view]; // Must be done before bgColor to prevent wrong default
-      if (view.wantsLayer && [view.layer respondsToSelector:@selector(setBackgroundColor:)]) {
-        ((NSView *)view).layer.backgroundColor = [backgroundColor CGColor];
+      if ([view respondsToSelector:@selector(setBackgroundColor:)]) {
+        [((RCTView *)view) setBackgroundColor:backgroundColor];
       }
       if ([view respondsToSelector:@selector(reactBridgeDidFinishTransaction)]) {
         [uiManager->_bridgeTransactionListeners addObject:view];
