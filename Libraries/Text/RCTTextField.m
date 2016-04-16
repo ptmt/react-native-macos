@@ -35,7 +35,6 @@
     self.drawsBackground = NO;
     self.bordered = NO;
     self.bezeled = YES;
-
     _previousSelectionRange = self.currentEditor.selectedRange;
     [self addObserver:self forKeyPath:@"selectedTextRange" options:0 context:nil];
     _reactSubviews = [NSMutableArray new];
@@ -60,6 +59,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
                                eventCount:_nativeEventCount];
 }
 
+
+
 // This method is overridden for `onKeyPress`. The manager
 // will not send a keyPress for text that was pasted.
 - (void)paste:(id)sender
@@ -67,6 +68,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   _textWasPasted = YES;
   NSLog(@"paste is not implemented");
   //[super paste:sender];
+}
+
+- (void)setInsertionPointColor:(NSColor *)color
+{
+  NSTextView* textField = (NSTextView*) [self currentEditor];
+  if( [textField respondsToSelector: @selector(setInsertionPointColor:)] ) {
+    [textField setInsertionPointColor: [NSColor blueColor]];
+  }
 }
 
 - (void)setText:(NSString *)text
@@ -80,21 +89,30 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
-
 - (void)setPlaceholderTextColor:(NSColor *)placeholderTextColor
 {
   if (placeholderTextColor != nil && ![_placeholderTextColor isEqual:placeholderTextColor]) {
     _placeholderTextColor = placeholderTextColor;
-    [self setNeedsDisplay:YES];
+    [self updatePlaceholder];
   }
 }
 
+- (void)updatePlaceholder
+{
+  if (_placeholderTextColor && _placeholderString) {
+    NSAttributedString *attrString = [[NSAttributedString alloc]
+                                      initWithString:_placeholderString attributes: @{
+                                        NSForegroundColorAttributeName: _placeholderTextColor,
+                                        NSFontAttributeName: [self font]
+                                      }];
+    [self setPlaceholderAttributedString:attrString];
+  }
+}
 - (void)setPlaceholder:(NSString *)placeholder
 {
   if (placeholder != nil && ![_placeholderString isEqual:placeholder]) {
     _placeholderString = placeholder;
-    [self setPlaceholderString:placeholder];
-    [self setNeedsDisplay:YES];
+    [self updatePlaceholder];
   }
 }
 
@@ -207,6 +225,20 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
       },
     });
   }
+}
+
+-(BOOL)becomeFirstResponder
+{
+  BOOL success = [super becomeFirstResponder];
+  if (success)
+  {
+    NSTextView* textField = (NSTextView*) [self currentEditor];
+    if( [textField respondsToSelector: @selector(setInsertionPointColor:)] ) {
+      [textField setInsertionPointColor:[self selectionColor]];
+    }
+    [self updatePlaceholder];
+  }
+  return success;
 }
 
 - (BOOL)canBecomeFirstResponder

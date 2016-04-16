@@ -87,11 +87,11 @@
     _padding = 0;
 
     _textView = [[RCTUITextView alloc] initWithFrame:CGRectZero];
-    _textView.drawsBackground = NO;
-    [_textView setVerticallyResizable:YES];
+    _textView.drawsBackground = YES;
+    _textView.wantsLayer = YES;
     _textView.editable = YES;
     _textView.delegate = self;
-    _textView.wantsLayer = YES;
+     [_textView setVerticallyResizable:YES];
 
     _scrollView = [[NSScrollView alloc] initWithFrame:CGRectZero];
     [_scrollView setBorderType:NSNoBorder];
@@ -283,6 +283,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 {
   _contentInset = contentInset;
   [self updateFrames];
+}
+
+- (void)setBackgroundColor:(NSColor *)backgroundColor
+{
+  [_textView setBackgroundColor:backgroundColor];
 }
 
 - (NSString *)text

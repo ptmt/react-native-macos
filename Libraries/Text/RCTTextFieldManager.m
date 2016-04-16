@@ -14,6 +14,16 @@
 #import "RCTTextField.h"
 #import "RCTSecureTextField.h"
 
+@implementation RCTConvert(RCTTextField)
+
+RCT_ENUM_CONVERTER(NSFocusRingType, (@{
+    @"default": @(NSFocusRingTypeDefault),
+    @"none": @(NSFocusRingTypeNone),
+    @"exterior": @(NSFocusRingTypeExterior)
+}), NSFocusRingTypeDefault, integerValue)
+
+@end
+
 @interface RCTTextFieldManager() <NSTextFieldDelegate>
 
 @end
@@ -65,7 +75,8 @@ RCT_EXPORT_VIEW_PROPERTY(placeholder, NSString)
 RCT_EXPORT_VIEW_PROPERTY(placeholderTextColor, NSColor)
 RCT_EXPORT_VIEW_PROPERTY(text, NSString)
 RCT_EXPORT_VIEW_PROPERTY(maxLength, NSNumber)
-
+RCT_EXPORT_VIEW_PROPERTY(focusRingType, NSFocusRingType)
+RCT_EXPORT_VIEW_PROPERTY(selectionColor, NSColor)
 RCT_REMAP_VIEW_PROPERTY(textAlign, textAlignment, NSTextAlignment)
 RCT_REMAP_VIEW_PROPERTY(color, textColor, NSColor)
 RCT_CUSTOM_VIEW_PROPERTY(fontSize, CGFloat, RCTTextField)
