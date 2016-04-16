@@ -66,7 +66,6 @@ typedef void (^ControlBlock)(RCTRootView*);
 
 - (void)rootViewDidChangeIntrinsicSize:(RCTRootView *)rootView
 {
-  NSLog(@"rootViewDidChangeIntrisicSize");
   [rootView.bridge.eventDispatcher sendAppEventWithName:@"rootViewDidChangeIntrinsicSize"
                                                    body:@{@"width": @(rootView.intrinsicSize.width),
                                                           @"height": @(rootView.intrinsicSize.height)}];
@@ -141,7 +140,7 @@ static ControlBlock propertiesUpdateBlock()
 {
 
   NSOperatingSystemVersion version = [NSProcessInfo processInfo].operatingSystemVersion;
-  RCTAssert((version.majorVersion == 10 && version.minorVersion >= 11) || version.majorVersion >= 3, @"Tests should be run on OX 10.11.x+, found %zd.%zd.%zd", version.majorVersion, version.minorVersion, version.patchVersion);
+  RCTAssert((version.majorVersion == 10 && version.minorVersion >= 10) || version.majorVersion >= 3, @"Tests should be run on OX 10.10.x+, found %zd.%zd.%zd", version.majorVersion, version.minorVersion, version.patchVersion);
   _runner = RCTInitRunnerForApp(@"IntegrationTests/RCTRootViewIntegrationTestApp", nil);
 }
 
@@ -159,10 +158,10 @@ RCT_TEST_DATA_CONFIGURATION_BLOCK(SizeFlexibilityUpdateTest, SingleUpdate, both,
 RCT_TEST_DATA_CONFIGURATION_BLOCK(SizeFlexibilityUpdateTest, MultipleUpdates, none, multipleSizeFlexibilityUpdatesBlock(RCTNone));
 RCT_TEST_DATA_CONFIGURATION_BLOCK(SizeFlexibilityUpdateTest, MultipleUpdates, height, multipleSizeFlexibilityUpdatesBlock(RCTHeight));
 RCT_TEST_DATA_CONFIGURATION_BLOCK(SizeFlexibilityUpdateTest, MultipleUpdates, width, multipleSizeFlexibilityUpdatesBlock(RCTWidth));
-//RCT_TEST_DATA_CONFIGURATION_BLOCK(SizeFlexibilityUpdateTest, MultipleUpdates, both, multipleSizeFlexibilityUpdatesBlock(RCTBoth));
+RCT_TEST_DATA_CONFIGURATION_BLOCK(SizeFlexibilityUpdateTest, MultipleUpdates, both, multipleSizeFlexibilityUpdatesBlock(RCTBoth));
 
 // Test if the 'rootViewDidChangeIntrinsicSize' delegate method is called after the RN app decides internally to resize
-//RCT_TEST_CONFIGURATION_BLOCK(ReactContentSizeUpdateTest, reactContentSizeUpdateBlock(RCTBoth))
+RCT_TEST_CONFIGURATION_BLOCK(ReactContentSizeUpdateTest, reactContentSizeUpdateBlock(RCTBoth))
 
 // Test if setting 'appProperties' property updates the RN app
 RCT_TEST_CONFIGURATION_BLOCK(PropertiesUpdateTest, propertiesUpdateBlock())
