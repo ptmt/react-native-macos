@@ -16,7 +16,7 @@ var sharedBlacklist = [
   /node_modules[/\\]react[/\\]dist[/\\].*/,
   'node_modules/react/lib/React.js',
   'node_modules/react/lib/ReactDOM.js',
-
+  /node_modules\/react-native\/.*/,
   'downstream/core/invariant.js',
 
   /website\/node_modules\/.*/,
@@ -38,6 +38,11 @@ var platformBlacklists = {
     '.web.js',
     '.ios.js',
   ],
+  osx: [
+    '.android.js',
+    '.ios.js',
+    '.web.js'
+  ]
 };
 
 function escapeRegExp(pattern) {
