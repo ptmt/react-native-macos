@@ -15,12 +15,13 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   StyleSheet,
   Text,
   View,
-} = React;
+} = ReactNative;
 
 var ExampleBox = React.createClass({
   getInitialState: function() {

@@ -23,6 +23,9 @@
 #import "RCTUtils.h"
 #import "UIImageUtils.h"
 
+static NSString *const RCTErrorInvalidURI = @"E_INVALID_URI";
+static NSString *const RCTErrorPrefetchFailure = @"E_PREFETCH_FAILURE";
+
 @implementation NSImage (React)
 
 - (CAKeyframeAnimation *)reactKeyframeAnimation
@@ -322,7 +325,7 @@ static NSImage *RCTResizeImageIfNeeded(NSImage *image,
     // Check if networking module is available
     if (RCT_DEBUG && ![_bridge respondsToSelector:@selector(networking)]) {
       RCTLogError(@"No suitable image URL loader found for %@. You may need to "
-                  " import the RCTNetworking library in order to load images.",
+                  " import the RCTNetwork library in order to load images.",
                   imageTag);
       return;
     }
@@ -636,6 +639,27 @@ static NSImage *RCTResizeImageIfNeeded(NSImage *image,
                         }
                         completionBlock(error, size);
                       }];
+}
+
+#pragma mark - Bridged methods
+
+RCT_EXPORT_METHOD(prefetchImage:(NSString *)uri
+                        resolve:(RCTPromiseResolveBlock)resolve
+                         reject:(RCTPromiseRejectBlock)reject)
+{
+  if (!uri.length) {
+    reject(RCTErrorInvalidURI, @"Cannot prefetch an image for an empty URI", nil);
+    return;
+  }
+
+  [_bridge.imageLoader loadImageWithTag:uri callback:^(NSError *error, NSImage *image) {
+    if (error) {
+      reject(RCTErrorPrefetchFailure, nil, error);
+      return;
+    }
+
+    resolve(@YES);
+  }];
 }
 
 #pragma mark - RCTURLRequestHandler

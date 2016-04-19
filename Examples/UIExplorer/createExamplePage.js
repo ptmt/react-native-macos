@@ -16,11 +16,11 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('react');
+var ReactNative = require('react-native-desktop');
 var {
   Platform,
-} = React;
-var ReactNative = require('ReactNative');
+} = ReactNative;
 var UIExplorerBlock = require('./UIExplorerBlock');
 var UIExplorerPage = require('./UIExplorerPage');
 
@@ -47,31 +47,26 @@ var createExamplePage = function(title: ?string, exampleModule: ExampleModule)
         }
         title += ' (' + platform + ' only)';
       }
-      // Hack warning: This is a hack because the www UI explorer requires
-      // renderComponent to be called.
+      // Hack warning: This is a hack because the www UI explorer used to
+      // require render to be called. It should just return elements now.
       var originalRender = React.render;
-
-      var originalRenderComponent = React.renderComponent;
       var originalIOSRender = ReactNative.render;
-      var originalIOSRenderComponent = ReactNative.renderComponent;
       var renderedComponent;
       // TODO remove typecasts when Flow bug #6560135 is fixed
       // and workaround is removed from react-native.js
       (React: Object).render =
-      (React: Object).renderComponent =
       (ReactNative: Object).render =
-      (ReactNative: Object).renderComponent =
         function(element, container) {
           renderedComponent = element;
         };
       var result = example.render(null);
       if (result) {
-        renderedComponent = React.cloneElement(result);
+        renderedComponent = React.cloneElement(result, {
+          navigator: this.props.navigator,
+        });
       }
       (React: Object).render = originalRender;
-      (React: Object).renderComponent = originalRenderComponent;
       (ReactNative: Object).render = originalIOSRender;
-      (ReactNative: Object).renderComponent = originalIOSRenderComponent;
       return (
         <UIExplorerBlock
           key={i}

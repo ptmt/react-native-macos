@@ -9,6 +9,8 @@
 
 #import <AppKit/AppKit.h>
 
+@class RCTShadowView;
+
 #import "RCTComponent.h"
 
 //TODO: let's try to eliminate this category if possible
@@ -53,5 +55,12 @@
  * UIView alternative
  */
 @property (nonatomic, assign) BOOL clipsToBounds;
+
+/**
+ Tools for debugging
+ */
+#if RCT_DEV
+@property (nonatomic, strong, setter=_DEBUG_setReactShadowView:) RCTShadowView *_DEBUG_reactShadowView;
+#endif
 
 @end

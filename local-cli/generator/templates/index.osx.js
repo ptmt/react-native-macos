@@ -2,13 +2,14 @@
  * Sample React Native Desktop App
  * https://github.com/ptmt/react-native-desktop
  */
- import React from 'react-native-desktop';
+ import React from 'react';
+ import ReactNative from 'react-native-desktop';
  const {
    AppRegistry,
    StyleSheet,
    Text,
    View,
- } = React;
+ } = ReactNative;
 
 const <%= name %> = React.createClass({
   render() {

@@ -29,63 +29,66 @@
 //
 
 #import "UIImage+Compare.h"
+#import "UIImageUtils.h"
 
 @implementation NSImage (Compare)
 
 - (BOOL)compareWithImage:(NSImage *)image
 {
   NSAssert(CGSizeEqualToSize(self.size, image.size), @"Images must be same size.");
-  return YES;
+
+  CGImageRef source = RCTGetCGImageRef(self);
+  CGImageRef dest = RCTGetCGImageRef(image);
   // The images have the equal size, so we could use the smallest amount of bytes because of byte padding
-//  size_t minBytesPerRow = MIN(CGImageGetBytesPerRow(self.CGImage), CGImageGetBytesPerRow(image.CGImage));
-//  size_t referenceImageSizeBytes = CGImageGetHeight(self.CGImage) * minBytesPerRow;
-//  void *referenceImagePixels = calloc(1, referenceImageSizeBytes);
-//  void *imagePixels = calloc(1, referenceImageSizeBytes);
-//
-//  if (!referenceImagePixels || !imagePixels) {
-//    free(referenceImagePixels);
-//    free(imagePixels);
-//    return NO;
-//  }
-//
-//  CGContextRef referenceImageContext = CGBitmapContextCreate(referenceImagePixels,
-//                                                             CGImageGetWidth(self.CGImage),
-//                                                             CGImageGetHeight(self.CGImage),
-//                                                             CGImageGetBitsPerComponent(self.CGImage),
-//                                                             minBytesPerRow,
-//                                                             CGImageGetColorSpace(self.CGImage),
-//                                                             (CGBitmapInfo)kCGImageAlphaPremultipliedLast
-//                                                             );
-//  CGContextRef imageContext = CGBitmapContextCreate(imagePixels,
-//                                                    CGImageGetWidth(image.CGImage),
-//                                                    CGImageGetHeight(image.CGImage),
-//                                                    CGImageGetBitsPerComponent(image.CGImage),
-//                                                    minBytesPerRow,
-//                                                    CGImageGetColorSpace(image.CGImage),
-//                                                    (CGBitmapInfo)kCGImageAlphaPremultipliedLast
-//                                                    );
-//
-//  CGFloat scaleFactor = [UIScreen mainScreen].scale;
-//  CGContextScaleCTM(referenceImageContext, scaleFactor, scaleFactor);
-//  CGContextScaleCTM(imageContext, scaleFactor, scaleFactor);
-//
-//  if (!referenceImageContext || !imageContext) {
-//    CGContextRelease(referenceImageContext);
-//    CGContextRelease(imageContext);
-//    free(referenceImagePixels);
-//    free(imagePixels);
-//    return NO;
-//  }
-//
-//  CGContextDrawImage(referenceImageContext, CGRectMake(0.0f, 0.0f, self.size.width, self.size.height), self.CGImage);
-//  CGContextDrawImage(imageContext, CGRectMake(0.0f, 0.0f, image.size.width, image.size.height), image.CGImage);
-//  CGContextRelease(referenceImageContext);
-//  CGContextRelease(imageContext);
-//
-//  BOOL imageEqual = (memcmp(referenceImagePixels, imagePixels, referenceImageSizeBytes) == 0);
-//  free(referenceImagePixels);
-//  free(imagePixels);
-//  return imageEqual;
+  size_t minBytesPerRow = MIN(CGImageGetBytesPerRow(source), CGImageGetBytesPerRow(dest));
+  size_t referenceImageSizeBytes = CGImageGetHeight(source) * minBytesPerRow;
+  void *referenceImagePixels = calloc(1, referenceImageSizeBytes);
+  void *imagePixels = calloc(1, referenceImageSizeBytes);
+
+  if (!referenceImagePixels || !imagePixels) {
+    free(referenceImagePixels);
+    free(imagePixels);
+    return NO;
+  }
+
+  CGContextRef referenceImageContext = CGBitmapContextCreate(referenceImagePixels,
+                                                             CGImageGetWidth(source),
+                                                             CGImageGetHeight(source),
+                                                             CGImageGetBitsPerComponent(source),
+                                                             minBytesPerRow,
+                                                             CGImageGetColorSpace(source),
+                                                             (CGBitmapInfo)kCGImageAlphaPremultipliedLast
+                                                             );
+  CGContextRef imageContext = CGBitmapContextCreate(imagePixels,
+                                                    CGImageGetWidth(dest),
+                                                    CGImageGetHeight(dest),
+                                                    CGImageGetBitsPerComponent(dest),
+                                                    minBytesPerRow,
+                                                    CGImageGetColorSpace(dest),
+                                                    (CGBitmapInfo)kCGImageAlphaPremultipliedLast
+                                                    );
+
+  CGFloat scaleFactor = 1;//[UIScreen mainScreen].scale;
+  CGContextScaleCTM(referenceImageContext, scaleFactor, scaleFactor);
+  CGContextScaleCTM(imageContext, scaleFactor, scaleFactor);
+
+  if (!referenceImageContext || !imageContext) {
+    CGContextRelease(referenceImageContext);
+    CGContextRelease(imageContext);
+    free(referenceImagePixels);
+    free(imagePixels);
+    return NO;
+  }
+
+  CGContextDrawImage(referenceImageContext, CGRectMake(0.0f, 0.0f, self.size.width, self.size.height), source);
+  CGContextDrawImage(imageContext, CGRectMake(0.0f, 0.0f, image.size.width, image.size.height), dest);
+  CGContextRelease(referenceImageContext);
+  CGContextRelease(imageContext);
+
+  BOOL imageEqual = (memcmp(referenceImagePixels, imagePixels, referenceImageSizeBytes) == 0);
+  free(referenceImagePixels);
+  free(imagePixels);
+  return imageEqual;
 }
 
 @end

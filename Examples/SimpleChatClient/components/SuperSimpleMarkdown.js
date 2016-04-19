@@ -1,5 +1,6 @@
 /* @noflow */
-import React from 'react-native-desktop';
+import React from 'react';
+import ReactNative from 'react-native-desktop';
 /* $FlowFixMe(>=17.0.0) - config */
 import SimpleMarkdown from 'simple-markdown';
 
@@ -7,7 +8,7 @@ const {
   View,
   Text,
   Image
-} = React;
+} = ReactNative;
 
 export default class Markdown extends React.Component {
 

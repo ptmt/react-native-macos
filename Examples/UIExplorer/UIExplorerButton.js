@@ -15,12 +15,13 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   StyleSheet,
   Text,
   TouchableHighlight,
-} = React;
+} = ReactNative;
 
 var UIExplorerButton = React.createClass({
   propTypes: {
@@ -43,14 +44,13 @@ var UIExplorerButton = React.createClass({
 var styles = StyleSheet.create({
   button: {
     borderColor: '#696969',
-    borderRadius: 18,
+    borderRadius: 8,
     borderWidth: 1,
     padding: 10,
     margin: 5,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#d3d3d3',
-    overflow: 'hidden'
   },
 });
 

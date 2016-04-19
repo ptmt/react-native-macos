@@ -16,7 +16,8 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var UIExplorerList = require('./UIExplorerList.osx');
 
 var {
@@ -26,7 +27,7 @@ var {
   Text,
   Dimensions,
   TouchableHighlight
-} = React;
+} = ReactNative;
 
 var defaultLayout = Dimensions.get('window');
 

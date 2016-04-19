@@ -57,7 +57,10 @@ module.exports = yeoman.generators.NamedBase.extend({
     utils.copyAndReplace(
       this.templatePath('../../../.flowconfig'),
       this.destinationPath('.flowconfig'),
-      { 'Libraries\/react-native\/react-native-interface.js' : 'node_modules/react-native-desktop/Libraries/react-native/react-native-interface.js' }
+      {
+        'Libraries\/react-native\/react-native-interface.js' : 'node_modules/react-native-desktop/Libraries/react-native/react-native-interface.js',
+        '^flow/$' : 'node_modules/react-native-desktop/flow\nflow/'
+      }
     );
 
     this.fs.copy(
@@ -67,6 +70,10 @@ module.exports = yeoman.generators.NamedBase.extend({
     this.fs.copy(
       this.templatePath('_watchmanconfig'),
       this.destinationPath('.watchmanconfig')
+    );
+    this.fs.copy(
+      this.templatePath('_buckconfig'),
+      this.destinationPath('.buckconfig')
     );
   },
 
@@ -106,6 +113,17 @@ module.exports = yeoman.generators.NamedBase.extend({
       return;
     }
 
-    this.npmInstall('react', { '--save': true });
+    var reactNativePackageJson = require('../../package.json');
+    var { peerDependencies } = reactNativePackageJson;
+    if (!peerDependencies) {
+      return;
+    }
+
+    var reactVersion = peerDependencies.react;
+    if (!reactVersion) {
+      return;
+    }
+
+    this.npmInstall(`react@${reactVersion}`, { '--save': true });
   }
 });

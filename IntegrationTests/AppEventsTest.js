@@ -11,14 +11,15 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   NativeAppEventEmitter,
   StyleSheet,
   Text,
   View,
-} = React;
-var { TestModule } = React.NativeModules;
+} = ReactNative;
+var { TestModule } = ReactNative.NativeModules;
 
 var deepDiffer = require('deepDiffer');
 

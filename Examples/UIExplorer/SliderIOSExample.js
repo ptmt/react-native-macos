@@ -15,13 +15,14 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   SliderIOS,
   Text,
   StyleSheet,
   View,
-} = React;
+} = ReactNative;
 
 var SliderExample = React.createClass({
   getInitialState() {
@@ -46,7 +47,7 @@ var SliderExample = React.createClass({
 
 var styles = StyleSheet.create({
   slider: {
-    height: 16,
+    height: 10,
     margin: 10,
   },
   text: {

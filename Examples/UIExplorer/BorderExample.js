@@ -13,11 +13,12 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   StyleSheet,
   View
-} = React;
+} = ReactNative;
 
 var styles = StyleSheet.create({
   box: {
@@ -25,7 +26,7 @@ var styles = StyleSheet.create({
     height: 100,
   },
   border1: {
-    borderWidth: 1,
+    borderWidth: 10,
     borderColor: 'brown',
   },
   borderRadius: {
@@ -42,11 +43,10 @@ var styles = StyleSheet.create({
   },
   border3: {
     borderColor: 'purple',
-    borderRadius: 0,
-    borderTopWidth: 4,
-    borderRightWidth: 18,
-    borderBottomWidth: 4,
-    borderLeftWidth: 18,
+    borderTopWidth: 10,
+    borderRightWidth: 20,
+    borderBottomWidth: 30,
+    borderLeftWidth: 40,
   },
   border4: {
     borderTopWidth: 10,
@@ -170,7 +170,7 @@ exports.examples = [
   {
     title: 'Custom Borders',
     description: 'border*Width & border*Color',
-    platform: 'osx',
+    platform: 'ios',
     render() {
       return <View style={[styles.box, styles.border5]} />;
     }
@@ -178,7 +178,7 @@ exports.examples = [
   {
     title: 'Custom Borders',
     description: 'border*Width & border*Color',
-    platform: 'osx',
+    platform: 'ios',
     render() {
       return <View style={[styles.box, styles.border6]} />;
     }
@@ -186,7 +186,7 @@ exports.examples = [
   {
     title: 'Custom Borders',
     description: 'borderRadius & clipping',
-    platform: 'osx',
+    platform: 'ios',
     render() {
       return (
         <View style={[styles.box, styles.border7]}>

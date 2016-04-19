@@ -15,19 +15,20 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   SegmentedControlIOS,
   Text,
   View,
   StyleSheet
-} = React;
+} = ReactNative;
 
 var BasicSegmentedControlExample = React.createClass({
   render() {
     return (
       <View>
-        <View style={{marginBottom: 30}}>
+        <View style={{marginBottom: 10}}>
           <SegmentedControlIOS values={['One', 'Two']} />
         </View>
         <View>

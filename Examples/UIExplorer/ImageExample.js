@@ -1,4 +1,11 @@
 /**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
  * The examples provided by Facebook are for non-commercial testing and
  * evaluation purposes only.
  *
@@ -15,23 +22,28 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   Image,
+  Platform,
   StyleSheet,
   Text,
   View,
   ActivityIndicatorIOS
-} = React;
+} = ReactNative;
 
 var base64Icon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEsAAABLCAQAAACSR7JhAAADtUlEQVR4Ac3YA2Bj6QLH0XPT1Fzbtm29tW3btm3bfLZtv7e2ObZnms7d8Uw098tuetPzrxv8wiISrtVudrG2JXQZ4VOv+qUfmqCGGl1mqLhoA52oZlb0mrjsnhKpgeUNEs91Z0pd1kvihA3ULGVHiQO2narKSHKkEMulm9VgUyE60s1aWoMQUbpZOWE+kaqs4eLEjdIlZTcFZB0ndc1+lhB1lZrIuk5P2aib1NBpZaL+JaOGIt0ls47SKzLC7CqrlGF6RZ09HGoNy1lYl2aRSWL5GuzqWU1KafRdoRp0iOQEiDzgZPnG6DbldcomadViflnl/cL93tOoVbsOLVM2jylvdWjXolWX1hmfZbGR/wjypDjFLSZIRov09BgYmtUqPQPlQrPapecLgTIy0jMgPKtTeob2zWtrGH3xvjUkPCtNg/tm1rjwrMa+mdUkPd3hWbH0jArPGiU9ufCsNNWFZ40wpwn+62/66R2RUtoso1OB34tnLOcy7YB1fUdc9e0q3yru8PGM773vXsuZ5YIZX+5xmHwHGVvlrGPN6ZSiP1smOsMMde40wKv2VmwPPVXNut4sVpUreZiLBHi0qln/VQeI/LTMYXpsJtFiclUN+5HVZazim+Ky+7sAvxWnvjXrJFneVtLWLyPJu9K3cXLWeOlbMTlrIelbMDlrLenrjEQOtIF+fuI9xRp9ZBFp6+b6WT8RrxEpdK64BuvHgDk+vUy+b5hYk6zfyfs051gRoNO1usU12WWRWL73/MMEy9pMi9qIrR4ZpV16Rrvduxazmy1FSvuFXRkqTnE7m2kdb5U8xGjLw/spRr1uTov4uOgQE+0N/DvFrG/Jt7i/FzwxbA9kDanhf2w+t4V97G8lrT7wc08aA2QNUkuTfW/KimT01wdlfK4yEw030VfT0RtZbzjeMprNq8m8tnSTASrTLti64oBNdpmMQm0eEwvfPwRbUBywG5TzjPCsdwk3IeAXjQblLCoXnDVeoAz6SfJNk5TTzytCNZk/POtTSV40NwOFWzw86wNJRpubpXsn60NJFlHeqlYRbslqZm2jnEZ3qcSKgm0kTli3zZVS7y/iivZTweYXJ26Y+RTbV1zh3hYkgyFGSTKPfRVbRqWWVReaxYeSLarYv1Qqsmh1s95S7G+eEWK0f3jYKTbV6bOwepjfhtafsvUsqrQvrGC8YhmnO9cSCk3yuY984F1vesdHYhWJ5FvASlacshUsajFt2mUM9pqzvKGcyNJW0arTKN1GGGzQlH0tXwLDgQTurS8eIQAAAABJRU5ErkJggg==';
 
 var ImageCapInsetsExample = require('./ImageCapInsetsExample');
+const IMAGE_PREFETCH_URL = 'http://facebook.github.io/origami/public/images/blog-hero.jpg?r=1&t=' + Date.now();
+var prefetchTask = Image.prefetch(IMAGE_PREFETCH_URL);
 
 var NetworkImageCallbackExample = React.createClass({
   getInitialState: function() {
     return {
       events: [],
+      startLoadPrefetched: false,
       mountTime: new Date(),
     };
   },
@@ -50,9 +62,26 @@ var NetworkImageCallbackExample = React.createClass({
           style={[styles.base, {overflow: 'visible'}]}
           onLoadStart={() => this._loadEventFired(`✔ onLoadStart (+${new Date() - mountTime}ms)`)}
           onLoad={() => this._loadEventFired(`✔ onLoad (+${new Date() - mountTime}ms)`)}
-          onLoadEnd={() => this._loadEventFired(`✔ onLoadEnd (+${new Date() - mountTime}ms)`)}
+          onLoadEnd={() => {
+            this._loadEventFired(`✔ onLoadEnd (+${new Date() - mountTime}ms)`);
+            this.setState({startLoadPrefetched: true}, () => {
+              prefetchTask.then(() => {
+                this._loadEventFired(`✔ Prefetch OK (+${new Date() - mountTime}ms)`);
+              }, error => {
+                this._loadEventFired(`✘ Prefetch failed (+${new Date() - mountTime}ms)`);
+              });
+            });
+          }}
         />
-
+        {this.state.startLoadPrefetched ?
+          <Image
+            source={this.props.prefetchedSource}
+            style={[styles.base, {overflow: 'visible'}]}
+            onLoadStart={() => this._loadEventFired(`✔ (prefetched) onLoadStart (+${new Date() - mountTime}ms)`)}
+            onLoad={() => this._loadEventFired(`✔ (prefetched) onLoad (+${new Date() - mountTime}ms)`)}
+            onLoadEnd={() => this._loadEventFired(`✔ (prefetched) onLoadEnd (+${new Date() - mountTime}ms)`)}
+          />
+          : null}
         <Text style={{marginTop: 20}}>
           {this.state.events.join('\n')}
         </Text>
@@ -165,7 +194,8 @@ exports.examples = [
     title: 'Image Loading Events',
     render: function() {
       return (
-        <NetworkImageCallbackExample source={{uri: 'http://facebook.github.io/origami/public/images/blog-hero.jpg?r=1'}}/>
+        <NetworkImageCallbackExample source={{uri: 'http://facebook.github.io/origami/public/images/blog-hero.jpg?r=1&t=' + Date.now()}}
+          prefetchedSource={{uri: IMAGE_PREFETCH_URL}}/>
       );
     },
   },
@@ -176,7 +206,7 @@ exports.examples = [
         <NetworkImageExample source={{uri: 'http://TYPO_ERROR_facebook.github.io/react/img/logo_og.png'}} />
       );
     },
-    platform: 'osx',
+    platform: 'ios',
   },
   {
     title: 'Image Download Progress',
@@ -185,7 +215,7 @@ exports.examples = [
         <NetworkImageExample source={{uri: 'http://facebook.github.io/origami/public/images/blog-hero.jpg?r=1'}}/>
       );
     },
-    platform: 'osx',
+    platform: 'ios',
   },
   {
     title: 'defaultSource',
@@ -383,55 +413,73 @@ exports.examples = [
       return (
         <View>
           {[smallImage, fullImage].map((image, index) => {
-            return <View style={styles.horizontal} key={index}>
-              <View>
-                <Text style={[styles.resizeModeText]}>
-                  Contain
-                </Text>
-                <Image
-                  style={styles.resizeMode}
-                  resizeMode={Image.resizeMode.contain}
-                  source={image}
-                />
+            return (
+            <View key={index}>
+              <View style={styles.horizontal}>
+                <View>
+                  <Text style={[styles.resizeModeText]}>
+                    Contain
+                  </Text>
+                  <Image
+                    style={styles.resizeMode}
+                    resizeMode={Image.resizeMode.contain}
+                    source={image}
+                  />
+                </View>
+                <View style={styles.leftMargin}>
+                  <Text style={[styles.resizeModeText]}>
+                    Cover
+                  </Text>
+                  <Image
+                    style={styles.resizeMode}
+                    resizeMode={Image.resizeMode.cover}
+                    source={image}
+                  />
+                </View>
               </View>
-              <View style={styles.leftMargin}>
-                <Text style={[styles.resizeModeText]}>
-                  Cover
-                </Text>
-                <Image
-                  style={styles.resizeMode}
-                  resizeMode={Image.resizeMode.cover}
-                  source={image}
-                />
+              <View style={styles.horizontal}>
+                <View>
+                  <Text style={[styles.resizeModeText]}>
+                    Stretch
+                  </Text>
+                  <Image
+                    style={styles.resizeMode}
+                    resizeMode={Image.resizeMode.stretch}
+                    source={image}
+                  />
+                </View>
+                { Platform.OS === 'android' ?
+                  <View style={styles.leftMargin}>
+                    <Text style={[styles.resizeModeText]}>
+                      Center
+                    </Text>
+                    <Image
+                      style={styles.resizeMode}
+                      resizeMode={Image.resizeMode.center}
+                      source={image}
+                    />
+                  </View>
+                : null }
               </View>
-              <View style={styles.leftMargin}>
-                <Text style={[styles.resizeModeText]}>
-                  Stretch
-                </Text>
-                <Image
-                  style={styles.resizeMode}
-                  resizeMode={Image.resizeMode.stretch}
-                  source={image}
-                />
             </View>
-          </View>;
+          );
         })}
         </View>
       );
     },
   },
-  // {
-  //   title: 'Animated GIF',
-  //   render: function() {
-  //     return (
-  //       <Image
-  //         style={styles.gif}
-  //         source={{uri: 'http://38.media.tumblr.com/9e9bd08c6e2d10561dd1fb4197df4c4e/tumblr_mfqekpMktw1rn90umo1_500.gif'}}
-  //       />
-  //     );
-  //   },
-  //   platform: 'osx',
-  // },
+  {
+    title: 'Animated GIF',
+    render: function() {
+      return (
+        <Image
+          style={styles.gif}
+          source={{uri: 'http://38.media.tumblr.com/9e9bd08c6e2d10561dd1fb4197df4c4e/tumblr_mfqekpMktw1rn90umo1_500.gif'}}
+        />
+      );
+    },
+    platform: 'ios',
+  },
   {
     title: 'Base64 image',
     render: function() {
@@ -442,14 +490,19 @@ exports.examples = [
         />
       );
     },
-    platform: 'osx',
+    platform: 'ios',
   },
   {
-    title: 'Image Size',
+    title: 'Cap Insets',
+    description:
+      'When the image is resized, the corners of the size specified ' +
+      'by capInsets will stay a fixed size, but the center content and ' +
+      'borders of the image will be stretched. This is useful for creating ' +
+      'resizable rounded buttons, shadows, and other resizable assets.',
     render: function() {
-      return <ImageSizeExample source={fullImage} />;
+      return <ImageCapInsetsExample />;
     },
-    platform: 'osx',
+    platform: 'ios',
   },
   {
     title: 'Image Size',
@@ -465,8 +518,8 @@ var smallImage = {uri: 'http://facebook.github.io/react/img/logo_small_2x.png'};
 
 var styles = StyleSheet.create({
   base: {
-    width: 100,
-    height: 100,
+    width: 38,
+    height: 38,
   },
   progress: {
     flex: 1,
@@ -490,7 +543,7 @@ var styles = StyleSheet.create({
     color: 'white'
   },
   resizeMode: {
-    width: 100,
+    width: 90,
     height: 60,
     borderWidth: 0.5,
     borderColor: 'black'
@@ -500,8 +553,8 @@ var styles = StyleSheet.create({
     marginBottom: 3,
   },
   icon: {
-    width: 17,
-    height: 40,
+    width: 15,
+    height: 15,
   },
   horizontal: {
     flexDirection: 'row',

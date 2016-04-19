@@ -13,6 +13,54 @@
 #import "RCTEventDispatcher.h"
 #import "RCTUtils.h"
 #import "NSView+React.h"
+#import "RCTText.h"
+
+
+//
+//@implementation TextFieldCellWithPaddings
+//
+//- (id)init
+//{
+//  self = [super init];
+//  if (self) {
+////    self.bordered = NO;
+////    self.drawsBackground = NO;
+//  }
+//  return self;
+//}
+//
+////- (NSRect)titleRectForBounds:(NSRect)theRect
+////{
+////  //NSRect titleFrame = [super titleRectForBounds:theRect];
+////
+////  //NSSize titleSize = [[self attributedStringValue] size];
+////  //titleFrame.origin.y = theRect.origin.y + (theRect.size.height - titleSize.height) / 2.0;
+////  return UIEdgeInsetsInsetRect(theRect, ((RCTTextField *)[self controlView]).contentInset);
+////}
+//
+//- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+//  NSRect titleRect = [self titleRectForBounds:cellFrame];
+//  [[self attributedStringValue] drawInRect:titleRect];
+//}
+//
+//
+////- (NSRect)drawingRectForBounds:(NSRect)rect
+////{
+////  NSRect rectInset = UIEdgeInsetsInsetRect(rect, _contentInset);
+////  return [super drawingRectForBounds:rectInset];
+////}
+//
+//// Required methods
+//- (id)initWithCoder:(NSCoder *)decoder {
+//  return [super initWithCoder:decoder];
+//}
+//- (id)initImageCell:(NSImage *)image {
+//  return [super initImageCell:image];
+//}
+//- (id)initTextCell:(NSString *)string {
+//  return [super initTextCell:string];
+//}
+//@end
 
 @implementation RCTTextField
 {
@@ -30,15 +78,16 @@
 {
   if ((self = [super initWithFrame:CGRectZero])) {
     RCTAssert(eventDispatcher, @"eventDispatcher is a required parameter");
-    _eventDispatcher = eventDispatcher;
     self.delegate = self;
     self.drawsBackground = NO;
     self.bordered = NO;
     self.bezeled = YES;
 
+    _eventDispatcher = eventDispatcher;
     _previousSelectionRange = self.currentEditor.selectedRange;
-    [self addObserver:self forKeyPath:@"selectedTextRange" options:0 context:nil];
     _reactSubviews = [NSMutableArray new];
+
+    [self addObserver:self forKeyPath:@"selectedTextRange" options:0 context:nil];
   }
   return self;
 }
@@ -65,8 +114,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)paste:(id)sender
 {
   _textWasPasted = YES;
-  NSLog(@"paste is not implemented");
-  //[super paste:sender];
+  [[super currentEditor] paste:sender];
 }
 
 - (void)setText:(NSString *)text
@@ -80,12 +128,23 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
-
 - (void)setPlaceholderTextColor:(NSColor *)placeholderTextColor
 {
   if (placeholderTextColor != nil && ![_placeholderTextColor isEqual:placeholderTextColor]) {
     _placeholderTextColor = placeholderTextColor;
-    [self setNeedsDisplay:YES];
+    [self updatePlaceholder];
+  }
+}
+
+- (void)updatePlaceholder
+{
+  if (_placeholderTextColor && _placeholderString) {
+    NSAttributedString *attrString = [[NSAttributedString alloc]
+                                      initWithString:_placeholderString attributes: @{
+                                        NSForegroundColorAttributeName: _placeholderTextColor,
+                                        NSFontAttributeName: [self font]
+                                      }];
+    [self setPlaceholderAttributedString:attrString];
   }
 }
 
@@ -93,8 +152,15 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 {
   if (placeholder != nil && ![_placeholderString isEqual:placeholder]) {
     _placeholderString = placeholder;
-    [self setPlaceholderString:placeholder];
-    [self setNeedsDisplay:YES];
+    [self updatePlaceholder];
+  }
+}
+
+- (void)setBackgroundColor:(NSString *)backgroundColor
+{
+  if (backgroundColor) {
+    [self setDrawsBackground:YES];
+    [self.cell setBackgroundColor:backgroundColor];
   }
 }
 
@@ -207,6 +273,20 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
       },
     });
   }
+}
+
+-(BOOL)becomeFirstResponder
+{
+  BOOL success = [super becomeFirstResponder];
+  if (success)
+  {
+    NSTextView* textField = (NSTextView*) [self currentEditor];
+    if( [textField respondsToSelector: @selector(setInsertionPointColor:)] ) {
+      [textField setInsertionPointColor:[self selectionColor]];
+    }
+    [self updatePlaceholder];
+  }
+  return success;
 }
 
 - (BOOL)canBecomeFirstResponder

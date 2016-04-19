@@ -16,12 +16,13 @@
 
 'use strict';
 
-const React = require('react-native-desktop');
+const React = require('React');
+const ReactNative = require('react-native-desktop');
 const {
   StyleSheet,
   Text,
   View,
-} = React;
+} = ReactNative;
 
 const requireNativeComponent = require('requireNativeComponent');
 

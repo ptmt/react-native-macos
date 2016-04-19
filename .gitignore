@@ -24,6 +24,9 @@ project.xcworkspace
 # Gradle
 /build/
 /Examples/**/android/app/build/
+/Examples/**/android/app/gradle/
+/Examples/**/android/app/gradlew
+/Examples/**/android/app/gradlew.bat
 /ReactAndroid/build/
 
 # Android
@@ -31,6 +34,7 @@ project.xcworkspace
 .gradle
 local.properties
 *.iml
+/android/
 
 # Node
 node_modules

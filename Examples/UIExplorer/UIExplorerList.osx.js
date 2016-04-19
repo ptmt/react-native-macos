@@ -15,15 +15,14 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('react');
+var ReactNative = require('react-native-desktop');
 var {
   AppRegistry,
   Settings,
   SnapshotViewIOS,
   StyleSheet,
-} = React;
-
-var { TestModule } = React.addons;
+} = ReactNative;
 
 var UIExplorerListBase = require('./UIExplorerListBase');
 

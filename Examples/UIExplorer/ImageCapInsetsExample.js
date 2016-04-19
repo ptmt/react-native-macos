@@ -16,13 +16,14 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   Image,
   StyleSheet,
   Text,
   View,
-} = React;
+} = ReactNative;
 
 var ImageCapInsetsExample = React.createClass({
   render: function() {

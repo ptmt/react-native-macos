@@ -15,20 +15,21 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   Text,
   TextInput,
   View,
   StyleSheet,
-} = React;
+} = ReactNative;
 
 var WithLabel = React.createClass({
   render: function() {
     return (
       <View style={styles.labelContainer}>
         <View style={styles.label}>
-          <Text toolTip={this.props.label}>{this.props.label}</Text>
+          <Text>{this.props.label}</Text>
         </View>
         {this.props.children}
       </View>
@@ -143,7 +144,6 @@ class RewriteExample extends React.Component {
           }}
           style={styles.default}
           value={this.state.text}
-          toolTip={this.state.text}
         />
         <Text style={[styles.remainder, {color: remainderColor}]}>
           {remainder}
@@ -170,7 +170,6 @@ class RewriteExampleInvalidCharacters extends React.Component {
           }}
           style={styles.default}
           value={this.state.text}
-          toolTip={this.state.text}
         />
       </View>
     );
@@ -295,9 +294,8 @@ var styles = StyleSheet.create({
     height: 26,
     borderWidth: 0.5,
     borderColor: '#0f0f0f',
-    flex: 1,
-    fontSize: 13,
-    padding: 4,
+    //flex: 1,
+    fontSize: 13
   },
   multiline: {
     borderWidth: 0.5,
@@ -311,7 +309,7 @@ var styles = StyleSheet.create({
   multilineWithFontStyles: {
     color: 'blue',
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 18,
     fontFamily: 'Cochin',
     height: 60,
   },
@@ -356,9 +354,43 @@ exports.title = '<TextInput>';
 exports.description = 'Single and multi-line text inputs.';
 exports.examples = [
   {
+    title: 'Inverted background + placeholder + borderless',
+    render: function() {
+      return (
+        <View style={{backgroundColor: '#555', height: 50, flex: 1, paddingTop: 4, paddingLeft: 10, justifyContent: 'center'}}>
+          <TextInput
+            style={[styles.default, {height: 20, backgroundColor: 'transparent', color: '#ddd'}]}
+            bezeled={false}
+            placeholder={'placeholder'}
+            placeholderTextColor={'tomato'}
+            accessibilityLabel="I am the accessibility label for text input"
+          />
+        </View>
+      );
+    }
+  },
+  {
     title: 'Auto-focus',
     render: function() {
-      return <TextInput autoFocus={true} style={styles.default} toolTip='Input text here:' />;
+      return (
+        <TextInput
+          autoFocus={true}
+          style={styles.default}
+          accessibilityLabel="I am the accessibility label for text input"
+        />
+      );
+    }
+  },
+  {
+    title: 'Focus ring type = none',
+    render: function() {
+      return (
+        <TextInput
+          style={[styles.default]}
+          focusRingType={'none'}
+          accessibilityLabel="I am the accessibility label for text input"
+        />
+      );
     }
   },
   {
@@ -376,7 +408,34 @@ exports.examples = [
   {
     title: 'Auto-capitalize',
     render: function() {
-      return <RewriteExampleInvalidCharacters />;
+      return (
+        <View>
+          <WithLabel label="none">
+            <TextInput
+              autoCapitalize="none"
+              style={styles.default}
+            />
+          </WithLabel>
+          <WithLabel label="sentences">
+            <TextInput
+              autoCapitalize="sentences"
+              style={styles.default}
+            />
+          </WithLabel>
+          <WithLabel label="words">
+            <TextInput
+              autoCapitalize="words"
+              style={styles.default}
+            />
+          </WithLabel>
+          <WithLabel label="characters">
+            <TextInput
+              autoCapitalize="characters"
+              style={styles.default}
+            />
+          </WithLabel>
+        </View>
+      );
     }
   },
   {
@@ -389,21 +448,6 @@ exports.examples = [
           </WithLabel>
           <WithLabel label="false">
             <TextInput autoCorrect={false} style={styles.default} />
-          </WithLabel>
-        </View>
-      );
-    }
-  },
-  {
-    title: 'Bezeled borders',
-    render: function() {
-      return (
-        <View>
-          <WithLabel label="true">
-            <TextInput bezeled={true} style={styles.default} defaultValue="abc" />
-          </WithLabel>
-          <WithLabel label="false">
-            <TextInput bezeled={false} style={styles.default} defaultValue="abc" />
           </WithLabel>
         </View>
       );
@@ -431,11 +475,11 @@ exports.examples = [
       return (
         <View>
           <TextInput
-            style={[styles.default, {color: 'blue', fontWeight: 'bold'}]}
+            style={[styles.default, {color: 'blue'}]}
             defaultValue="Blue"
           />
           <TextInput
-            style={[styles.default, {color: 'green', fontWeight: 'bold'}]}
+            style={[styles.default, {color: 'green'}]}
             defaultValue="Green"
           />
         </View>
@@ -569,10 +613,25 @@ exports.examples = [
           <TextInput
             placeholder="multiline with children"
             multiline={true}
+            enablesReturnKeyAutomatically={true}
             returnKeyType="go"
             style={styles.multiline}>
             <View style={styles.multilineChild}/>
           </TextInput>
+        </View>
+      );
+    }
+  },
+  {
+    title: 'Auto-expanding',
+    render: function() {
+      return (
+        <View>
+          <AutoExpandingTextInput
+            placeholder="height increases with content"
+            enablesReturnKeyAutomatically={true}
+            returnKeyType="default"
+          />
         </View>
       );
     }

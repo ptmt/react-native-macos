@@ -14,7 +14,8 @@
 */
 'use strict';
 
-const React = require('react-native');
+const React = require('React');
+const ReactNative = require('react-native-desktop');
 const {
   ScrollView,
   StyleSheet,
@@ -22,7 +23,7 @@ const {
   Text,
   TouchableWithoutFeedback,
   View,
-} = React;
+} = ReactNative;
 
 const styles = StyleSheet.create({
   row: {

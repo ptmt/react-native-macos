@@ -39,3 +39,5 @@ CGContextRef UIGraphicsGetCurrentContext();
 NSImage *UIGraphicsGetImageFromCurrentImageContext();
 
 void UIGraphicsEndImageContext();
+
+CGImageRef RCTGetCGImageRef(NSImage *image);

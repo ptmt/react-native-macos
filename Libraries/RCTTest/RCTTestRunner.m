@@ -122,7 +122,23 @@ expectErrorBlock:(BOOL(^)(NSString *error))expectErrorBlock
 
     NSView * vcView = [NSView new];
     [vcView addSubview:rootView]; // Add as subview so it doesn't get resized
-    [[[NSApplication sharedApplication] mainWindow] setContentView:vcView];
+    if ([[NSApplication sharedApplication] mainWindow]) {
+      [[[NSApplication sharedApplication] mainWindow] close];
+    }
+
+    NSWindowController *windowController = [[[NSApplication sharedApplication] mainWindow] windowController];
+    
+    NSWindow *window = [[NSWindow alloc] initWithContentRect:rootView.frame
+                                              styleMask:NSTitledWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask | NSFullSizeContentViewWindowMask
+                                                backing:NSBackingStoreBuffered
+                                                  defer:NO];
+
+    [window setTitle:moduleName];
+    [windowController showWindow:window];
+    [window makeMainWindow];
+    [windowController setShouldCascadeWindows:NO];
+    
+    [window setContentView:rootView];
 
     if (configurationBlock) {
       configurationBlock(rootView);

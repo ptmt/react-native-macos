@@ -13,13 +13,14 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   DatePickerAndroid,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
-} = React;
+} = ReactNative;
 
 var UIExplorerBlock = require('./UIExplorerBlock');
 var UIExplorerPage = require('./UIExplorerPage');

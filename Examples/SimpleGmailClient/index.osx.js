@@ -1,13 +1,13 @@
 /* @flow */
 'use strict';
 
-// TODO: why import is not working?
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');;
 
 var {
   View,
   AppRegistry,
-} = React;
+} = ReactNative;
 
 var SigninForm = require('./components/SigninForm');
 var MailLayout = require('./components/MailLayout');

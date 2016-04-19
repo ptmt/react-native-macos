@@ -14,7 +14,6 @@
 const NativeMethodsMixin = require('NativeMethodsMixin');
 const Platform = require('Platform');
 const React = require('React');
-const ReactInstanceMap = require('ReactInstanceMap');
 const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const StyleSheetPropType = require('StyleSheetPropType');
 const TextStylePropTypes = require('TextStylePropTypes');
@@ -159,7 +158,7 @@ const Text = React.createClass({
             if (setResponder && !this.touchableHandleActivePressIn) {
               // Attach and bind all the other handlers only the first time a touch
               // actually happens.
-              for (let key in Touchable.Mixin) {
+              for (const key in Touchable.Mixin) {
                 if (typeof Touchable.Mixin[key] === 'function') {
                   (this: any)[key] = Touchable.Mixin[key].bind(this);
                 }
@@ -227,6 +226,12 @@ const Text = React.createClass({
         ...this.props,
         ...this._handlers,
         isHighlighted: this.state.isHighlighted,
+      };
+    }
+    if (Touchable.TOUCH_TARGET_DEBUG && newProps.onPress) {
+      newProps = {
+        ...newProps,
+        style: [this.props.style, {color: 'magenta'}],
       };
     }
     if (this.context.isInAParentText) {

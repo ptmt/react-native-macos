@@ -15,13 +15,14 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   Image,
   StyleSheet,
   Text,
   View,
-} = React;
+} = ReactNative;
 
 var Entity = React.createClass({
   render: function() {
@@ -223,7 +224,7 @@ exports.examples = [
         </Text>
       </View>
     );
-  }
+  },
 }, {
   title: 'Nested',
   description: 'Nested text components will inherit the styles of their ' +

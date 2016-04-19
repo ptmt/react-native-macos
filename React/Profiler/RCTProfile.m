@@ -49,7 +49,11 @@ static NSDictionary *RCTProfileInfo;
 static NSMutableDictionary *RCTProfileOngoingEvents;
 static NSTimeInterval RCTProfileStartTime;
 static NSUInteger RCTProfileEventID = 0;
+
 static NSTimer *RCTProfileDisplayLink; // TODO: consider DisplayLink
+static __weak RCTBridge *_RCTProfilingBridge;
+static NSWindow *RCTProfileControlsWindow;
+
 
 #pragma mark - Macros
 
@@ -96,6 +100,11 @@ void RCTProfileRegisterCallbacks(RCTProfileCallbacks *cb)
 }
 
 #pragma mark - Private Helpers
+
+static RCTBridge *RCTProfilingBridge(void)
+{
+  return _RCTProfilingBridge ?: [RCTBridge currentBridge];
+}
 
 static NSNumber *RCTProfileTimestamp(NSTimeInterval timestamp)
 {
@@ -288,6 +297,8 @@ NSView *RCTProfileCreateView(RCTComponentData *self, SEL _cmd, NSNumber *tag)
 
 void RCTProfileHookModules(RCTBridge *bridge)
 {
+  _RCTProfilingBridge = bridge;
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wtautological-pointer-compare"
   if (RCTProfileTrampoline == NULL) {
@@ -324,6 +335,8 @@ static void RCTProfileUnhookInstance(id instance)
 
 void RCTProfileUnhookModules(RCTBridge *bridge)
 {
+  _RCTProfilingBridge = nil;
+
   dispatch_group_enter(RCTProfileGetUnhookGroup());
 
   for (RCTModuleData *moduleData in [bridge valueForKey:@"moduleDataByID"]) {
@@ -349,6 +362,33 @@ void RCTProfileUnhookModules(RCTBridge *bridge)
 + (void)vsync:(NSTimer *)timer
 {
   RCTProfileImmediateEvent(0, @"VSYNC", CACurrentMediaTime(), 'g');
+}
+
++ (void)reload
+{
+  [[NSNotificationCenter defaultCenter] postNotificationName:RCTReloadNotification
+                                                      object:NULL];
+}
+
++ (void)toggle:(NSButton *)target
+{
+  BOOL isProfiling = RCTProfileIsProfiling();
+
+  // Start and Stop are switched here, since we're going to toggle isProfiling
+  [target setTitle:isProfiling ? @"Start" : @"Stop"];
+
+  if (isProfiling) {
+    RCTProfileEnd(RCTProfilingBridge(), ^(NSString *result) {
+      NSString *outFile = [NSTemporaryDirectory() stringByAppendingString:@"tmp_trace.json"];
+      [result writeToFile:outFile
+               atomically:YES
+                 encoding:NSUTF8StringEncoding
+                    error:nil];
+      NSLog(@"Show ActivityContoller for %@ here", outFile);
+    });
+  } else {
+    RCTProfileInit(RCTProfilingBridge());
+  }
 }
 
 @end
@@ -717,6 +757,48 @@ void RCTProfileSendResult(RCTBridge *bridge, NSString *route, NSData *data)
    }];
 
   [task resume];
+}
+
+void RCTProfileShowControls(void)
+{
+  static const CGFloat height = 30;
+  static const CGFloat width = 60;
+
+  NSWindow *window = [[NSWindow alloc] initWithContentRect:CGRectMake(20, 80, width * 2, height)
+                                                 styleMask:0
+                                                   backing:NSBackingStoreBuffered
+                                                     defer:NO];
+//  window.windowLevel = UIWindowLevelAlert + 1000;
+//  window.hidden = NO;
+//
+  NSView *rootView = [[NSView alloc] initWithFrame:window.frame];
+  [rootView setWantsLayer:YES];
+  rootView.layer.backgroundColor = [NSColor lightGrayColor].CGColor;
+  rootView.layer.borderColor = [NSColor grayColor].CGColor;
+  rootView.layer.borderWidth = 1;
+  rootView.alphaValue = 0.8;
+
+  NSButton *startOrStop = [[NSButton alloc] initWithFrame:CGRectMake(0, 0, width, height)];
+  [startOrStop setTitle:RCTProfileIsProfiling() ? @"Stop" : @"Start"];
+  [startOrStop setAction:@selector(toggle:)];
+  startOrStop.font = [NSFont systemFontOfSize:12];
+
+  NSButton *reload = [[NSButton alloc] initWithFrame:CGRectMake(width, 0, width, height)];
+  [reload setTitle:@"Reload"];
+  [reload setAction:@selector(reload)];
+  reload.font = [NSFont systemFontOfSize:12];
+
+  [rootView addSubview:startOrStop];
+  [rootView addSubview:reload];
+  [window setContentView:rootView];
+
+  RCTProfileControlsWindow = window;
+}
+
+void RCTProfileHideControls(void)
+{
+  //RCTProfileControlsWindow.hidden = YES;
+  RCTProfileControlsWindow = nil;
 }
 
 #endif

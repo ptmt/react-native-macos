@@ -15,15 +15,16 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   Image,
   LayoutAnimation,
   StyleSheet,
   Text,
   View,
-  TouchableHighlight
-} = React;
+  TouchableOpacity
+} = ReactNative;
 
 type Layout = {
   x: number;
@@ -97,20 +98,19 @@ var LayoutEventExample = React.createClass({
     return (
       <View style={this.state.containerStyle}>
         <Text>
-          layout events are called on mount and whenever layout is recalculated.
-          Note that the layout event will typically be received
-          <Text style={styles.italicText}>before</Text> the layout has updated on screen,
-          especially when using layout animations.
+          layout events are called on mount and whenever layout is recalculated. Note that the layout event will typically be received <Text style={styles.italicText}>before</Text> the layout has updated on screen, especially when using layout animations.{'  '}
         </Text>
-        <TouchableHighlight onPress={this.animateViewLayout}>
-          <Text style={styles.pressText}>Press here to change layout.</Text>
-        </TouchableHighlight>
+        <TouchableOpacity onPress={this.animateViewLayout}>
+          <Text style={styles.pressText}>
+            Press here to change layout.
+          </Text>
+        </TouchableOpacity>
         <View ref="view" onLayout={this.onViewLayout} style={viewStyle}>
           <Image
             ref="img"
             onLayout={this.onImageLayout}
             style={styles.image}
-            source={{uri: 'http://facebook.github.io/react-native/img/opengraph.png'}}
+            source={{uri: 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851561_767334496626293_1958532586_n.png'}}
           />
           <Text>
             ViewLayout: {JSON.stringify(this.state.viewLayout, null, '  ') + '\n\n'}

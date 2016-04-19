@@ -79,10 +79,10 @@
 
 - (void)setDefaultURL
 {
-#if DEBUG
-  _sourceURL = [NSURL URLWithString:@"http://localhost:8081/Examples/UIExplorer/UIExplorerApp.osx.bundle?platform=osx&dev=true"];
-#else
+#if RUNNING_ON_CI
   _sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+#else
+  _sourceURL = [NSURL URLWithString:@"http://localhost:8081/Examples/UIExplorer/UIExplorerApp.osx.bundle?platform=osx&dev=true"];
 #endif
 }
 
@@ -155,7 +155,7 @@
   } else {
     [_bridge.eventDispatcher sendDeviceEventWithName:@"onSearchExample"
                                                 body:@{@"query": [sender stringValue]}
-    ];
+     ];
   }
 }
 

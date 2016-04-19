@@ -474,11 +474,17 @@ RCT_EXPORT_MODULE()
 - (void)loadPerformanceLoggerData
 {
   NSMutableArray *data = [NSMutableArray new];
-  NSArray *times = RCTPerformanceLoggerOutput();
+  NSArray<NSNumber *> *values = RCTPerformanceLoggerOutput();
   NSUInteger i = 0;
   for (NSString *label in RCTPerformanceLoggerLabels()) {
-    [data addObject:[NSString stringWithFormat:@"%@: %lldus", label,
-                     [times[i+1] longLongValue] - [times[i] longLongValue]]];
+    long long value = values[i+1].longLongValue - values[i].longLongValue;
+    NSString *unit = @"ms";
+    if ([label hasSuffix:@"Size"]) {
+      unit = @"b";
+    } else if ([label hasSuffix:@"Count"]) {
+      unit = @"";
+    }
+    [data addObject:[NSString stringWithFormat:@"%@: %lld%@", label, value, unit]];
     i += 2;
   }
   _perfLoggerMarks = [data copy];

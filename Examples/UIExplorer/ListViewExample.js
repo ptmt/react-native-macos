@@ -15,7 +15,8 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   Image,
   ListView,
@@ -24,7 +25,7 @@ var {
   RecyclerViewBackedScrollView,
   Text,
   View,
-} = React;
+} = ReactNative;
 
 var UIExplorerPage = require('./UIExplorerPage');
 
@@ -54,8 +55,6 @@ var ListViewSimpleExample = React.createClass({
         noSpacer={true}
         noScroll={true}>
         <ListView
-          style={{height: 300}}
-          initialListSize={10}
           dataSource={this.state.dataSource}
           renderRow={this._renderRow}
           renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
@@ -138,7 +137,6 @@ var styles = StyleSheet.create({
   thumb: {
     width: 64,
     height: 64,
-    marginRight: 10
   },
   text: {
     flex: 1,

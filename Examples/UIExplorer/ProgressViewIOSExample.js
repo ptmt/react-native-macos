@@ -15,12 +15,13 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   ProgressViewIOS,
   StyleSheet,
   View,
-} = React;
+} = ReactNative;
 var TimerMixin = require('react-timer-mixin');
 
 var ProgressViewExample = React.createClass({

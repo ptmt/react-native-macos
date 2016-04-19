@@ -15,16 +15,16 @@
  */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Image,
-  Text
-} = React;
+  Image
+} = ReactNative;
 
 exports.displayName = (undefined: ?string);
 exports.title = '<ScrollView>';
@@ -75,21 +75,6 @@ exports.examples = [
       </View>
     );
   }
-},
-, {
-  title: 'Inverted <ScrollView>',
-  description: 'Auto scroll content to bottom',
-  render: function() {
-    const texts = TEXTS.map((t, i)=> <Text key={i}>{i} - {t}</Text>);
-    return (
-      <ScrollView
-        automaticallyAdjustContentInsets={false}
-        style={styles.scrollView}
-        autoScrollToBottom={true}>
-        {texts}
-      </ScrollView>
-    );
-  }
 }];
 
 var Thumb = React.createClass({
@@ -105,21 +90,13 @@ var Thumb = React.createClass({
   }
 });
 
-var THUMBS = new Array(20)
-  .join()
-  .split(',')
-  .map(x => 'http://facebook.github.io/react/img/logo_og.png');
-
-var TEXTS = new Array(100)
-  .join()
-  .split(',')
-  .map(x => Math.random().toString(36).replace(/[^a-z]+/g, ''));
-
+var THUMBS = ['https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-ash3/t39.1997/p128x128/851549_767334479959628_274486868_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851561_767334496626293_1958532586_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-ash3/t39.1997/p128x128/851579_767334503292959_179092627_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851589_767334513292958_1747022277_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851563_767334559959620_1193692107_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851593_767334566626286_1953955109_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851591_767334523292957_797560749_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851567_767334529959623_843148472_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851548_767334489959627_794462220_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851575_767334539959622_441598241_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-ash3/t39.1997/p128x128/851573_767334549959621_534583464_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851583_767334573292952_1519550680_n.png'];
+THUMBS = THUMBS.concat(THUMBS); // double length of THUMBS
 var createThumbRow = (uri, i) => <Thumb key={i} uri={uri} />;
 
 var styles = StyleSheet.create({
   scrollView: {
-    //backgroundColor: '#6A85B1',
+    backgroundColor: '#6A85B1',
     height: 300,
   },
   horizontalScrollView: {
@@ -130,9 +107,6 @@ var styles = StyleSheet.create({
     width: 50,
     backgroundColor: '#527FE4',
     padding: 5,
-  },
-  inverted: {
-    transform: [{scaleY: -1}]
   },
   text: {
     fontSize: 20,

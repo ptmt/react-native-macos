@@ -3,7 +3,8 @@
  */
 'use strict';
 
-const React = require('react-native-desktop');
+const React = require('React');
+const ReactNative = require('react-native-desktop');
 const {
   MenuManager,
   TouchableOpacity,
@@ -12,7 +13,7 @@ const {
   TextInput,
   AlertIOS,
   View,
-} = React;
+} = ReactNative;
 
 const MenuManagerExample = React.createClass({
   getInitialState() {

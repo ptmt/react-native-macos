@@ -23,5 +23,6 @@
 @property (nonatomic, assign) NSImageScaling contentMode;
 @property (nonatomic, copy) NSString *src;
 @property (nonatomic, strong) RCTImageSource *source;
+@property (nonatomic, assign) CGFloat blurRadius;
 
 @end

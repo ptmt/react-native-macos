@@ -9,8 +9,6 @@
  */
 
 #import <AppKit/AppKit.h>
-
-#import "RCTDefines.h"
 #import "RCTResizeMode.h"
 
 NS_ASSUME_NONNULL_BEGIN

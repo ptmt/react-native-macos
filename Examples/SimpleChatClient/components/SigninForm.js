@@ -1,7 +1,8 @@
 /* @flow */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');;
 var {
   View,
   Text,
@@ -13,7 +14,7 @@ var {
   LinkingIOS,
   Image,
   Dimensions
-} = React;
+} = ReactNative;
 
 const AnimatedButton = Animated.createAnimatedComponent(TouchableHighlight);
 

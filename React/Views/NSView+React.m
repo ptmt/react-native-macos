@@ -15,6 +15,7 @@
 
 #import "RCTAssert.h"
 #import "RCTLog.h"
+#import "RCTShadowView.h"
 
 @implementation NSView (React)
 
@@ -27,6 +28,21 @@
 {
   objc_setAssociatedObject(self, @selector(reactTag), reactTag, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
+
+#if RCT_DEV
+
+- (RCTShadowView *)_DEBUG_reactShadowView
+{
+  return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)_DEBUG_setReactShadowView:(RCTShadowView *)shadowView
+{
+  // Use assign to avoid keeping the shadowView alive it if no longer exists
+  objc_setAssociatedObject(self, @selector(_DEBUG_reactShadowView), shadowView, OBJC_ASSOCIATION_ASSIGN);
+}
+
+#endif
 
 - (BOOL)isReactRootView
 {

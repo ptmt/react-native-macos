@@ -1,7 +1,8 @@
 /* @flow */
 'use strict';
 
-var React = require('react-native-desktop');
+var React = require('React');
+var ReactNative = require('react-native-desktop');
 var {
   View,
   StyleSheet,
@@ -12,7 +13,7 @@ var {
   TouchableHighlight,
   TextInput,
   LayoutAnimation
-} = React;
+} = ReactNative;
 
 import LoadingIndicator from './LoadingIndicator';
 import MessagesListView from './MessagesListView';

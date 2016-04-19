@@ -13,6 +13,9 @@
 
 @class RCTEventDispatcher;
 
+@interface TextFieldCellWithPaddings : NSTextFieldCell
+@end
+
 @interface RCTTextField : NSTextField <NSTextFieldDelegate>
 
 @property (nonatomic, assign) BOOL caretHidden;
@@ -20,6 +23,7 @@
 @property (nonatomic, assign) BOOL selectTextOnFocus;
 @property (nonatomic, assign) NSEdgeInsets contentInset;
 @property (nonatomic, strong) NSColor *placeholderTextColor;
+@property (nonatomic, strong) NSColor *selectionColor;
 @property (nonatomic, assign) NSInteger mostRecentEventCount;
 @property (nonatomic, strong) NSNumber *maxLength;
 @property (nonatomic, assign) BOOL textWasPasted;

@@ -9,6 +9,8 @@
 
 #import <AppKit/AppKit.h>
 
+CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets);
+
 @interface RCTText : NSView
 
 @property (nonatomic, assign) NSEdgeInsets contentInset;
