@@ -1,6 +1,6 @@
 {
   "name": "react-native-desktop",
-  "version": "0.6.0-rc",
+  "version": "0.6.0-rc2",
   "dependencies": {
     "abab": {
       "version": "1.0.3",
@@ -730,15 +730,18 @@
           "dependencies": {
             "ansi-regex": {
               "version": "2.0.0",
-              "from": "ansi-regex@>=2.0.0 <3.0.0"
+              "from": "ansi-regex@2.0.0",
+              "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-2.0.0.tgz"
             },
             "ansi-styles": {
               "version": "2.2.1",
-              "from": "ansi-styles@>=2.2.1 <3.0.0"
+              "from": "ansi-styles@2.2.1",
+              "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-2.2.1.tgz"
             },
             "bl": {
               "version": "1.1.2",
-              "from": "bl@>=1.0.0 <2.0.0",
+              "from": "bl@1.1.2",
+              "resolved": "https://registry.npmjs.org/bl/-/bl-1.1.2.tgz",
               "dependencies": {
                 "readable-stream": {
                   "version": "2.0.6",
@@ -749,15 +752,18 @@
             },
             "chalk": {
               "version": "1.1.3",
-              "from": "chalk@>=1.0.0 <2.0.0"
+              "from": "chalk@1.1.3",
+              "resolved": "https://registry.npmjs.org/chalk/-/chalk-1.1.3.tgz"
             },
             "get-stdin": {
               "version": "4.0.1",
-              "from": "get-stdin@>=4.0.1 <5.0.0"
+              "from": "get-stdin@4.0.1",
+              "resolved": "https://registry.npmjs.org/get-stdin/-/get-stdin-4.0.1.tgz"
             },
             "has-ansi": {
               "version": "2.0.0",
-              "from": "has-ansi@>=2.0.0 <3.0.0"
+              "from": "has-ansi@2.0.0",
+              "resolved": "https://registry.npmjs.org/has-ansi/-/has-ansi-2.0.0.tgz"
             },
             "isarray": {
               "version": "1.0.0",
@@ -771,19 +777,23 @@
             },
             "strip-ansi": {
               "version": "3.0.1",
-              "from": "strip-ansi@>=3.0.0 <4.0.0"
+              "from": "strip-ansi@3.0.1",
+              "resolved": "https://registry.npmjs.org/strip-ansi/-/strip-ansi-3.0.1.tgz"
             },
             "strip-dirs": {
               "version": "1.1.1",
-              "from": "strip-dirs@>=1.0.0 <2.0.0"
+              "from": "strip-dirs@1.1.1",
+              "resolved": "https://registry.npmjs.org/strip-dirs/-/strip-dirs-1.1.1.tgz"
             },
             "supports-color": {
               "version": "2.0.0",
-              "from": "supports-color@>=2.0.0 <3.0.0"
+              "from": "supports-color@2.0.0",
+              "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-2.0.0.tgz"
             },
             "tar-stream": {
               "version": "1.5.1",
-              "from": "tar-stream@>=1.1.1 <2.0.0"
+              "from": "tar-stream@1.5.1",
+              "resolved": "https://registry.npmjs.org/tar-stream/-/tar-stream-1.5.1.tgz"
             }
           }
         },
@@ -794,35 +804,43 @@
           "dependencies": {
             "ansi-regex": {
               "version": "2.0.0",
-              "from": "ansi-regex@>=2.0.0 <3.0.0"
+              "from": "ansi-regex@2.0.0",
+              "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-2.0.0.tgz"
             },
             "ansi-styles": {
               "version": "2.2.1",
-              "from": "ansi-styles@>=2.2.1 <3.0.0"
+              "from": "ansi-styles@2.2.1",
+              "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-2.2.1.tgz"
             },
             "chalk": {
               "version": "1.1.3",
-              "from": "chalk@>=1.0.0 <2.0.0"
+              "from": "chalk@1.1.3",
+              "resolved": "https://registry.npmjs.org/chalk/-/chalk-1.1.3.tgz"
             },
             "get-stdin": {
               "version": "4.0.1",
-              "from": "get-stdin@>=4.0.1 <5.0.0"
+              "from": "get-stdin@4.0.1",
+              "resolved": "https://registry.npmjs.org/get-stdin/-/get-stdin-4.0.1.tgz"
             },
             "has-ansi": {
               "version": "2.0.0",
-              "from": "has-ansi@>=2.0.0 <3.0.0"
+              "from": "has-ansi@2.0.0",
+              "resolved": "https://registry.npmjs.org/has-ansi/-/has-ansi-2.0.0.tgz"
             },
             "strip-ansi": {
               "version": "3.0.1",
-              "from": "strip-ansi@>=3.0.0 <4.0.0"
+              "from": "strip-ansi@3.0.1",
+              "resolved": "https://registry.npmjs.org/strip-ansi/-/strip-ansi-3.0.1.tgz"
             },
             "strip-dirs": {
               "version": "1.1.1",
-              "from": "strip-dirs@>=1.0.0 <2.0.0"
+              "from": "strip-dirs@1.1.1",
+              "resolved": "https://registry.npmjs.org/strip-dirs/-/strip-dirs-1.1.1.tgz"
             },
             "supports-color": {
               "version": "2.0.0",
-              "from": "supports-color@>=2.0.0 <3.0.0"
+              "from": "supports-color@2.0.0",
+              "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-2.0.0.tgz"
             }
           }
         },
@@ -873,7 +891,8 @@
           "dependencies": {
             "get-stdin": {
               "version": "4.0.1",
-              "from": "get-stdin@>=4.0.1 <5.0.0"
+              "from": "get-stdin@4.0.1",
+              "resolved": "https://registry.npmjs.org/get-stdin/-/get-stdin-4.0.1.tgz"
             }
           }
         },
@@ -1941,7 +1960,8 @@
       "dependencies": {
         "esprima": {
           "version": "2.7.2",
-          "from": "esprima@>=2.7.1 <3.0.0"
+          "from": "esprima@2.7.2",
+          "resolved": "https://registry.npmjs.org/esprima/-/esprima-2.7.2.tgz"
         },
         "source-map": {
           "version": "0.2.0",
@@ -5333,7 +5353,8 @@
         },
         "esprima": {
           "version": "2.7.2",
-          "from": "esprima@>=2.7.1 <2.8.0"
+          "from": "esprima@2.7.2",
+          "resolved": "https://registry.npmjs.org/esprima/-/esprima-2.7.2.tgz"
         },
         "recast": {
           "version": "0.11.5",
