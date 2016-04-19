@@ -102,7 +102,7 @@ RCT_EXPORT_VIEW_PROPERTY(mostRecentEventCount, NSInteger)
   NSNumber *reactTag = shadowView.reactTag;
   NSEdgeInsets padding = shadowView.paddingAsInsets;
   return ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, RCTTextField *> *viewRegistry) {
-    viewRegistry[reactTag].contentInset = padding;
+    ((RCTTextField *)viewRegistry[reactTag]).contentInset = padding;
   };
 }
 
@@ -118,9 +118,7 @@ RCT_EXPORT_VIEW_PROPERTY(mostRecentEventCount, NSInteger)
 @end
 
 @interface RCTSecureTextFieldManager() <NSTextFieldDelegate>
-
 @end
-
 
 // TODO: extract common logic into one place
 @implementation RCTSecureTextFieldManager

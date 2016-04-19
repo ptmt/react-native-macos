@@ -87,8 +87,6 @@
     _padding = 0;
 
     _textView = [[RCTUITextView alloc] initWithFrame:CGRectZero];
-    _textView.drawsBackground = YES;
-    _textView.wantsLayer = YES;
     _textView.editable = YES;
     _textView.delegate = self;
      [_textView setVerticallyResizable:YES];
@@ -287,7 +285,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)setBackgroundColor:(NSColor *)backgroundColor
 {
-  [_textView setBackgroundColor:backgroundColor];
+  if (backgroundColor) {
+    _textView.drawsBackground = YES;
+    _textView.wantsLayer = YES;
+    [_textView setBackgroundColor:backgroundColor];
+  }
 }
 
 - (NSString *)text

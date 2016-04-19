@@ -136,6 +136,15 @@ var TextInput = React.createClass({
       'emergency-call',
     ]),
     /**
+     * Determines the color of the keyboard.
+     * @platform osx
+     */
+    focusRingType: PropTypes.oneOf([
+      'default',
+      'none',
+      'exterior',
+    ]),
+    /**
      * Limits the maximum number of characters that can be entered. Use this
      * instead of implementing the logic in JS to avoid flicker.
      */
@@ -200,6 +209,10 @@ var TextInput = React.createClass({
      * The text color of the placeholder string
      */
     placeholderTextColor: PropTypes.string,
+    /**
+     * The color used by caret and selection
+     */
+    selectionColor: PropTypes.string,
     /**
      * If true, the text input obscures the text entered so that sensitive text
      * like passwords stay secure. The default value is false.
@@ -433,7 +446,7 @@ var TextInput = React.createClass({
           text={this._getText()}
         />;
     }
-
+    
     return (
       <TouchableWithoutFeedback
         onPress={this._onPress}

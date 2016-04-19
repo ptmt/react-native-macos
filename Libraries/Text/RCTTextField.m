@@ -13,6 +13,54 @@
 #import "RCTEventDispatcher.h"
 #import "RCTUtils.h"
 #import "NSView+React.h"
+#import "RCTText.h"
+
+
+//
+//@implementation TextFieldCellWithPaddings
+//
+//- (id)init
+//{
+//  self = [super init];
+//  if (self) {
+////    self.bordered = NO;
+////    self.drawsBackground = NO;
+//  }
+//  return self;
+//}
+//
+////- (NSRect)titleRectForBounds:(NSRect)theRect
+////{
+////  //NSRect titleFrame = [super titleRectForBounds:theRect];
+////
+////  //NSSize titleSize = [[self attributedStringValue] size];
+////  //titleFrame.origin.y = theRect.origin.y + (theRect.size.height - titleSize.height) / 2.0;
+////  return UIEdgeInsetsInsetRect(theRect, ((RCTTextField *)[self controlView]).contentInset);
+////}
+//
+//- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+//  NSRect titleRect = [self titleRectForBounds:cellFrame];
+//  [[self attributedStringValue] drawInRect:titleRect];
+//}
+//
+//
+////- (NSRect)drawingRectForBounds:(NSRect)rect
+////{
+////  NSRect rectInset = UIEdgeInsetsInsetRect(rect, _contentInset);
+////  return [super drawingRectForBounds:rectInset];
+////}
+//
+//// Required methods
+//- (id)initWithCoder:(NSCoder *)decoder {
+//  return [super initWithCoder:decoder];
+//}
+//- (id)initImageCell:(NSImage *)image {
+//  return [super initImageCell:image];
+//}
+//- (id)initTextCell:(NSString *)string {
+//  return [super initTextCell:string];
+//}
+//@end
 
 @implementation RCTTextField
 {
@@ -37,8 +85,9 @@
 
     _eventDispatcher = eventDispatcher;
     _previousSelectionRange = self.currentEditor.selectedRange;
-    [self addObserver:self forKeyPath:@"selectedTextRange" options:0 context:nil];
     _reactSubviews = [NSMutableArray new];
+
+    [self addObserver:self forKeyPath:@"selectedTextRange" options:0 context:nil];
   }
   return self;
 }
@@ -60,22 +109,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
                                eventCount:_nativeEventCount];
 }
 
-
-
 // This method is overridden for `onKeyPress`. The manager
 // will not send a keyPress for text that was pasted.
 - (void)paste:(id)sender
 {
   _textWasPasted = YES;
   [[super currentEditor] paste:sender];
-}
-
-- (void)setInsertionPointColor:(NSColor *)color
-{
-  NSTextView* textField = (NSTextView*) [self currentEditor];
-  if( [textField respondsToSelector: @selector(setInsertionPointColor:)] ) {
-    [textField setInsertionPointColor: [NSColor blueColor]];
-  }
 }
 
 - (void)setText:(NSString *)text
@@ -108,11 +147,20 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     [self setPlaceholderAttributedString:attrString];
   }
 }
+
 - (void)setPlaceholder:(NSString *)placeholder
 {
   if (placeholder != nil && ![_placeholderString isEqual:placeholder]) {
     _placeholderString = placeholder;
     [self updatePlaceholder];
+  }
+}
+
+- (void)setBackgroundColor:(NSString *)backgroundColor
+{
+  if (backgroundColor) {
+    [self setDrawsBackground:YES];
+    [self.cell setBackgroundColor:backgroundColor];
   }
 }
 

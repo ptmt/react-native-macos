@@ -294,9 +294,8 @@ var styles = StyleSheet.create({
     height: 26,
     borderWidth: 0.5,
     borderColor: '#0f0f0f',
-    flex: 1,
-    fontSize: 13,
-    padding: 4,
+    //flex: 1,
+    fontSize: 13
   },
   multiline: {
     borderWidth: 0.5,
@@ -355,12 +354,40 @@ exports.title = '<TextInput>';
 exports.description = 'Single and multi-line text inputs.';
 exports.examples = [
   {
+    title: 'Inverted background + placeholder + borderless',
+    render: function() {
+      return (
+        <View style={{backgroundColor: '#555', height: 50, flex: 1, paddingTop: 4, paddingLeft: 10, justifyContent: 'center'}}>
+          <TextInput
+            style={[styles.default, {height: 20, backgroundColor: 'transparent', color: '#ddd'}]}
+            bezeled={false}
+            placeholder={'placeholder'}
+            placeholderTextColor={'tomato'}
+            accessibilityLabel="I am the accessibility label for text input"
+          />
+        </View>
+      );
+    }
+  },
+  {
     title: 'Auto-focus',
     render: function() {
       return (
         <TextInput
           autoFocus={true}
           style={styles.default}
+          accessibilityLabel="I am the accessibility label for text input"
+        />
+      );
+    }
+  },
+  {
+    title: 'Focus ring type = none',
+    render: function() {
+      return (
+        <TextInput
+          style={[styles.default]}
+          focusRingType={'none'}
           accessibilityLabel="I am the accessibility label for text input"
         />
       );
@@ -421,98 +448,6 @@ exports.examples = [
           </WithLabel>
           <WithLabel label="false">
             <TextInput autoCorrect={false} style={styles.default} />
-          </WithLabel>
-        </View>
-      );
-    }
-  },
-  {
-    title: 'Keyboard types',
-    render: function() {
-      var keyboardTypes = [
-        'default',
-        'ascii-capable',
-        'numbers-and-punctuation',
-        'url',
-        'number-pad',
-        'phone-pad',
-        'name-phone-pad',
-        'email-address',
-        'decimal-pad',
-        'twitter',
-        'web-search',
-        'numeric',
-      ];
-      var examples = keyboardTypes.map((type) => {
-        return (
-          <WithLabel key={type} label={type}>
-            <TextInput
-              keyboardType={type}
-              style={styles.default}
-            />
-          </WithLabel>
-        );
-      });
-      return <View>{examples}</View>;
-    }
-  },
-  {
-    title: 'Keyboard appearance',
-    render: function() {
-      var keyboardAppearance = [
-        'default',
-        'light',
-        'dark',
-      ];
-      var examples = keyboardAppearance.map((type) => {
-        return (
-          <WithLabel key={type} label={type}>
-            <TextInput
-              keyboardAppearance={type}
-              style={styles.default}
-            />
-          </WithLabel>
-        );
-      });
-      return <View>{examples}</View>;
-    }
-  },
-  {
-    title: 'Return key types',
-    render: function() {
-      var returnKeyTypes = [
-        'default',
-        'go',
-        'google',
-        'join',
-        'next',
-        'route',
-        'search',
-        'send',
-        'yahoo',
-        'done',
-        'emergency-call',
-      ];
-      var examples = returnKeyTypes.map((type) => {
-        return (
-          <WithLabel key={type} label={type}>
-            <TextInput
-              returnKeyType={type}
-              style={styles.default}
-            />
-          </WithLabel>
-        );
-      });
-      return <View>{examples}</View>;
-    }
-  },
-  {
-    title: 'Enable return key automatically',
-    render: function() {
-      return (
-        <View>
-          <WithLabel label="true">
-            <TextInput enablesReturnKeyAutomatically={true} style={styles.default} />
           </WithLabel>
         </View>
       );

@@ -14,6 +14,15 @@
 #import "NSView+React.h"
 #import <QuartzCore/CAShapeLayer.h>
 
+// https://github.com/BigZaphod/Chameleon/blob/84605ede274bd82b330d72dd6ac41e64eb925fd7/UIKit/Classes/UIGeometry.h
+CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
+  rect.origin.x    += insets.left;
+  rect.origin.y    += insets.top;
+  rect.size.width  -= (insets.left + insets.right);
+  rect.size.height -= (insets.top  + insets.bottom);
+  return rect;
+}
+
 @implementation NSBezierPath (BezierPathQuartzUtilities)
 // This method works only in OS X v10.2 and later.
 - (CGPathRef)quartzPath
@@ -132,15 +141,6 @@
 {
   _textStorage = textStorage;
   [self setNeedsDisplay:YES];
-}
-
-// https://github.com/BigZaphod/Chameleon/blob/84605ede274bd82b330d72dd6ac41e64eb925fd7/UIKit/Classes/UIGeometry.h
-static inline CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
-  rect.origin.x    += insets.left;
-  rect.origin.y    += insets.top;
-  rect.size.width  -= (insets.left + insets.right);
-  rect.size.height -= (insets.top  + insets.bottom);
-  return rect;
 }
 
 - (void)drawRect:(CGRect)dirtyRect
