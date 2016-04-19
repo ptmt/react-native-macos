@@ -30,11 +30,12 @@
 {
   if ((self = [super initWithFrame:CGRectZero])) {
     RCTAssert(eventDispatcher, @"eventDispatcher is a required parameter");
-    _eventDispatcher = eventDispatcher;
     self.delegate = self;
     self.drawsBackground = NO;
     self.bordered = NO;
     self.bezeled = YES;
+
+    _eventDispatcher = eventDispatcher;
     _previousSelectionRange = self.currentEditor.selectedRange;
     [self addObserver:self forKeyPath:@"selectedTextRange" options:0 context:nil];
     _reactSubviews = [NSMutableArray new];
@@ -66,8 +67,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)paste:(id)sender
 {
   _textWasPasted = YES;
-  NSLog(@"paste is not implemented");
-  //[super paste:sender];
+  [[super currentEditor] paste:sender];
 }
 
 - (void)setInsertionPointColor:(NSColor *)color
