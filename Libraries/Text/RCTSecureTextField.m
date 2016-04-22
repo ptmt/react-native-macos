@@ -175,6 +175,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   {
     NSMutableSet *visitedViews = [NSMutableSet new];
     [visitedViews addObject:self];
+    [[self window] recalculateKeyViewLoop];
     NSTextView* textField = (NSTextView*) [self currentEditor];
     textField.nextKeyView = [self nextKeyView]; //[self findNextKeyView:[self superview] visisted:visitedViews];
     if( [textField respondsToSelector: @selector(setInsertionPointColor:)] ) {
@@ -182,6 +183,16 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     }
   }
   return success;
+}
+
+- (BOOL)canBecomeKeyView
+{
+  return YES;
+}
+
+- (BOOL)acceptsFirstResponder
+{
+  return YES;
 }
 
 

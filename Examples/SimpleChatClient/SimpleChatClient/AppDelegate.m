@@ -145,7 +145,7 @@
 {
     [[self window] recalculateKeyViewLoop];
     [self debugKeyLoop:[self window].contentView];
-    NSView* currentView = (NSView*)[[self window] firstResponder];
+   //NSView* currentView = (NSView*)[[self window] firstResponder];
     [[self window] selectNextKeyView:self];
 
 }

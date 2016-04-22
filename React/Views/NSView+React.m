@@ -198,7 +198,7 @@
 
     NSMutableSet *visitedViews = [NSMutableSet new];
     [visitedViews addObject:self];
-    self.nextKeyView = [self findNextKeyView:self visisted:visitedViews];
+    //self.nextKeyView = [self findNextKeyView:self visisted:visitedViews];
   }
   return result;
 }
@@ -217,7 +217,7 @@
 
 - (void)keyDown:(NSEvent *)theEvent
 {
-  if (theEvent.keyCode == 48 && self.nextValidKeyView) {
+  if (theEvent.keyCode == 48 && [[[self window] firstResponder] isEqualTo:self]) {
     [[self window] recalculateKeyViewLoop];
     [[self window] selectNextKeyView:self];
   }
@@ -237,7 +237,7 @@
 
 - (BOOL)acceptsFirstResponder
 {
-  return YES;//[[self tabIndex] isNotEqualTo:nil];
+  return [[self tabIndex] isNotEqualTo:nil];
 }
 
 /**

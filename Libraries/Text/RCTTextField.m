@@ -264,7 +264,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     NSMutableSet *visitedViews = [NSMutableSet new];
     [visitedViews addObject:self];
     NSTextView* textField = (NSTextView*) [self currentEditor];
-    textField.nextKeyView = [self findNextKeyView:[self superview] visisted:visitedViews];
+    [[self window] recalculateKeyViewLoop];
+    textField.nextKeyView = [self nextKeyView];//[self findNextKeyView:[self superview] visisted:visitedViews];
     if( [textField respondsToSelector: @selector(setInsertionPointColor:)] ) {
       [textField setInsertionPointColor:[self selectionColor]];
     }
