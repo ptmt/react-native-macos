@@ -191,11 +191,11 @@
 - (BOOL)becomeFirstResponder
 {
   BOOL result = [super becomeFirstResponder];
-  [[NSNotificationCenter defaultCenter] postNotificationName:RCTFirstResponderDidChangeNotification
-                                                      object:nil
-                                                    userInfo:@{@"reactTag": (self.reactTag)}];
   if (result && ([self canBecomeKeyView])) {
-    [[self window] recalculateKeyViewLoop];
+    [[NSNotificationCenter defaultCenter] postNotificationName:RCTFirstResponderDidChangeNotification
+                                                        object:nil
+                                                      userInfo:@{@"reactTag": (self.reactTag)}];
+
     NSMutableSet *visitedViews = [NSMutableSet new];
     [visitedViews addObject:self];
     self.nextKeyView = [self findNextKeyView:self visisted:visitedViews];
@@ -215,6 +215,15 @@
   return result;
 }
 
+- (void)keyDown:(NSEvent *)theEvent
+{
+  if (theEvent.keyCode == 48 && self.nextValidKeyView) {
+    [[self window] recalculateKeyViewLoop];
+    [[self window] selectNextKeyView:self];
+  }
+  [super keyDown:theEvent];
+}
+
 
 - (BOOL)canBecomeKeyView
 {
@@ -228,7 +237,7 @@
 
 - (BOOL)acceptsFirstResponder
 {
-  return [self tabIndex] == 1;
+  return YES;//[[self tabIndex] isNotEqualTo:nil];
 }
 
 /**
