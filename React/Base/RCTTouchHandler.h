@@ -13,6 +13,8 @@
 
 @class RCTBridge;
 
+extern NSString *const RCTFirstResponderDidChangeNotification;
+
 @interface RCTTouchHandler : NSGestureRecognizer
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge NS_DESIGNATED_INITIALIZER;

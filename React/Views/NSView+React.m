@@ -16,6 +16,7 @@
 #import "RCTAssert.h"
 #import "RCTLog.h"
 #import "RCTShadowView.h"
+#import "RCTTouchHandler.h"
 
 @implementation NSView (React)
 
@@ -27,6 +28,19 @@
 - (void)setReactTag:(NSNumber *)reactTag
 {
   objc_setAssociatedObject(self, @selector(reactTag), reactTag, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+/**
+ * Enables this view for the key-view loop
+ */
+- (NSNumber *)tabIndex
+{
+  return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setTabIndex:(NSNumber *)tabIndex
+{
+  objc_setAssociatedObject(self, @selector(tabIndex), tabIndex, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 #if RCT_DEV
@@ -141,6 +155,80 @@
     }
     return;
   }
+}
+
+- (NSView *)findNextKeyView:(NSView *)view visisted:(NSMutableSet *)visited
+{
+  if ([view canBecomeKeyView]) {
+    return view;
+  }
+  [visited addObject:view];
+
+  if ([view subviews] && [view subviews].count > 0) {
+    int length = (int) [view subviews].count;
+    for (int i=0; i < length; i++) {
+      //NSLog(@"%i %hhd", i, view.subviews[i].canBecomeKeyView);
+      if (![visited containsObject:view.subviews[i]] && view.subviews[i].canBecomeKeyView) {
+        return view.subviews[i];
+      }
+      if (![visited containsObject:view.subviews[i]] && view.subviews[i].subviews.count > 0) {
+        NSView *found = [self findNextKeyView:view.subviews[i] visisted:visited];
+        if (found) {
+          return found;
+        }
+      }
+    }
+  }
+
+  if ([view superview] && ![visited containsObject:[view superview]]) {
+    return [self findNextKeyView:[view superview] visisted:visited];
+  } else {
+    return nil;
+  }
+  
+}
+
+- (BOOL)becomeFirstResponder
+{
+  BOOL result = [super becomeFirstResponder];
+  [[NSNotificationCenter defaultCenter] postNotificationName:RCTFirstResponderDidChangeNotification
+                                                      object:nil
+                                                    userInfo:@{@"reactTag": (self.reactTag)}];
+  if (result && ([self canBecomeKeyView])) {
+    [[self window] recalculateKeyViewLoop];
+    NSMutableSet *visitedViews = [NSMutableSet new];
+    [visitedViews addObject:self];
+    self.nextKeyView = [self findNextKeyView:self visisted:visitedViews];
+  }
+  return result;
+}
+
+- (BOOL)resignFirstResponder
+{
+  BOOL result = [super resignFirstResponder];
+  if (result)
+  {
+    [[NSNotificationCenter defaultCenter] postNotificationName:RCTFirstResponderDidChangeNotification
+                                                        object:nil
+                                                      userInfo:@{@"reactTag": @(1)}];
+  }
+  return result;
+}
+
+
+- (BOOL)canBecomeKeyView
+{
+  return [[self tabIndex] isNotEqualTo:nil];
+}
+
+- (BOOL)canBecomeFirstResponder
+{
+  return [[self tabIndex] isNotEqualTo:nil];
+}
+
+- (BOOL)acceptsFirstResponder
+{
+  return [self tabIndex] == 1;
 }
 
 /**

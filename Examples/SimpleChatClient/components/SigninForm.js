@@ -25,7 +25,8 @@ class SigninForm extends React.Component {
       height: new Animated.Value(-1000),
       rotate: new Animated.Value(0.5),
       x: new Animated.Value(0),
-      animatedColor: new Animated.Value(0)
+      animatedColor: new Animated.Value(0),
+      isButtonFocused: false
     };
   }
   componentDidMount() {
@@ -90,28 +91,39 @@ class SigninForm extends React.Component {
           <View style={styles.input}>
             <Text style={styles.placeholder}>EMAIL</Text>
             <TextInput
+              bezeled={false}
               style={styles.textinput}
               multiline={false}
+              selectionColor={'white'}
+              autoFocus={true}
               onChangeText={(username) => this.setState({username})}
             />
           </View>
           <View style={styles.input}>
             <Text style={styles.placeholder}>PASSWORD</Text>
             <TextInput
+              bezeled={false}
               style={styles.textinput}
               multiline={false}
               password={true}
+              selectionColor={'white'}
               onChangeText={(password) => this.setState({password})}
             />
           </View>
           <AnimatedButton
-            style={[styles.button, this.props.isLoading ? {backgroundColor: animatedColor} : {}]}
+            style={[styles.button,
+                this.props.isLoading ? {backgroundColor: animatedColor} : {},
+                this.state.isButtonFocused ? { borderColor: 'white', borderWidth: 1} : { borderColor: '#009aff', borderWidth: 1}]
+            }
             onPress={() => this.props.login(this.state.username, this.state.password)}
+            tabIndex={3}
+            onFocus={() => this.setState({isButtonFocused: true})}
+            onBlur={() => this.setState({isButtonFocused: false})}
           >
-            <Text style={styles.buttonCaption}>Login</Text>
+            <Text style={styles.buttonCaption}>Sign in</Text>
           </AnimatedButton>
         </Animated.View>
-        <View style={styles.footer}>
+        <View style={styles.footer} onFocus={() => console.log('Footer')}>
           <Text style={styles.footerText}>This app uses Discord unofficial APIs only for demonstration purposes.</Text>
         </View>
       </Image>
@@ -164,7 +176,8 @@ var styles = StyleSheet.create({
     borderColor: '#0f0f0f',
     width: 250,
     fontSize: 16,
-    color: 'black',
+    color: 'white',
+    backgroundColor: 'transparent'
   },
   input: {
     borderBottomWidth: 1,

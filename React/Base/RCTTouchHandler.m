@@ -19,6 +19,8 @@
 #import "RCTUtils.h"
 #import "NSView+React.h"
 
+NSString *const RCTFirstResponderDidChangeNotification = @"RCTFirstResponderDidChangeNotification";
+
 // TODO: this class behaves a lot like a module, and could be implemented as a
 // module if we were to assume that modules and RootViews had a 1:1 relationship
 @implementation RCTTouchHandler
@@ -43,6 +45,10 @@
    * Storing tag to dispatch mouseEnter and mouseLeave events
    */
   NSNumber *_currentMouseOverTag;
+  /*
+   * Storing tag to dispatch focus and blue mouseLeave
+   */
+  NSNumber *_currentFocusedTag;
 }
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge
@@ -61,6 +67,11 @@
     // event delegated recognizer. Otherwise, lower-level components not built
     // using RCT, will fail to recognize gestures.
     //self.cancelsTouchesInView = NO; TODO:
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onFocus:)
+                                                 name:RCTFirstResponderDidChangeNotification
+                                               object:nil];
   }
   return self;
 }
@@ -326,8 +337,17 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
   [self _recordRemovedTouches:touches];
 }
 
-  // Mouse move events
-  // https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/EventOverview/MouseTrackingEvents/MouseTrackingEvents.html
+- (void)onFocus:(NSNotification *)notification
+{
+  NSNumber *reactTag = (NSNumber *)notification.userInfo[@"reactTag"];
+  if (_currentFocusedTag) {
+    [_bridge enqueueJSCall:@"RCTEventEmitter.receiveEvent"
+                      args:@[_currentFocusedTag, @"topBlur"]];
+  }
+  [_bridge enqueueJSCall:@"RCTEventEmitter.receiveEvent"
+                    args:@[reactTag, @"topFocus"]];
+  _currentFocusedTag = reactTag;
+}
 
 - (BOOL)canPreventGestureRecognizer:(__unused NSGestureRecognizer *)preventedGestureRecognizer
 {

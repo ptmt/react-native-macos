@@ -219,6 +219,8 @@ const View = React.createClass({
     onDragEnter: PropTypes.func,
     onDragLeave: PropTypes.func,
     onDrop: PropTypes.func,
+    onFocus: PropTypes.func,
+    onBlur: PropTypes.func,
     onMoveShouldSetResponder: PropTypes.func,
     onMoveShouldSetResponderCapture: PropTypes.func,
 
@@ -351,6 +353,11 @@ const View = React.createClass({
      * mouse hovering.
      */
     toolTip: PropTypes.string,
+
+    /**
+     * tabIndex
+     */
+    tabIndex: PropTypes.number
   },
 
   render: function() {

@@ -47,6 +47,7 @@
         [[self window] setTitleVisibility:NSWindowTitleHidden];
         [[self window] setTitlebarAppearsTransparent:YES];
         [[self window] setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameAqua]];
+        [[self window] setAutorecalculatesKeyViewLoop:YES];
 
         [windowController setShouldCascadeWindows:NO];
         [windowController setWindowFrameAutosaveName:@"SimpleChatClient"];
@@ -124,6 +125,7 @@
     [developerMenu addItem:[self addEditMenuItem:@"Copy" action:@selector(copy:) key:@"c" ]];
     [developerMenu addItem:[self addEditMenuItem:@"Paste" action:@selector(paste:) key:@"v" ]];
     [developerMenu addItem:[self addEditMenuItem:@"SelectAll" action:@selector(selectAll:) key:@"a" ]];
+    [developerMenu addItem:[self addEditMenuItem:@"Debug Key-view Loop" action:@selector(debug) key:@"D" ]];
     [[NSApp mainMenu] addItem:developerItemContainer];
 }
 
@@ -134,10 +136,36 @@
     NSMenuItem * menuItem = [[NSMenuItem alloc] init];
     [menuItem setTitle:title];
     [menuItem setEnabled:YES];
-    //[menuItem setTarget:[self.window firstResponder]];
     [menuItem setAction:action];
     [menuItem setKeyEquivalent:key];
     return menuItem;
+}
+
+- (void)debug
+{
+    [[self window] recalculateKeyViewLoop];
+    [self debugKeyLoop:[self window].contentView];
+    NSView* currentView = (NSView*)[[self window] firstResponder];
+    [[self window] selectNextKeyView:self];
+
+}
+
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication * __unused)theApplication {
+    return YES;
+}
+
+- (void)debugKeyLoop:(NSView *)view
+{
+    if ([view nextValidKeyView]) {
+         NSLog(@"has nextValidKeyView: %@ %@", view.className, view.nextValidKeyView.className);
+    }
+
+    if ([view subviews] && [view subviews].count > 0) {
+        int length = (int) [view subviews].count;
+        for (int i=0; i < length; i++) {
+            [self debugKeyLoop:view.subviews[i]];
+        }
+    }
 }
 
 @end

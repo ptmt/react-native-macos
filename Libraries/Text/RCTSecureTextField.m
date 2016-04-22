@@ -52,6 +52,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
+- (void)setBackgroundColor:(NSString *)backgroundColor
+{
+  if (backgroundColor) {
+    [self setDrawsBackground:YES];
+    [self.cell setBackgroundColor:backgroundColor];
+  }
+}
+
 - (NSArray *)reactSubviews
 {
   // TODO: do we support subviews of textfield in React?
@@ -111,14 +119,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
                                eventCount:_nativeEventCount];
 }
 
-- (BOOL)becomeFirstResponder
-{
-  _jsRequestingFirstResponder = YES;
-  BOOL result = [super becomeFirstResponder];
-  _jsRequestingFirstResponder = NO;
-  return result;
-}
-
 - (BOOL)resignFirstResponder
 {
   BOOL result = [super resignFirstResponder];
@@ -137,5 +137,52 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 {
   return _jsRequestingFirstResponder;
 }
+
+- (NSView *)findNextKeyView:(NSView *)view visisted:(NSMutableSet *)visited
+{
+  if ([view canBecomeKeyView]) {
+    return view;
+  }
+  [visited addObject:view];
+
+  if ([view subviews] && [view subviews].count > 0) {
+    int length = (int) [view subviews].count;
+    for (int i=length - 1; i >= 0; i--) {
+      if (![visited containsObject:view.subviews[i]] && view.subviews[i].canBecomeKeyView) {
+        return view.subviews[i];
+      }
+      if (![visited containsObject:view.subviews[i]] && view.subviews[i].subviews.count > 0) {
+        NSView *found = [self findNextKeyView:view.subviews[i] visisted:visited];
+        if (found) {
+          return found;
+        }
+      }
+    }
+  }
+
+  if ([view superview] && ![visited containsObject:[view superview]]) {
+    return [self findNextKeyView:[view superview] visisted:visited];
+  } else {
+    return nil;
+  }
+  
+}
+
+- (BOOL)becomeFirstResponder
+{
+  BOOL success = [super becomeFirstResponder];
+  if (success)
+  {
+    NSMutableSet *visitedViews = [NSMutableSet new];
+    [visitedViews addObject:self];
+    NSTextView* textField = (NSTextView*) [self currentEditor];
+    textField.nextKeyView = [self nextKeyView]; //[self findNextKeyView:[self superview] visisted:visitedViews];
+    if( [textField respondsToSelector: @selector(setInsertionPointColor:)] ) {
+      [textField setInsertionPointColor:[self selectionColor]];
+    }
+  }
+  return success;
+}
+
 
 @end

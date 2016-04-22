@@ -15,53 +15,6 @@
 #import "NSView+React.h"
 #import "RCTText.h"
 
-
-//
-//@implementation TextFieldCellWithPaddings
-//
-//- (id)init
-//{
-//  self = [super init];
-//  if (self) {
-////    self.bordered = NO;
-////    self.drawsBackground = NO;
-//  }
-//  return self;
-//}
-//
-////- (NSRect)titleRectForBounds:(NSRect)theRect
-////{
-////  //NSRect titleFrame = [super titleRectForBounds:theRect];
-////
-////  //NSSize titleSize = [[self attributedStringValue] size];
-////  //titleFrame.origin.y = theRect.origin.y + (theRect.size.height - titleSize.height) / 2.0;
-////  return UIEdgeInsetsInsetRect(theRect, ((RCTTextField *)[self controlView]).contentInset);
-////}
-//
-//- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-//  NSRect titleRect = [self titleRectForBounds:cellFrame];
-//  [[self attributedStringValue] drawInRect:titleRect];
-//}
-//
-//
-////- (NSRect)drawingRectForBounds:(NSRect)rect
-////{
-////  NSRect rectInset = UIEdgeInsetsInsetRect(rect, _contentInset);
-////  return [super drawingRectForBounds:rectInset];
-////}
-//
-//// Required methods
-//- (id)initWithCoder:(NSCoder *)decoder {
-//  return [super initWithCoder:decoder];
-//}
-//- (id)initImageCell:(NSImage *)image {
-//  return [super initImageCell:image];
-//}
-//- (id)initTextCell:(NSString *)string {
-//  return [super initTextCell:string];
-//}
-//@end
-
 @implementation RCTTextField
 {
   RCTEventDispatcher *_eventDispatcher;
@@ -81,8 +34,6 @@
     self.delegate = self;
     self.drawsBackground = NO;
     self.bordered = NO;
-    self.bezeled = YES;
-
     _eventDispatcher = eventDispatcher;
     _previousSelectionRange = self.currentEditor.selectedRange;
     _reactSubviews = [NSMutableArray new];
@@ -275,12 +226,45 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
--(BOOL)becomeFirstResponder
+- (NSView *)findNextKeyView:(NSView *)view visisted:(NSMutableSet *)visited
+{
+  if ([view canBecomeKeyView]) {
+    return view;
+  }
+  [visited addObject:view];
+
+  if ([view subviews] && [view subviews].count > 0) {
+    int length = (int) [view subviews].count;
+    for (int i=length - 1; i >= 0; i--) {
+      if (![visited containsObject:view.subviews[i]] && view.subviews[i].canBecomeKeyView) {
+        return view.subviews[i];
+      }
+      if (![visited containsObject:view.subviews[i]] && view.subviews[i].subviews.count > 0) {
+        NSView *found = [self findNextKeyView:view.subviews[i] visisted:visited];
+        if (found) {
+          return found;
+        }
+      }
+    }
+  }
+
+  if ([view superview] && ![visited containsObject:[view superview]]) {
+    return [self findNextKeyView:[view superview] visisted:visited];
+  } else {
+    return nil;
+  }
+
+}
+
+- (BOOL)becomeFirstResponder
 {
   BOOL success = [super becomeFirstResponder];
   if (success)
   {
+    NSMutableSet *visitedViews = [NSMutableSet new];
+    [visitedViews addObject:self];
     NSTextView* textField = (NSTextView*) [self currentEditor];
+    textField.nextKeyView = [self findNextKeyView:[self superview] visisted:visitedViews];
     if( [textField respondsToSelector: @selector(setInsertionPointColor:)] ) {
       [textField setInsertionPointColor:[self selectionColor]];
     }
@@ -292,6 +276,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (BOOL)canBecomeFirstResponder
 {
   return _jsRequestingFirstResponder;
+}
+
+- (BOOL)canBecomeKeyView
+{
+  return YES;
 }
 
 - (void)reactWillMakeFirstResponder

@@ -1,7 +1,8 @@
 /* @flow */
 'use strict';
 
-import React, { Component, View } from 'react-native-desktop';
+import React, { Component } from 'react';
+import { View, TextInput, TouchableWithoutFeedback } from 'react-native-desktop';
 import SigninForm from './SigninForm';
 import ChatLayout from './ChatLayout';
 import Header from './Header';
