@@ -45,3 +45,6 @@ rn-cli.config.js
 
 # OS X
 .DS_Store
+
+# Linux, Rust, GTK
+target/
