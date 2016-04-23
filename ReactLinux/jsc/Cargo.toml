@@ -1,0 +1,7 @@
+[package]
+name = "jsc"
+version = "0.1.0"
+authors = ["Dmitriy Loktev <unknownliveid@hotmail.com>"]
+
+[dependencies]
+libc = "0.2.0"
