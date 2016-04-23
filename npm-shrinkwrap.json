@@ -1,6 +1,6 @@
 {
   "name": "react-native-desktop",
-  "version": "0.6.0-rc2",
+  "version": "0.6.1-rc1",
   "dependencies": {
     "abab": {
       "version": "1.0.3",
@@ -1859,33 +1859,6 @@
       "from": "entities@>=1.1.1 <1.2.0",
       "resolved": "https://registry.npmjs.org/entities/-/entities-1.1.1.tgz"
     },
-    "envify": {
-      "version": "3.4.0",
-      "from": "envify@>=3.0.0 <4.0.0",
-      "resolved": "https://registry.npmjs.org/envify/-/envify-3.4.0.tgz",
-      "dependencies": {
-        "base62": {
-          "version": "0.1.1",
-          "from": "base62@0.1.1",
-          "resolved": "https://registry.npmjs.org/base62/-/base62-0.1.1.tgz"
-        },
-        "esprima-fb": {
-          "version": "13001.1001.0-dev-harmony-fb",
-          "from": "esprima-fb@13001.1001.0-dev-harmony-fb",
-          "resolved": "https://registry.npmjs.org/esprima-fb/-/esprima-fb-13001.1001.0-dev-harmony-fb.tgz"
-        },
-        "jstransform": {
-          "version": "10.1.0",
-          "from": "jstransform@>=10.0.1 <11.0.0",
-          "resolved": "https://registry.npmjs.org/jstransform/-/jstransform-10.1.0.tgz"
-        },
-        "source-map": {
-          "version": "0.1.31",
-          "from": "source-map@0.1.31",
-          "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.1.31.tgz"
-        }
-      }
-    },
     "errno": {
       "version": "0.1.4",
       "from": "errno@>=0.1.1 <0.2.0-0",
@@ -3558,7 +3531,8 @@
         },
         "esprima": {
           "version": "2.7.2",
-          "from": "esprima@>=2.7.0 <2.8.0"
+          "from": "esprima@2.7.2",
+          "resolved": "https://registry.npmjs.org/esprima/-/esprima-2.7.2.tgz"
         },
         "supports-color": {
           "version": "3.1.2",
