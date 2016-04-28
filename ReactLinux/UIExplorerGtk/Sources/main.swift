@@ -7,10 +7,10 @@ app.run { window in
     window.defaultSize = Size(width: 400, height: 400)
     window.resizable = true
 
-    if let bundleURL = NSURL(string: "http://localhost:8081/ReactLinux/UIExplorerApp.linux.bundle?platform=linux&dev=true") {
+    let bundle = "http://localhost:8081/ReactLinux/UIExplorerApp.osx.bundle?platform=osx&dev=true"
+    if let bundleURL = NSURL(string: bundle) {
       let bridge = Bridge(withURL: bundleURL)
     }
-
 
     let button = Button(label: "Press Me")
     button.clicked = { _ in

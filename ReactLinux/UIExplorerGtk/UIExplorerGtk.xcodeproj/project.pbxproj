@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		031C66511CCD130E0040AD03 /* libSwiftGtk.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = "_____Product_SwiftGtk" /* libSwiftGtk.dylib */; };
+		03A96A291CD1045900CC6C14 /* BridgeModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A271CD0E2A400CC6C14 /* BridgeModule.swift */; };
+		03A96A2B1CD12AC400CC6C14 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A2A1CD12AC400CC6C14 /* Utils.swift */; };
+		03A96A2C1CD130B000CC6C14 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A2A1CD12AC400CC6C14 /* Utils.swift */; };
 		_LinkFileRef_SwiftGtk /* libSwiftGtk.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = "_____Product_SwiftGtk" /* libSwiftGtk.dylib */; };
 		"__src_cc_ref_Packages/SwiftGtk-0.4.0/Sources/Application.swift" /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = "__PBXFileRef_Packages/SwiftGtk-0.4.0/Sources/Application.swift" /* Application.swift */; };
 		"__src_cc_ref_Packages/SwiftGtk-0.4.0/Sources/ApplicationWindow.swift" /* ApplicationWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = "__PBXFileRef_Packages/SwiftGtk-0.4.0/Sources/ApplicationWindow.swift" /* ApplicationWindow.swift */; };
@@ -41,9 +44,18 @@
 			remoteGlobalIDString = "______Target_SwiftGtk";
 			remoteInfo = SwiftGtk;
 		};
+		03A96A2D1CD2075C00CC6C14 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = __RootObject_ /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = "______Target_UIExplorerGtk";
+			remoteInfo = UIExplorerGtk;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		03A96A271CD0E2A400CC6C14 /* BridgeModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BridgeModule.swift; sourceTree = "<group>"; };
+		03A96A2A1CD12AC400CC6C14 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		__PBXFileRef_Package.swift /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = /Users/potomushto/Projects/rnlinux/ReactLinux/UIExplorerGtk/Package.swift; sourceTree = "<group>"; };
 		"__PBXFileRef_Packages/SwiftGtk-0.4.0/Sources/Application.swift" /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		"__PBXFileRef_Packages/SwiftGtk-0.4.0/Sources/ApplicationWindow.swift" /* ApplicationWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationWindow.swift; sourceTree = "<group>"; };
@@ -176,6 +188,8 @@
 				__PBXFileRef_Sources/Bridge.swift /* Bridge.swift */,
 				__PBXFileRef_Sources/JavaScriptCore.swift /* JavaScriptCore.swift */,
 				__PBXFileRef_Sources/main.swift /* main.swift */,
+				03A96A271CD0E2A400CC6C14 /* BridgeModule.swift */,
+				03A96A2A1CD12AC400CC6C14 /* Utils.swift */,
 			);
 			name = UIExplorerGtk;
 			path = Sources;
@@ -244,6 +258,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				03A96A2E1CD2075C00CC6C14 /* PBXTargetDependency */,
 				__Dependency_SwiftGtk /* PBXTargetDependency */,
 			);
 			name = bridge.testsuite;
@@ -297,6 +312,7 @@
 				"__src_cc_ref_Packages/SwiftGtk-0.4.0/Sources/SignalBox.swift" /* SignalBox.swift in Sources */,
 				"__src_cc_ref_Packages/SwiftGtk-0.4.0/Sources/Signals.swift" /* Signals.swift in Sources */,
 				"__src_cc_ref_Packages/SwiftGtk-0.4.0/Sources/Size.swift" /* Size.swift in Sources */,
+				03A96A2B1CD12AC400CC6C14 /* Utils.swift in Sources */,
 				"__src_cc_ref_Packages/SwiftGtk-0.4.0/Sources/TextView.swift" /* TextView.swift in Sources */,
 				"__src_cc_ref_Packages/SwiftGtk-0.4.0/Sources/Value.swift" /* Value.swift in Sources */,
 				"__src_cc_ref_Packages/SwiftGtk-0.4.0/Sources/Widget.swift" /* Widget.swift in Sources */,
@@ -308,7 +324,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				03A96A2C1CD130B000CC6C14 /* Utils.swift in Sources */,
 				__src_cc_ref_Sources/Bridge.swift /* Bridge.swift in Sources */,
+				03A96A291CD1045900CC6C14 /* BridgeModule.swift in Sources */,
 				__src_cc_ref_Sources/JavaScriptCore.swift /* JavaScriptCore.swift in Sources */,
 				__src_cc_ref_Sources/main.swift /* main.swift in Sources */,
 			);
@@ -325,6 +343,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		03A96A2E1CD2075C00CC6C14 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = "______Target_UIExplorerGtk" /* UIExplorerGtk */;
+			targetProxy = 03A96A2D1CD2075C00CC6C14 /* PBXContainerItemProxy */;
+		};
 		__Dependency_SwiftGtk /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = "______Target_SwiftGtk" /* SwiftGtk */;

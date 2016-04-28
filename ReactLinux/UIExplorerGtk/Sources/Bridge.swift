@@ -1,23 +1,30 @@
 import JavaScriptCore
 import Foundation
 
+typealias JavaScriptCallback = (AnyObject?, NSError?) -> ()
+
+class Block<T>: NSObject {
+    let f : T
+    init (_ f: T) { self.f = f }
+}
+
 public class Bridge {
 
-    public var context: JSContext
-    var pendingCalls: [dispatch_block_t]
-    var moduleDataByID: [AnyObject]
-    var valid: Bool
-    var loading: Bool
+    private(set) var context: JSContext
+    var pendingCalls: [dispatch_block_t] = []
+    var moduleClasses: [BridgeModule.Type] = []
+    var moduleDataByID: [ModuleData] = []
+    var moduleDataByName: [String: ModuleData] = [:]
+    var valid: Bool = true
+    var loading: Bool = true
     var bundleURL: NSURL
+    private var jsTimer: NSTimer
 
     init(withURL: NSURL) {
 
         context = JSContext()
-        pendingCalls = []
-        moduleDataByID = []
-        loading = true
-        valid = true
         bundleURL = withURL
+        jsTimer = NSTimer()
 
         start()
         print("Bridge initialized")
@@ -25,6 +32,7 @@ public class Bridge {
 
     func start() {
 
+        jsTimer = NSTimer(timeInterval: 0.02, target: self, selector: #selector(Bridge.jsThreadUpdate), userInfo: nil, repeats: true)
         let bridgeQueue: dispatch_queue_t = dispatch_queue_create("com.facebook.react.RCTBridgeQueue", DISPATCH_QUEUE_CONCURRENT)
         let initModulesAndLoadSource: dispatch_group_t = dispatch_group_create()
 
@@ -46,16 +54,16 @@ public class Bridge {
         // Synchronously initialize all native modules that cannot be loaded lazily
         initModules(withDispatchGroup: initModulesAndLoadSource)
 
-        var config: String = ""
+        var config: AnyObject! = nil
         dispatch_group_enter(initModulesAndLoadSource)
 
         dispatch_async(bridgeQueue, {
             let setupJSExecutorAndModuleConfig:dispatch_group_t = dispatch_group_create()
 
             // Asynchronously initialize the JS executor
-//            dispatch_group_async(setupJSExecutorAndModuleConfig, bridgeQueue, ^{
-//                 setupExecutor()
-//            });
+            dispatch_group_async(setupJSExecutorAndModuleConfig, bridgeQueue, {
+                 self.executor_setup()
+            });
 
              // Asynchronously gather the module config
             dispatch_group_async(setupJSExecutorAndModuleConfig, bridgeQueue, {
@@ -87,12 +95,57 @@ public class Bridge {
                 }
             }
         });
+    }
 
-
+    // Do compile-time check instead of conformsToProtocol:
+    func registerModule(moduleClass: BridgeModule.Type) {
+        moduleClasses.append(moduleClass)
     }
 
     func initModules(withDispatchGroup: dispatch_group_t) {
         print("initModules:withDispatchGroup")
+
+        print("TODO: Init extra modules")
+        print("TODO: Check for unregistered modules")
+
+        // Temporary we register modules right here:
+        registerModule(moduleClass: UIManager.self)
+
+        for moduleClass in moduleClasses {
+            let moduleName: String = String(moduleClass)
+            var moduleData = moduleDataByName[moduleName]
+            if moduleData != nil {
+                print("TODO: Check if moduleData correctly initialized")
+            }
+            moduleData = ModuleData(withModuleClass:moduleClass, withBridge: self)
+            moduleDataByID.append(moduleData!)
+            moduleDataByName[moduleName] = moduleData!
+        }
+
+        print("TODO: setup executor & dispatch module init onto main thread")
+
+        var modulesOnMainThreadCount = 0
+
+        for moduleData in moduleDataByID {
+            if moduleData.requiresMainThreadSetup {
+                dispatch_group_async(withDispatchGroup, dispatch_get_main_queue(), {
+                    if (self.valid) {
+                        moduleData.setupInstanceAndBridge()
+                        moduleData.gatherConstants()
+                    }
+                })
+                modulesOnMainThreadCount += 1
+            } else if moduleData.hasConstantsToExport {
+                moduleData.setupInstanceAndBridge()
+                dispatch_group_async(withDispatchGroup, dispatch_get_main_queue(), {
+                    if (self.valid) {
+                        moduleData.gatherConstants()
+                    }
+                });
+                modulesOnMainThreadCount += 1
+            }
+        }
+
     }
 
     func loadSource(onSourceLoad: (NSError?, NSData?) -> ()) {
@@ -103,7 +156,6 @@ public class Bridge {
         if !valid {
             return
         }
-        print("executeSourceCode")
         enqueueApplicationScript(script: sourceCode, url: bundleURL, onComplete: {
             (loadingError: NSError?) in
             if !self.valid {
@@ -116,40 +168,39 @@ public class Bridge {
                 })
                 return;
             }
+
+            let targetRunLoop = NSRunLoop.current()
+            targetRunLoop.add(_: self.jsTimer, forMode: NSRunLoopCommonModes)
+            print("targetRunLoop")
         })
     }
 
     func enqueueApplicationScript(script: NSData, url: NSURL, onComplete: (NSError?) -> ()) {
-        //assert(onComplete != nil, "onComplete block passed in should be non-nil")
+        // this assert is no longer needed
+        // assert(onComplete != nil, "onComplete block passed in should be non-nil")
         executor_executeApplicationScript(script: script, sourceURL: url, onComplete: { (scriptLoadError) in
+            if scriptLoadError != nil {
+                onComplete(scriptLoadError)
+            }
+            self.executor_flushedQueue(onComplete: { (json, error) in
+                self.handleBuffer(buffer: json, batchEnded:true)
+                onComplete(error);
+            })
 
         })
-//        [_javaScriptExecutor executeApplicationScript:script sourceURL:url onComplete:^(NSError *scriptLoadError) {
-//            RCTProfileEndFlowEvent();
-//            RCTAssertJSThread();
-//
-//            if (scriptLoadError) {
-//            onComplete(scriptLoadError);
-//            return;
-//            }
-//
-//            RCT_PROFILE_BEGIN_EVENT(0, @"FetchApplicationScriptCallbacks", nil);
-//            [_javaScriptExecutor flushedQueue:^(id json, NSError *error)
-//            {
-//            RCT_PROFILE_END_EVENT(0, @"js_call,init", @{
-//            @"json": RCTNullIfNil(json),
-//            @"error": RCTNullIfNil(error),
-//            });
-//            
-//            [self handleBuffer:json batchEnded:YES];
-//            
-//            onComplete(error);
-//            }];
-//            }];
+    }
+
+    @objc(jsThreadUpdate)
+    func jsThreadUpdate() {
+        print(".")
     }
 
     func stopLoading(withError: NSError) {
         print("stopLoading withError", withError.description)
+    }
+
+    func handleBuffer(buffer: AnyObject?, batchEnded: Bool) {
+        print(buffer, batchEnded)
     }
 
     func javaScriptLoader_loadBundleAtURL(url: NSURL, completion: (NSError?, NSData?) -> ()) {
@@ -173,31 +224,60 @@ public class Bridge {
             }).resume()
     }
 
-    func injectJSONConfiguration(config: String, onComplete:(NSError?) -> ()) {
-        print("injectJSONConfiguration")
-        onComplete(nil)
+    func injectJSONConfiguration(config: AnyObject?, onComplete:(NSError?) -> ()) {
+        if let json = config {
+            executor_injectJSON(json:json, asGlobalObjectNamed:"__fbBatchedBridgeConfig", callback:onComplete)
+        }
     }
 
-    func moduleConfig() -> String {
-//        let config: [[AnyObject]]
-//        for (RCTModuleData *moduleData in _moduleDataByID) {
-//            if (self.executorClass == [RCTJSCExecutor class]) {
-//                [config addObject:@[moduleData.name]];
-//            } else {
-//                [config addObject:RCTNullIfNil(moduleData.config)];
-//            }
-//        }
-//
-//        return RCTJSONStringify(@{
-//            @"remoteModuleConfig": config,
-//        }, NULL);
-        return "not implemented"
+    func moduleConfig() -> AnyObject {
+        let config = moduleDataByID.map {
+            return [$0.name]
+        }
+
+        return [
+            "remoteModuleConfig": config,
+            "localModulesConfig": []
+        ]
     }
 
+    func registerModuleForFrameUpdates(instance: BridgeModule, withModuleData: ModuleData) {
+        print("TODO: registerModuleForFrameUpdates")
+    }
+    
     func executor_evaluateScript(script: String) -> JSValue? {
-      return context.evaluateScript(
-          "var a = 1; var b = 2; a + b"
-      )
+      return context.evaluateScript(script)
+    }
+
+    func executor_injectJSON(json: AnyObject, asGlobalObjectNamed: String, callback:(NSError?) -> ()) {
+        executor_executeBlockOnJavaScriptQueue(block: {
+            self.context.setObject(json, forKeyedSubscript: asGlobalObjectNamed)
+            callback(nil)
+        })
+    }
+
+    func executor_setup() {
+        let log : @convention(block) (String, NSNumber) -> Void = {
+            message, logLevel in
+            print("console.log -> ", message)
+        }
+        let noop : @convention(block) () -> Void = {
+            print("noop")
+        }
+        let nativeRequireModuleConfig: @convention(block) (String) -> String = {
+            moduleName in
+            print("nativeRequireModuleConfig", moduleName)
+            return "{}"
+        }
+        executor_addSynchronousHook(withName: "noop", usingBlock:unsafeBitCast(_: noop, to: AnyObject.self))
+        executor_addSynchronousHook(withName: "nativeLoggingHook", usingBlock:unsafeBitCast(_: log, to: AnyObject.self))
+        executor_addSynchronousHook(withName: "nativeRequireModuleConfig", usingBlock:unsafeBitCast(_: nativeRequireModuleConfig, to: AnyObject.self))
+        executor_addSynchronousHook(withName: "nativeFlushQueueImmediate", usingBlock:unsafeBitCast(_: noop, to: AnyObject.self))
+        executor_addSynchronousHook(withName: "nativeInjectHMRUpdate", usingBlock:unsafeBitCast(_: noop, to: AnyObject.self))
+    }
+
+    func executor_addSynchronousHook(withName name: String, usingBlock block:AnyObject) {
+        context.setObject(block, forKeyedSubscript: name)
     }
 
     func executor_executeApplicationScript(script: NSData, sourceURL: NSURL, onComplete: NSError? -> ()) {
@@ -209,6 +289,7 @@ public class Bridge {
                 self.context.evaluateScript(_: str, withSourceURL: sourceURL)
                 if self.context.exception != nil {
                     print(self.context.exception.toString())
+                    // TODO: wrap into NSError and call onComplete
                 }
                 onComplete(nil);
 
@@ -221,5 +302,30 @@ public class Bridge {
     {
         print("TODO: Execute block() on JavaScript Thread")
         block()
+    }
+
+    func executor_flushedQueue(onComplete: JavaScriptCallback) {
+        executor_executeJSCall(method: "flushedQueue", arguments:[], callback:onComplete)
+    }
+
+    func executor_executeJSCall(method: String, arguments:[AnyObject], callback: JavaScriptCallback) {
+        let jsonArguments = JSONStringify(jsonObject: arguments)
+        let script =  "__fbBatchedBridge.\(method).apply(null, \(jsonArguments))"
+        let result = self.context.evaluateScript(_: script)
+        if let err = self.context.exception {
+            print(err)
+            callback(result, nil)
+        } else {
+            callback(result, nil)
+        }
+//        
+//        if let bridge = context.objectForKeyedSubscript("__fbBatchedBridge") {
+//
+//
+//        } else {
+//            print("Unable to execute JS call: __fbBatchedBridge is undefined")
+//            let userInfo = ["description": "Unable to execute JS call: __fbBatchedBridge is undefined"]
+//            callback(nil, NSError(domain: "", code: 1, userInfo: userInfo))
+//        }
     }
 }

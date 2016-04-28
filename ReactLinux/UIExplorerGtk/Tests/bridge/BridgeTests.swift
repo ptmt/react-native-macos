@@ -4,15 +4,13 @@ import Foundation
 
 class BridgeTests: XCTestCase {
 
-	func testExample() {
+	func testContextIsCreated() {
 		if let url = NSURL(string: "http://localhost:8081/ReactLinux/UIExplorerQtk/UIExplorerApp.linux.bundle?platform=linux&dev=true") {
 			let bridge = Bridge(withURL: url)
 			XCTAssert(bridge.context != nil)
 		} else {
 			XCTFail()
 		}
-
-
 	}
 
 }
