@@ -83,25 +83,29 @@
     _contentInset = NSEdgeInsetsZero;
     _eventDispatcher = eventDispatcher;
     _placeholderTextColor = [self defaultPlaceholderTextColor];
-    _jsRequestingFirstResponder = YES;
+    _jsRequestingFirstResponder = NO;
     _padding = 0;
 
     _textView = [[RCTUITextView alloc] initWithFrame:CGRectZero];
     _textView.editable = YES;
     _textView.delegate = self;
-     [_textView setVerticallyResizable:YES];
+    _textView.drawsBackground = NO;
+    _textView.focusRingType = NSFocusRingTypeDefault;
 
-    _scrollView = [[NSScrollView alloc] initWithFrame:CGRectZero];
-    [_scrollView setBorderType:NSNoBorder];
-    [_scrollView setHasVerticalScroller:YES];
-    [_scrollView setHasHorizontalScroller:NO];
-    [_scrollView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-    [_scrollView setDocumentView:_textView];
+    // TODO: enable scrolLView back?
+//    _scrollView = [[NSScrollView alloc] initWithFrame:CGRectZero];
+//    [_scrollView setBorderType:NSNoBorder];
+//    [_scrollView setDrawsBackground:NO];
+//
+//    [_scrollView setHasVerticalScroller:NO];
+//    [_scrollView setHasHorizontalScroller:NO];
+//    [_scrollView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+//    [_scrollView setDocumentView:_textView];
 
     _previousSelectionRanges = _textView.selectedRanges;
 
     _subviews = [NSMutableArray new];
-    [self addSubview:_scrollView];
+    [self addSubview:_textView];
   }
   return self;
 }
@@ -163,35 +167,35 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)performPendingTextUpdate
 {
-  if (!_pendingAttributedText || _mostRecentEventCount < _nativeEventCount) {
-    return;
-  }
-
-  if ([_textView.attributedString isEqualToAttributedString:_pendingAttributedText]) {
-    _pendingAttributedText = nil; // Don't try again.
-    return;
-  }
-
-  // When we update the attributed text, there might be pending autocorrections
-  // that will get accepted by default. In order for this to not garble our text,
-  // we temporarily block all textShouldChange events so they are not applied.
-  _blockTextShouldChange = YES;
-
-  NSArray <NSValue *> * selection = _textView.selectedRanges;
-  //NSInteger oldTextLength = _textView.attributedString.length;
-
-  [_textView.textStorage setAttributedString:_pendingAttributedText];
-  _pendingAttributedText = nil;
-
-    // maintain cursor position relative to the end of the old text
-    // TODO:
-    _textView.selectedRanges = selection;
-
-  [_textView layout];
-
-  [self _setPlaceholderVisibility];
-
-  _blockTextShouldChange = NO;
+//  if (!_pendingAttributedText || _mostRecentEventCount < _nativeEventCount) {
+//    return;
+//  }
+//
+//  if ([_textView.attributedString isEqualToAttributedString:_pendingAttributedText]) {
+//    _pendingAttributedText = nil; // Don't try again.
+//    return;
+//  }
+//
+//  // When we update the attributed text, there might be pending autocorrections
+//  // that will get accepted by default. In order for this to not garble our text,
+//  // we temporarily block all textShouldChange events so they are not applied.
+//  _blockTextShouldChange = YES;
+//
+//  NSArray <NSValue *> * selection = _textView.selectedRanges;
+//  //NSInteger oldTextLength = _textView.attributedString.length;
+//
+//  [_textView.textStorage setAttributedString:_pendingAttributedText];
+//  _pendingAttributedText = nil;
+//
+//    // maintain cursor position relative to the end of the old text
+//    // TODO:
+//    _textView.selectedRanges = selection;
+//
+//  [_textView layout];
+//
+//  [self _setPlaceholderVisibility];
+//
+//  _blockTextShouldChange = NO;
 }
 
 - (void)updateFrames
@@ -204,22 +208,21 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   // inset mysteriously causes the text to be hidden until the text view is
   // first focused.
   CGRect frame = self.frame;
-  frame.origin.x += (_contentInset.left - 5);
+  frame.origin.y += (_contentInset.top + 2);
   frame.size.width -= (_contentInset.left + _contentInset.right - 5);
-
   _textView.frame = frame;
-  NSSize adjustedTextContainerInset = CGSizeMake(_padding, _padding);
 
+  NSSize adjustedTextContainerInset = CGSizeMake(_padding, _padding);
   _textView.textContainerInset = adjustedTextContainerInset;
 }
 
 
 - (void)updateContentSize
 {
-  CGSize size = (CGSize){_scrollView.frame.size.width, INFINITY};
+//  CGSize size = (CGSize){_scrollView.frame.size.width, INFINITY};
 //  size.height = [_textView sizeThatFits:size].height;
 //  _scrollView.contentSize = size;
-  _textView.frame = (CGRect){CGPointZero, size};
+//  _textView.frame = (CGRect){CGPointZero, size};
 }
 
 - (void)updatePlaceholder
@@ -271,7 +274,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   [self updatePlaceholder];
 }
 
-- (void)setPadding:(CGFloat )padding
+- (void)setPadding:(CGFloat)padding
 {
   _padding = padding;
   [self updateFrames];
@@ -286,8 +289,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)setBackgroundColor:(NSColor *)backgroundColor
 {
   if (backgroundColor) {
-    _textView.drawsBackground = YES;
-    _textView.wantsLayer = YES;
+    [_textView setDrawsBackground:YES];
     [_textView setBackgroundColor:backgroundColor];
   }
 }
@@ -297,19 +299,18 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return [_textView string];
 }
 
-- (BOOL)textView:(RCTUITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+- (BOOL)textView:(NSTextView *)aTextView shouldChangeTextInRange:(NSRange)range replacementString:(NSString *)text
 {
   if (_blockTextShouldChange) {
     return NO;
   }
 
-  if (textView.textWasPasted) {
-    textView.textWasPasted = NO;
+  if (_textView.textWasPasted) {
+    _textView.textWasPasted = NO;
   } else {
-
     [_eventDispatcher sendTextEventWithType:RCTTextEventTypeKeyPress
                                    reactTag:self.reactTag
-                                       text:nil
+                                       text:[_textView string]
                                         key:text
                                  eventCount:_nativeEventCount];
 
@@ -340,17 +341,16 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   if (_maxLength == nil) {
     return YES;
   }
-  //return NO;
-  NSUInteger allowedLength = _maxLength.integerValue - textView.string.length + range.length;
+  NSUInteger allowedLength = _maxLength.integerValue - _textView.string.length + range.length;
   if (text.length > allowedLength) {
     if (text.length > 1) {
       // Truncate the input string so the result is exactly maxLength
       NSString *limitedString = [text substringToIndex:allowedLength];
-      NSMutableString *newString = [textView string].mutableCopy;
+      NSMutableString *newString = [_textView string].mutableCopy;
       [newString replaceCharactersInRange:range withString:limitedString];
-      [textView setString:newString];
+      [_textView setString:newString];
       // Collapse selection at end of insert to match normal paste behavior
-      [self textViewDidChange:textView];
+      [self textViewDidChange:_textView];
     }
     return NO;
   } else {
@@ -358,24 +358,23 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
-- (void)textViewDidChangeSelection:(RCTUITextView *)textView
+- (void)textViewDidChangeSelection:(__unused NSNotification *)notification
 {
   if (_onSelectionChange &&
-      textView.selectedRanges != _previousSelectionRanges &&
-      ![textView.selectedRanges isEqual:_previousSelectionRanges]) {
+      _textView.selectedRanges != _previousSelectionRanges &&
+      ![_textView.selectedRanges isEqual:_previousSelectionRanges]) {
 
-    NSLog(@"_onSelectionChange is not implemented");
-//    _previousSelectionRange = textView.selectedRanges;
-//
-//    UITextRange *selection = textView.selectedRanges;
-//    NSInteger start = [textView offsetFromPosition:textView.beginningOfDocument toPosition:selection.start];
-//    NSInteger end = [textView offsetFromPosition:textView.beginningOfDocument toPosition:selection.end];
-//    _onSelectionChange(@{
-//      @"selection": @{
-//        @"start": @(start),
-//        @"end": @(end),
-//      },
-//    });
+    _previousSelectionRanges = _textView.selectedRanges;
+
+    NSRange selection = _textView.selectedRanges.firstObject.rangeValue;
+
+    // TODO: support multiple ranges
+    _onSelectionChange(@{
+      @"selection": @{
+        @"start": @(selection.location),
+        @"end": @(selection.location + selection.length),
+      },
+    });
   }
 }
 
@@ -387,7 +386,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     [_textView setString:text];
     [_textView setSelectedRanges:previousRanges];
     [self _setPlaceholderVisibility];
-    //[self updateContentSize];
+    [self updateContentSize];
   } else if (eventLag > RCTTextUpdateLagWarningThreshold) {
     RCTLogWarn(@"Native TextInput(%@) is %zd events ahead of JS - try to make your JS faster.", self.text, eventLag);
   }
@@ -426,7 +425,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)textDidEndEditing:(NSNotification *)aNotification
 {
-  //[self updateContentSize];
+  [self updateContentSize];
   [self _setPlaceholderVisibility];
   _nativeEventCount++;
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeEnd
@@ -452,12 +451,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (BOOL)isFirstResponder
 {
-  return [_textView acceptsFirstResponder]; //TODO:
+  return [_textView isEqualTo:[_textView window].firstResponder];
 }
 
 - (BOOL)canBecomeFirstResponder
 {
-  return YES;//[_textView canBecomeFirstResponder];
+  return [_textView canBecomeFirstResponder];
 }
 
 - (void)reactWillMakeFirstResponder

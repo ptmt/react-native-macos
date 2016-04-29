@@ -294,7 +294,7 @@ var styles = StyleSheet.create({
     height: 26,
     borderWidth: 0.5,
     borderColor: '#0f0f0f',
-    //flex: 1,
+    flex: 1,
     fontSize: 13
   },
   multiline: {
@@ -359,7 +359,7 @@ exports.examples = [
       return (
         <View style={{backgroundColor: '#555', height: 50, flex: 1, paddingTop: 4, paddingLeft: 10, justifyContent: 'center'}}>
           <TextInput
-            style={[styles.default, {height: 20, backgroundColor: 'transparent', color: '#ddd'}]}
+            style={[styles.default, {height: 20, flex: null, backgroundColor: 'transparent', color: '#ddd'}]}
             bezeled={false}
             placeholder={'placeholder'}
             placeholderTextColor={'tomato'}

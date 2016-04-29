@@ -914,7 +914,7 @@ RCT_EXPORT_METHOD(focus:(nonnull NSNumber *)reactTag)
   [self addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, NSView *> *viewRegistry) {
     NSView *newResponder = viewRegistry[reactTag];
     [newResponder reactWillMakeFirstResponder];
-    [newResponder becomeFirstResponder];
+    [[newResponder window] makeFirstResponder:newResponder];
     [newResponder reactDidMakeFirstResponder];
   }];
 }

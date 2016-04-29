@@ -120,6 +120,8 @@
     NSSearchField *searchField = [[NSSearchField alloc] init];
     [searchField setFrameSize:NSMakeSize(400, searchField.intrinsicContentSize.height)];
     [searchField setDelegate:self];
+    [searchField setRecentsAutosaveName:@"mainSearchField"];
+    [searchField setPlaceholderString:@"Search Example"];
     [searchField setAction:@selector(searchURLorQuery:)];
     NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
     [item setView:searchField];
