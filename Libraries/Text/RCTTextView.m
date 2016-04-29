@@ -350,7 +350,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
       [newString replaceCharactersInRange:range withString:limitedString];
       [_textView setString:newString];
       // Collapse selection at end of insert to match normal paste behavior
-      [self textViewDidChange:_textView];
+      [self textDidChange:[[NSNotification alloc] init]];
     }
     return NO;
   } else {
@@ -406,7 +406,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return [NSColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.098/255.0 alpha:0.22];
 }
 
-- (void)textViewDidChange:(RCTUITextView *)textView
+- (void)textDidChange:(__unused NSNotification *)notification
 {
   [self _setPlaceholderVisibility];
   _nativeEventCount++;
