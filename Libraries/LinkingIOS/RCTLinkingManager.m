@@ -25,6 +25,8 @@ RCT_EXPORT_MODULE()
 {
   _bridge = bridge;
 
+  [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
+
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(handleOpenURLNotification:)
                                                name:RCTOpenURLNotification
@@ -52,6 +54,14 @@ RCT_EXPORT_MODULE()
                                                       object:self
                                                     userInfo:payload];
   return YES;
+}
+
+- (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent
+{
+    NSString* url = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];
+    NSDictionary *payload = @{@"url": url};
+    [_bridge.eventDispatcher sendDeviceEventWithName:@"openURL"
+                                                body:payload];
 }
 
 + (BOOL)application:(NSApplication *)application
