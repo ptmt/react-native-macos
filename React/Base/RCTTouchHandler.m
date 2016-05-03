@@ -89,13 +89,15 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
     RCTAssert(index == NSNotFound,
               @"Touch is already recorded. This is a critical bug.");
 
-    // TODO: This is a highly disgusting workaround. Need to find out the way
-    // to get right position for a hit test.
-    // At the moment, because the view is flipped we compensate the header's height manually.
-
     NSPoint touchLocation = [touch locationInWindow];
 
-    // TODO: fix hardcoded components name.
+    // adjust touchLocation if our view placed inside custom PopoverWindow
+    if ([[self.view window].className isEqualToString:@"_NSPopoverWindow"]) {
+      NSPoint rootOrigin = [self.view window].contentView.frame.origin;
+      touchLocation = NSMakePoint(touchLocation.x - rootOrigin.x, touchLocation.y - rootOrigin.y);
+    }
+
+    // TODO: get rid of this
     //
     // Check if item is becoming first responder to delete touch
     NSView *targetView = [self.view hitTest:touchLocation];
