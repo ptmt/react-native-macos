@@ -18,7 +18,9 @@ public class Bridge {
     var valid: Bool = true
     var loading: Bool = true
     var bundleURL: NSURL
+
     private var jsTimer: NSTimer
+    private var wasBatchActive: Bool = false
 
     init(withURL: NSURL) {
 
@@ -103,8 +105,6 @@ public class Bridge {
     }
 
     func initModules(withDispatchGroup: dispatch_group_t) {
-        print("initModules:withDispatchGroup")
-
         print("TODO: Init extra modules")
         print("TODO: Check for unregistered modules")
 
@@ -171,7 +171,7 @@ public class Bridge {
 
             let targetRunLoop = NSRunLoop.current()
             targetRunLoop.add(_: self.jsTimer, forMode: NSRunLoopCommonModes)
-            print("targetRunLoop")
+            print("execute(sourceCode: NSData) targetRunLoop")
         })
     }
 
@@ -180,7 +180,7 @@ public class Bridge {
         // assert(onComplete != nil, "onComplete block passed in should be non-nil")
         executor_executeApplicationScript(script: script, sourceURL: url, onComplete: { (scriptLoadError) in
             if scriptLoadError != nil {
-                onComplete(scriptLoadError)
+                return onComplete(scriptLoadError)
             }
             self.executor_flushedQueue(onComplete: { (json, error) in
                 self.handleBuffer(buffer: json, batchEnded:true)
@@ -200,7 +200,23 @@ public class Bridge {
     }
 
     func handleBuffer(buffer: AnyObject?, batchEnded: Bool) {
-        print(buffer, batchEnded)
+        if let bufferData = buffer {
+            wasBatchActive = true
+            handleBuffer(buffer: bufferData)
+            //[self partialBatchDidFlush];
+        }
+
+        if batchEnded {
+            if wasBatchActive {
+              //[self batchDidComplete];
+            }
+            wasBatchActive = false
+        }
+
+    }
+
+    func handleBuffer(buffer: AnyObject) {
+        print("handleBuffer", buffer)
     }
 
     func javaScriptLoader_loadBundleAtURL(url: NSURL, completion: (NSError?, NSData?) -> ()) {
@@ -241,6 +257,15 @@ public class Bridge {
         ]
     }
 
+    func config(forModuleName moduleName: String) -> [AnyObject]? {
+        if let moduleData = moduleDataByName[moduleName] {
+            return moduleData.config
+        } else if let moduleData = moduleDataByName["RCT\(moduleName)"] {
+            return moduleData.config
+        }
+        return nil;
+    }
+
     func registerModuleForFrameUpdates(instance: BridgeModule, withModuleData: ModuleData) {
         print("TODO: registerModuleForFrameUpdates")
     }
@@ -267,7 +292,17 @@ public class Bridge {
         let nativeRequireModuleConfig: @convention(block) (String) -> String = {
             moduleName in
             print("nativeRequireModuleConfig", moduleName)
-            return "{}"
+//            if (!strongSelf.valid) {
+//                return nil;
+//            }
+//
+//            RCT_PROFILE_BEGIN_EVENT(0, @"nativeRequireModuleConfig", nil);
+            if let config = self.config(forModuleName: moduleName) {
+                let result = JSONStringify(jsonObject: config)
+                print("nativeRequireModuleConfig", result)
+                return result
+            }
+            return ""
         }
         executor_addSynchronousHook(withName: "noop", usingBlock:unsafeBitCast(_: noop, to: AnyObject.self))
         executor_addSynchronousHook(withName: "nativeLoggingHook", usingBlock:unsafeBitCast(_: log, to: AnyObject.self))
@@ -288,8 +323,7 @@ public class Bridge {
             if let str = String(data: script, encoding: NSUTF8StringEncoding) {
                 self.context.evaluateScript(_: str, withSourceURL: sourceURL)
                 if self.context.exception != nil {
-                    print(self.context.exception.toString())
-                    // TODO: wrap into NSError and call onComplete
+                    onComplete(NSError(domain: "JSError", code: 2, userInfo: ["description":self.context.exception.toString() ]))
                 }
                 onComplete(nil);
 

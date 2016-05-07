@@ -211,10 +211,10 @@ setUpXHR();
 setUpGeolocation();
 setUpMapAndSet();
 setUpProduct();
-setUpWebSockets();
+//setUpWebSockets();
 setUpProfile();
 setUpNumber();
-setUpDevTools();
+//setUpDevTools();
 
 // Just to make sure the JS gets packaged up. Wait until the JS environment has
 // been initialized before requiring them.

@@ -17,7 +17,7 @@ var UIManager = require('UIManager');
 var invariant = require('fbjs/lib/invariant');
 
 var dimensions = UIManager.Dimensions;
-
+console.log(UIManager)
 // We calculate the window dimensions in JS so that we don't encounter loss of
 // precision in transferring the dimensions (which could be non-integers) over
 // the bridge.
