@@ -84,6 +84,11 @@
 
 - (void)reactSetFrame:(CGRect)frame
 {
+//  if ([self respondsToSelector:@selector(respondsToLiveResizing)]) {
+//
+//  } else {
+//    NSLog(@"%@", self.reactTag);
+//  }
   // These frames are in terms of anchorPoint = topLeft, but internally the
   // views are anchorPoint = center for easier scale and rotation animations.
   // Convert the frame so it works with anchorPoint = center.
@@ -99,8 +104,9 @@
   }
 
   self.frame = frame;
+
   // TODO: why position matters? It's only produce bugs
-  //self.layer.position = position;
+  // self.layer.position = position;
   self.layer.bounds = bounds;
 }
 

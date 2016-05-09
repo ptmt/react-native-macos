@@ -31,7 +31,7 @@
   if ((self = [super init])) {
     _frameUpdateObservers = [NSMutableSet new];
     _jsTimer = [NSTimer
-                   timerWithTimeInterval:0.01
+                   timerWithTimeInterval:0.025
                    target:self
                    selector:@selector(_jsThreadUpdate:)
                    userInfo:nil

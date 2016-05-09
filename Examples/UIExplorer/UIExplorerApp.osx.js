@@ -26,7 +26,6 @@ var {
   View,
   Text,
   Dimensions,
-  TouchableHighlight
 } = ReactNative;
 
 var defaultLayout = Dimensions.get('window');
@@ -48,7 +47,7 @@ class UIExplorerApp extends React.Component {
         <View style={[styles.leftPanel, {width: 300}]}>
           <UIExplorerList openExample={(component) => this.setState({component})}/>
         </View>
-        <View style={[styles.rightPanel, {width: this.state.layout.width - 300}]}>
+        <View style={[styles.rightPanel, {width: this.state.layout.width - 300}]}  respondsToLiveResizing>
             {this.state.component && <Component />}
         </View>
       </View>
@@ -69,7 +68,7 @@ class Welcome extends React.Component {
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   itemWrapper: {
     backgroundColor: '#eaeaea',
