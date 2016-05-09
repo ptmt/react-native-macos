@@ -464,7 +464,7 @@ var ScrollView = React.createClass({
       // onStartShouldSetResponder: this.scrollResponderHandleStartShouldSetResponder,
       // onStartShouldSetResponderCapture: this.scrollResponderHandleStartShouldSetResponderCapture,
       // onScrollShouldSetResponder: this.scrollResponderHandleScrollShouldSetResponder,
-      onScroll: this.handleScroll,
+      onScroll: this._handleScroll,
     };
 
     var onRefreshStart = this.props.onRefreshStart;
