@@ -1,7 +1,9 @@
 /* @flow */
 'use strict';
 
-import React,  {
+import React from 'react';
+
+import {
   View,
   Text,
   StyleSheet,

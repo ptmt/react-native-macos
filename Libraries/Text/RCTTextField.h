@@ -13,9 +13,6 @@
 
 @class RCTEventDispatcher;
 
-@interface TextFieldCellWithPaddings : NSTextFieldCell
-@end
-
 @interface RCTTextField : NSTextField <NSTextFieldDelegate>
 
 @property (nonatomic, assign) BOOL caretHidden;

@@ -402,6 +402,7 @@ var TextInput = React.createClass({
         <TextField
           ref="input"
           {...props}
+          tabIndex={1 || props.tabIndex}
           onFocus={this._onFocus}
           onBlur={this._onBlur}
           onChange={this._onChange}
@@ -446,7 +447,7 @@ var TextInput = React.createClass({
           text={this._getText()}
         />;
     }
-    
+
     return (
       <TouchableWithoutFeedback
         onPress={this._onPress}

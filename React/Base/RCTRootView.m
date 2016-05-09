@@ -354,7 +354,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
 
 - (void)mouseEntered:(__unused NSEvent *)theEvent {
   [[self window] setAcceptsMouseMovedEvents:YES];
-  [[self window] makeFirstResponder:self];
+  //[[self window] makeFirstResponder:self];
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent
