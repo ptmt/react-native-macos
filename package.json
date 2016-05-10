@@ -100,6 +100,7 @@
   "main": "Libraries/react-native/react-native.js",
   "files": [
     "React",
+    "React.podspec",
     "Libraries",
     "packager",
     "cli.js",
