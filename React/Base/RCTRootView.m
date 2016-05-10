@@ -68,12 +68,12 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 
     // TODO: Turn on layer backing just to avoid https://github.com/ptmt/react-native-desktop/issues/47
     // Maybe we could turn it off after the bug fixed in the future.
-    if (([self window].styleMask & NSFullSizeContentViewWindowMask) != NSFullSizeContentViewWindowMask) {
+    if (([self window].styleMask & NSFullSizeContentViewWindowMask) != NSFullSizeContentViewWindowMask
+        && [self window].contentView == self) {
       [self setWantsLayer:YES];
     }
 
     [self setNeedsLayout:NO];
-    [self setMaterial:NSVisualEffectMaterialLight];
 
     _bridge = bridge;
     _moduleName = moduleName;

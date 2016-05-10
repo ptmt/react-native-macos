@@ -9,7 +9,6 @@
 
 #import "RCTShadowText.h"
 
-#import "RCTAccessibilityManager.h"
 #import "RCTUIManager.h"
 #import "RCTBridge.h"
 #import "RCTConvert.h"
