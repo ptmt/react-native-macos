@@ -575,7 +575,7 @@ RCT_EXPORT_MODULE()
 
       // Animate view creation
       if (createAnimation) {
-        [view reactSetFrame:frame];
+        //[view reactSetFrame:frame];
 
         CATransform3D finalTransform = view.layer.transform;
         CGFloat finalOpacity = view.layer.opacity;
@@ -616,7 +616,7 @@ RCT_EXPORT_MODULE()
       // Update without animation
       } else {
         // Workaround for https://github.com/ptmt/react-native-desktop/issues/47
-        // Need to speedup layout or make cancelling mechanism
+        // Need to speedup layout or make a cancelling mechanism
         if (!view.isReactRootView) {
           [view reactSetFrame:frame];
         }

@@ -55,6 +55,12 @@
 @property (nonatomic, assign) BOOL removeClippedSubviews;
 
 /**
+ * Workaround on a lot of views with layers
+ */
+@property (nonatomic, assign) BOOL respondsToLiveResizing;
+
+
+/**
  * Hide subviews if they are outside the view bounds.
  * This is an optimisation used predominantly with RKScrollViews
  * but it is applied recursively to all subviews that have

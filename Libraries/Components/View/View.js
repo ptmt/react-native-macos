@@ -285,6 +285,11 @@ const View = React.createClass({
     removeClippedSubviews: PropTypes.bool,
 
     /**
+     * Workaround until we have not found the way to solve the resizing issue
+     */
+    respondsToLiveResizing: PropTypes.bool,
+
+    /**
      * Whether this view should render itself (and all of its children) into a
      * single hardware texture on the GPU.
      *

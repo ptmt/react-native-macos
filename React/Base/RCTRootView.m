@@ -68,7 +68,9 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 
     // TODO: Turn on layer backing just to avoid https://github.com/ptmt/react-native-desktop/issues/47
     // Maybe we could turn it off after the bug fixed in the future.
-    [self setWantsLayer:YES];
+    if (([self window].styleMask & NSFullSizeContentViewWindowMask) != NSFullSizeContentViewWindowMask) {
+      [self setWantsLayer:YES];
+    }
 
     [self setNeedsLayout:NO];
     [self setMaterial:NSVisualEffectMaterialLight];
@@ -313,6 +315,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   __weak RCTBridge *_bridge;
   RCTTouchHandler *_touchHandler;
   NSColor *_backgroundColor;
+  CFTimeInterval _lastResizingAt;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -321,6 +324,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 {
   if ((self = [super initWithFrame:frame])) {
     _bridge = bridge;
+    _lastResizingAt = CACurrentMediaTime();
     self.reactTag = reactTag;
     _touchHandler = [[RCTTouchHandler alloc] initWithBridge:_bridge];
     [self addGestureRecognizer:_touchHandler];
@@ -367,17 +371,20 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
   [[self window] setAcceptsMouseMovedEvents:NO];
 }
 
-// TODO: fire onLayout or something?
-//- (void)viewDidEndLiveResize
-//{
-//  [self setFrame:[RCTSharedApplication() mainWindow].contentView.frame];
-//}
+- (void)viewDidEndLiveResize
+{
+  [super viewDidEndLiveResize];
+  [_bridge.uiManager setFrame:self.frame forView:self];
+}
 
 - (void)setFrame:(CGRect)frame
 {
   super.frame = frame;
   if (self.reactTag && _bridge.isValid) {
-    [_bridge.uiManager setFrame:frame forView:self];
+    if (!self.inLiveResize || (self.inLiveResize && (CACurrentMediaTime() - _lastResizingAt) > 0.026)) {
+      [_bridge.uiManager setFrame:frame forView:self];
+      _lastResizingAt = CACurrentMediaTime();
+    }
   }
 }
 
@@ -385,7 +392,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
 {
   _backgroundColor = backgroundColor;
   if (self.reactTag && _bridge.isValid) {
-    [_bridge.uiManager setBackgroundColor:backgroundColor forView:self];
+      [_bridge.uiManager setBackgroundColor:backgroundColor forView:self];
   }
 }
 

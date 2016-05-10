@@ -530,6 +530,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)reactSetFrame:(CGRect)frame
 {
+  if (self.inLiveResize && !self.respondsToLiveResizing) {
+    return;
+  }
   // If frame is zero, or below the threshold where the border radii can
   // be rendered as a stretchable image, we'll need to re-render.
   // TODO: detect up-front if re-rendering is necessary
