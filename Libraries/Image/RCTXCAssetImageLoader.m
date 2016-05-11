@@ -36,7 +36,7 @@ RCT_EXPORT_MODULE()
       return;
     }
     NSString *imageName = RCTBundlePathForURL(imageURL);
-    NSImage *image = [NSImage imageNamed:imageName];
+    NSImage *image = [self loadImageForName:imageName];
     if (image) {
       if (progressHandler) {
         progressHandler(1, 1);
@@ -51,6 +51,17 @@ RCT_EXPORT_MODULE()
   return ^{
     OSAtomicOr32Barrier(1, &cancelled);
   };
+}
+
+- (NSImage *)loadImageForName:(NSString *)imageName
+{
+  NSImage *image = nil;
+  NSBundle *currentBundle = [NSBundle bundleForClass:[self class]];
+  if (currentBundle != [NSBundle mainBundle]) {
+    image = [currentBundle imageForResource:imageName];
+  }
+  
+  return image == nil ? [NSImage imageNamed:imageName] : image;
 }
 
 @end
