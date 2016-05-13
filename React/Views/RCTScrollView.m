@@ -324,10 +324,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   _backgroundColor = backgroundColor;
 
   if (![self wantsLayer]) {
-    CALayer *viewLayer = [CALayer layer];
-    [viewLayer setBackgroundColor:[backgroundColor CGColor]];
-    [self setLayer:viewLayer];
     [self setWantsLayer:YES];
+    [self.layer setBackgroundColor:[backgroundColor CGColor]];
   } else {
     [self.layer setBackgroundColor:[backgroundColor CGColor]];
   }

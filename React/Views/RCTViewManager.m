@@ -118,10 +118,10 @@ RCT_EXPORT_MODULE()
 - (void)checkLayerExists:(NSView *)view
 {
   if (!view.layer) {
+    [view setWantsLayer:YES];
     CALayer *viewLayer = [CALayer layer];
     viewLayer.delegate = view;
     [view setLayer:viewLayer];
-    [view setWantsLayer:YES];
   }
 }
 
