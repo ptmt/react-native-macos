@@ -28,9 +28,9 @@ RCT_EXPORT_MODULE()
   return [[RCTNativeScrollView alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
 }
 
+RCT_EXPORT_VIEW_PROPERTY(autoScrollToBottom, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(showsHorizontalScrollIndicator, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(showsVerticalScrollIndicator, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(autoScrollToBottom, BOOL)
 
 RCT_EXPORT_METHOD(getContentSize:(nonnull NSNumber *)reactTag
                   callback:(RCTResponseSenderBlock)callback)
@@ -69,18 +69,6 @@ RCT_EXPORT_METHOD(calculateChildFrames:(nonnull NSNumber *)reactTag
        callback(@[childFrames]);
      }
    }];
-}
-
-- (NSArray<NSString *> *)customDirectEventTypes
-{
-  return @[
-           @"scrollBeginDrag",
-           @"scroll",
-           @"scrollEndDrag",
-           @"scrollAnimationEnd",
-           @"momentumScrollBegin",
-           @"momentumScrollEnd",
-           ];
 }
 
 @end

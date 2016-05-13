@@ -16,14 +16,13 @@
 var NativeMethodsMixin = require('NativeMethodsMixin');
 var PropTypes = require('ReactPropTypes');
 var React = require('React');
-var RCTDatePickerIOSConsts = require('UIManager').RCTDatePicker.Constants;
 var StyleSheet = require('StyleSheet');
 var View = require('View');
 
 var requireNativeComponent = require('requireNativeComponent');
 
 type DefaultProps = {
-  mode: 'single' | 'range';
+  mode: 'date' | 'time' | 'datetime';
 };
 
 type Event = Object;
@@ -74,7 +73,12 @@ var DatePickerIOS = React.createClass({
     /**
      * The date picker mode.
      */
-    mode: PropTypes.oneOf(['single', 'range']),
+    isRange: PropTypes.oneOf(['single', 'range']),
+
+    /**
+     * The date picker mode.
+     */
+    mode: PropTypes.oneOf(['date' | 'time' | 'datetime']),
 
     datePickerStyle: PropTypes.oneOf(['textField', 'clockAndCalendar', 'textFieldAndStepper']),
 
@@ -95,7 +99,8 @@ var DatePickerIOS = React.createClass({
 
   getDefaultProps: function(): DefaultProps {
     return {
-      mode: 'single',
+      mode: 'datetime',
+      datePickerStyle: 'clockAndCalendar'
     };
   },
 
@@ -133,7 +138,7 @@ var DatePickerIOS = React.createClass({
           minimumDate={
             props.minimumDate ? props.minimumDate.getTime() : undefined
           }
-          mode={props.mode}
+          datePickerMode={props.isRange ? 'range' : 'mode'}
           minuteInterval={props.minuteInterval}
           timeZoneOffsetInMinutes={props.timeZoneOffsetInMinutes}
           onChange={this._onChange}
@@ -144,9 +149,10 @@ var DatePickerIOS = React.createClass({
 });
 
 var styles = StyleSheet.create({
+  // TODO: how it could be solved without constantsToExport?
   datePickerIOS: {
-    height: RCTDatePickerIOSConsts.ComponentHeight,
-    width: RCTDatePickerIOSConsts.ComponentWidth,
+    height: 150,
+    width: 320,
   },
 });
 

@@ -15,101 +15,157 @@
  */
 'use strict';
 
-var React = require('React');
-var ReactNative = require('react-native-desktop');;
-var {
-  Animated,
+const React = require('react');
+const ReactNative = require('react-native-desktop');
+const {
   LayoutAnimation,
-  Easing,
   StyleSheet,
   Text,
   View,
+  TouchableOpacity,
 } = ReactNative;
-var UIExplorerButton = require('./UIExplorerButton');
 
-var animations = {
-  linear: {
-    duration: 300,
-    create: {
-      type: LayoutAnimation.Types.linear,
-      property: LayoutAnimation.Properties.opacity,
-    },
-    update: {
-      type: LayoutAnimation.Types.linear,
-      property: LayoutAnimation.Properties.opacity,
-    },
+const AddRemoveExample = React.createClass({
+
+  getInitialState() {
+    return {
+      views: [],
+    };
   },
-  easeInEaseOut: {
-    duration: 300,
-    create: {
-      type: LayoutAnimation.Types.easeInEaseOut,
-      property: LayoutAnimation.Properties.scaleXY,
-    },
-    update: {
-      delay: 100,
-      type: LayoutAnimation.Types.easeInEaseOut,
-    },
+
+  componentWillUpdate() {
+    LayoutAnimation.easeInEaseOut();
   },
-};
 
-exports.framework = 'React';
-exports.title = 'LayoutAnimation - Examples';
-exports.description = 'LayoutAnimation allows you to animate all views in the next render/layout cycle';
-
-exports.examples = [
-  {
-    title: 'LayoutAnimation',
-    render: function() {
-      class LayoutAnimationExample extends React.Component {
-        constructor(props) {
-          super(props);
-          this.state = {
-            show: true,
-          };
-        }
-        render() {
-          return (
-            <View>
-              <UIExplorerButton onPress={() => {
-                  LayoutAnimation.configureNext(animations.easeInEaseOut);
-                  this.setState((state) => (
-                    {show: !this.state.show}
-                  ));
-                }}>
-                Press to animate - linear
-              </UIExplorerButton>
-              <UIExplorerButton onPress={() => {
-                  LayoutAnimation.configureNext(animations.easeInEaseOut);
-                  this.setState((state) => (
-                    {show: !this.state.show}
-                  ));
-                }}>
-                Press to animate - easeInEaseOut
-              </UIExplorerButton>
-              {this.state.show && <View style={styles.content}>
-                <Text>LayoutAnimation</Text>
-              </View>}
-              <View style={styles.content}>
-                <Text>LayoutAnimation</Text>
-              </View>
-            </View>
-          );
-        }
-      }
-      return <LayoutAnimationExample />;
-    },
+  _onPressAddView() {
+    this.setState((state) => ({views: [...state.views, {}]}));
   },
-];
 
+  _onPressRemoveView() {
+    this.setState((state) => ({views: state.views.slice(0, -1)}));
+  },
 
-var styles = StyleSheet.create({
-  content: {
-    backgroundColor: 'deepskyblue',
-    borderWidth: 1,
-    borderColor: 'dodgerblue',
-    padding: 20,
-    margin: 20,
-    borderRadius: 10,
-    alignItems: 'center',
+  render() {
+    const views = this.state.views.map((view, i) =>
+      <View key={i} style={styles.view}>
+        <Text>{i}</Text>
+      </View>
+    );
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity onPress={this._onPressAddView}>
+          <View style={styles.button}>
+            <Text>Add view</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={this._onPressRemoveView}>
+          <View style={styles.button}>
+            <Text>Remove view</Text>
+          </View>
+        </TouchableOpacity>
+        <View style={styles.viewContainer}>
+          {views}
+        </View>
+      </View>
+    );
   },
 });
+
+const GreenSquare = () =>
+  <View style={styles.greenSquare}>
+    <Text>Green square</Text>
+  </View>;
+
+const BlueSquare = () =>
+  <View style={styles.blueSquare}>
+    <Text>Blue square</Text>
+  </View>;
+
+const CrossFadeExample = React.createClass({
+
+  getInitialState() {
+    return {
+      toggled: false,
+    };
+  },
+
+  _onPressToggle() {
+    LayoutAnimation.easeInEaseOut();
+    this.setState((state) => ({toggled: !state.toggled}));
+  },
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity onPress={this._onPressToggle}>
+          <View style={styles.button}>
+            <Text>Toggle</Text>
+          </View>
+        </TouchableOpacity>
+        <View style={styles.viewContainer}>
+          {
+            this.state.toggled ?
+            <GreenSquare /> :
+            <BlueSquare />
+          }
+        </View>
+      </View>
+    );
+  },
+});
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  button: {
+    borderRadius: 5,
+    backgroundColor: '#eeeeee',
+    padding: 10,
+    marginBottom: 10,
+  },
+  buttonText: {
+    fontSize: 16,
+  },
+  viewContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  view: {
+    height: 54,
+    width: 54,
+    backgroundColor: 'red',
+    margin: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  greenSquare: {
+    width: 150,
+    height: 150,
+    backgroundColor: 'green',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  blueSquare: {
+    width: 150,
+    height: 150,
+    backgroundColor: 'blue',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+
+exports.title = 'Layout Animation';
+exports.description = 'Layout animation';
+exports.examples = [{
+  title: 'Add and remove views',
+  render(): ReactElement {
+    return <AddRemoveExample />;
+  },
+}, {
+  title: 'Cross fade views',
+  render(): ReactElement {
+    return <CrossFadeExample />;
+  },
+}];

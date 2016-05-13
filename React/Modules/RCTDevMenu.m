@@ -421,8 +421,8 @@ RCT_EXPORT_MODULE()
     [weakSelf reload];
   }]];
 
-  Class chromeExecutorClass = NSClassFromString(@"RCTWebSocketExecutor");
-  if (!chromeExecutorClass) {
+   Class jsDebuggingExecutorClass = NSClassFromString(@"RCTWebSocketExecutor");
+  if (!jsDebuggingExecutorClass) {
     [items addObject:[RCTDevMenuItem buttonItemWithTitle:[NSString stringWithFormat:@"%@ Debugger Unavailable", _webSocketExecutorName] handler:^{
       NSAlert *alert = RCTAlertView(
                                     [NSString stringWithFormat:@"%@ Debugger Unavailable", _webSocketExecutorName],
@@ -433,11 +433,11 @@ RCT_EXPORT_MODULE()
       [alert runModal];
     }]];
   } else {
-    BOOL isDebuggingInChrome = _executorClass && _executorClass == chromeExecutorClass;
-    NSString *debugTitleChrome = isDebuggingInChrome ? [NSString stringWithFormat:@"Disable %@ Debugging", _webSocketExecutorName] : [NSString stringWithFormat:@"Debug in %@", _webSocketExecutorName];
-
-    [items addObject:[RCTDevMenuItem buttonItemWithTitle:debugTitleChrome handler:^{
-      weakSelf.executorClass = isDebuggingInChrome ? Nil : chromeExecutorClass;
+    BOOL isDebuggingJS = _executorClass && _executorClass == jsDebuggingExecutorClass;
+    NSString *debuggingDescription = [_defaults objectForKey:@"websocket-executor-name"] ?: @"Remote JS";
+    NSString *debugTitleJS = isDebuggingJS ? [NSString stringWithFormat:@"Disable %@ Debugging", debuggingDescription] : [NSString stringWithFormat:@"Debug %@", _webSocketExecutorName];
+    [items addObject:[RCTDevMenuItem buttonItemWithTitle:debugTitleJS handler:^{
+      weakSelf.executorClass = isDebuggingJS ? Nil : jsDebuggingExecutorClass;
     }]];
   }
 
@@ -617,9 +617,9 @@ RCT_EXPORT_METHOD(reload)
                        }
                      }
                    });
-                   
+
                  }];
-  
+
   [_updateTask resume];
 }
 

@@ -43,7 +43,7 @@ RCT_REMAP_VIEW_PROPERTY(minimumDate, minDate, NSDate)
 RCT_REMAP_VIEW_PROPERTY(maximumDate, maxDate, NSDate)
 RCT_EXPORT_VIEW_PROPERTY(onChange, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(datePickerStyle, NSDatePickerStyle)
-RCT_REMAP_VIEW_PROPERTY(mode, datePickerMode, NSDatePickerMode)
+RCT_EXPORT_VIEW_PROPERTY(datePickerMode, NSDatePickerMode)
 RCT_REMAP_VIEW_PROPERTY(timeZoneOffsetInMinutes, timeZone, NSTimeZone)
 
 - (NSDictionary<NSString *, id> *)constantsToExport

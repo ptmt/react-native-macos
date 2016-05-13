@@ -76,6 +76,7 @@ var DatePickerExample = React.createClass({
         <DatePickerIOS
           date={this.state.date}
           mode="datetime"
+          dataPickerStyle="clockAndCalendar"
           timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
           onDateChange={this.onDateChange}
         />

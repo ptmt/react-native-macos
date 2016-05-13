@@ -119,21 +119,48 @@ var TextInput = React.createClass({
       'dark',
     ]),
     /**
-     * Determines how the return key should look.
-     * @platform ios
+     * Determines how the return key should look. On Android you can also use
+     * `returnKeyLabel`.
+     *
+     * The following values work across platforms:
+     *
+     * - done
+     * - go
+     * - next
+     * - search
+     * - send
+     *
+     * The following values work on Android only:
+     *
+     * - none
+     * - previous
+     *
+     * The following values work on iOS only:
+     *
+     * - default
+     * - emergency-call
+     * - google
+     * - join
+     * - route
+     * - yahoo
      */
     returnKeyType: PropTypes.oneOf([
-      'default',
+      // Cross-platform
+      'done',
       'go',
-      'google',
-      'join',
       'next',
-      'route',
       'search',
       'send',
-      'yahoo',
-      'done',
+      // Android-only
+      'none',
+      'previous',
+      // iOS-only
+      'default',
       'emergency-call',
+      'google',
+      'join',
+      'route',
+      'yahoo',
     ]),
     /**
      * Determines the color of the keyboard.
@@ -425,8 +452,8 @@ var TextInput = React.createClass({
         !(props.value && childCount),
         'Cannot specify both value and children.'
       );
-      if (childCount > 1) {
-        children = <Text>{children}</Text>;
+      if (childCount >= 1) {
+        children = <Text style={props.style}>{children}</Text>;
       }
       if (props.inputView) {
         children = [children, props.inputView];
@@ -446,7 +473,7 @@ var TextInput = React.createClass({
           text={this._getText()}
         />;
     }
-    
+
     return (
       <TouchableWithoutFeedback
         onPress={this._onPress}
@@ -509,6 +536,8 @@ var TextInput = React.createClass({
         children={children}
         editable={this.props.editable}
         selectTextOnFocus={this.props.selectTextOnFocus}
+        returnKeyType={this.props.returnKeyType}
+        returnKeyLabel={this.props.returnKeyLabel}
       />;
 
     return (

@@ -1,4 +1,11 @@
 /**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
  * The examples provided by Facebook are for non-commercial testing and
  * evaluation purposes only.
  *
@@ -21,6 +28,7 @@ const ReactNative = require('react-native-desktop');
 const NavigationContainer = require('NavigationContainer');
 const NavigationRootContainer = require('NavigationRootContainer');
 
+
 const {
   Image,
   Platform,
@@ -33,7 +41,7 @@ type Props = {
 }
 
 const NavigationHeaderBackButton = (props: Props) => (
-  <TouchableOpacity style={styles.buttonContainer} onPress={() => props.onNavigate(NavigationRootContainer.getBackAction())}>
+  <TouchableOpacity style={styles.buttonContainer} onPress={() => props.onNavigate({type: 'BackAction'})}>
     <Image style={styles.button} source={require('./assets/back-icon.png')} />
   </TouchableOpacity>
 );
@@ -57,4 +65,4 @@ const styles = StyleSheet.create({
   }
 });
 
-module.exports = NavigationContainer.create(NavigationHeaderBackButton);
+module.exports = NavigationHeaderBackButton;

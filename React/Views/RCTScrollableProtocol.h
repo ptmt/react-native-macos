@@ -15,7 +15,7 @@
  */
 @protocol RCTScrollableProtocol
 
-//@property (nonatomic, weak) NSObject<NSScrollViewDelegate> *nativeMainScrollDelegate;
+@property (nonatomic, weak) NSObject *nativeScrollDelegate DEPRECATED_ATTRIBUTE;
 
 @property (nonatomic, readonly) CGSize contentSize;
 

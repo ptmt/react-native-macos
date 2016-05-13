@@ -11,22 +11,14 @@
 
 #import "RCTBridge.h"
 
-typedef NS_ENUM(NSInteger, RCTTextEventType) {
+typedef NS_ENUM(NSInteger, RCTTextEventType)
+{
   RCTTextEventTypeFocus,
   RCTTextEventTypeBlur,
   RCTTextEventTypeChange,
   RCTTextEventTypeSubmit,
   RCTTextEventTypeEnd,
   RCTTextEventTypeKeyPress
-};
-
-typedef NS_ENUM(NSInteger, RCTScrollEventType) {
-  RCTScrollEventTypeStart,
-  RCTScrollEventTypeMove,
-  RCTScrollEventTypeEnd,
-  RCTScrollEventTypeStartDeceleration,
-  RCTScrollEventTypeEndDeceleration,
-  RCTScrollEventTypeEndAnimation,
 };
 
 /**
@@ -106,5 +98,11 @@ RCT_EXTERN NSString *RCTNormalizeInputEventName(NSString *eventName);
  * which is too much data to transfer and process on older devices. This is especially bad when js starts lagging behind main thread.
  */
 - (void)sendEvent:(id<RCTEvent>)event;
+
+@end
+
+@interface RCTBridge (RCTEventDispatcher)
+
+- (RCTEventDispatcher *)eventDispatcher;
 
 @end

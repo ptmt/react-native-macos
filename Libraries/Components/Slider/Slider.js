@@ -159,7 +159,7 @@ var Slider = React.createClass({
       onSlidingComplete && onSlidingComplete(event.nativeEvent.value);
     });
 
-    return <RCTSlider 
+    return <RCTSlider
       {...props}
       enabled={!this.props.disabled}
       onStartShouldSetResponder={() => true}
@@ -169,7 +169,7 @@ var Slider = React.createClass({
 });
 
 let styles;
-if (Platform.OS === 'ios') {
+if (Platform.OS === 'ios' || Platform.OS === 'osx') {
   styles = StyleSheet.create({
     slider: {
       height: 40,
