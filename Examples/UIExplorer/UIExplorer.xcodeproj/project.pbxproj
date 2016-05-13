@@ -709,7 +709,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [$CONFIGURATION -eq Debug]\n  then\n    echo \"Skipping bundling for Debug\"\n    exit 0;\nfi\n\nset -x\n\nDEST=$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH\n\nnode \"../../local-cli/cli.js\" bundle \\\n--entry-file Examples/UIExplorer/UIExplorerApp.osx.js \\\n--platform osx \\\n--dev false \\\n--bundle-output \"$DEST/main.jsbundle\" \\\n--assets-dest \"$DEST\"";
+			shellScript = "if [$CONFIGURATION -eq Debug]\n  then\n    echo \"Skipping bundling for Debug\"\n    exit 0;\nfi\n\n#set -x\n\n#DEST=$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH\n\n#node \"../../local-cli/cli.js\" bundle \\\n#--entry-file Examples/UIExplorer/UIExplorerApp.osx.js \\\n#--platform osx \\\n#--dev false \\\n#--bundle-output \"$DEST/main.jsbundle\" \\\n#--assets-dest \"$DEST\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 

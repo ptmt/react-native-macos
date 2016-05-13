@@ -166,6 +166,8 @@ RCT_CUSTOM_VIEW_PROPERTY(opacity, float, RCTView)
     [view.layer setOpacity:defaultView.layer.opacity];
   }
 }
+
+// TODO: remove this duplicate
 RCT_CUSTOM_VIEW_PROPERTY(transformMatrix, CATransform3D, RCTView)
 {
   CATransform3D transform = json ? [RCTConvert CATransform3D:json] : defaultView.layer.transform;
@@ -179,6 +181,21 @@ RCT_CUSTOM_VIEW_PROPERTY(transformMatrix, CATransform3D, RCTView)
   // TODO: Improve this by enabling edge antialiasing only for transforms with rotation or skewing
   view.layer.edgeAntialiasingMask = !CATransform3DIsIdentity(transform);
 }
+
+RCT_CUSTOM_VIEW_PROPERTY(transform, CATransform3D, RCTView)
+{
+  CATransform3D transform = json ? [RCTConvert CATransform3D:json] : defaultView.layer.transform;
+  if ([view respondsToSelector:@selector(shouldBeTransformed)] && !view.superview) {
+    view.shouldBeTransformed = YES;
+    view.transform = transform;
+  } else {
+    view.layer.transform = transform;
+  }
+
+  // TODO: Improve this by enabling edge antialiasing only for transforms with rotation or skewing
+  view.layer.edgeAntialiasingMask = !CATransform3DIsIdentity(transform);
+}
+
 
 RCT_CUSTOM_VIEW_PROPERTY(removeClippedSubviews, BOOL, RCTView)
 {

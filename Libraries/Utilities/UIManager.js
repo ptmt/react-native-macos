@@ -60,7 +60,7 @@ UIManager.takeSnapshot = async function(
  * only needed for iOS, which puts the constants in the ViewManager
  * namespace instead of UIManager, unlike Android.
  */
-if (Platform.OS === 'ios') {
+if (Platform.OS === 'ios' || Platform.OS === 'osx') {
   // Copied from NativeModules
   function normalizePrefix(moduleName: string): string {
     return moduleName.replace(/^(RCT|RK)/, '');

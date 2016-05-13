@@ -573,7 +573,7 @@ RCT_EXPORT_MODULE()
 
       // Animate view creation
       if (createAnimation) {
-        //[view reactSetFrame:frame];
+        [view reactSetFrame:frame];
 
         CATransform3D finalTransform = view.layer.transform;
         CGFloat finalOpacity = view.layer.opacity;
