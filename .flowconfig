@@ -11,6 +11,7 @@
 # Examples
 .*/Examples/SimpleChatClient/*.*
 .*/Examples/SimpleGmailClient/*.*
+.*/Examples/Movies/*.*
 
 # Ugh
 .*/node_modules/babel.*

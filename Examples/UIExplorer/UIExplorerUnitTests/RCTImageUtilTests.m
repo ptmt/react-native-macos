@@ -133,48 +133,4 @@ RCTAssertEqualSizes(a.size, b.size); \
   RCTAssertEqualRects(expected, result);
 }
 
-- (void)testPlaceholderImage
-{
-  CGSize size = {45, 22};
-  CGFloat expectedScale = 1.0;
-  NSImage *image = RCTGetPlaceholderImage(size, nil);
-  RCTAssertEqualSizes(size, image.size);
-}
-
-- (void)testPlaceholderNonintegralSize
-{
-  CGSize size = {3.0/2, 7.0/3};
-  CGFloat expectedScale = 6;
-  CGSize pixelSize = {
-    round(size.width * expectedScale),
-    round(size.height * expectedScale)
-  };
-  NSImage *image = RCTGetPlaceholderImage(size, nil);
-  //RCTAssertEqualSizes(size, image.size); TODO: fix RTCGetPlaceholderImage scaling
-  XCTAssertEqual(pixelSize.width, CGImageGetWidth(RCTGetCGImage(image)));
-  XCTAssertEqual(pixelSize.height, CGImageGetHeight(RCTGetCGImage(image)));
-}
-
-- (void)testPlaceholderSquareImage
-{
-  CGSize size = {333, 333};
-  CGFloat expectedScale = 1.0/333;
-  CGSize pixelSize = {1, 1};
-  NSImage *image = RCTGetPlaceholderImage(size, nil);
-  // RCTAssertEqualSizes(size, image.size); TODO: fix RTCGetPlaceholderImage scaling
-  XCTAssertEqual(pixelSize.width, CGImageGetWidth(RCTGetCGImage(image)));
-  XCTAssertEqual(pixelSize.height, CGImageGetHeight(RCTGetCGImage(image)));
-}
-
-- (void)testPlaceholderNonsquareImage
-{
-  CGSize size = {640, 480};
-  CGFloat expectedScale = 1.0/160;
-  CGSize pixelSize = {4, 3};
-  NSImage *image = RCTGetPlaceholderImage(size, nil);
-  // RCTAssertEqualSizes(size, image.size); TODO: fix RTCGetPlaceholderImage scaling
-  XCTAssertEqual(pixelSize.width, CGImageGetWidth(RCTGetCGImage(image)));
-  XCTAssertEqual(pixelSize.height, CGImageGetHeight(RCTGetCGImage(image)));
-}
-
 @end
