@@ -78,7 +78,7 @@ var DatePickerIOS = React.createClass({
     /**
      * The date picker mode.
      */
-    mode: PropTypes.oneOf(['date' | 'time' | 'datetime']),
+    mode: PropTypes.oneOf(['date', 'time', 'datetime']),
 
     datePickerStyle: PropTypes.oneOf(['textField', 'clockAndCalendar', 'textFieldAndStepper']),
 
@@ -138,6 +138,7 @@ var DatePickerIOS = React.createClass({
           minimumDate={
             props.minimumDate ? props.minimumDate.getTime() : undefined
           }
+          mode={props.mode}
           datePickerMode={props.isRange ? 'range' : 'mode'}
           minuteInterval={props.minuteInterval}
           timeZoneOffsetInMinutes={props.timeZoneOffsetInMinutes}
