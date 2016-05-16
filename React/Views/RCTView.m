@@ -117,7 +117,7 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
     _borderBottomRightRadius = -1;
     self.needsLayout = NO;
     _borderStyle = RCTBorderStyleSolid;
-    self.clipsToBounds = NO;
+    self.clipsToBounds = YES;
   }
 
   return self;
