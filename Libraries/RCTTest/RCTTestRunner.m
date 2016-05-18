@@ -135,7 +135,6 @@ expectErrorBlock:(BOOL(^)(NSString *error))expectErrorBlock
 
     [window setTitle:moduleName];
     [windowController showWindow:window];
-    [window makeMainWindow];
     [windowController setShouldCascadeWindows:NO];
     
     [window setContentView:rootView];
