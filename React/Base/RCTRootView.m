@@ -360,7 +360,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
 
 - (void)mouseEntered:(__unused NSEvent *)theEvent {
   [[self window] setAcceptsMouseMovedEvents:YES];
-  [[self window] makeFirstResponder:self];
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent
@@ -383,7 +382,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
 {
   super.frame = frame;
   if (self.reactTag && _bridge.isValid) {
-    if (!self.inLiveResize || (self.inLiveResize && (CACurrentMediaTime() - _lastResizingAt) > 0.026)) {
+    if (!self.inLiveResize || (self.inLiveResize && (CACurrentMediaTime() - _lastResizingAt) > 0.005)) {
       [_bridge.uiManager setFrame:frame forView:self];
       _lastResizingAt = CACurrentMediaTime();
     }
