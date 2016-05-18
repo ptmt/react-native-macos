@@ -85,6 +85,8 @@ RCT_EXPORT_MODULE()
                                            selector:@selector(handleRemoteNotificationsRegistered:)
                                                name:RCTRemoteNotificationsRegistered
                                              object:nil];
+
+  [NSUserNotificationCenter defaultUserNotificationCenter].delegate = self;
 }
 
 - (NSDictionary<NSString *, id> *)constantsToExport
@@ -174,7 +176,7 @@ RCT_EXPORT_METHOD(requestPermissions:(NSDictionary *)permissions)
   if (RCTRunningInAppExtension()) {
     return;
   }
-//  
+//
 //  UIUserNotificationType types = UIUserNotificationTypeNone;
 //  if (permissions) {
 //    if ([RCTConvert BOOL:permissions[@"alert"]]) {
@@ -265,6 +267,10 @@ RCT_EXPORT_METHOD(cancelLocalNotifications:(NSDictionary *)userInfo)
       [[NSUserNotificationCenter defaultUserNotificationCenter] removeScheduledNotification:notification];
     }
   }
+}
+
+- (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldPresentNotification:(NSUserNotification *)notification {
+  return YES;
 }
 
 @end
