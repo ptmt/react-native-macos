@@ -16,4 +16,5 @@ CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets);
 @property (nonatomic, assign) NSEdgeInsets contentInset;
 @property (nonatomic, strong) NSTextStorage *textStorage;
 
+@property (nonatomic, assign) BOOL respondsToLiveResizing;
 @end

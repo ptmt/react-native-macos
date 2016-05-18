@@ -62,6 +62,7 @@ RCT_EXPORT_SHADOW_PROPERTY(opacity, CGFloat)
 RCT_EXPORT_SHADOW_PROPERTY(textShadowOffset, CGSize)
 RCT_EXPORT_SHADOW_PROPERTY(textShadowRadius, CGFloat)
 RCT_EXPORT_SHADOW_PROPERTY(textShadowColor, NSColor)
+RCT_EXPORT_VIEW_PROPERTY(respondsToLiveResizing, BOOL)
 
 - (RCTViewManagerUIBlock)uiBlockToAmendWithShadowViewRegistry:(NSDictionary<NSNumber *, RCTShadowView *> *)shadowViewRegistry
 {

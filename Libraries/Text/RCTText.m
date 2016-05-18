@@ -91,6 +91,7 @@ CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
   if ((self = [super initWithFrame:frame])) {
     _textStorage = [NSTextStorage new];
     _reactSubviews = [NSMutableArray array];
+    _respondsToLiveResizing = YES;
   }
   return self;
 }
@@ -110,7 +111,10 @@ CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
 
 - (void)reactSetFrame:(CGRect)frame
 {
-    [super reactSetFrame:frame];
+  if (self.inLiveResize && !self.respondsToLiveResizing) {
+    return;
+  }
+  [super reactSetFrame:frame];
 }
 
 - (void)reactSetInheritedBackgroundColor:(NSColor *)inheritedBackgroundColor
