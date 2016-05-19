@@ -28,14 +28,14 @@ class NativeEventEmitter extends EventEmitter {
 
   constructor(nativeModule: Object) {
     super(RCTDeviceEventEmitter.sharedSubscriber);
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === 'ios' || Platform.OS === 'osx') {
       invariant(nativeModule, 'Native module cannot be null.');
       this._nativeModule = nativeModule;
     }
   }
 
   addListener(eventType: string, listener: Function, context: ?Object): EmitterSubscription {
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === 'ios' || Platform.OS === 'osx') {
       this._nativeModule.addListener(eventType);
     }
     return super.addListener(eventType, listener, context);
@@ -43,7 +43,7 @@ class NativeEventEmitter extends EventEmitter {
 
   removeAllListeners(eventType: string) {
     invariant(eventType, 'eventType argument is required.');
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === 'ios' || Platform.OS === 'osx') {
       const count = this.listeners(eventType).length;
       this._nativeModule.removeListeners(count);
     }
@@ -51,7 +51,7 @@ class NativeEventEmitter extends EventEmitter {
   }
 
   removeSubscription(subscription: EmitterSubscription) {
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === 'ios' || Platform.OS === 'osx') {
       this._nativeModule.removeListeners(1);
     }
     super.removeSubscription(subscription);
