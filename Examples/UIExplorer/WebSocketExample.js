@@ -18,7 +18,7 @@
 /* eslint-env browser */
 
 const React = require('react');
-const ReactNative = require('react-native');
+const ReactNative = require('react-native-desktop');
 const {
   PixelRatio,
   StyleSheet,

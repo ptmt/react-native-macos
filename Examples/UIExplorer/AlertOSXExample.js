@@ -88,7 +88,7 @@ exports.examples = [{
 class PromptOptions extends React.Component {
   state: any;
   customButtons: Array<Object>;
-
+  saveResponse: Function;
   constructor(props) {
     super(props);
 

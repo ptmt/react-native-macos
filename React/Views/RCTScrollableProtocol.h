@@ -24,4 +24,7 @@
 - (void)scrollToOffset:(CGPoint)offset animated:(BOOL)animated;
 - (void)zoomToRect:(CGRect)rect animated:(BOOL)animated;
 
+//- (void)addScrollListener:(NSObject<UIScrollViewDelegate> *)scrollListener;
+//- (void)removeScrollListener:(NSObject<UIScrollViewDelegate> *)scrollListener;
+
 @end

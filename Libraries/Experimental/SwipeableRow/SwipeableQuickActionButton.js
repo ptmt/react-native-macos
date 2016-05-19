@@ -78,12 +78,13 @@ const styles = StyleSheet.create({
     width: 76,
   },
   image: {
-    height: 30,
-    width: 30,
+    height: 33,
+    width: 33,
   },
   text: {
     color: '#ffffff',
     fontSize: 12,
+    textAlign: 'center', // For Android to align properly
   },
 });
 

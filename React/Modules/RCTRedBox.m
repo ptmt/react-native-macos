@@ -109,15 +109,26 @@
     reloadButton.autoresizingMask = NSViewMaxXMargin | NSViewMaxYMargin;
     reloadButton.accessibilityIdentifier = @"redbox-reload";
     reloadButton.font = [NSFont systemFontOfSize:20];
-    [reloadButton setTitle:@"Reload JS"];
+    [reloadButton setTitle:@"Reload JS (\u2318R)"];
     [reloadButton setTarget:self];
     [reloadButton setAction:@selector(reload)];
+
+    NSButton *copyButton = [[NSButton alloc] init];
+    [reloadButton setBezelStyle:NSRecessedBezelStyle];
+    copyButton.autoresizingMask = NSViewMaxXMargin | NSViewMaxYMargin;
+    copyButton.accessibilityIdentifier = @"redbox-reload";
+    copyButton.font = [NSFont systemFontOfSize:20];
+    [copyButton setTitle:@"Copy (\u2325\u2318C)"];
+    [copyButton setTarget:self];
+    [copyButton setAction:@selector(copyStack)];
 
     CGFloat buttonWidth = self.frame.size.width / 2;
     dismissButton.frame = CGRectMake(0, self.frame.size.height - buttonHeight, buttonWidth, buttonHeight);
     reloadButton.frame = CGRectMake(buttonWidth, self.frame.size.height - buttonHeight, buttonWidth, buttonHeight);
+    copyButton.frame = CGRectMake(buttonWidth*2, self.frame.size.height - buttonHeight, buttonWidth, buttonHeight);
     [rootView addSubview:dismissButton];
     [rootView addSubview:reloadButton];
+    [rootView addSubview:copyButton];
     [self setContentView:rootView];
   }
   return self;
@@ -178,6 +189,33 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)reload
 {
   [_actionDelegate reloadFromRedBoxWindow:self];
+}
+
+- (void)copyStack
+{
+  NSMutableString *fullStackTrace;
+
+  if (_lastErrorMessage != nil) {
+    fullStackTrace = [_lastErrorMessage mutableCopy];
+    [fullStackTrace appendString:@"\n\n"];
+  }
+  else {
+    fullStackTrace = [NSMutableString string];
+  }
+
+  for (NSDictionary *stackFrame in _lastStackTrace) {
+    [fullStackTrace appendString:[NSString stringWithFormat:@"%@\n", stackFrame[@"methodName"]]];
+    if (stackFrame[@"file"]) {
+      NSString *lineInfo = [NSString stringWithFormat:@"    %@ @ %zd:%zd\n",
+                            [stackFrame[@"file"] lastPathComponent],
+                            [stackFrame[@"lineNumber"] integerValue],
+                            [stackFrame[@"column"] integerValue]];
+      [fullStackTrace appendString:lineInfo];
+    }
+  }
+
+  NSPasteboard *pb = [NSPasteboard generalPasteboard];
+  [pb writeObjects:[NSArray arrayWithObject:fullStackTrace]];
 }
 
 #pragma mark - TableView
@@ -283,6 +321,13 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   {
     [self dismiss];
   }
+
+  // Copy = Cmd-Option C since Cmd-C in the simulator copies the pasteboard from
+  // the simulator to the desktop pasteboard.
+  if (theEvent.modifierFlags == (NSCommandKeyMask & NSAlternateKeyMask)
+      && [theEvent.characters isEqualToString:@"c"]) {
+    [self copyStack];
+  }
 }
 
 - (BOOL)canBecomeFirstResponder
@@ -361,7 +406,7 @@ RCT_EXPORT_METHOD(dismiss)
   [self dismiss];
 }
 
-- (void)redBoxWindow:(RCTRedBoxWindow *)redBoxWindow openStackFrameInEditor:(NSDictionary *)stackFrame;
+- (void)redBoxWindow:(RCTRedBoxWindow *)redBoxWindow openStackFrameInEditor:(NSDictionary *)stackFrame
 {
   if (![_bridge.bundleURL.scheme hasPrefix:@"http"]) {
     RCTLogWarn(@"Cannot open stack frame in editor because you're not connected to the packager.");

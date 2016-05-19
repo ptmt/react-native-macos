@@ -31,7 +31,7 @@ var {
 var defaultLayout = Dimensions.get('window');
 
 class UIExplorerApp extends React.Component {
-
+  state: any;
   constructor() {
     super();
     this.state = {

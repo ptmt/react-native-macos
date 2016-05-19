@@ -103,7 +103,7 @@
 {
   [self assertOnRunLoop];
 
-  RCT_PROFILE_BEGIN_EVENT(0, @"-[RCTDisplayLink _jsThreadUpdate:]", nil);
+  RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, @"-[RCTDisplayLink _jsThreadUpdate:]", nil);
 
   RCTFrameUpdate *frameUpdate = [[RCTFrameUpdate alloc] initWithTimer:_jsTimer];
   for (RCTModuleData *moduleData in _frameUpdateObservers) {
@@ -120,9 +120,9 @@
 
   [self updateJSDisplayLinkState];
 
-  RCTProfileImmediateEvent(0, @"JS Thread Tick", CACurrentMediaTime(), 'g');
+  RCTProfileImmediateEvent(RCTProfileTagAlways, @"JS Thread Tick", CACurrentMediaTime(), 'g');
 
-  RCT_PROFILE_END_EVENT(0, @"objc_call", nil);
+  RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"objc_call", nil);
 }
 
 -(void) pauseTimer

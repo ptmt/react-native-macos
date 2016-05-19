@@ -20,6 +20,18 @@
 #import "RCTTextView.h"
 
 
+static void collectDirtyNonTextDescendants(RCTShadowText *shadowView, NSMutableArray *nonTextDescendants) {
+  for (RCTShadowView *child in shadowView.reactSubviews) {
+    if ([child isKindOfClass:[RCTShadowText class]]) {
+      collectDirtyNonTextDescendants((RCTShadowText *)child, nonTextDescendants);
+    } else if ([child isKindOfClass:[RCTShadowRawText class]]) {
+      // no-op
+    } else if ([child isTextDirty]) {
+      [nonTextDescendants addObject:child];
+    }
+  }
+}
+
 @interface RCTShadowText (Private)
 
 - (NSTextStorage *)buildTextStorageForWidth:(CGFloat)width widthMode:(css_measure_mode_t)widthMode;
@@ -86,6 +98,7 @@ RCT_EXPORT_VIEW_PROPERTY(respondsToLiveResizing, BOOL)
       if ([shadowView isKindOfClass:[RCTShadowText class]]) {
         ((RCTShadowText *)shadowView).fontSizeMultiplier = 1; //TODO: accessability
         [(RCTShadowText *)shadowView recomputeText];
+        collectDirtyNonTextDescendants((RCTShadowText *)shadowView, queue);
       } else if ([shadowView isKindOfClass:[RCTShadowRawText class]]) {
         RCTLogError(@"Raw text cannot be used outside of a <Text> tag. Not rendering string: '%@'",
                     [(RCTShadowRawText *)shadowView text]);

@@ -68,6 +68,7 @@ type Props = {
 
 class UIExplorerList extends React.Component {
   props: Props;
+  state: any;
 
   render() {
     return (

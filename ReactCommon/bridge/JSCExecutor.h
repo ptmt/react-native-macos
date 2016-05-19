@@ -55,8 +55,8 @@ public:
   ~JSCExecutor() override;
 
   virtual void loadApplicationScript(
-    const std::string& script,
-    const std::string& sourceURL) override;
+    std::unique_ptr<const JSBigString> script,
+    std::string sourceURL) override;
   virtual void setJSModulesUnbundle(
     std::unique_ptr<JSModulesUnbundle> unbundle) override;
   virtual void callFunction(
@@ -67,8 +67,8 @@ public:
     const double callbackId,
     const folly::dynamic& arguments) override;
   virtual void setGlobalVariable(
-    const std::string& propName,
-    const std::string& jsonValue) override;
+    std::string propName,
+    std::unique_ptr<const JSBigString> jsonValue) override;
   virtual void* getJavaScriptContext() override;
   virtual bool supportsProfiling() override;
   virtual void startProfiler(const std::string &titleString) override;
@@ -76,8 +76,6 @@ public:
   virtual void handleMemoryPressureModerate() override;
   virtual void handleMemoryPressureCritical() override;
   virtual void destroy() override;
-
-  void installNativeHook(const char *name, JSObjectCallAsFunctionCallback callback);
 
 private:
   JSGlobalContextRef m_context;
@@ -99,8 +97,8 @@ private:
       std::shared_ptr<MessageQueueThread> messageQueueThread,
       int workerId,
       JSCExecutor *owner,
-      const std::string& script,
-      const std::unordered_map<std::string, std::string>& globalObjAsJSON,
+      std::string scriptURL,
+      std::unordered_map<std::string, std::string> globalObjAsJSON,
       const folly::dynamic& jscConfig);
 
   void initOnJSVMThread();
@@ -109,63 +107,38 @@ private:
   void flushQueueImmediate(std::string queueJSON);
   void loadModule(uint32_t moduleId);
 
-  int addWebWorker(const std::string& script, JSValueRef workerRef, JSValueRef globalObjRef);
-  void postMessageToOwnedWebWorker(int worker, JSValueRef message, JSValueRef *exn);
+  int addWebWorker(std::string scriptURL, JSValueRef workerRef, JSValueRef globalObjRef);
+  void postMessageToOwnedWebWorker(int worker, JSValueRef message);
   void postMessageToOwner(JSValueRef result);
   void receiveMessageFromOwnedWebWorker(int workerId, const std::string& message);
   void receiveMessageFromOwner(const std::string &msgString);
   void terminateOwnedWebWorker(int worker);
   Object createMessageObject(const std::string& msgData);
 
-  static JSValueRef nativeStartWorker(
-      JSContextRef ctx,
-      JSObjectRef function,
-      JSObjectRef thisObject,
+  template< JSValueRef (JSCExecutor::*method)(size_t, const JSValueRef[])>
+  void installNativeHook(const char* name);
+
+  JSValueRef nativeStartWorker(
       size_t argumentCount,
-      const JSValueRef arguments[],
-      JSValueRef *exception);
-  static JSValueRef nativePostMessageToWorker(
-      JSContextRef ctx,
-      JSObjectRef function,
-      JSObjectRef thisObject,
+      const JSValueRef arguments[]);
+  JSValueRef nativePostMessageToWorker(
       size_t argumentCount,
-      const JSValueRef arguments[],
-      JSValueRef *exception);
-  static JSValueRef nativeTerminateWorker(
-      JSContextRef ctx,
-      JSObjectRef function,
-      JSObjectRef thisObject,
+      const JSValueRef arguments[]);
+  JSValueRef nativeTerminateWorker(
       size_t argumentCount,
-      const JSValueRef arguments[],
-      JSValueRef *exception);
-  static JSValueRef nativePostMessage(
-      JSContextRef ctx,
-      JSObjectRef function,
-      JSObjectRef thisObject,
+      const JSValueRef arguments[]);
+  JSValueRef nativePostMessage(
       size_t argumentCount,
-      const JSValueRef arguments[],
-      JSValueRef *exception);
-  static JSValueRef nativeRequire(
-      JSContextRef ctx,
-      JSObjectRef function,
-      JSObjectRef thisObject,
+      const JSValueRef arguments[]);
+  JSValueRef nativeRequire(
       size_t argumentCount,
-      const JSValueRef arguments[],
-      JSValueRef *exception);
-  static JSValueRef nativeFlushQueueImmediate(
-      JSContextRef ctx,
-      JSObjectRef function,
-      JSObjectRef thisObject,
+      const JSValueRef arguments[]);
+  JSValueRef nativeFlushQueueImmediate(
       size_t argumentCount,
-      const JSValueRef arguments[],
-      JSValueRef *exception);
-  static JSValueRef nativeCallSyncHook(
-      JSContextRef ctx,
-      JSObjectRef function,
-      JSObjectRef thisObject,
+      const JSValueRef arguments[]);
+  JSValueRef nativeCallSyncHook(
       size_t argumentCount,
-      const JSValueRef arguments[],
-      JSValueRef *exception);
+      const JSValueRef arguments[]);
 };
 
 } }

@@ -25,9 +25,6 @@
 
 const React = require('React');
 const ReactNative = require('react-native-desktop');
-const NavigationContainer = require('NavigationContainer');
-const NavigationRootContainer = require('NavigationRootContainer');
-
 
 const {
   Image,

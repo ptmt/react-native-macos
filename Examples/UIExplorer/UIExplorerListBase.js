@@ -20,7 +20,6 @@ var ReactNative = require('react-native-desktop');
 var {
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   ScrollView,
   View,
@@ -49,6 +48,7 @@ class ListView extends React.Component {
 }
 
 class UIExplorerListBase extends React.Component {
+  state: any;
   constructor(props: any) {
     super(props);
     this.state = {
