@@ -24,6 +24,7 @@
 #import "RCTPerformanceLogger.h"
 #import "RCTRootView.h"
 #import "RCTUIManager.h"
+#import "RCTDisplayLink.h"
 
 static NSString *const RCTPerfMonitorKey = @"RCTPerfMonitorKey";
 static NSString *const RCTPerfMonitorCellIdentifier = @"RCTPerfMonitorCellIdentifier";
@@ -82,6 +83,7 @@ static vm_size_t RCTGetResidentMemorySize(void)
 @property (nonatomic, strong, readonly) NSTextField *memory;
 @property (nonatomic, strong, readonly) NSTextField *heap;
 @property (nonatomic, strong, readonly) NSTextField *views;
+@property (nonatomic, strong, readonly) NSTextField *layers;
 @property (nonatomic, strong, readonly) NSTableView *metrics;
 @property (nonatomic, strong, readonly) RCTFPSGraph *jsGraph;
 @property (nonatomic, strong, readonly) RCTFPSGraph *uiGraph;
@@ -92,10 +94,12 @@ static vm_size_t RCTGetResidentMemorySize(void)
 
 @implementation RCTPerfMonitor {
   RCTDevMenuItem *_devMenuItem;
+  NSWindow *_window;
   NSView *_container;
   NSTextField *_memory;
   NSTextField *_heap;
   NSTextField *_views;
+  NSTextField *_layers;
   NSTextField *_uiGraphLabel;
   NSTextField *_jsGraphLabel;
   NSTableView *_metrics;
@@ -103,8 +107,8 @@ static vm_size_t RCTGetResidentMemorySize(void)
   RCTFPSGraph *_uiGraph;
   RCTFPSGraph *_jsGraph;
 
-//  CADisplayLink *_uiDisplayLink;
-//  CADisplayLink *_jsDisplayLink;
+  NSTimer *_uiTimer;
+  NSTimer *_jsTimer;
 
   NSUInteger _heapSize;
 
@@ -155,12 +159,13 @@ RCT_EXPORT_MODULE()
       [RCTDevMenuItem toggleItemWithKey:RCTPerfMonitorKey
                                   title:@"Show Perf Monitor"
                           selectedTitle:@"Hide Perf Monitor"
+                                 hotkey:@"M"
                                 handler:
                                 ^(BOOL selected) {
-                                  //[_bridge.devMenu updateSetting:RCTPerfMonitorKey value:@(selected)];
+                                  [_bridge.devMenu updateSetting:RCTPerfMonitorKey value:@(selected)];
 
                                   if (selected) {
-                                   // [weakSelf show];
+                                    [weakSelf show];
                                   } else {
                                     [weakSelf hide];
                                     //;
@@ -174,13 +179,10 @@ RCT_EXPORT_MODULE()
 - (NSView *)container
 {
   if (!_container) {
-    _container = [[NSView alloc] initWithFrame:CGRectMake(10, 25, 180, RCTPerfMonitorBarHeight)];
+    _container = [[NSView alloc] initWithFrame:CGRectMake(10, 50, 280, RCTPerfMonitorBarHeight)];
     _container.layer.backgroundColor = [[NSColor whiteColor] CGColor];
-    _container.layer.borderWidth = 2;
+    _container.layer.borderWidth = 1;
     _container.layer.borderColor = [NSColor lightGrayColor].CGColor;
-//    [_container addGestureRecognizer:self.gestureRecognizer];
-//    [_container addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self
-//                                                                             action:@selector(tap)]];
   }
 
   return _container;
@@ -190,8 +192,11 @@ RCT_EXPORT_MODULE()
 {
   if (!_memory) {
     _memory = [[NSTextField alloc] initWithFrame:CGRectMake(0, 0, 44, RCTPerfMonitorBarHeight)];
-    _memory.font = [NSFont systemFontOfSize:12];
+    _memory.font = [NSFont systemFontOfSize:10];
     _memory.alignment = NSTextAlignmentCenter;
+    _memory.editable = NO;
+    _memory.drawsBackground = NO;
+    _memory.bezeled = NO;
   }
 
   return _memory;
@@ -201,8 +206,11 @@ RCT_EXPORT_MODULE()
 {
   if (!_heap) {
     _heap = [[NSTextField alloc] initWithFrame:CGRectMake(44, 0, 44, RCTPerfMonitorBarHeight)];
-    _heap.font = [NSFont systemFontOfSize:12];
+    _heap.font = [NSFont systemFontOfSize:10];
     _heap.alignment = NSCenterTextAlignment;
+    _heap.editable = NO;
+    _heap.drawsBackground = NO;
+    _heap.bezeled = NO;
   }
 
   return _heap;
@@ -212,17 +220,33 @@ RCT_EXPORT_MODULE()
 {
   if (!_views) {
     _views = [[NSTextField alloc] initWithFrame:CGRectMake(88, 0, 44, RCTPerfMonitorBarHeight)];
-    _views.font = [NSFont systemFontOfSize:12];
+    _views.font = [NSFont systemFontOfSize:10];
     _views.alignment = NSTextAlignmentCenter;
+    _views.editable = NO;
+    _views.drawsBackground = NO;
+    _views.bezeled = NO;
   }
 
   return _views;
 }
 
+- (NSTextField *)layers
+{
+  if (!_layers) {
+    _layers = [[NSTextField alloc] initWithFrame:CGRectMake(132, 0, 44, RCTPerfMonitorBarHeight)];
+    _layers.font = [NSFont systemFontOfSize:10];
+    _layers.alignment = NSTextAlignmentCenter;
+    _layers.editable = NO;
+    _layers.drawsBackground = NO;
+    _layers.bezeled = NO;
+  }
+  return _layers;
+}
+
 - (RCTFPSGraph *)uiGraph
 {
   if (!_uiGraph) {
-    _uiGraph = [[RCTFPSGraph alloc] initWithFrame:CGRectMake(134, 14, 40, 30)
+    _uiGraph = [[RCTFPSGraph alloc] initWithFrame:CGRectMake(174, self.container.frame.size.height - 45, 40, 30)
                                             color:[NSColor lightGrayColor]];
   }
   return _uiGraph;
@@ -231,7 +255,7 @@ RCT_EXPORT_MODULE()
 - (RCTFPSGraph *)jsGraph
 {
   if (!_jsGraph) {
-    _jsGraph = [[RCTFPSGraph alloc] initWithFrame:CGRectMake(178, 14, 40, 30)
+    _jsGraph = [[RCTFPSGraph alloc] initWithFrame:CGRectMake(218, self.container.frame.size.height - 75, 40, 30)
                                             color:[NSColor lightGrayColor]];
   }
   return _jsGraph;
@@ -240,10 +264,13 @@ RCT_EXPORT_MODULE()
 - (NSTextField *)uiGraphLabel
 {
   if (!_uiGraphLabel) {
-    _uiGraphLabel = [[NSTextField alloc] initWithFrame:CGRectMake(134, 3, 40, 10)];
-    _uiGraphLabel.font = [NSFont systemFontOfSize:11];
+    _uiGraphLabel = [[NSTextField alloc] initWithFrame:CGRectMake(174, self.container.frame.size.height - 10, 40, 10)];
+    _uiGraphLabel.font = [NSFont systemFontOfSize:10];
     _uiGraphLabel.alignment = NSTextAlignmentCenter;
     _uiGraphLabel.stringValue = @"UI";
+    _uiGraphLabel.editable = NO;
+    _uiGraphLabel.bezeled = NO;
+    _uiGraphLabel.drawsBackground = NO;
   }
 
   return _uiGraphLabel;
@@ -252,10 +279,13 @@ RCT_EXPORT_MODULE()
 - (NSTextField *)jsGraphLabel
 {
   if (!_jsGraphLabel) {
-    _jsGraphLabel = [[NSTextField alloc] initWithFrame:CGRectMake(178, 3, 38, 10)];
-    _jsGraphLabel.font = [NSFont systemFontOfSize:11];
+    _jsGraphLabel = [[NSTextField alloc] initWithFrame:CGRectMake(218, self.container.frame.size.height - 40, 38, 10)];
+    _jsGraphLabel.font = [NSFont systemFontOfSize:10];
     _jsGraphLabel.alignment = NSTextAlignmentCenter;
     _jsGraphLabel.stringValue = @"JS";
+    _jsGraphLabel.editable = NO;
+    _jsGraphLabel.bezeled = NO;
+    _jsGraphLabel.drawsBackground = NO;
   }
 
   return _jsGraphLabel;
@@ -288,6 +318,7 @@ RCT_EXPORT_MODULE()
   [self.container addSubview:self.memory];
   [self.container addSubview:self.heap];
   [self.container addSubview:self.views];
+  [self.container addSubview:self.layers];
   [self.container addSubview:self.uiGraph];
   [self.container addSubview:self.uiGraphLabel];
 
@@ -297,14 +328,28 @@ RCT_EXPORT_MODULE()
 
   [self updateStats];
 
-//  NSWindow *window = [NSApplication sharedApplication].mainWindow;
-//  [window.contentView addSubview:self.container];
+
+  NSRect frame = NSMakeRect(100, 100, self.container.frame.size.width, self.container.frame.size.height + 30);
+
+  _window = [[NSWindow alloc] initWithContentRect:frame
+                                                 styleMask:NSTitledWindowMask |  NSClosableWindowMask | NSFullSizeContentViewWindowMask
+                                                   backing:NSBackingStoreBuffered
+                                                     defer:NO];
+  NSWindowController *windowController = [[NSWindowController alloc] initWithWindow:_window];
+  [_window setContentView:self.container];
+  [_window setTitle:@"Perf Monitor"];
+  [_window setHidesOnDeactivate:NO];
+  [_window setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameVibrantLight ]];
+  [windowController showWindow:_window];
 
 
-//  _uiDisplayLink = [CADisplayLink displayLinkWithTarget:self
-//                                               selector:@selector(threadUpdate:)];
-//  [_uiDisplayLink addToRunLoop:[NSRunLoop mainRunLoop]
-//                       forMode:NSRunLoopCommonModes];
+  _uiTimer = [NSTimer
+              timerWithTimeInterval:RCT_TIME_PER_FRAME
+              target:self
+              selector:@selector(threadUpdate:)
+              userInfo:nil
+              repeats:YES];
+  [[NSRunLoop mainRunLoop] addTimer:_uiTimer forMode:NSRunLoopCommonModes];
 
   id<RCTJavaScriptExecutor> executor = [_bridge valueForKey:@"javaScriptExecutor"];
   if ([executor isKindOfClass:[RCTJSCExecutor class]]) {
@@ -317,10 +362,13 @@ RCT_EXPORT_MODULE()
     [self.container addSubview:self.jsGraph];
     [self.container addSubview:self.jsGraphLabel];
     [executor executeBlockOnJavaScriptQueue:^{
-//      _jsDisplayLink = [CADisplayLink displayLinkWithTarget:self
-//                                                   selector:@selector(threadUpdate:)];
-//      [_jsDisplayLink addToRunLoop:[NSRunLoop currentRunLoop]
-//                           forMode:NSRunLoopCommonModes];
+      _jsTimer = [NSTimer
+                  timerWithTimeInterval:RCT_TIME_PER_FRAME
+                  target:self
+                  selector:@selector(threadUpdate:)
+                  userInfo:nil
+                  repeats:YES];
+      [[NSRunLoop mainRunLoop] addTimer:_jsTimer forMode:NSRunLoopCommonModes];
     }];
   }
 }
@@ -434,9 +482,17 @@ RCT_EXPORT_MODULE()
   NSDictionary<NSNumber *, NSView *> *views = [_bridge.uiManager valueForKey:@"viewRegistry"];
   NSUInteger viewCount = views.count;
   NSUInteger visibleViewCount = 0;
+  NSUInteger layerBackedCount = 0;
+  NSUInteger layersCount = 0;
   for (NSView *view in views.allValues) {
     if (view.window || view.superview.window) {
       visibleViewCount++;
+    }
+    if (view.wantsLayer) {
+      layerBackedCount++;
+    }
+    if (view.layer) {
+      layersCount++;
     }
   }
 
@@ -444,6 +500,7 @@ RCT_EXPORT_MODULE()
   self.memory.stringValue  =[NSString stringWithFormat:@"RAM\n%.2lf\nMB", mem];
   self.heap.stringValue = [NSString stringWithFormat:@"JSC\n%.2lf\nMB", (double)_heapSize / 1024];
   self.views.stringValue = [NSString stringWithFormat:@"Views\n%lu\n%lu", (unsigned long)visibleViewCount, (unsigned long)viewCount];
+  self.layers.stringValue = [NSString stringWithFormat:@"Layers\n%lu\n%lu", (unsigned long)layerBackedCount, (unsigned long)layersCount];
 
   __weak __typeof__(self) weakSelf = self;
   dispatch_after(
@@ -472,10 +529,10 @@ RCT_EXPORT_MODULE()
   //}];
 }
 
-- (void)threadUpdate
+- (void)threadUpdate:(id)sender
 {
-//  RCTFPSGraph *graph = displayLink == _jsDisplayLink ? _jsGraph : _uiGraph;
-//  [graph onTick:displayLink.timestamp];
+  RCTFPSGraph *graph = sender == _jsTimer ? _jsGraph : _uiGraph;
+  [graph onTick:CACurrentMediaTime()];
 }
 
 - (void)loadPerformanceLoggerData

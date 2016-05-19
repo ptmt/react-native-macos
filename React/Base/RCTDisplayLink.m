@@ -31,7 +31,7 @@
   if ((self = [super init])) {
     _frameUpdateObservers = [NSMutableSet new];
     _jsTimer = [NSTimer
-                   timerWithTimeInterval:0.025
+                   timerWithTimeInterval:RCT_TIME_PER_FRAME
                    target:self
                    selector:@selector(_jsThreadUpdate:)
                    userInfo:nil
@@ -125,14 +125,14 @@
   RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"objc_call", nil);
 }
 
--(void) pauseTimer
+-(void)pauseTimer
 {
   _pauseStart = [NSDate dateWithTimeIntervalSinceNow:0];
   _previousFireDate = [_jsTimer fireDate];
   [_jsTimer setFireDate:[NSDate distantFuture]];
 }
 
--(void) resumeTimer
+-(void)resumeTimer
 {
   float pauseTime = -1 * [_pauseStart timeIntervalSinceNow];
   [_jsTimer setFireDate:[_previousFireDate initWithTimeInterval:pauseTime sinceDate:_previousFireDate]];

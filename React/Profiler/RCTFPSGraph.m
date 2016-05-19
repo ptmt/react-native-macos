@@ -49,6 +49,7 @@
     _frames = calloc(sizeof(CGFloat), _length);
     _color = color;
 
+    [self setWantsLayer:YES];
     [self.layer addSublayer:self.graph];
     [self addSubview:self.label];
   }
@@ -112,11 +113,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     _frames[_length - 1] = _FPS / scale;
 
     CGMutablePathRef path = CGPathCreateMutable();
-    CGPathMoveToPoint(path, NULL, 0, _height);
+    CGPathMoveToPoint(path, NULL, 0, 0);
     for (NSUInteger i = 0; i < _length; i++) {
-      CGPathAddLineToPoint(path, NULL, i, _height - _frames[i]);
+      CGPathAddLineToPoint(path, NULL, i, _frames[i]);
     }
-    CGPathAddLineToPoint(path, NULL, _length - 1, _height);
+    CGPathAddLineToPoint(path, NULL, _length - 1, 0);
 
     _graph.path = path;
     CGPathRelease(path);

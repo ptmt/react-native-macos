@@ -782,9 +782,7 @@ void RCTProfileShowControls(void)
                                                  styleMask:0
                                                    backing:NSBackingStoreBuffered
                                                      defer:NO];
-//  window.windowLevel = UIWindowLevelAlert + 1000;
-//  window.hidden = NO;
-//
+
   NSView *rootView = [[NSView alloc] initWithFrame:window.frame];
   [rootView setWantsLayer:YES];
   rootView.layer.backgroundColor = [NSColor lightGrayColor].CGColor;
