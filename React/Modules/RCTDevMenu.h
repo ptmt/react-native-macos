@@ -97,6 +97,7 @@
 + (instancetype)toggleItemWithKey:(NSString *)key
                             title:(NSString *)title
                     selectedTitle:(NSString *)selectedTitle
+                           hotkey:(NSString *)hotkey
                           handler:(void(^)(BOOL selected))handler;
 @end
 

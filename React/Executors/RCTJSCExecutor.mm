@@ -225,7 +225,12 @@ NSError *RCTNSErrorFromJSError(JSContextRef context, JSValueRef jsError)
 static void RCTInstallJSCProfiler(RCTBridge *bridge, JSContextRef context)
 {
   if (RCTJSCProfilerIsSupported()) {
-    [bridge.devMenu addItem:[RCTDevMenuItem toggleItemWithKey:RCTJSCProfilerEnabledDefaultsKey title:@"Start Profiling" selectedTitle:@"Stop Profiling" handler:^(BOOL shouldStart) {
+    [bridge.devMenu addItem:[RCTDevMenuItem
+                             toggleItemWithKey:RCTJSCProfilerEnabledDefaultsKey
+                             title:@"Start Profiling"
+                             selectedTitle:@"Stop Profiling"
+                             hotkey:@"P"
+                             handler:^(BOOL shouldStart) {
       if (shouldStart != RCTJSCProfilerIsProfiling(context)) {
         if (shouldStart) {
           RCTJSCProfilerStart(context);

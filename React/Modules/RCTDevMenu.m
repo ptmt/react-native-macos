@@ -57,6 +57,7 @@ typedef NS_ENUM(NSInteger, RCTDevMenuType) {
                          key:(NSString *)key
                        title:(NSString *)title
                selectedTitle:(NSString *)selectedTitle
+                      hotkey:(NSString *)hotkey
                      handler:(id /* block */)handler
 {
   if ((self = [super init])) {
@@ -68,7 +69,7 @@ typedef NS_ENUM(NSInteger, RCTDevMenuType) {
     _value = nil;
     [self setAction:@selector(callHandler)];
     [self setTarget:self];
-    // [self keyEquivalent:] TODO: key keyEquivalent
+    [self setKeyEquivalent:hotkey];
   }
   return self;
 }
@@ -82,18 +83,21 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
                                 key:nil
                               title:title
                       selectedTitle:nil
+                             hotkey:@""
                             handler:handler];
 }
 
 + (instancetype)toggleItemWithKey:(NSString *)key
                             title:(NSString *)title
                     selectedTitle:(NSString *)selectedTitle
+                           hotkey:(NSString *)hotkey
                           handler:(void (^)(BOOL selected))handler
 {
   return [[self alloc] initWithType:RCTDevMenuTypeToggle
                                 key:key
                               title:title
                       selectedTitle:selectedTitle
+                             hotkey:hotkey
                             handler:handler];
 }
 
@@ -175,6 +179,7 @@ RCT_EXPORT_MODULE()
     [_extraMenuItems addObject:[RCTDevMenuItem toggleItemWithKey:@"showInspector"
                                                            title:@"Show Inspector"
                                                    selectedTitle:@"Hide Inspector"
+                                                          hotkey:@"I"
                                                          handler:^(__unused BOOL enabled)
                                 {
                                   [weakSelf.bridge.eventDispatcher sendDeviceEventWithName:@"toggleElementInspector" body:nil];
