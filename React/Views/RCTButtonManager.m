@@ -16,35 +16,35 @@
 
 
 RCT_ENUM_CONVERTER(NSButtonType, (@{
-     @"momentaryLight": @(NSMomentaryLightButton),
-     @"push": @(NSPushOnPushOffButton),
-     @"toggle": @(NSToggleButton),
-     @"switch": @(NSSwitchButton),
-     @"radio": @(NSRadioButton),
-     @"momentaryChange": @(NSMomentaryChangeButton),
-     @"onOff": @(NSOnOffButton),
-     @"momentaryPushInButton": @(NSMomentaryPushInButton),
-     @"accelerator": @(NSAcceleratorButton),
-     @"multiLevelAccelerator": @(NSMultiLevelAcceleratorButton),
-     }), NSMomentaryLightButton, integerValue)
+                                    @"momentaryLight": @(NSMomentaryLightButton),
+                                    @"push": @(NSPushOnPushOffButton),
+                                    @"toggle": @(NSToggleButton),
+                                    @"switch": @(NSSwitchButton),
+                                    @"radio": @(NSRadioButton),
+                                    @"momentaryChange": @(NSMomentaryChangeButton),
+                                    @"onOff": @(NSOnOffButton),
+                                    @"momentaryPushInButton": @(NSMomentaryPushInButton),
+                                    @"accelerator": @(NSAcceleratorButton),
+                                    @"multiLevelAccelerator": @(NSMultiLevelAcceleratorButton),
+                                    }), NSMomentaryLightButton, integerValue)
 
 RCT_ENUM_CONVERTER(NSBezelStyle, (@{
-      @"rounded": @(NSRoundedBezelStyle),
-      @"regularSquare": @(NSRegularSquareBezelStyle),
-      @"thickSquare": @(NSThickSquareBezelStyle),
-      @"thickerSquare": @(NSThickerSquareBezelStyle),
-      @"disclosure": @(NSDisclosureBezelStyle),
-      @"shadowlessSquare": @(NSShadowlessSquareBezelStyle),
-      @"circular": @(NSCircularBezelStyle),
-      @"texturedSquare": @(NSTexturedSquareBezelStyle),
-      @"helpButton": @(NSHelpButtonBezelStyle),
-      @"smallSquare": @(NSSmallSquareBezelStyle),
-      @"texturedRounded": @(NSTexturedRoundedBezelStyle),
-      @"roundRect": @(NSRoundRectBezelStyle),
-      @"recessed": @(NSRecessedBezelStyle),
-      @"roundedDisclosure": @(NSRoundedDisclosureBezelStyle),
-      @"inline": @(NSInlineBezelStyle),
-      }), NSRoundedBezelStyle, integerValue)
+                                    @"rounded": @(NSRoundedBezelStyle),
+                                    @"regularSquare": @(NSRegularSquareBezelStyle),
+                                    @"thickSquare": @(NSThickSquareBezelStyle),
+                                    @"thickerSquare": @(NSThickerSquareBezelStyle),
+                                    @"disclosure": @(NSDisclosureBezelStyle),
+                                    @"shadowlessSquare": @(NSShadowlessSquareBezelStyle),
+                                    @"circular": @(NSCircularBezelStyle),
+                                    @"texturedSquare": @(NSTexturedSquareBezelStyle),
+                                    @"helpButton": @(NSHelpButtonBezelStyle),
+                                    @"smallSquare": @(NSSmallSquareBezelStyle),
+                                    @"texturedRounded": @(NSTexturedRoundedBezelStyle),
+                                    @"roundRect": @(NSRoundRectBezelStyle),
+                                    @"recessed": @(NSRecessedBezelStyle),
+                                    @"roundedDisclosure": @(NSRoundedDisclosureBezelStyle),
+                                    @"inline": @(NSInlineBezelStyle),
+                                    }), NSRoundedBezelStyle, integerValue)
 
 @end
 
@@ -72,13 +72,20 @@ RCT_CUSTOM_VIEW_PROPERTY(type, NSButtonType, __unused NSButton)
   }
 }
 
+RCT_CUSTOM_VIEW_PROPERTY(systemImage, NSString, __unused NSButton)
+{
+  if (json) {
+    [view setImage:[NSImage imageNamed:json]];
+  }
+}
+
 - (NSDictionary<NSString *, id> *)constantsToExport
 {
   NSButton *view = [NSButton new];
   return @{
-    @"ComponentHeight": @(view.intrinsicContentSize.height),
-    @"ComponentWidth": @(view.intrinsicContentSize.width)
-  };
+           @"ComponentHeight": @(view.intrinsicContentSize.height),
+           @"ComponentWidth": @(view.intrinsicContentSize.width)
+           };
 }
 
 @end

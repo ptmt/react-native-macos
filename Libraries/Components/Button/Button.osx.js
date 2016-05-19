@@ -43,6 +43,10 @@ const Button = React.createClass({
       'accelerator'
     ]),
     title: PropTypes.string,
+    /*
+     * https://developer.apple.com/library/mac/documentation/UserExperience/Conceptual/OSXHIGuidelines/SystemProvided.html
+     */
+    systemImage: PropTypes.string,
     alternateTitle: PropTypes.string,
     image: PropTypes.oneOfType([
       PropTypes.shape({
@@ -86,7 +90,6 @@ const Button = React.createClass({
     const { props } = this;
     return (
       <RCTButton {...props}
-        image={props.image}
         style={[styles.defaultButton, props.style]}/>
     );
   }

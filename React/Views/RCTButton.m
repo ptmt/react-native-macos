@@ -16,7 +16,6 @@
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if ((self = [super initWithFrame:frame])) {
-    self.title = @"";
     [self setTarget:self];
     [self setAction:@selector(onPressHandler:)];
   }
@@ -28,6 +27,11 @@
   if (_onClick) {
     _onClick(@{@"state": @(self.state)});
   }
+}
+
+- (void)reactSetFrame:(CGRect)frame
+{
+  [self setFrame:frame];
 }
 
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)

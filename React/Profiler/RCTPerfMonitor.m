@@ -387,7 +387,7 @@ RCT_EXPORT_MODULE()
   RCTJSCSetOption("logGC=0");
 
   [self stopLogs];
-
+  [_window close];
 }
 
 - (void)redirectLogs
