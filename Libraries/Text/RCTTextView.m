@@ -11,6 +11,7 @@
 
 #import "RCTConvert.h"
 #import "RCTEventDispatcher.h"
+#import "RCTShadowText.h"
 #import "RCTText.h"
 #import "RCTUtils.h"
 #import "NSView+React.h"
@@ -126,6 +127,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     }
     _richTextView = (RCTText *)subview;
     [_subviews insertObject:_richTextView atIndex:index];
+
+    // If this <TextInput> is in rich text editing mode, and the child <Text> node providing rich text
+    // styling has a backgroundColor, then the attributedText produced by the child <Text> node will have an
+    // NSBackgroundColor attribute. We need to forward this attribute to the text view manually because the text view
+    // always has a clear background color in -initWithEventDispatcher:.
+    //
+    // TODO: This should be removed when the related hack in -performPendingTextUpdate is removed.
+    
   } else {
     [_subviews insertObject:subview atIndex:index];
     [self addSubview:subview];
@@ -167,35 +176,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)performPendingTextUpdate
 {
-//  if (!_pendingAttributedText || _mostRecentEventCount < _nativeEventCount) {
-//    return;
-//  }
-//
-//  if ([_textView.attributedString isEqualToAttributedString:_pendingAttributedText]) {
-//    _pendingAttributedText = nil; // Don't try again.
-//    return;
-//  }
-//
-//  // When we update the attributed text, there might be pending autocorrections
-//  // that will get accepted by default. In order for this to not garble our text,
-//  // we temporarily block all textShouldChange events so they are not applied.
-//  _blockTextShouldChange = YES;
-//
-//  NSArray <NSValue *> * selection = _textView.selectedRanges;
-//  //NSInteger oldTextLength = _textView.attributedString.length;
-//
-//  [_textView.textStorage setAttributedString:_pendingAttributedText];
-//  _pendingAttributedText = nil;
-//
-//    // maintain cursor position relative to the end of the old text
-//    // TODO:
-//    _textView.selectedRanges = selection;
-//
-//  [_textView layout];
-//
-//  [self _setPlaceholderVisibility];
-//
-//  _blockTextShouldChange = NO;
 }
 
 - (void)updateFrames

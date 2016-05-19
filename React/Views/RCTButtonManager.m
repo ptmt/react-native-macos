@@ -76,9 +76,9 @@ RCT_CUSTOM_VIEW_PROPERTY(type, NSButtonType, __unused NSButton)
 {
   NSButton *view = [NSButton new];
   return @{
-           @"ComponentHeight": @(view.intrinsicContentSize.height),
-           @"ComponentWidth": @(view.intrinsicContentSize.width)
-           };
+    @"ComponentHeight": @(view.intrinsicContentSize.height),
+    @"ComponentWidth": @(view.intrinsicContentSize.width)
+  };
 }
 
 @end

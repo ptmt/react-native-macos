@@ -45,6 +45,16 @@ RCT_EXPORT_MODULE()
 
 #pragma mark - Lifecycle
 
+- (instancetype)init
+{
+  if ((self = [super init])) {
+
+    // Needs to be called on the main thread, as it accesses UIApplication
+    _lastKnownState = RCTCurrentAppBackgroundState();
+  }
+  return self;
+}
+
 - (void)setBridge:(RCTBridge *)bridge
 {
   _bridge = bridge;
@@ -53,6 +63,7 @@ RCT_EXPORT_MODULE()
   for (NSString *name in @[NSApplicationWillBecomeActiveNotification,
                            NSApplicationDidHideNotification,
                            NSApplicationDidFinishLaunchingNotification]) {
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleAppStateDidChange)
                                                  name:name

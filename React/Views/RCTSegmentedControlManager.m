@@ -39,16 +39,4 @@ RCT_EXPORT_VIEW_PROPERTY(selectedIndex, NSInteger)
 RCT_EXPORT_VIEW_PROPERTY(enabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(onChange, RCTBubblingEventBlock)
 
-{
-  //[view.cell setControlTint:[RCTConvert NSColor:json]];
-}
-
-//- (NSDictionary *)constantsToExport
-//{
-//  RCTSegmentedControl *view = [RCTSegmentedControl new];
-//  return @{
-//    @"ComponentHeight": @(view.height),
-//  };
-//}
-
 @end

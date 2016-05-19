@@ -81,6 +81,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   [_webView setFrame:frame];
 }
 
+- (void)stopLoading
+{
+  [_webView.webFrame stopLoading];
+}
+
 - (void)setSource:(NSDictionary *)source
 {
   if (![_source isEqualToDictionary:source]) {

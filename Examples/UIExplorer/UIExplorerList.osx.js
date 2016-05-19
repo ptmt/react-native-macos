@@ -39,7 +39,7 @@ var COMPONENTS = [
   require('./ProgressViewIOSExample'),
   require('./ScrollViewSimpleExample'),
   // require('./SegmentedControlIOSExample'),
-  require('./SliderIOSExample'),
+  require('./SliderExample'),
   //require('./SwitchExample'),
   require('./TextExample.osx'),
   require('./TextInputExample.osx'),
@@ -68,6 +68,7 @@ type Props = {
 
 class UIExplorerList extends React.Component {
   props: Props;
+  state: any;
 
   render() {
     return (

@@ -42,8 +42,6 @@
 + (NSEdgeInsets)contentInsetsForView:(NSView *)curView;
 
 - (void)setBackgroundColor:(NSColor *)backgroundColor;
-- (BOOL)wantsUpdateLayer;
-- (BOOL)wantsDefaultClipping;
 
 /**
  * This is an optimization used to improve performance

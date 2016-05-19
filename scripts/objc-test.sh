@@ -28,9 +28,13 @@ trap cleanup EXIT
 
 ./packager/packager.sh --nonPersistent &
 SERVER_PID=$!
-xctool \
+# TODO: We use xcodebuild because xctool would stall when collecting info about
+# the tests before running them. Switch back when this issue with xctool has
+# been resolved.
+xcodebuild \
   -project Examples/UIExplorer/UIExplorer.xcodeproj \
   -scheme UIExplorer \
   -sdk macosx10.11 \
   -destination 'platform=OS X,arch=x86_64' \
   test
+| xcpretty && exit ${PIPESTATUS[0]}

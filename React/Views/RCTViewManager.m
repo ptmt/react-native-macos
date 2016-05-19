@@ -54,10 +54,7 @@ RCT_EXPORT_MODULE()
 
 - (dispatch_queue_t)methodQueue
 {
-  RCTAssert(_bridge, @"Bridge not set");
-  RCTAssert(_bridge.uiManager || !_bridge.valid, @"UIManager not initialized");
-  RCTAssert(_bridge.uiManager.methodQueue || !_bridge.valid, @"UIManager.methodQueue not initialized");
-  return _bridge.uiManager.methodQueue;
+  return RCTGetUIManagerQueue();
 }
 
 - (NSView *)view
@@ -118,10 +115,10 @@ RCT_EXPORT_MODULE()
 - (void)checkLayerExists:(NSView *)view
 {
   if (!view.layer) {
+    [view setWantsLayer:YES];
     CALayer *viewLayer = [CALayer layer];
     viewLayer.delegate = view;
     [view setLayer:viewLayer];
-    [view setWantsLayer:YES];
   }
 }
 
@@ -146,6 +143,7 @@ RCT_CUSTOM_VIEW_PROPERTY(shouldRasterizeIOS, BOOL, RCTView)
   view.layer.shouldRasterize = json ? [RCTConvert BOOL:json] : defaultView.layer.shouldRasterize;
   view.layer.rasterizationScale = view.layer.shouldRasterize ? [NSScreen mainScreen].backingScaleFactor : defaultView.layer.rasterizationScale;
 }
+
 RCT_CUSTOM_VIEW_PROPERTY(draggedTypes, NSArray*<NSString *>, RCTView)
 {
   if (json) {
@@ -155,6 +153,7 @@ RCT_CUSTOM_VIEW_PROPERTY(draggedTypes, NSArray*<NSString *>, RCTView)
     [view registerForDraggedTypes:defaultView.registeredDraggedTypes];
   }
 }
+
 RCT_CUSTOM_VIEW_PROPERTY(opacity, float, RCTView)
 {
   if (json) {
@@ -164,6 +163,8 @@ RCT_CUSTOM_VIEW_PROPERTY(opacity, float, RCTView)
     [view.layer setOpacity:defaultView.layer.opacity];
   }
 }
+
+// TODO: remove this duplicate
 RCT_CUSTOM_VIEW_PROPERTY(transformMatrix, CATransform3D, RCTView)
 {
   CATransform3D transform = json ? [RCTConvert CATransform3D:json] : defaultView.layer.transform;
@@ -177,6 +178,21 @@ RCT_CUSTOM_VIEW_PROPERTY(transformMatrix, CATransform3D, RCTView)
   // TODO: Improve this by enabling edge antialiasing only for transforms with rotation or skewing
   view.layer.edgeAntialiasingMask = !CATransform3DIsIdentity(transform);
 }
+
+RCT_CUSTOM_VIEW_PROPERTY(transform, CATransform3D, RCTView)
+{
+  CATransform3D transform = json ? [RCTConvert CATransform3D:json] : defaultView.layer.transform;
+  if ([view respondsToSelector:@selector(shouldBeTransformed)] && !view.superview) {
+    view.shouldBeTransformed = YES;
+    view.transform = transform;
+  } else {
+    view.layer.transform = transform;
+  }
+
+  // TODO: Improve this by enabling edge antialiasing only for transforms with rotation or skewing
+  view.layer.edgeAntialiasingMask = !CATransform3DIsIdentity(transform);
+}
+
 
 RCT_CUSTOM_VIEW_PROPERTY(removeClippedSubviews, BOOL, RCTView)
 {

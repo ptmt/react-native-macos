@@ -101,13 +101,13 @@ PickerIOS.Item = React.createClass({
     return null;
   },
 });
-
 var styles = StyleSheet.create({
   pickerIOS: {
     // The picker will conform to whatever width is given, but we do
     // have to set the component's height explicitly on the
     // surrounding view to ensure it gets rendered.
-    height: RCTPickerIOSConsts.ComponentHeight,
+    // TODO: investigate why contantsToExport is not available
+    height: RCTPickerIOSConsts ? RCTPickerIOSConsts.ComponentHeight : 20,
   },
 });
 

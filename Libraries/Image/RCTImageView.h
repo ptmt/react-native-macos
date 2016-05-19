@@ -8,13 +8,12 @@
  */
 
 #import <AppKit/AppKit.h>
-#import "RCTImageComponent.h"
 #import "RCTResizeMode.h"
 
 @class RCTBridge;
 @class RCTImageSource;
 
-@interface RCTImageView : NSImageView <RCTImageComponent>
+@interface RCTImageView : NSImageView
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge NS_DESIGNATED_INITIALIZER;
 

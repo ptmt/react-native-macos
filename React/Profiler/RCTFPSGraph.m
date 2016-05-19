@@ -100,7 +100,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     _minFPS = MIN(_minFPS, _FPS);
     _maxFPS = MAX(_maxFPS, _FPS);
 
-    _label.stringValue = [NSString stringWithFormat:@"%lu", (unsigned long)_FPS];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      _label.stringValue = [NSString stringWithFormat:@"%lu", (unsigned long)_FPS];
+    });
+
 
     CGFloat scale = 60.0 / _height;
     for (NSUInteger i = 0; i < _length - 1; i++) {

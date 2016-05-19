@@ -9,11 +9,17 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-console.error([
-  '\033[31mLooks like you installed react-native-desktop globally, maybe you meant react-native-desktop-cli?',
-  'To fix the issue, run:\033[0m',
-  'npm uninstall -g react-native-desktop',
-  'npm install -g react-native-desktop-cli'
-].join('\n'));
+var script = process.argv[1];
+var installedGlobally = script.indexOf('node_modules/.bin/react-native') === -1;
 
-process.exit(1);
+if (installedGlobally) {
+  console.error([
+    '\033[31mLooks like you installed react-native-desktop globally, maybe you meant react-native-desktop-cli?',
+    'To fix the issue, run:\033[0m',
+    'npm uninstall -g react-native-desktop',
+    'npm install -g react-native-desktop-cli'
+  ].join('\n'));
+  process.exit(1);
+} else {
+  require('./cli').run();
+}

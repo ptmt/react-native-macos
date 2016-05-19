@@ -57,8 +57,10 @@
   NSView *clipView = nil;
   CGRect clipRect = self.bounds;
 
-  while (testView) {
-    if (testView.wantsDefaultClipping) {
+  // We will only look for a clipping view up the view hierarchy until we hit the root view.
+  BOOL passedRootView = NO;
+  while (testView && !passedRootView) {
+    if (testView.clipsToBounds) {
       if (clipView) {
         CGRect testRect = [clipView convertRect:clipRect toView:testView];
         if (!CGRectContainsRect(testView.bounds, testRect)) {
@@ -69,6 +71,9 @@
         clipView = testView;
         clipRect = [self convertRect:self.bounds toView:clipView];
       }
+    }
+    if ([testView isReactRootView]) {
+      passedRootView = YES;
     }
     testView = testView.superview;
   }
@@ -110,8 +115,11 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
     _borderTopRightRadius = -1;
     _borderBottomLeftRadius = -1;
     _borderBottomRightRadius = -1;
+    _respondsToLiveResizing = YES;
     self.needsLayout = NO;
     _borderStyle = RCTBorderStyleSolid;
+    self.clipsToBounds = YES;
+
   }
 
   return self;
@@ -126,7 +134,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   }
   return RCTRecursiveAccessibilityLabel(self);
 }
-
 
 - (BOOL)isFlipped
 {
@@ -462,10 +469,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
     return;
   }
   if (![self wantsLayer] || self.layer == NULL) {
-    CALayer *viewLayer = [CALayer layer];
-    [viewLayer setBackgroundColor:[backgroundColor CGColor]];
-    [self setLayer:viewLayer];
     [self setWantsLayer:YES];
+    [self.layer setBackgroundColor:[backgroundColor CGColor]];
     self.layer.delegate = self;
   } else {
     [self.layer setBackgroundColor:[backgroundColor CGColor]];
@@ -519,13 +524,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
     _borderBottomColor ?: _borderColor,
     _borderRightColor ?: _borderColor,
   };
-}
-
--(void) drawRect:(__unused NSRect)dirtyRect {}
-
-- (BOOL)wantsUpdateLayer
-{
-  return YES;
 }
 
 - (void)reactSetFrame:(CGRect)frame
@@ -676,16 +674,12 @@ static void RCTUpdateShadowPathForView(RCTView *view)
 {
   CALayer *mask = nil;
   CGFloat cornerRadius = 0;
-
   if (self.clipsToBounds) {
 
     const RCTCornerRadii cornerRadii = [self cornerRadii];
     if (RCTCornerRadiiAreEqual(cornerRadii)) {
-
       cornerRadius = cornerRadii.topLeft;
-
     } else {
-
       CAShapeLayer *shapeLayer = [CAShapeLayer layer];
       CGPathRef path = RCTPathCreateWithRoundedRect(self.bounds, RCTGetCornerInsets(cornerRadii, NSEdgeInsetsZero), NULL);
       shapeLayer.path = path;
@@ -693,7 +687,6 @@ static void RCTUpdateShadowPathForView(RCTView *view)
       mask = shapeLayer;
     }
   }
-
   layer.cornerRadius = cornerRadius;
   layer.mask = mask;
 }

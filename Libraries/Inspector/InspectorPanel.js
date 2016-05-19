@@ -41,6 +41,7 @@ class InspectorPanel extends React.Component {
         <ElementProperties
           style={this.props.inspected.style}
           frame={this.props.inspected.frame}
+          source={this.props.inspected.source}
           hierarchy={this.props.hierarchy}
           selection={this.props.selection}
           setSelection={this.props.setSelection}
@@ -70,10 +71,11 @@ class InspectorPanel extends React.Component {
             pressed={this.props.perfing}
             onClick={this.props.setPerfing}
           />
+          <Button title={'Touchables'}
+            pressed={this.props.touchTargetting}
+            onClick={this.props.setTouchTargetting}
+          />
         </View>
-        <Text style={styles.buttonText}>
-          {'Touchable.TOUCH_TARGET_DEBUG is ' + Touchable.TOUCH_TARGET_DEBUG}
-        </Text>
       </View>
     );
   }
@@ -86,6 +88,8 @@ InspectorPanel.propTypes = {
   inspected: PropTypes.object,
   perfing: PropTypes.bool,
   setPerfing: PropTypes.func,
+  touchTargetting: PropTypes.bool,
+  setTouchTargetting: PropTypes.func,
 };
 
 class Button extends React.Component {

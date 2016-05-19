@@ -113,9 +113,7 @@
 - (void)reactSetInheritedBackgroundColor:(NSColor *)inheritedBackgroundColor
 {
   if (![self wantsLayer]) {
-    CALayer *viewLayer = [CALayer layer];
     [self setWantsLayer:YES];
-    [self setLayer:viewLayer];
   }
   [self.layer setBackgroundColor:[inheritedBackgroundColor CGColor]];
 

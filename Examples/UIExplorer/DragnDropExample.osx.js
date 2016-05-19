@@ -15,22 +15,12 @@
  */
 'use strict';
 
-var Platform = require('Platform');
 var React = require('React');
-var ReactNative = require('react-native-desktop');;
+var ReactNative = require('react-native-desktop');
 var {
-  StyleSheet,
   Text,
   View,
 } = ReactNative;
-
-var styles = StyleSheet.create({
-  box: {
-    backgroundColor: '#527FE4',
-    borderColor: '#000033',
-    borderWidth: 1,
-  }
-});
 
 exports.title = 'Dran\'n\'Drop';
 exports.description = 'Dragging APIs';
@@ -39,14 +29,21 @@ var DragExample = React.createClass({
   getInitialState() {
     return {
       dragOver: false,
+      mouseOver: false,
       files: []
-    }
+    };
   },
   render() {
     return (
       <View
-        style={{backgroundColor: this.state.dragOver ? 'yellow' : '#527FE4', padding: 40, alignItems: 'center'}}
+        style={{
+          backgroundColor: this.state.dragOver ?
+            'yellow' :
+            this.state.mouseOver ? 'orange' : 'white',
+          padding: 40, alignItems: 'center'}}
         draggedTypes={['NSFilenamesPboardType']}
+        onMouseEnter={() => this.setState({mouseOver: true})}
+        onMouseLeave={() => this.setState({mouseOver: false})}
         onDragEnter={() => this.setState({dragOver: true})}
         onDragLeave={() => this.setState({dragOver: false})}
         onDrop={(e) => this.setState({files: e.nativeEvent.files, dragOver: false})}>
@@ -55,9 +52,9 @@ var DragExample = React.createClass({
         </Text>
 
       </View>
-    )
+    );
   }
-})
+});
 exports.displayName = 'Dran\'n\'Drop';
 exports.examples = [
   {

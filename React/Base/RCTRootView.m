@@ -42,8 +42,8 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 
 - (instancetype)initWithFrame:(CGRect)frame
                        bridge:(RCTBridge *)bridge
-                     reactTag:(NSNumber *)reactTag NS_DESIGNATED_INITIALIZER;
-
+                     reactTag:(NSNumber *)reactTag
+               sizeFlexiblity:(RCTRootViewSizeFlexibility)sizeFlexibility NS_DESIGNATED_INITIALIZER;
 @end
 
 @implementation RCTRootView
@@ -62,7 +62,7 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
   RCTAssert(bridge, @"A bridge instance is required to create an RCTRootView");
   RCTAssert(moduleName, @"A moduleName is required to create an RCTRootView");
 
-  RCT_PROFILE_BEGIN_EVENT(0, @"-[RCTRootView init]", nil);
+  RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, @"-[RCTRootView init]", nil);
 
   if ((self = [super initWithFrame:CGRectZero])) {
 
@@ -104,7 +104,7 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
     [self showLoadingView];
   }
 
-  RCT_PROFILE_END_EVENT(0, @"", nil);
+  RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"", nil);
 
   return self;
 }
@@ -211,7 +211,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   [_contentView removeFromSuperview];
   _contentView = [[RCTRootContentView alloc] initWithFrame:self.bounds
                                                     bridge:bridge
-                                                  reactTag:self.reactTag];
+                                                  reactTag:self.reactTag
+                                            sizeFlexiblity:self.sizeFlexibility];
   [self runApplication:bridge];
   [self addSubview:_contentView];
 }
@@ -321,6 +322,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (instancetype)initWithFrame:(CGRect)frame
                        bridge:(RCTBridge *)bridge
                      reactTag:(NSNumber *)reactTag
+               sizeFlexiblity:(RCTRootViewSizeFlexibility)sizeFlexibility
 {
   if ((self = [super initWithFrame:frame])) {
     _bridge = bridge;
@@ -328,7 +330,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     self.reactTag = reactTag;
     _touchHandler = [[RCTTouchHandler alloc] initWithBridge:_bridge];
     [self addGestureRecognizer:_touchHandler];
-    [_bridge.uiManager registerRootView:self];
+    [_bridge.uiManager registerRootView:self withSizeFlexibility:sizeFlexibility];
     self.layer.backgroundColor = NULL;
   }
   return self;
@@ -358,7 +360,9 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
 
 - (void)mouseEntered:(__unused NSEvent *)theEvent {
   [[self window] setAcceptsMouseMovedEvents:YES];
-  [[self window] makeFirstResponder:self];
+  if (![self window].firstResponder || [[self window].firstResponder.className isEqualToString:@"NSWindow"]) {
+    [[self window] makeFirstResponder:self];
+  }
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent
@@ -381,7 +385,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
 {
   super.frame = frame;
   if (self.reactTag && _bridge.isValid) {
-    if (!self.inLiveResize || (self.inLiveResize && (CACurrentMediaTime() - _lastResizingAt) > 0.026)) {
+    if (!self.inLiveResize || (self.inLiveResize && (CACurrentMediaTime() - _lastResizingAt) > 0.005)) {
       [_bridge.uiManager setFrame:frame forView:self];
       _lastResizingAt = CACurrentMediaTime();
     }

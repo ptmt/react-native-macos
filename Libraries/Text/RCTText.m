@@ -79,6 +79,17 @@ CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
 }
 @end
 
+static void collectNonTextDescendants(RCTText *view, NSMutableArray *nonTextDescendants)
+{
+  for (NSView *child in view.reactSubviews) {
+    if ([child isKindOfClass:[RCTText class]]) {
+      collectNonTextDescendants((RCTText *)child, nonTextDescendants);
+    } else {
+      [nonTextDescendants addObject:child];
+    }
+  }
+}
+
 @implementation RCTText
 {
   NSTextStorage *_textStorage;
@@ -91,6 +102,7 @@ CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
   if ((self = [super initWithFrame:frame])) {
     _textStorage = [NSTextStorage new];
     _reactSubviews = [NSMutableArray array];
+    _respondsToLiveResizing = YES;
   }
   return self;
 }
@@ -110,7 +122,10 @@ CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
 
 - (void)reactSetFrame:(CGRect)frame
 {
-    [super reactSetFrame:frame];
+  if (self.inLiveResize && !self.respondsToLiveResizing) {
+    return;
+  }
+  [super reactSetFrame:frame];
 }
 
 - (void)reactSetInheritedBackgroundColor:(NSColor *)inheritedBackgroundColor
@@ -146,7 +161,6 @@ CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
 - (void)drawRect:(CGRect)dirtyRect
 {
   NSLayoutManager *layoutManager = _textStorage.layoutManagers.firstObject;
-
   NSTextContainer *textContainer = layoutManager.textContainers.firstObject;
   CGRect textFrame = UIEdgeInsetsInsetRect(self.bounds, _contentInset);
   NSRange glyphRange = [layoutManager glyphRangeForTextContainer:textContainer];
@@ -156,6 +170,7 @@ CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
 
   __block NSBezierPath *highlightPath = nil;
   NSRange characterRange = [layoutManager characterRangeForGlyphRange:glyphRange actualGlyphRange:NULL];
+
   [layoutManager.textStorage enumerateAttribute:RCTIsHighlightedAttributeName inRange:characterRange options:0 usingBlock:^(NSNumber *value, NSRange range, BOOL *_) {
     if (!value.boolValue) {
       return;
@@ -182,6 +197,15 @@ CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
   } else {
     [_highlightLayer removeFromSuperlayer];
     _highlightLayer = nil;
+  }
+// Disabled due to "collection was mutated"
+//  for (NSView *child in [self subviews]) {
+//    [child removeFromSuperview];
+//  }
+  NSMutableArray *nonTextDescendants = [NSMutableArray new];
+  collectNonTextDescendants(self, nonTextDescendants);
+  for (NSView *child in nonTextDescendants) {
+    [self addSubview:child];
   }
 }
 

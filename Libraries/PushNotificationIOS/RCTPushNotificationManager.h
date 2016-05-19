@@ -7,15 +7,15 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTBridgeModule.h"
 
 @interface RCTPushNotificationManager : NSObject <RCTBridgeModule>
 
-+ (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
+//+ (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken;
 + (void)didReceiveRemoteNotification:(NSDictionary *)notification;
-+ (void)didReceiveLocalNotification:(UILocalNotification *)notification;
++ (void)didReceiveLocalNotification:(NSUserNotification *)notification;
 
 @end

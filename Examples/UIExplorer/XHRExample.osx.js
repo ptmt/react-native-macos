@@ -16,7 +16,7 @@
 'use strict';
 
 var React = require('React');
-var ReactNative = require('react-native-desktop');;
+var ReactNative = require('react-native-desktop');
 var {
   StyleSheet,
   Text,
@@ -24,7 +24,7 @@ var {
 } = ReactNative;
 
 class Downloader extends React.Component {
-
+  state: any;
   xhr: XMLHttpRequest;
   cancelled: boolean;
 

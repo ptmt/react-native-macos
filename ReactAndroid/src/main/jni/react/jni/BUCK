@@ -5,7 +5,7 @@ SUPPORTED_PLATFORMS = '^android-(armv7|x86)$'
 
 DEPS = [
   FBGLOGINIT_TARGET,
-  '//native/jni:jni',
+  '//native/fb:fb',
   '//native/third-party/android-ndk:android',
   '//xplat/folly:molly',
 ]
@@ -18,15 +18,6 @@ def jni_library(**kwargs):
     ],
     deps = DEPS + JSC_DEPS + [
       react_native_target('jni/react:react'),
-    ],
-    **kwargs
-  )
-
-  cxx_library(
-    name='jni-internal',
-    visibility = [INTERNAL_APP],
-    deps = DEPS + JSC_INTERNAL_DEPS + [
-      react_native_target('jni/react:react-internal'),
     ],
     **kwargs
   )
