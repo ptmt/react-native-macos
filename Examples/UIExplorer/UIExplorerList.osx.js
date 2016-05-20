@@ -47,6 +47,7 @@ var COMPONENTS = [
   require('./TransparentHitTestExample'),
   require('./ViewExample'),
   require('./WebViewExample'),
+  require('./ReactARTExample'),
 ];
 
 var APIS = [

@@ -7,10 +7,10 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "ARTContainer.h"
 
-@interface ARTSurfaceView : UIView <ARTContainer>
+@interface ARTSurfaceView : NSView <ARTContainer>
 
 @end

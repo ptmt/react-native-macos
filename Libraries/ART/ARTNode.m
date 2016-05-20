@@ -11,12 +11,20 @@
 
 #import "ARTContainer.h"
 
-@implementation ARTNode
+@implementation ARTNode {
+    CGAffineTransform _transform;
+    //BOOL *_shouldBeTransformed;
+}
 
-- (void)insertSubview:(UIView *)subview atIndex:(NSInteger)index
+- (BOOL)isFlipped
+{
+  return YES;
+}
+
+- (void)insertSubview:(NSView *)subview atIndex:(NSInteger)index
 {
   [self invalidate];
-  [super insertSubview:subview atIndex:index];
+  [super addSubview:subview];
 }
 
 - (void)removeFromSuperview
@@ -34,7 +42,8 @@
 - (void)setTransform:(CGAffineTransform)transform
 {
   [self invalidate];
-  super.transform = transform;
+  self.layer.affineTransform = _transform;
+  _transform = transform;
 }
 
 - (void)invalidate
@@ -52,7 +61,7 @@
   if (self.opacity >= 1) {
     // Just paint at full opacity
     CGContextSaveGState(context);
-    CGContextConcatCTM(context, self.transform);
+    CGContextConcatCTM(context, self.layer.affineTransform);
     CGContextSetAlpha(context, 1);
     [self renderLayerTo:context];
     CGContextRestoreGState(context);
@@ -60,7 +69,7 @@
   }
   // This needs to be painted on a layer before being composited.
   CGContextSaveGState(context);
-  CGContextConcatCTM(context, self.transform);
+  CGContextConcatCTM(context, self.layer.affineTransform);
   CGContextSetAlpha(context, self.opacity);
   CGContextBeginTransparencyLayer(context, NULL);
   [self renderLayerTo:context];
@@ -71,6 +80,12 @@
 - (void)renderLayerTo:(CGContextRef)context
 {
   // abstract
+}
+
+- (void)layout
+{
+  [super layout];
+  self.layer.affineTransform = _transform;
 }
 
 @end

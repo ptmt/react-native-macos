@@ -8,7 +8,7 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 /**
  * ART nodes are implemented as empty UIViews but this is just an implementation detail to fit
@@ -16,7 +16,7 @@
  * thread.
  */
 
-@interface ARTNode : UIView
+@interface ARTNode : NSView
 
 @property (nonatomic, assign) CGFloat opacity;
 

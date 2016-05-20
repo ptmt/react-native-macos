@@ -11,12 +11,18 @@
 
 #import "ARTNode.h"
 #import "RCTLog.h"
+#import "UIImageUtils.h"
 
 @implementation ARTSurfaceView
 
+- (BOOL)isFlipped
+{
+  return YES;
+}
+
 - (void)invalidate
 {
-  [self setNeedsDisplay];
+  [self setNeedsDisplay:YES];
 }
 
 - (void)drawRect:(CGRect)rect
@@ -27,9 +33,10 @@
   }
 }
 
-- (void)reactSetInheritedBackgroundColor:(UIColor *)inheritedBackgroundColor
+- (void)reactSetInheritedBackgroundColor:(NSColor *)inheritedBackgroundColor
 {
-  self.backgroundColor = inheritedBackgroundColor;
+  [self setWantsLayer:YES];
+  self.layer.backgroundColor = [inheritedBackgroundColor CGColor];
 }
 
 @end

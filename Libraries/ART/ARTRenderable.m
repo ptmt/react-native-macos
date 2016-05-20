@@ -75,7 +75,7 @@
   // This is a terminal with only one painting. Therefore we don't need to paint this
   // off-screen. We can just composite it straight onto the buffer.
   CGContextSaveGState(context);
-  CGContextConcatCTM(context, self.transform);
+  CGContextConcatCTM(context, self.layer.affineTransform);
   CGContextSetAlpha(context, self.opacity);
   [self renderLayerTo:context];
   CGContextRestoreGState(context);

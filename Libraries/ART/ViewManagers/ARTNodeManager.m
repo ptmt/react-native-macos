@@ -20,7 +20,7 @@ RCT_EXPORT_MODULE()
   return [ARTNode new];
 }
 
-- (UIView *)view
+- (NSView *)view
 {
   return [self node];
 }
