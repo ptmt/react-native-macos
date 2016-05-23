@@ -87,6 +87,11 @@ class PushNotificationIOS {
    */
   static presentLocalNotification(details: Object) {
     RCTPushNotificationManager.presentLocalNotification(details);
+    if (details.handler) {
+      RCTDeviceEventEmitter.addListener(
+        'localNotificationClicked',
+        details.handler)
+    }
   }
 
   /**

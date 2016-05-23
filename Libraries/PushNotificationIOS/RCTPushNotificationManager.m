@@ -36,10 +36,8 @@ NSString *const RCTRemoteNotificationsRegistered = @"RemoteNotificationsRegister
   NSUserNotification *notification = [NSUserNotification new];
   notification.deliveryDate = [RCTConvert NSDate:details[@"fireDate"]] ?: [NSDate date];
   notification.informativeText = [RCTConvert NSString:details[@"alertBody"]];
-  //notification.activationType = NSUserNotificationActivationType.[RCTConvert NSString:details[@"alertAction"]];
   notification.soundName = [RCTConvert NSString:details[@"soundName"]] ?: NSUserNotificationDefaultSoundName;
   notification.userInfo = [RCTConvert NSDictionary:details[@"userInfo"]];
-  //notification. = [RCTConvert NSString:details[@"category"]];
   if (details[@"title"]) {
     notification.title = [RCTConvert NSString:details[@"title"]];
   }
@@ -152,6 +150,14 @@ RCT_EXPORT_MODULE()
 - (void)handleRemoteNotificationsRegistered:(NSNotification *)notification
 {
   [_bridge.eventDispatcher sendDeviceEventWithName:@"remoteNotificationsRegistered"
+                                              body:notification.userInfo];
+}
+
+
+- (void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification
+{
+  [center removeDeliveredNotification: notification];
+  [_bridge.eventDispatcher sendDeviceEventWithName:@"localNotificationClicked"
                                               body:notification.userInfo];
 }
 

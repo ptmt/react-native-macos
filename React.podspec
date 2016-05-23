@@ -32,7 +32,7 @@ Pod::Spec.new do |s|
     ss.source_files     = "React/**/*.{c,h,m,mm,S}"
     ss.exclude_files    = "**/__tests__/*", "IntegrationTests/*",
       "React/**/*Map*.*", "React/**/*Navigator*.*", "React/**/*Segmented*.*", "React/**/*StatusBar*.*",
-      "React/**/*Keyboard*.*",
+      "React/**/*Keyboard*.*", "React/**/*ModalHost*.*",
       "React/**/*Refresh*.*", "React/**/*NavItem*.*", "React/**/*TabBar*.*", "React/**/*Accessibility*.*"
     ss.frameworks       = "JavaScriptCore"
   end
