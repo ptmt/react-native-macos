@@ -51,8 +51,15 @@
 - (void)reactDidMakeFirstResponder;
 - (BOOL)reactRespondsToTouch:(NSEvent *)touch;
 
+- (void)applyConstraints;
+
 /**
- * UIView alternative
+ * (Desktop) Enable or disable setFrame for certain views
+ */
+@property (nonatomic, strong) NSArray* visualConstraints;
+
+/**
+ * (Desktop) UIView alternative
  */
 @property (nonatomic, assign) BOOL clipsToBounds;
 

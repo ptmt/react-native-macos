@@ -147,6 +147,22 @@
   }
 }
 
+- (void)applyConstraints
+{
+  if ([self respondsToSelector:@selector(visualConstraints)] && self.visualConstraints && self.visualConstraints.count > 0) {
+    NSDictionary *views = @{@"view" : self};
+    for (NSString* constraint in self.visualConstraints) {
+      if (self.superview) {
+        NSLog(@"addConstraint %@", constraint);
+        [self.superview addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:constraint options:0 metrics:nil views:views]];
+      }
+    }
+    self.translatesAutoresizingMaskIntoConstraints = NO;
+    [self setNeedsLayout:YES];
+  }
+}
+
 /**
  * Responder overrides - to be deprecated.
  */

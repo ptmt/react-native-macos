@@ -115,7 +115,7 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
     _borderTopRightRadius = -1;
     _borderBottomLeftRadius = -1;
     _borderBottomRightRadius = -1;
-    _respondsToLiveResizing = YES;
+    _respondsToLiveResizing = NO;
     self.needsLayout = NO;
     _borderStyle = RCTBorderStyleSolid;
     self.clipsToBounds = YES;
@@ -405,6 +405,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
       [self remountSubview:view];
     }
   }
+  [view applyConstraints];
 }
 
 - (void)removeReactSubview:(NSView *)subview
