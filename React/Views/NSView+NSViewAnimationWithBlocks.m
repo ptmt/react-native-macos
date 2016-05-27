@@ -183,10 +183,16 @@ static inline NSViewAnimationOptions NSViewAnimationOptionTransition(NSViewAnima
   if (_transitionView && self.transition != NSViewAnimationGroupTransitionNone) {
     return nil;
   } else {
-    CALayer *layer = view.layer;
-    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:keyPath];
-    animation.fromValue = self.beginsFromCurrentState? [layer.presentationLayer valueForKey:keyPath] : [layer valueForKey:keyPath];
-    return [self addAnimation:animation];
+    @try {
+      CALayer *layer = view.layer;
+      CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:keyPath];
+      animation.fromValue = self.beginsFromCurrentState? [layer.presentationLayer valueForKey:keyPath] : [layer valueForKey:keyPath];
+      return [self addAnimation:animation];
+    }
+    @catch (NSException *exception) {
+      return nil;
+    }
+
   }
 }
 

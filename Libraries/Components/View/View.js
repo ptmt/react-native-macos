@@ -182,6 +182,7 @@ const View = React.createClass({
      */
     autoresizingMask: PropTypes.arrayOf(PropTypes.string),
     constraints: PropTypes.arrayOf(PropTypes.string),
+    constraintsOptions: PropTypes.oneOf(['left', 'right', 'top', 'bottom', 'centerX', 'centerY']),
     /**
      * When `accessible` is true, the system will try to invoke this function
      * when the user performs accessibility tap gesture.

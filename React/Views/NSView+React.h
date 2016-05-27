@@ -57,6 +57,7 @@
  * (Desktop) Enable or disable setFrame for certain views
  */
 @property (nonatomic, strong) NSArray* visualConstraints;
+@property (nonatomic, assign) NSLayoutFormatOptions constraintsOptions;
 
 /**
  * (Desktop) UIView alternative

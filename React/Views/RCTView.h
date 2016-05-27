@@ -26,7 +26,11 @@
  */
 @property (nonatomic, copy) RCTDirectEventBlock onAccessibilityTap;
 @property (nonatomic, copy) RCTDirectEventBlock onMagicTap;
+/**
+ * (Desktop) Auto-layout experimental properties
+ */
 @property (nonatomic, copy) NSArray* visualConstraints;
+@property (nonatomic, assign) NSLayoutFormatOptions constraintsOptions;
 
 /**
  * Used to control how touch events are processed.

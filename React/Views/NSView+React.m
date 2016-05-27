@@ -149,16 +149,21 @@
 
 - (void)applyConstraints
 {
-  if ([self respondsToSelector:@selector(visualConstraints)] && self.visualConstraints && self.visualConstraints.count > 0) {
-    NSDictionary *views = @{@"view" : self};
+  if ([self respondsToSelector:@selector(visualConstraints)] && self.visualConstraints && self.visualConstraints.count > 0 && self.superview) {
+    NSMutableDictionary *views = [[NSMutableDictionary alloc] init];
+    [views setObject:self forKey:@"view"];
+    [views setObject:self.superview forKey:@"superview"];
+    [self.superview.subviews enumerateObjectsUsingBlock:^(NSView * v, NSUInteger idx, BOOL *stop)
+    {
+      [views setObject:v forKey:[NSString stringWithFormat:@"v%li",  idx]];
+      //v.translatesAutoresizingMaskIntoConstraints = NO;
+    }];
+
     for (NSString* constraint in self.visualConstraints) {
-      if (self.superview) {
-        NSLog(@"addConstraint %@", constraint);
-        [self.superview addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:constraint options:0 metrics:nil views:views]];
-      }
+      [self.superview addConstraints:
+       [NSLayoutConstraint constraintsWithVisualFormat:constraint options:self.constraintsOptions metrics:nil views:views]];
     }
-    self.translatesAutoresizingMaskIntoConstraints = NO;
+    [self setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self setNeedsLayout:YES];
   }
 }

@@ -34,6 +34,18 @@ RCT_MULTI_ENUM_CONVERTER(NSAutoresizingMaskOptions, (@{
   @"maxY": @(NSViewMaxYMargin),
 }), NSViewNotSizable, unsignedLongLongValue)
 
+RCT_MULTI_ENUM_CONVERTER(NSLayoutFormatOptions, (@{
+  @"left": @(NSLayoutFormatAlignAllLeft),
+  @"right": @(NSLayoutFormatAlignAllRight),
+  @"top": @(NSLayoutFormatAlignAllTop),
+  @"bottom": @(NSLayoutFormatAlignAllBottom),
+  @"leading": @(NSLayoutFormatAlignAllLeading),
+  @"trailing": @(NSLayoutFormatAlignAllTrailing),
+  @"centerX": @(NSLayoutFormatAlignAllCenterX),
+  @"centerY": @(NSLayoutFormatAlignAllCenterY),
+  @"baseline": @(NSLayoutFormatAlignAllBaseline),
+}), 0, unsignedLongLongValue)
+
 @end
 
 @implementation RCTViewManager
@@ -118,6 +130,7 @@ RCT_EXPORT_VIEW_PROPERTY(accessibilityLabel, NSString)
 RCT_EXPORT_VIEW_PROPERTY(accessibilityTraits, UIAccessibilityTraits)
 RCT_EXPORT_VIEW_PROPERTY(backgroundColor, NSColor)
 RCT_EXPORT_VIEW_PROPERTY(respondsToLiveResizing, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(constraintsOptions, NSLayoutFormatOptions)
 RCT_REMAP_VIEW_PROPERTY(accessible, accessibilityElement, BOOL)
 RCT_REMAP_VIEW_PROPERTY(testID, accessibilityIdentifier, NSString)
 RCT_REMAP_VIEW_PROPERTY(testRole, accessibilityRole, NSString)
@@ -151,7 +164,6 @@ RCT_CUSTOM_VIEW_PROPERTY(autoresizingMask, NSArray*<NSString *>, RCTView)
     for (NSString* mask in masks) {
       NSAutoresizingMaskOptions option = [RCTConvert NSAutoresizingMaskOptions:mask];
       view.autoresizingMask = view.autoresizingMask | option;
-      NSLog(@"%i %i", option, view.autoresizingMask);
     }
     view.autoresizesSubviews = YES;
   } 
