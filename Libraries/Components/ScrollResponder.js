@@ -375,9 +375,17 @@ var ScrollResponderMixin = {
     } else {
       ({x, y, animated} = x || {});
     }
+
+    var commandID;
+    if (Platform.OS === 'osx') {
+      commandID = UIManager.RCTNativeScrollView.Commands.scrollTo;
+    } else {
+      commandID = UIManager.RCTScrollView.Commands.scrollTo;
+    }
+
     UIManager.dispatchViewManagerCommand(
       this.scrollResponderGetScrollableNode(),
-      UIManager.RCTScrollView.Commands.scrollTo,
+      commandID,
       [x || 0, y || 0, animated !== false],
     );
   },

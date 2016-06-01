@@ -72,4 +72,22 @@ RCT_EXPORT_METHOD(calculateChildFrames:(nonnull NSNumber *)reactTag
    }];
 }
 
+RCT_EXPORT_METHOD(scrollTo:(nonnull NSNumber *)reactTag
+                  offsetX:(CGFloat)x
+                  offsetY:(CGFloat)y
+                  animated:(BOOL)animated)
+{
+  [self.bridge.uiManager addUIBlock:
+   ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, RCTNativeScrollView *> *viewRegistry){
+     RCTNativeScrollView *view = viewRegistry[reactTag];
+     
+     if ([view conformsToProtocol:@protocol(RCTScrollableProtocol)]) {
+       [(id<RCTScrollableProtocol>)view scrollToOffset:(CGPoint){x, y} animated:animated];
+     } else {
+       RCTLogError(@"tried to scrollTo: on non-RCTScrollableProtocol view %@ "
+                   "with tag #%@", view, reactTag);
+     }
+   }];
+}
+
 @end
