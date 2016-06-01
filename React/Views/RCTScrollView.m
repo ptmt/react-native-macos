@@ -382,7 +382,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   if (!CGPointEqualToPoint(self.documentVisibleRect.origin, offset)) {
     // Ensure at least one scroll event will fire
     _allowNextScrollNoMatterWhat = YES;
-    [self.documentView scrollToPoint:offset];
+    [self.documentView scrollPoint:offset];
   }
 }
 

@@ -37,7 +37,7 @@ var COMPONENTS = [
   // require('./ListViewPagingExample'),
   // require('./ModalExample'),
   require('./ProgressViewIOSExample'),
-  require('./ScrollViewSimpleExample'),
+  require('./ScrollViewExample'),
   // require('./SegmentedControlIOSExample'),
   require('./SliderExample'),
   //require('./SwitchExample'),

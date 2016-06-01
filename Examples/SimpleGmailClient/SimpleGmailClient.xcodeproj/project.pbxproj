@@ -404,7 +404,10 @@
 				);
 				INFOPLIST_FILE = SimpleGmailClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-lc++",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.elephant.SimpleGmailClient;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
