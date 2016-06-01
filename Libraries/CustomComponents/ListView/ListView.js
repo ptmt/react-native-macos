@@ -397,7 +397,7 @@ var ListView = React.createClass({
 
       for (var rowIdx = 0; rowIdx < rowIDs.length; rowIdx++) {
         // Inverting index if this is inverting ListView
-        var rowID = this.props.autoScrollToBottom ?
+        var rowID = !this.props.autoScrollToBottom ?
           rowIDs[rowIdx] :
           rowIDs.length - 1 - rowIdx;
 
