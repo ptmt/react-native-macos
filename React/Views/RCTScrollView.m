@@ -186,7 +186,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     _lastScrollDispatchTime = CACurrentMediaTime();
     _cachedChildFrames = [NSMutableArray new];
     _lastClippedToRect = CGRectNull;
-
+    self.autoresizingMask = NSViewHeightSizable | NSViewWidthSizable;
   }
   return self;
 }
@@ -194,6 +194,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)insertReactSubview:(NSView *)view atIndex:(__unused NSInteger)atIndex
 {
   [self setDocumentView:view];
+  // TODO: what are the other possible conditions here? (isn't better to pass it through js)
+  view.autoresizingMask = NSViewHeightSizable | NSViewWidthSizable;
+  view.translatesAutoresizingMaskIntoConstraints = YES;
   if (_autoScrollToBottom) {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(documentFrameDidChange:)

@@ -149,7 +149,7 @@
 
 - (void)applyConstraints
 {
-  if ([self respondsToSelector:@selector(visualConstraints)] && self.visualConstraints && self.visualConstraints.count > 0 && self.superview) {
+  if ([self respondsToSelector:@selector(visualConstraints)] && self.visualConstraints && self.visualConstraints.count > 0 && self.superview && ![self.className isEqualToString:@"RCTNativeScrollView"]) {
     NSMutableDictionary *views = [[NSMutableDictionary alloc] init];
     [views setObject:self forKey:@"view"];
     [views setObject:self.superview forKey:@"superview"];
@@ -158,7 +158,6 @@
       [views setObject:v forKey:[NSString stringWithFormat:@"v%li",  idx]];
       //v.translatesAutoresizingMaskIntoConstraints = NO;
     }];
-
     for (NSString* constraint in self.visualConstraints) {
       [self.superview addConstraints:
        [NSLayoutConstraint constraintsWithVisualFormat:constraint options:self.constraintsOptions metrics:nil views:views]];
