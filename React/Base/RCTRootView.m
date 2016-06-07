@@ -355,24 +355,17 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
 
 
 - (void)viewDidMoveToWindow {
-  [self addTrackingRect:self.frame owner:self userData:nil assumeInside:YES];
-}
-
-- (void)mouseEntered:(__unused NSEvent *)theEvent {
-  [[self window] setAcceptsMouseMovedEvents:YES];
-  if (![self window].firstResponder || [[self window].firstResponder.className isEqualToString:@"NSWindow"]) {
-    [[self window] makeFirstResponder:self];
-  }
+  NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:NSZeroRect
+                                                              options:NSTrackingActiveInActiveApp | NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved | NSTrackingInVisibleRect
+                                                                owner:self
+                                                             userInfo:nil];
+  
+  [self addTrackingArea:trackingArea];
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent
 {
   [((RCTTouchHandler *)self.gestureRecognizers.firstObject) mouseMoved:theEvent];
-}
-
-- (void)mouseExited:(__unused NSEvent *)theEvent
-{
-  [[self window] setAcceptsMouseMovedEvents:NO];
 }
 
 - (void)viewDidEndLiveResize
