@@ -237,8 +237,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)layout
 {
-  [super layout];
   _contentView.frame = self.bounds;
+  [super layout];
   // TODO: set center coordinates
   //_loadingView.c = CGRectGetMidX(self.bounds);
 //  (CGPoint){

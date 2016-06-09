@@ -195,7 +195,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 {
   [self setDocumentView:view];
   // TODO: what are the other possible conditions here? (isn't better to pass it through js)
-  view.autoresizingMask = NSViewHeightSizable | NSViewWidthSizable;
+  // view.autoresizingMask = NSViewHeightSizable | NSViewWidthSizable;
   view.translatesAutoresizingMaskIntoConstraints = YES;
   if (_autoScrollToBottom) {
     [[NSNotificationCenter defaultCenter] addObserver:self

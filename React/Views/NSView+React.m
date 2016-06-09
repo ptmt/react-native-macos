@@ -156,7 +156,6 @@
     [self.superview.subviews enumerateObjectsUsingBlock:^(NSView * v, NSUInteger idx, BOOL *stop)
     {
       [views setObject:v forKey:[NSString stringWithFormat:@"v%li",  idx]];
-      //v.translatesAutoresizingMaskIntoConstraints = NO;
     }];
     for (NSString* constraint in self.visualConstraints) {
       [self.superview addConstraints:

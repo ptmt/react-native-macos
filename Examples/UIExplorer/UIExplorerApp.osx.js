@@ -47,7 +47,7 @@ class UIExplorerApp extends React.Component {
         <View style={[styles.leftPanel, {width: 300}]}>
           <UIExplorerList openExample={(component) => this.setState({component})}/>
         </View>
-        <View style={[styles.rightPanel, {width: this.state.layout.width - 300}]}  respondsToLiveResizing>
+        <View style={[styles.rightPanel, {width: this.state.layout.width - 300}]}>
             {this.state.component && <Component />}
         </View>
       </View>
