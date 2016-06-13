@@ -65,6 +65,7 @@ RCT_EXPORT_MODULE()
 
 - (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent
 {
+    [[NSApp mainWindow] makeKeyAndOrderFront:nil];
     NSString* url = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];
     NSDictionary *payload = @{@"url": url};
     [_bridge.eventDispatcher sendDeviceEventWithName:@"openURL"
