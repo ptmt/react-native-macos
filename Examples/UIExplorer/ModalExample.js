@@ -66,7 +66,7 @@ var Button = React.createClass({
 var ModalExample = React.createClass({
   getInitialState() {
     return {
-      animationType: 'none',
+      presentationType: 'window',
       modalVisible: false,
       transparent: false,
     };
@@ -76,8 +76,8 @@ var ModalExample = React.createClass({
     this.setState({modalVisible: visible});
   },
 
-  _setAnimationType(type) {
-    this.setState({animationType: type});
+  _setPresentationType(type) {
+    this.setState({presentationType: type});
   },
 
   _toggleTransparent() {
@@ -98,14 +98,15 @@ var ModalExample = React.createClass({
     return (
       <View>
         <Modal
-          animationType={this.state.animationType}
+          width={300}
+          presentationType={this.state.presentationType}
           transparent={this.state.transparent}
           visible={this.state.modalVisible}
           onRequestClose={() => {this._setModalVisible(false)}}
           >
           <View style={[styles.container, modalBackgroundStyle]}>
             <View style={[styles.innerContainer, innerContainerTransparentStyle]}>
-              <Text>This modal was presented {this.state.animationType === 'none' ? 'without' : 'with'} animation.</Text>
+              <Text>This modal was presented with type: {this.state.presentationType }.</Text>
               <Button
                 onPress={this._setModalVisible.bind(this, false)}
                 style={styles.modalButton}>
@@ -115,15 +116,15 @@ var ModalExample = React.createClass({
           </View>
         </Modal>
         <View style={styles.row}>
-          <Text style={styles.rowTitle}>Animation Type</Text>
-          <Button onPress={this._setAnimationType.bind(this, 'none')} style={this.state.animationType === 'none' ? activeButtonStyle : {}}>
-            none
+          <Text style={styles.rowTitle}>Presentation Type</Text>
+          <Button onPress={this._setPresentationType.bind(this, 'window')} style={this.state.presentationType === 'window' ? activeButtonStyle : {}}>
+            window
           </Button>
-          <Button onPress={this._setAnimationType.bind(this, 'slide')} style={this.state.animationType === 'slide' ? activeButtonStyle : {}}>
-            slide
+          <Button onPress={this._setPresentationType.bind(this, 'sheet')} style={this.state.presentationType === 'sheet' ? activeButtonStyle : {}}>
+            sheet
           </Button>
-          <Button onPress={this._setAnimationType.bind(this, 'fade')} style={this.state.animationType === 'fade' ? activeButtonStyle : {}}>
-            fade
+          <Button onPress={this._setPresentationType.bind(this, 'popover')} style={this.state.presentationType === 'popover' ? activeButtonStyle : {}}>
+            popover
           </Button>
         </View>
 

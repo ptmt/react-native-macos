@@ -42,6 +42,9 @@ class Modal extends React.Component {
       'Use the `animationType` prop instead.'
     ),
     animationType: PropTypes.oneOf(['none', 'slide', 'fade']),
+    presentationType: PropTypes.oneOf(['window', 'sheet', 'popover']),
+    width: PropTypes.number,
+    height: PropTypes.number,
     transparent: PropTypes.bool,
     visible: PropTypes.bool,
     onRequestClose: Platform.OS === 'android' ? PropTypes.func.isRequired : PropTypes.func,
@@ -73,7 +76,9 @@ class Modal extends React.Component {
 
     return (
       <RCTModalHostView
+        {...this.props}
         animationType={animationType}
+        presentationType={this.props.presentationType || 'window'}
         transparent={this.props.transparent}
         onRequestClose={this.props.onRequestClose}
         onShow={this.props.onShow}
@@ -100,6 +105,7 @@ const styles = StyleSheet.create({
   },
   container: {
     position: 'absolute',
+    backgroundColor: 'red',
     left: 0,
     top: 0,
   }

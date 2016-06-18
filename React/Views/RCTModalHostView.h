@@ -7,16 +7,20 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTInvalidating.h"
 #import "RCTView.h"
 
 @class RCTBridge;
 
-@interface RCTModalHostView : UIView <RCTInvalidating>
+@interface RCTModalHostView : NSView <RCTInvalidating>
 
 @property (nonatomic, copy) NSString *animationType;
+@property (nonatomic, copy) NSString *presentationType;
+@property (nonatomic, copy) NSView *containerView;
+@property (nonatomic, copy) NSNumber *width;
+@property (nonatomic, copy) NSNumber *height;
 @property (nonatomic, assign, getter=isTransparent) BOOL transparent;
 
 @property (nonatomic, copy) RCTDirectEventBlock onShow;
