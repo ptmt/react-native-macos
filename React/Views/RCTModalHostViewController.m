@@ -19,6 +19,10 @@
 {
   [super viewDidLayout];
 
+  if (self.initCompletionHandler && [NSApp modalWindow]) {
+    self.initCompletionHandler([NSApp modalWindow]);
+  }
+
   if (self.boundsDidChangeBlock && !CGRectEqualToRect(_lastViewFrame, self.view.frame)) {
     self.boundsDidChangeBlock(self.view.bounds);
     _lastViewFrame = self.view.frame;

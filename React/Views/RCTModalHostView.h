@@ -14,7 +14,7 @@
 
 @class RCTBridge;
 
-@interface RCTModalHostView : NSView <RCTInvalidating>
+@interface RCTModalHostView : NSView <RCTInvalidating, NSWindowDelegate>
 
 @property (nonatomic, copy) NSString *animationType;
 @property (nonatomic, copy) NSString *presentationType;
@@ -24,6 +24,7 @@
 @property (nonatomic, assign, getter=isTransparent) BOOL transparent;
 
 @property (nonatomic, copy) RCTDirectEventBlock onShow;
+@property (nonatomic, copy) RCTDirectEventBlock onRequestClose;
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge NS_DESIGNATED_INITIALIZER;
 
