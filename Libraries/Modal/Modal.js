@@ -105,7 +105,6 @@ const styles = StyleSheet.create({
   },
   container: {
     position: 'absolute',
-    backgroundColor: 'red',
     left: 0,
     top: 0,
   }

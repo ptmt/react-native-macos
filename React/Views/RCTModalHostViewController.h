@@ -12,5 +12,6 @@
 @interface RCTModalHostViewController : NSViewController
 
 @property (nonatomic, copy) void (^boundsDidChangeBlock)(CGRect newBounds);
+@property (nonatomic, copy) void (^initCompletionHandler)(NSWindow *window);
 
 @end

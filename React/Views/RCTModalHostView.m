@@ -41,12 +41,16 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
     _containerView = [[NSView alloc] initWithFrame:frame];
     _containerView.autoresizingMask = NSViewMaxXMargin | NSViewMaxYMargin;
     _modalViewController.view = _containerView;
+    _modalViewController.title = [NSApp mainWindow].title;
     _touchHandler = [[RCTTouchHandler alloc] initWithBridge:bridge];
     _isPresented = NO;
 
     __weak typeof(self) weakSelf = self;
     _modalViewController.boundsDidChangeBlock = ^(CGRect newBounds) {
       [weakSelf notifyForBoundsChange:newBounds];
+    };
+    _modalViewController.initCompletionHandler = ^(NSWindow *modal) {
+      modal.delegate = weakSelf;
     };
   }
 
@@ -86,25 +90,25 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
 - (void)dismissModalViewController
 {
   if (_isPresented) {
-    //[_modalViewController dismissViewControllerAnimated:[self hasAnimationType] completion:nil];
     [self.reactViewController dismissViewController:_modalViewController];
     _isPresented = NO;
+    _onRequestClose(nil);
   }
 }
 
 - (void)viewDidMoveToWindow
 {
   [super viewDidMoveToWindow];
-
   if (!_isPresented && self.window) {
     RCTAssert(self.reactViewController, @"Can't present modal view controller without a presenting view controller");
 
-
     if ([self.presentationType isEqualToString:@"window"]) {
       [self.reactViewController presentViewControllerAsModalWindow:_modalViewController];
+      [NSApp modalWindow].delegate = self;
     } else if ([self.presentationType isEqualToString:@"sheet"]) {
       [self.reactViewController presentViewControllerAsSheet:_modalViewController];
     } else if ([self.presentationType isEqualToString:@"popover"]) {
+      // TODO: Pass the real positioning view
       [self.reactViewController presentViewController:_modalViewController
           asPopoverRelativeToRect:self.frame
                            ofView:self
@@ -161,6 +165,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
 {
   NSRect frame = self.containerView.frame;
   [self.containerView setFrame:NSMakeRect(frame.origin.x, frame.origin.y, frame.size.width, height.floatValue)];
+}
+
+- (BOOL)windowShouldClose:(NSNotification *)notification
+{
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [self dismissModalViewController];
+  });
+  return NO;
 }
 
 @end

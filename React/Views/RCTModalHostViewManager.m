@@ -68,5 +68,6 @@ RCT_EXPORT_VIEW_PROPERTY(width, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(height, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(transparent, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(onShow, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onRequestClose, RCTDirectEventBlock)
 
 @end
