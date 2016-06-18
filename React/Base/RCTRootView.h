@@ -104,7 +104,7 @@ extern NSString *const RCTContentDidAppearNotification;
 /**
  * The backing view controller of the root view.
  */
-@property (nonatomic, weak) NSViewController *reactViewController;
+@property (nonatomic, strong) NSViewController *reactViewController;
 
 /**
  * The React-managed contents view of the root view.

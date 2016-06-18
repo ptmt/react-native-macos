@@ -39,9 +39,9 @@
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
+- (NSView *)view
 {
-  UIView *view = [[RCTModalHostView alloc] initWithBridge:self.bridge];
+  NSView *view = [[RCTModalHostView alloc] initWithBridge:self.bridge];
   if (_hostViews) {
     _hostViews = [NSHashTable weakObjectsHashTable];
   }
@@ -63,6 +63,9 @@ RCT_EXPORT_MODULE()
 }
 
 RCT_EXPORT_VIEW_PROPERTY(animationType, NSString)
+RCT_EXPORT_VIEW_PROPERTY(presentationType, NSString)
+RCT_EXPORT_VIEW_PROPERTY(width, NSNumber)
+RCT_EXPORT_VIEW_PROPERTY(height, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(transparent, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(onShow, RCTDirectEventBlock)
 

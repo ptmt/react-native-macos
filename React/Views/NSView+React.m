@@ -122,6 +122,10 @@
 - (NSViewController *)reactViewController
 {
   id responder = [self nextResponder];
+  if (responder == nil) {
+    NSView *rootCandidate = self.reactSuperview;
+    return rootCandidate.reactViewController;
+  }
   while (responder) {
     if ([responder isKindOfClass:[NSViewController class]]) {
       return responder;

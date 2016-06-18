@@ -14,7 +14,7 @@
 #import "RCTModalHostViewController.h"
 #import "RCTTouchHandler.h"
 #import "RCTUIManager.h"
-#import "UIView+React.h"
+#import "NSView+React.h"
 
 @implementation RCTModalHostView
 {
@@ -22,7 +22,7 @@
   BOOL _isPresented;
   RCTModalHostViewController *_modalViewController;
   RCTTouchHandler *_touchHandler;
-  UIView *_reactSubview;
+  NSView *_reactSubview;
 }
 
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
@@ -32,10 +32,15 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
 {
   if ((self = [super initWithFrame:CGRectZero])) {
     _bridge = bridge;
-    _modalViewController = [RCTModalHostViewController new];
-    UIView *containerView = [UIView new];
-    containerView.autoresizingMask =  UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    _modalViewController.view = containerView;
+    _modalViewController = [[RCTModalHostViewController alloc] initWithNibName:nil bundle:nil];
+
+    NSRect windowFrame = [NSApp mainWindow].frame;
+    NSRect frame = NSMakeRect(windowFrame.origin.x, windowFrame.origin.y,
+                              windowFrame.size.width, windowFrame.size.height - 100);
+
+    _containerView = [[NSView alloc] initWithFrame:frame];
+    _containerView.autoresizingMask = NSViewMaxXMargin | NSViewMaxYMargin;
+    _modalViewController.view = _containerView;
     _touchHandler = [[RCTTouchHandler alloc] initWithBridge:bridge];
     _isPresented = NO;
 
@@ -55,23 +60,22 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
   }
 }
 
-- (NSArray<UIView *> *)reactSubviews
+- (NSArray<NSView *> *)reactSubviews
 {
   return _reactSubview ? @[_reactSubview] : @[];
 }
 
-- (void)insertReactSubview:(UIView *)subview atIndex:(__unused NSInteger)atIndex
+- (void)insertReactSubview:(NSView *)subview atIndex:(__unused NSInteger)atIndex
 {
   RCTAssert(_reactSubview == nil, @"Modal view can only have one subview");
   [subview addGestureRecognizer:_touchHandler];
-  subview.autoresizingMask = UIViewAutoresizingFlexibleHeight |
-                             UIViewAutoresizingFlexibleWidth;
-
-  [_modalViewController.view insertSubview:subview atIndex:0];
+  subview.autoresizingMask = NSViewMaxXMargin | NSViewMaxYMargin;
+  
+  [_modalViewController.view addSubview:subview];
   _reactSubview = subview;
 }
 
-- (void)removeReactSubview:(UIView *)subview
+- (void)removeReactSubview:(NSView *)subview
 {
   RCTAssert(subview == _reactSubview, @"Cannot remove view other than modal view");
   [subview removeGestureRecognizer:_touchHandler];
@@ -82,35 +86,43 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
 - (void)dismissModalViewController
 {
   if (_isPresented) {
-    [_modalViewController dismissViewControllerAnimated:[self hasAnimationType] completion:nil];
+    //[_modalViewController dismissViewControllerAnimated:[self hasAnimationType] completion:nil];
+    [self.reactViewController dismissViewController:_modalViewController];
     _isPresented = NO;
   }
 }
 
-- (void)didMoveToWindow
+- (void)viewDidMoveToWindow
 {
-  [super didMoveToWindow];
+  [super viewDidMoveToWindow];
 
   if (!_isPresented && self.window) {
     RCTAssert(self.reactViewController, @"Can't present modal view controller without a presenting view controller");
 
-    if ([self.animationType isEqualToString:@"fade"]) {
-      _modalViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    } else if ([self.animationType isEqualToString:@"slide"]) {
-      _modalViewController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+
+    if ([self.presentationType isEqualToString:@"window"]) {
+      [self.reactViewController presentViewControllerAsModalWindow:_modalViewController];
+    } else if ([self.presentationType isEqualToString:@"sheet"]) {
+      [self.reactViewController presentViewControllerAsSheet:_modalViewController];
+    } else if ([self.presentationType isEqualToString:@"popover"]) {
+      [self.reactViewController presentViewController:_modalViewController
+          asPopoverRelativeToRect:self.frame
+                           ofView:self
+                    preferredEdge:NSMinYEdge
+                         behavior:NSPopoverBehaviorTransient];
     }
-    [self.reactViewController presentViewController:_modalViewController animated:[self hasAnimationType] completion:^{
-      if (_onShow) {
-        _onShow(nil);
-      }
-    }];
+
+    if (_onShow) {
+      _onShow(nil);
+    }
+
     _isPresented = YES;
   }
 }
 
-- (void)didMoveToSuperview
+- (void)viewDidMoveToSuperview
 {
-  [super didMoveToSuperview];
+  [super viewDidMoveToSuperview];
 
   if (_isPresented && !self.superview) {
     [self dismissModalViewController];
@@ -126,7 +138,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
 
 - (BOOL)isTransparent
 {
-  return _modalViewController.modalPresentationStyle == UIModalPresentationCustom;
+  return YES; //return _modalViewController.modalPresentationStyle == UIModalPresentationCustom;
 }
 
 - (BOOL)hasAnimationType
@@ -136,7 +148,19 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
 
 - (void)setTransparent:(BOOL)transparent
 {
-  _modalViewController.modalPresentationStyle = transparent ? UIModalPresentationCustom : UIModalPresentationFullScreen;
+  //  _modalViewController.modalPresentationStyle = transparent ? UIModalPresentationCustom : UIModalPresentationFullScreen;
+}
+
+- (void)setWidth:(NSNumber *)width
+{
+  NSRect frame = self.containerView.frame;
+  [self.containerView setFrame:NSMakeRect(frame.origin.x, frame.origin.y, width.floatValue, frame.size.height)];
+}
+
+- (void)setHeight:(NSNumber *)height
+{
+  NSRect frame = self.containerView.frame;
+  [self.containerView setFrame:NSMakeRect(frame.origin.x, frame.origin.y, frame.size.width, height.floatValue)];
 }
 
 @end

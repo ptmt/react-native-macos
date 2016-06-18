@@ -22,6 +22,9 @@
 		0381CED61C575AE4000D6939 /* RCTView.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E067501A70F44B002CDEE1 /* RCTView.m */; };
 		0381CED71C575AF2000D6939 /* RCTKeyCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = 13A1F71D1A75392D00D3D453 /* RCTKeyCommands.m */; };
 		039780C41BD7947B00452D23 /* UIImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 039780C31BD7947B00452D23 /* UIImageUtils.m */; };
+		03D061211D15381800EF36CB /* RCTModalHostView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D061201D15381800EF36CB /* RCTModalHostView.m */; };
+		03D061251D1538BD00EF36CB /* RCTModalHostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D061241D1538BD00EF36CB /* RCTModalHostViewController.m */; };
+		03D061281D1538F900EF36CB /* RCTModalHostViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D061271D1538F900EF36CB /* RCTModalHostViewManager.m */; };
 		03E97EBF1CC1252200671308 /* RCTDisplayLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E97EBE1CC1252200671308 /* RCTDisplayLink.m */; };
 		03E97EC21CC149D100671308 /* RCTRootShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E97EC11CC149D100671308 /* RCTRootShadowView.m */; };
 		03FC2C431C873A850023C9CA /* RCTButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FC2C401C873A850023C9CA /* RCTButton.m */; };
@@ -117,6 +120,12 @@
 		0381CEC21C54FD4E000D6939 /* NSView+React.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSView+React.m"; sourceTree = "<group>"; };
 		039780C21BD7947B00452D23 /* UIImageUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageUtils.h; sourceTree = "<group>"; };
 		039780C31BD7947B00452D23 /* UIImageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageUtils.m; sourceTree = "<group>"; };
+		03D061201D15381800EF36CB /* RCTModalHostView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTModalHostView.m; sourceTree = "<group>"; };
+		03D061221D15386100EF36CB /* RCTModalHostView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTModalHostView.h; sourceTree = "<group>"; };
+		03D061231D1538A700EF36CB /* RCTModalHostViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTModalHostViewController.h; sourceTree = "<group>"; };
+		03D061241D1538BD00EF36CB /* RCTModalHostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTModalHostViewController.m; sourceTree = "<group>"; };
+		03D061261D1538EB00EF36CB /* RCTModalHostViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTModalHostViewManager.h; sourceTree = "<group>"; };
+		03D061271D1538F900EF36CB /* RCTModalHostViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTModalHostViewManager.m; sourceTree = "<group>"; };
 		03E97EBD1CC1252200671308 /* RCTDisplayLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTDisplayLink.h; sourceTree = "<group>"; };
 		03E97EBE1CC1252200671308 /* RCTDisplayLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTDisplayLink.m; sourceTree = "<group>"; };
 		03E97EC01CC149D100671308 /* RCTRootShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTRootShadowView.h; sourceTree = "<group>"; };
@@ -398,6 +407,12 @@
 				0357AF9C1BD5317D00CEDDCC /* RCTWebViewManager.m */,
 				13B080231A694A8400A75B9A /* RCTWrapperViewController.h */,
 				13B080241A694A8400A75B9A /* RCTWrapperViewController.m */,
+				03D061201D15381800EF36CB /* RCTModalHostView.m */,
+				03D061221D15386100EF36CB /* RCTModalHostView.h */,
+				03D061231D1538A700EF36CB /* RCTModalHostViewController.h */,
+				03D061241D1538BD00EF36CB /* RCTModalHostViewController.m */,
+				03D061261D1538EB00EF36CB /* RCTModalHostViewManager.h */,
+				03D061271D1538F900EF36CB /* RCTModalHostViewManager.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -646,15 +661,18 @@
 				13B080261A694A8400A75B9A /* RCTWrapperViewController.m in Sources */,
 				13B080051A6947C200A75B9A /* RCTScrollView.m in Sources */,
 				13B07FF21A69327A00A75B9A /* RCTTiming.m in Sources */,
+				03D061251D1538BD00EF36CB /* RCTModalHostViewController.m in Sources */,
 				1372B70A1AB030C200659ED6 /* RCTAppState.m in Sources */,
 				134FCB3D1A6E7F0800051CC8 /* RCTJSCExecutor.mm in Sources */,
 				14C2CA781B3ACB0400E6CBB2 /* RCTBatchedBridge.m in Sources */,
 				03279A2B1BB820010015275D /* RCTShadowView.m in Sources */,
 				14F484561AABFCE100FDF6B9 /* RCTSliderManager.m in Sources */,
 				13D033631C1837FE0021DC29 /* RCTClipboard.m in Sources */,
+				03D061281D1538F900EF36CB /* RCTModalHostViewManager.m in Sources */,
 				14C2CA741B3AC64300E6CBB2 /* RCTModuleData.m in Sources */,
 				C924C30F1C2EBDA100D7ED48 /* NSView+NSViewAnimationWithBlocks.m in Sources */,
 				142014191B32094000CC17BA /* RCTPerformanceLogger.m in Sources */,
+				03D061211D15381800EF36CB /* RCTModalHostView.m in Sources */,
 				83CBBA521A601E3B00E9B192 /* RCTLog.m in Sources */,
 				83CBBA531A601E3B00E9B192 /* RCTUtils.m in Sources */,
 				13A6E20E1C19AA0C00845B82 /* RCTParserUtils.m in Sources */,

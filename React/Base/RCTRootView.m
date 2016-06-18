@@ -208,6 +208,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     return;
   }
 
+  NSViewController *rootController = [NSViewController new];
+  rootController.view = self;
+  _reactViewController = rootController;
+
   [_contentView removeFromSuperview];
   _contentView = [[RCTRootContentView alloc] initWithFrame:self.bounds
                                                     bridge:bridge
