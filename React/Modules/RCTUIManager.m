@@ -1130,9 +1130,6 @@ RCT_EXPORT_METHOD(measure:(nonnull NSNumber *)reactTag
       rootView = rootView.superview;
     }
 
-    // TODO: this doesn't work because sometimes view is inside a modal window
-    RCTAssert([rootView isReactRootView], @"React view is not inside a React root view");
-
     // By convention, all coordinates, whether they be touch coordinates, or
     // measurement coordinates are with respect to the root view.
     CGRect frame = view.frame;
