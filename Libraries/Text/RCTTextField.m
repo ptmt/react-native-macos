@@ -156,7 +156,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
-- (void)setBackgroundColor:(NSString *)backgroundColor
+- (void)setBackgroundColor:(NSColor *)backgroundColor
 {
   if (backgroundColor) {
     [self setDrawsBackground:YES];
