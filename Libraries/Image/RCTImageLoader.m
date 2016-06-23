@@ -575,8 +575,8 @@ static NSImage *RCTResizeImageIfNeeded(NSImage *image,
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
           if (!cancelled) {
 
-            // Decompress the image data (this may be CPU and memory intensive)
-            NSImage *image = RCTDecodeImageWithData(data, size, scale, resizeMode);
+            // In macOS, DPI of Monitors could be changed dynamically, thus it's necessary to keep all representation(s) of a image to adapt DPI.
+            NSImage *image = [[NSImage alloc] initWithData:data];
 
 #if RCT_DEV
 
