@@ -4,7 +4,7 @@ Build OS X desktop apps using React Native and Cocoa.
 
 [![Build Status](https://travis-ci.org/ptmt/react-native-desktop.svg)](https://travis-ci.org/ptmt/react-native-desktop)
 [![npm version](https://badge.fury.io/js/react-native-desktop.svg)](https://badge.fury.io/js/react-native-desktop)
-[![discord #react-native-desktop](https://img.shields.io/badge/discord-%23react--native--desktop-blue.svg)](https://discordapp.com/channels/102860784329052160/111514927801307136)
+[![discord #react-native-platforms](https://img.shields.io/badge/reactiflux-%23react--native--platforms-blue.svg)](http://reactiflux.com)
 
 ```jsx
 <View>
