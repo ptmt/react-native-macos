@@ -30,6 +30,10 @@ var config = {
    */
   getBlacklistRE(platform) {
     return blacklist(platform);
+  },
+
+  extraNodeModules: {
+    'react-native': getRoots()[0] + '/node_modules/react-native-desktop',
   }
 };
 
