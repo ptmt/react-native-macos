@@ -17,6 +17,4 @@
 @property (nonatomic, copy) RCTBubblingEventBlock onSlidingComplete;
 
 @property (nonatomic, assign) float step;
-@property (nonatomic, assign) float lastValue;
-
 @end

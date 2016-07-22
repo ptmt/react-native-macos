@@ -21,52 +21,26 @@ RCT_EXPORT_MODULE()
 - (NSView *)view
 {
   RCTSlider *slider = [RCTSlider new];
+  slider.continuous = YES;
+  [slider setTarget:self];
+  [slider setAction:@selector(sliderValueChanged:)];
   return slider;
 }
 
-static void RCTSendSliderEvent(RCTSlider *sender, BOOL continuous)
-{
-  float value = [sender floatValue];
-
-  if (sender.step > 0 &&
-      sender.step <= (sender.maxValue - sender.minValue)) {
-
-    value =
-      MAX(sender.minValue,
-        MIN(sender.maxValue,
-          sender.minValue + round((value - sender.minValue) / sender.step) * sender.step
-        )
-      );
-
-    [sender setFloatValue:value];
-  }
-
-  if (continuous) {
-    if (sender.onValueChange && sender.lastValue != value) {
-      sender.onValueChange(@{
-        @"value": @(value),
-      });
-    }
+- (void)sliderValueChanged:(RCTSlider*)sender {
+  float value = sender.floatValue;
+  NSEvent *event = [[NSApplication sharedApplication] currentEvent];
+  BOOL endingDrag = event.type == NSLeftMouseUp;
+  if (!endingDrag) {
+    sender.onValueChange(@{@"value": @(value)});
   } else {
     if (sender.onSlidingComplete) {
-      sender.onSlidingComplete(@{
-        @"value": @(value),
-      });
+      sender.onSlidingComplete(@{@"value": @(value)});
     }
   }
-
-  sender.lastValue = value;
 }
 
-- (void)sliderValueChanged:(RCTSlider *)sender
-{
-  RCTSendSliderEvent(sender, YES);
-}
 
-- (void)sliderTouchEnd:(RCTSlider *)sender
-{
-  RCTSendSliderEvent(sender, NO);
-}
 
 RCT_EXPORT_VIEW_PROPERTY(value, float);
 RCT_EXPORT_VIEW_PROPERTY(step, float);
