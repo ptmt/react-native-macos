@@ -26,6 +26,11 @@
  */
 @property (nonatomic, copy) RCTDirectEventBlock onAccessibilityTap;
 @property (nonatomic, copy) RCTDirectEventBlock onMagicTap;
+/**
+ * (Desktop) Auto-layout experimental properties
+ */
+@property (nonatomic, copy) NSArray* visualConstraints;
+@property (nonatomic, assign) NSLayoutFormatOptions constraintsOptions;
 
 /**
  * Used to control how touch events are processed.
@@ -53,10 +58,9 @@
 @property (nonatomic, assign) BOOL removeClippedSubviews;
 
 /**
- * Workaround on a lot of views with layers
+ * (Desktop) Enable or disable setFrame for certain views
  */
 @property (nonatomic, assign) BOOL respondsToLiveResizing;
-
 
 /**
  * Hide subviews if they are outside the view bounds.
@@ -106,6 +110,5 @@
  * Border styles.
  */
 @property (nonatomic, assign) RCTBorderStyle borderStyle;
-
 
 @end

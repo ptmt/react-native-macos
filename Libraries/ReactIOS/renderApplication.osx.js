@@ -58,8 +58,12 @@ var AppContainer = React.createClass({
       yellowBox = <YellowBox />;
     }
     return (
-      <View style={styles.appContainer}>
-        <View collapsible={false} style={styles.appContainer} ref="main">
+      <View style={styles.appContainer} constraints={['|[view]|', 'V:|[view]|']}>
+        <View
+          constraints={['|[view]|', 'V:|[view]|']}
+          collapsible={false}
+          key={this.state.mainKey}
+          style={styles.appContainer} ref="main">
           {this.props.children}
         </View>
         {yellowBox}
@@ -93,7 +97,7 @@ function renderApplication<D, P, S>(
 
 var styles = StyleSheet.create({
   appContainer: {
-    flex: 1,
+    flex: 1
   },
 });
 

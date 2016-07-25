@@ -241,8 +241,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)layout
 {
-  [super layout];
   _contentView.frame = self.bounds;
+  [super layout];
   // TODO: set center coordinates
   //_loadingView.c = CGRectGetMidX(self.bounds);
 //  (CGPoint){
@@ -320,7 +320,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   __weak RCTBridge *_bridge;
   RCTTouchHandler *_touchHandler;
   NSColor *_backgroundColor;
-  CFTimeInterval _lastResizingAt;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -330,7 +329,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 {
   if ((self = [super initWithFrame:frame])) {
     _bridge = bridge;
-    _lastResizingAt = CACurrentMediaTime();
     self.reactTag = reactTag;
     _touchHandler = [[RCTTouchHandler alloc] initWithBridge:_bridge];
     [self addGestureRecognizer:_touchHandler];
@@ -381,12 +379,8 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
 - (void)setFrame:(CGRect)frame
 {
   super.frame = frame;
-  if (self.reactTag && _bridge.isValid) {
-    if (!self.inLiveResize || (self.inLiveResize && (CACurrentMediaTime() - _lastResizingAt) > 0.005)) {
-      [_bridge.uiManager setFrame:frame forView:self];
-      _lastResizingAt = CACurrentMediaTime();
-    }
-  }
+  // TODO: Temporary disabled due to various performance reasons
+  // [_bridge.uiManager setFrame:self.frame forView:self];
 }
 
 - (void)setBackgroundColor:(NSColor *)backgroundColor

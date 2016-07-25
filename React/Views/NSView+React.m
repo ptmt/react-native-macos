@@ -151,6 +151,25 @@
   }
 }
 
+- (void)applyConstraints
+{
+  if ([self respondsToSelector:@selector(visualConstraints)] && self.visualConstraints && self.visualConstraints.count > 0 && self.superview && ![self.className isEqualToString:@"RCTNativeScrollView"]) {
+    NSMutableDictionary *views = [[NSMutableDictionary alloc] init];
+    [views setObject:self forKey:@"view"];
+    [views setObject:self.superview forKey:@"superview"];
+    [self.superview.subviews enumerateObjectsUsingBlock:^(NSView * v, NSUInteger idx, BOOL *stop)
+    {
+      [views setObject:v forKey:[NSString stringWithFormat:@"v%li",  idx]];
+    }];
+    for (NSString* constraint in self.visualConstraints) {
+      [self.superview addConstraints:
+       [NSLayoutConstraint constraintsWithVisualFormat:constraint options:self.constraintsOptions metrics:nil views:views]];
+    }
+    [self setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self setNeedsLayout:YES];
+  }
+}
+
 /**
  * Responder overrides - to be deprecated.
  */

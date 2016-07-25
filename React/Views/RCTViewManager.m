@@ -22,29 +22,31 @@
 #import "RCTView.h"
 #import "NSView+React.h"
 
-//@implementation RCTConvert(UIAccessibilityTraits)
-//
-//RCT_MULTI_ENUM_CONVERTER(UIAccessibilityTraits, (@{
-//  @"none": @(UIAccessibilityTraitNone),
-//  @"button": @(UIAccessibilityTraitButton),
-//  @"link": @(UIAccessibilityTraitLink),
-//  @"header": @(UIAccessibilityTraitHeader),
-//  @"search": @(UIAccessibilityTraitSearchField),
-//  @"image": @(UIAccessibilityTraitImage),
-//  @"selected": @(UIAccessibilityTraitSelected),
-//  @"plays": @(UIAccessibilityTraitPlaysSound),
-//  @"key": @(UIAccessibilityTraitKeyboardKey),
-//  @"text": @(UIAccessibilityTraitStaticText),
-//  @"summary": @(UIAccessibilityTraitSummaryElement),
-//  @"disabled": @(UIAccessibilityTraitNotEnabled),
-//  @"frequentUpdates": @(UIAccessibilityTraitUpdatesFrequently),
-//  @"startsMedia": @(UIAccessibilityTraitStartsMediaSession),
-//  @"adjustable": @(UIAccessibilityTraitAdjustable),
-//  @"allowsDirectInteraction": @(UIAccessibilityTraitAllowsDirectInteraction),
-//  @"pageTurn": @(UIAccessibilityTraitCausesPageTurn),
-//}), UIAccessibilityTraitNone, unsignedLongLongValue)
-//
-//@end
+@implementation RCTConvert(NS)
+
+RCT_MULTI_ENUM_CONVERTER(NSAutoresizingMaskOptions, (@{
+  @"none": @(NSViewNotSizable),
+  @"minX": @(NSViewMinXMargin),
+  @"width": @(NSViewWidthSizable),
+  @"maxY": @(NSViewMaxXMargin),
+  @"minY": @(NSViewMinYMargin),
+  @"height": @(NSViewHeightSizable),
+  @"maxY": @(NSViewMaxYMargin),
+}), NSViewNotSizable, unsignedLongLongValue)
+
+RCT_MULTI_ENUM_CONVERTER(NSLayoutFormatOptions, (@{
+  @"left": @(NSLayoutFormatAlignAllLeft),
+  @"right": @(NSLayoutFormatAlignAllRight),
+  @"top": @(NSLayoutFormatAlignAllTop),
+  @"bottom": @(NSLayoutFormatAlignAllBottom),
+  @"leading": @(NSLayoutFormatAlignAllLeading),
+  @"trailing": @(NSLayoutFormatAlignAllTrailing),
+  @"centerX": @(NSLayoutFormatAlignAllCenterX),
+  @"centerY": @(NSLayoutFormatAlignAllCenterY),
+  @"baseline": @(NSLayoutFormatAlignAllBaseline),
+}), 0, unsignedLongLongValue)
+
+@end
 
 @implementation RCTViewManager
 
@@ -128,6 +130,7 @@ RCT_EXPORT_VIEW_PROPERTY(accessibilityLabel, NSString)
 RCT_EXPORT_VIEW_PROPERTY(accessibilityTraits, UIAccessibilityTraits)
 RCT_EXPORT_VIEW_PROPERTY(backgroundColor, NSColor)
 RCT_EXPORT_VIEW_PROPERTY(respondsToLiveResizing, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(constraintsOptions, NSLayoutFormatOptions)
 RCT_REMAP_VIEW_PROPERTY(accessible, accessibilityElement, BOOL)
 RCT_REMAP_VIEW_PROPERTY(testID, accessibilityIdentifier, NSString)
 RCT_REMAP_VIEW_PROPERTY(testRole, accessibilityRole, NSString)
@@ -151,6 +154,26 @@ RCT_CUSTOM_VIEW_PROPERTY(draggedTypes, NSArray*<NSString *>, RCTView)
     [view registerForDraggedTypes:types];
   } else {
     [view registerForDraggedTypes:defaultView.registeredDraggedTypes];
+  }
+}
+
+RCT_CUSTOM_VIEW_PROPERTY(autoresizingMask, NSArray*<NSString *>, RCTView)
+{
+  if (json) {
+    NSArray *masks = [RCTConvert NSArray:json];
+    for (NSString* mask in masks) {
+      NSAutoresizingMaskOptions option = [RCTConvert NSAutoresizingMaskOptions:mask];
+      view.autoresizingMask = view.autoresizingMask | option;
+    }
+    view.autoresizesSubviews = YES;
+  } 
+}
+
+RCT_CUSTOM_VIEW_PROPERTY(constraints, NSArray*<NSString *>, RCTView)
+{
+  if (json) {
+    NSArray *constraints = [RCTConvert NSArray:json];
+    view.visualConstraints = constraints;
   }
 }
 
