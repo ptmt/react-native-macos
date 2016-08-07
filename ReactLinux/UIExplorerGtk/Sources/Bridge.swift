@@ -3,11 +3,6 @@ import Foundation
 
 typealias JavaScriptCallback = (AnyObject?, NSError?) -> ()
 
-class Block<T>: NSObject {
-    let f : T
-    init (_ f: T) { self.f = f }
-}
-
 public class Bridge {
 
     private(set) var context: JSContext
@@ -18,6 +13,7 @@ public class Bridge {
     var valid: Bool = true
     var loading: Bool = true
     var bundleURL: NSURL
+    var uiManager: BridgeModule? = nil
 
     private var jsTimer: NSTimer
     private var wasBatchActive: Bool = false
@@ -29,11 +25,9 @@ public class Bridge {
         jsTimer = NSTimer()
 
         start()
-        print("Bridge initialized")
     }
 
     func start() {
-
         jsTimer = NSTimer(timeInterval: 0.02, target: self, selector: #selector(Bridge.jsThreadUpdate), userInfo: nil, repeats: true)
         let bridgeQueue: dispatch_queue_t = dispatch_queue_create("com.facebook.react.RCTBridgeQueue", DISPATCH_QUEUE_CONCURRENT)
         let initModulesAndLoadSource: dispatch_group_t = dispatch_group_create()
@@ -99,7 +93,6 @@ public class Bridge {
         });
     }
 
-    // Do compile-time check instead of conformsToProtocol:
     func registerModule(moduleClass: BridgeModule.Type) {
         moduleClasses.append(moduleClass)
     }
@@ -110,6 +103,7 @@ public class Bridge {
 
         // Temporary we register modules right here:
         registerModule(moduleClass: UIManager.self)
+        registerModule(moduleClass: ViewManager.self)
 
         for moduleClass in moduleClasses {
             let moduleName: String = String(moduleClass)

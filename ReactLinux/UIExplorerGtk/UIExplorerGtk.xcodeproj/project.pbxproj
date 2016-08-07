@@ -11,6 +11,9 @@
 		03A96A291CD1045900CC6C14 /* BridgeModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A271CD0E2A400CC6C14 /* BridgeModule.swift */; };
 		03A96A2B1CD12AC400CC6C14 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A2A1CD12AC400CC6C14 /* Utils.swift */; };
 		03A96A2C1CD130B000CC6C14 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A96A2A1CD12AC400CC6C14 /* Utils.swift */; };
+		03AB902C1CDE4E6A00A8056B /* ViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AB902A1CDE4D0C00A8056B /* ViewManager.swift */; };
+		03AB902F1CDE500000A8056B /* UIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AB902D1CDE500000A8056B /* UIManager.swift */; };
+		03AB90311CDE5B0D00A8056B /* ComponentData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AB90301CDE5B0D00A8056B /* ComponentData.swift */; };
 		_LinkFileRef_SwiftGtk /* libSwiftGtk.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = "_____Product_SwiftGtk" /* libSwiftGtk.dylib */; };
 		"__src_cc_ref_Packages/SwiftGtk-0.4.0/Sources/Application.swift" /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = "__PBXFileRef_Packages/SwiftGtk-0.4.0/Sources/Application.swift" /* Application.swift */; };
 		"__src_cc_ref_Packages/SwiftGtk-0.4.0/Sources/ApplicationWindow.swift" /* ApplicationWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = "__PBXFileRef_Packages/SwiftGtk-0.4.0/Sources/ApplicationWindow.swift" /* ApplicationWindow.swift */; };
@@ -56,6 +59,9 @@
 /* Begin PBXFileReference section */
 		03A96A271CD0E2A400CC6C14 /* BridgeModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BridgeModule.swift; sourceTree = "<group>"; };
 		03A96A2A1CD12AC400CC6C14 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		03AB902A1CDE4D0C00A8056B /* ViewManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewManager.swift; sourceTree = "<group>"; };
+		03AB902D1CDE500000A8056B /* UIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIManager.swift; sourceTree = "<group>"; };
+		03AB90301CDE5B0D00A8056B /* ComponentData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComponentData.swift; sourceTree = "<group>"; };
 		__PBXFileRef_Package.swift /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = /Users/potomushto/Projects/rnlinux/ReactLinux/UIExplorerGtk/Package.swift; sourceTree = "<group>"; };
 		"__PBXFileRef_Packages/SwiftGtk-0.4.0/Sources/Application.swift" /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		"__PBXFileRef_Packages/SwiftGtk-0.4.0/Sources/ApplicationWindow.swift" /* ApplicationWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationWindow.swift; sourceTree = "<group>"; };
@@ -186,10 +192,13 @@
 			isa = PBXGroup;
 			children = (
 				__PBXFileRef_Sources/Bridge.swift /* Bridge.swift */,
+				03A96A271CD0E2A400CC6C14 /* BridgeModule.swift */,
 				__PBXFileRef_Sources/JavaScriptCore.swift /* JavaScriptCore.swift */,
 				__PBXFileRef_Sources/main.swift /* main.swift */,
-				03A96A271CD0E2A400CC6C14 /* BridgeModule.swift */,
 				03A96A2A1CD12AC400CC6C14 /* Utils.swift */,
+				03AB902A1CDE4D0C00A8056B /* ViewManager.swift */,
+				03AB902D1CDE500000A8056B /* UIManager.swift */,
+				03AB90301CDE5B0D00A8056B /* ComponentData.swift */,
 			);
 			name = UIExplorerGtk;
 			path = Sources;
@@ -324,7 +333,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				03AB902F1CDE500000A8056B /* UIManager.swift in Sources */,
+				03AB902C1CDE4E6A00A8056B /* ViewManager.swift in Sources */,
 				03A96A2C1CD130B000CC6C14 /* Utils.swift in Sources */,
+				03AB90311CDE5B0D00A8056B /* ComponentData.swift in Sources */,
 				__src_cc_ref_Sources/Bridge.swift /* Bridge.swift in Sources */,
 				03A96A291CD1045900CC6C14 /* BridgeModule.swift in Sources */,
 				__src_cc_ref_Sources/JavaScriptCore.swift /* JavaScriptCore.swift in Sources */,
