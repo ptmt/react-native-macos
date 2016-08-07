@@ -97,14 +97,14 @@
      * on the same Wi-Fi network.
      */
 
-    sourceURL = [NSURL URLWithString:@"http://localhost:8081/Examples/SimpleGmailClient/index.osx.bundle?platform=osx&dev=true"];
+    sourceURL = [NSURL URLWithString:@"http://localhost:8081/Examples/SimpleGmailClient/index.macos.bundle?platform=macos&dev=true"];
 
     /**
      * OPTION 2
      * Load from pre-bundled file on disk. To re-generate the static bundle, `cd`
      * to your Xcode project folder and run
      *
-     * $ curl 'http://localhost:8081/Examples/SimpleGmailClient/index.osx.bundle' -o main.jsbundle
+     * $ curl 'http://localhost:8081/Examples/SimpleGmailClient/index.macos.bundle' -o main.jsbundle
      *
      * then add the `main.jsbundle` file to your project and uncomment this line:
      */

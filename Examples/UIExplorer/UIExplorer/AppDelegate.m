@@ -82,7 +82,7 @@
 #if RUNNING_ON_CI
   _sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #else
-  _sourceURL = [NSURL URLWithString:@"http://localhost:8081/Examples/UIExplorer/UIExplorerApp.osx.bundle?platform=osx&dev=true"];
+  _sourceURL = [NSURL URLWithString:@"http://localhost:8081/Examples/UIExplorer/UIExplorerApp.macos.bundle?platform=macos&dev=true"];
 #endif
 }
 
@@ -148,7 +148,7 @@
   if ([[sender stringValue] containsString:@"http"]) {
     _sourceURL =[NSURL URLWithString:[sender stringValue]];
     _bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:nil];
-    NSString * moduleName = [_sourceURL.lastPathComponent stringByReplacingOccurrencesOfString:@".osx.bundle" withString:@""];
+    NSString * moduleName = [_sourceURL.lastPathComponent stringByReplacingOccurrencesOfString:@".macos.bundle" withString:@""];
     RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:_bridge
                                                      moduleName:moduleName
                                               initialProperties:nil];

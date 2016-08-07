@@ -90,7 +90,7 @@ Error: ${e.message}`
             inverseDependencies,
           } = data.body;
 
-          if (Platform.OS === 'ios' || Platform.OS === 'osx') {
+          if (Platform.OS === 'ios' || Platform.OS === 'macos') {
             const RCTRedBox = require('NativeModules').RedBox;
             RCTRedBox && RCTRedBox.dismiss && RCTRedBox.dismiss();
           } else {

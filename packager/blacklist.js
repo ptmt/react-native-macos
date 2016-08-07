@@ -35,7 +35,7 @@ var platformBlacklists = {
     '.web.js',
     '.ios.js',
   ],
-  osx: [
+  macos: [
     '.android.js',
     '.ios.js',
     '.web.js'

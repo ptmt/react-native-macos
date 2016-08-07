@@ -33,7 +33,7 @@
 
  - (void)testExample {
    NSOperatingSystemVersion version = [NSProcessInfo processInfo].operatingSystemVersion;
-   RCTAssert((version.majorVersion == 10 && version.minorVersion >= 10), @"Tests should be run on OSX 10.10+, found %zd.%zd.%zd", version.majorVersion, version.minorVersion, version.patchVersion);
+   RCTAssert((version.majorVersion == 10 && version.minorVersion >= 10), @"Tests should be run on MacOS 10.10+, found %zd.%zd.%zd", version.majorVersion, version.minorVersion, version.patchVersion);
  }
 
  - (void)testPerformanceExample {

@@ -13,7 +13,7 @@
 'use strict';
 
 var Platform = {
-  OS: 'osx',
+  OS: 'macos',
 };
 
 module.exports = Platform;

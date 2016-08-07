@@ -493,7 +493,7 @@ const ScrollView = React.createClass({
     }
 
     let ScrollViewClass;
-    if (Platform.OS === 'ios' || Platform.OS === 'osx') {
+    if (Platform.OS === 'ios' || Platform.OS === 'macos') {
       ScrollViewClass = RCTScrollView;
     } else if (Platform.OS === 'android') {
       if (this.props.horizontal) {
@@ -563,7 +563,7 @@ if (Platform.OS === 'android') {
   );
 } else if (Platform.OS === 'ios') {
   RCTScrollView = requireNativeComponent('RCTScrollView', ScrollView);
-} else if (Platform.OS === 'osx') {
+} else if (Platform.OS === 'macos') {
   RCTScrollView = requireNativeComponent('RCTNativeScrollView', ScrollView);
 }
 

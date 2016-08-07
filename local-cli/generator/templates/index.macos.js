@@ -19,7 +19,7 @@ const <%= name %> = React.createClass({
           Welcome to React Native Desktop!
         </Text>
         <Text style={styles.instructions}>
-          To get started, edit index.osx.js
+          To get started, edit index.macos.js
         </Text>
         <Text style={styles.instructions}>
           Press Cmd+R to reload,{'\n'}

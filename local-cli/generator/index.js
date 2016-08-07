@@ -34,9 +34,9 @@ module.exports = yeoman.generators.NamedBase.extend({
 
     // this passes command line arguments down to the composed generators
     var args = {args: arguments[0], options: this.options};
-    if (!this.options['skip-osx']) {
-      this.composeWith('react:osx', args, {
-        local: require.resolve(path.resolve(__dirname, '..', 'generator-osx'))
+    if (!this.options['skip-macos']) {
+      this.composeWith('react:macos', args, {
+        local: require.resolve(path.resolve(__dirname, '..', 'generator-macos'))
       });
     }
     /*
@@ -82,10 +82,10 @@ module.exports = yeoman.generators.NamedBase.extend({
       // never upgrade index.*.js files
       return;
     }
-    if (!this.options['skip-osx']) {
+    if (!this.options['skip-macos']) {
       this.fs.copyTpl(
-        this.templatePath('index.osx.js'),
-        this.destinationPath('index.osx.js'),
+        this.templatePath('index.macos.js'),
+        this.destinationPath('index.macos.js'),
         {name: this.name}
       );
     }

@@ -24,7 +24,7 @@
 #include <dlfcn.h>
 
 #ifndef RCT_JSC_PROFILER_DYLIB
-  #define RCT_JSC_PROFILER_DYLIB [[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"RCTJSCProfiler.osx%zd%zd%zd", [[NSProcessInfo processInfo] operatingSystemVersion].majorVersion, [[NSProcessInfo processInfo] operatingSystemVersion].minorVersion] ofType:@"dylib" inDirectory:@"RCTJSCProfiler"] UTF8String]
+  #define RCT_JSC_PROFILER_DYLIB [[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"RCTJSCProfiler.macos%zd%zd%zd", [[NSProcessInfo processInfo] operatingSystemVersion].majorVersion, [[NSProcessInfo processInfo] operatingSystemVersion].minorVersion] ofType:@"dylib" inDirectory:@"RCTJSCProfiler"] UTF8String]
 #endif
 
 static const char *const JSCProfileName = "profile";

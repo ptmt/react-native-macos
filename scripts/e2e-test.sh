@@ -26,7 +26,7 @@ export REACT_PACKAGER_LOG="$TEMP/server.log"
 # To make sure we actually installed the local version
 # of react-native, we will create a temp file inside the template
 # and check that it exists after `react-native init`
-MARKER_OSX=$(mktemp $ROOT/local-cli/generator-osx/templates/app/XXXXXXXX)
+MARKER_MACOS=$(mktemp $ROOT/local-cli/generator-macos/templates/app/XXXXXXXX)
 
 
 function cleanup {
@@ -41,7 +41,7 @@ function cleanup {
     [ -f $REACT_PACKAGER_LOG ] && cat $REACT_PACKAGER_LOG
   fi
 
-  rm $MARKER_OSX
+  rm $MARKER_MACOS
   [ $SINOPIA_PID ] && kill -9 $SINOPIA_PID
   [ $SERVER_PID ] && kill -9 $SERVER_PID
   [ -f ~/.npmrc.bak ] && mv ~/.npmrc.bak ~/.npmrc
@@ -80,11 +80,11 @@ case $1 in
 "--packager"*)
   echo "Running a basic packager test"
   # Check the packager produces a bundle (doesn't throw an error)
-  react-native-desktop bundle --platform osx --dev true --entry-file index.osx.js --bundle-output osx-bundle.js
+  react-native-desktop bundle --platform macos --dev true --entry-file index.macos.js --bundle-output macos-bundle.js
   ;;
-"--osx"*)
-  echo "Running an OSX app"
-  cd osx
+"--macos"*)
+  echo "Running a macOS app"
+  cd macos
   # Make sure we installed local version of react-native
   ls EndToEndTest/`basename $MARKER_IOS` > /dev/null
   ../node_modules/react-native-desktop/packager/packager.sh --nonPersistent &

@@ -18,7 +18,7 @@
 
 var React = require('React');
 var ReactNative = require('react-native-desktop');
-var UIExplorerList = require('./UIExplorerList.osx');
+var UIExplorerList = require('./UIExplorerList.macos');
 
 var {
   AppRegistry,

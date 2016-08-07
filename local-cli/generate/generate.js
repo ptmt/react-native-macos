@@ -25,7 +25,7 @@ function generate(argv, config) {
 function _generate(argv, config, resolve, reject) {
   const args = parseCommandLine([{
     command: 'platform',
-    description: 'Platform (ios|android|osx)',
+    description: 'Platform (ios|android|macos)',
     type: 'string',
     required: true,
   },
@@ -52,7 +52,7 @@ function _generate(argv, config, resolve, reject) {
     {
       'skip-ios': args.platform !== 'ios',
       'skip-android': args.platform !== 'android',
-      'skip-osx': args.platform !== 'osx'
+      'skip-macos': args.platform !== 'macos'
     },
     () => {
       process.chdir(oldCwd);

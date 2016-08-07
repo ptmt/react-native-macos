@@ -101,11 +101,11 @@ class Resolver {
         // remove it from here.
         'parse',
       ],
-      platforms: ['ios', 'android', 'osx'],
+      platforms: ['ios', 'android', 'macos'],
       preferNativePlatform: true,
       fileWatcher: opts.fileWatcher,
       cache: opts.cache,
-      shouldThrowOnUnresolvedErrors: (_, platform) => (platform === 'ios' ||  platform === 'osx'),
+      shouldThrowOnUnresolvedErrors: (_, platform) => (platform === 'ios' ||  platform === 'macos'),
       transformCode: opts.transformCode,
       assetDependencies: ['react-native-desktop/Libraries/Image/AssetRegistry'],
       extraNodeModules: opts.extraNodeModules,

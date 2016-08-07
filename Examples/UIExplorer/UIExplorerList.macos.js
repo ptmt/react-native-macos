@@ -41,8 +41,8 @@ var COMPONENTS = [
   // require('./SegmentedControlIOSExample'),
   require('./SliderExample'),
   //require('./SwitchExample'),
-  require('./TextExample.osx'),
-  require('./TextInputExample.osx'),
+  require('./TextExample.macos'),
+  require('./TextInputExample.macos'),
   require('./TouchableExample'),
   require('./TransparentHitTestExample'),
   require('./ViewExample'),
@@ -58,9 +58,9 @@ var APIS = [
   require('./LayoutExample'),
   require('./LinkingExample'),
   require('./TransformExample'),
-  require('./XHRExample.osx'),
-  require('./DragnDropExample.osx'),
-  require('./MenuExample.osx'),
+  require('./XHRExample.macos'),
+  require('./DragnDropExample.macos'),
+  require('./MenuExample.macos'),
 ];
 
 type Props = {

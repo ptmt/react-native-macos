@@ -66,8 +66,8 @@ set -x
 DEST=$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH
 
 $NODE_BINARY "$REACT_NATIVE_DIR/local-cli/cli.js" bundle \
-  --entry-file index.osx.js \
-  --platform osx \
+  --entry-file index.macos.js \
+  --platform macos \
   --dev $DEV \
   --reset-cache true \
   --bundle-output "$DEST/main.jsbundle" \

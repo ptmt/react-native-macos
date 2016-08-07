@@ -45,7 +45,7 @@ var notMultiline = {
 
 if (Platform.OS === 'android') {
   var AndroidTextInput = requireNativeComponent('AndroidTextInput', null);
-} else if (Platform.OS === 'ios' || Platform.OS === 'osx') {
+} else if (Platform.OS === 'ios' || Platform.OS === 'macos') {
   var RCTTextView = requireNativeComponent('RCTTextView', null);
   var RCTTextField = requireNativeComponent('RCTTextField', null);
   var RCTSecureTextField = requireNativeComponent('RCTSecureTextField', null);
@@ -164,7 +164,7 @@ var TextInput = React.createClass({
     ]),
     /**
      * Determines the color of the keyboard.
-     * @platform osx
+     * @platform macos
      */
     focusRingType: PropTypes.oneOf([
       'default',
@@ -321,7 +321,7 @@ var TextInput = React.createClass({
   mixins: [NativeMethodsMixin, TimerMixin],
 
   viewConfig:
-    (((Platform.OS === 'ios' || Platform.OS === 'osx') && RCTTextField ?
+    (((Platform.OS === 'ios' || Platform.OS === 'macos') && RCTTextField ?
       RCTTextField.viewConfig :
       (Platform.OS === 'android' && AndroidTextInput ?
         AndroidTextInput.viewConfig :
@@ -387,7 +387,7 @@ var TextInput = React.createClass({
   },
 
   render: function() {
-    if (Platform.OS === 'ios' || Platform.OS === 'osx') {
+    if (Platform.OS === 'ios' || Platform.OS === 'macos') {
       return this._renderIOS();
     } else if (Platform.OS === 'android') {
       return this._renderAndroid();

@@ -231,7 +231,7 @@ function setUpNumber() {
 function setUpDevTools() {
   // not when debugging in chrome
   if (__DEV__) { // TODO(9123099) Strip `__DEV__ &&`
-    if (!window.document && (require('Platform').OS === 'ios' || require('Platform').OS === 'osx')) {
+    if (!window.document && (require('Platform').OS === 'ios' || require('Platform').OS === 'macos')) {
       var setupDevtools = require('setupDevtools');
       setupDevtools();
     }

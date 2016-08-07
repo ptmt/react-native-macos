@@ -49,7 +49,7 @@ static const NSTimeInterval kTestTeardownTimeoutSeconds = 30;
     _scriptURL = [[NSBundle bundleForClass:[RCTBridge class]] URLForResource:@"main" withExtension:@"jsbundle"];
     RCTAssert(_scriptURL != nil, @"Could not locate main.jsBundle");
 #else
-    _scriptURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://localhost:8081/%@.bundle?platform=osx&dev=true", app]];
+    _scriptURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://localhost:8081/%@.bundle?platform=macos&dev=true", app]];
 #endif
   }
   return self;
@@ -127,7 +127,7 @@ expectErrorBlock:(BOOL(^)(NSString *error))expectErrorBlock
     }
 
     NSWindowController *windowController = [[[NSApplication sharedApplication] mainWindow] windowController];
-    
+
     NSWindow *window = [[NSWindow alloc] initWithContentRect:rootView.frame
                                               styleMask:NSTitledWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask | NSFullSizeContentViewWindowMask
                                                 backing:NSBackingStoreBuffered
@@ -136,7 +136,7 @@ expectErrorBlock:(BOOL(^)(NSString *error))expectErrorBlock
     [window setTitle:moduleName];
     [windowController showWindow:window];
     [windowController setShouldCascadeWindows:NO];
-    
+
     [window setContentView:rootView];
 
     if (configurationBlock) {

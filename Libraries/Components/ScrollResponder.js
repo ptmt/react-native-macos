@@ -377,7 +377,7 @@ var ScrollResponderMixin = {
     }
 
     var commandID;
-    if (Platform.OS === 'osx') {
+    if (Platform.OS === 'macos') {
       commandID = UIManager.RCTNativeScrollView.Commands.scrollTo;
     } else {
       commandID = UIManager.RCTScrollView.Commands.scrollTo;

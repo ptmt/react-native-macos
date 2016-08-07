@@ -19,7 +19,7 @@ Build OS X desktop apps using React Native and Cocoa.
 $ npm install react-native-desktop-cli -g
 $ react-native-desktop init MyProject
 $ cd MyProject
-$ open osx/MyProject.xcodeproj
+$ open macos/MyProject.xcodeproj
 ```
 Since it's simply just a fork, you can follow [the same instruction on facebook.github.io/react-native](http://facebook.github.io/react-native/docs/getting-started.html#content).
 

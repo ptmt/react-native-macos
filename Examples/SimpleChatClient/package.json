@@ -2,10 +2,10 @@
   "name": "discordclient",
   "version": "1.0.0",
   "description": "Stateless Gmail Client using REST API.",
-  "main": "index.osx.js",
+  "main": "index.macos.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "curl 'http://localhost:8081/Examples/SimpleChatClient/index.osx.bundle?platform=osx&dev=false&minify=true' -o SimpleChatClient/main.jsbundle"
+    "build": "curl 'http://localhost:8081/Examples/SimpleChatClient/index.macos.bundle?platform=macos&dev=false&minify=true' -o SimpleChatClient/main.jsbundle"
   },
   "author": "",
   "license": "ISC",
