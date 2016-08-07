@@ -1,7 +1,7 @@
 {
-  "name": "react-native-desktop",
+  "name": "react-native-macos",
   "version": "0.9.0-rc1",
-  "description": "A framework for building native desktop apps using React",
+  "description": "A framework for building native macOS apps using React",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
@@ -24,7 +24,7 @@
       "defaultPlatform": "macos",
       "providesModuleNodeModules": [
         "react",
-        "react-native-desktop",
+        "react-native-macos",
         "parse",
         "react-transform-hmr"
       ],
@@ -35,7 +35,7 @@
       ]
     },
     "modulePathIgnorePatterns": [
-      "/node_modules/(?!react|fbjs|react-native-desktop|parse|react-transform-hmr|core-js|promise)/",
+      "/node_modules/(?!react|fbjs|react-native-macos|parse|react-transform-hmr|core-js|promise)/",
       "node_modules/react/node_modules/fbjs/",
       "node_modules/react/lib/ReactDOM.js",
       "node_modules/fbjs/lib/Map.js",
@@ -119,7 +119,7 @@
     "start": "/usr/bin/env bash -c './packager/packager.sh \"$@\" || true' --"
   },
   "bin": {
-    "react-native-desktop": "local-cli/wrong-react-native.js"
+    "react-native-macos": "local-cli/wrong-react-native.js"
   },
   "peerDependencies": {
     "react": "~15.2.0"
