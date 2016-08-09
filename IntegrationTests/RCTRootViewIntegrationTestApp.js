@@ -13,7 +13,7 @@
 require('regenerator-runtime/runtime');
 
 var React = require('React');
-var ReactNative = require('react-native-desktop');
+var ReactNative = require('react-native-macos');
 
 var {
   AppRegistry,

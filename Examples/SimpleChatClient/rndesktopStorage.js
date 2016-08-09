@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native-desktop';
+import { AsyncStorage } from 'react-native-macos';
 
 export default (key) => ({
     load() {

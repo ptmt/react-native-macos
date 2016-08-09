@@ -16,7 +16,7 @@
 'use strict';
 
 const React = require('react');
-const ReactNative = require('react-native-desktop');
+const ReactNative = require('react-native-macos');
 const {
   LayoutAnimation,
   StyleSheet,

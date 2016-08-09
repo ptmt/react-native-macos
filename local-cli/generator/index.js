@@ -58,8 +58,8 @@ module.exports = yeoman.generators.NamedBase.extend({
       this.templatePath('../../../.flowconfig'),
       this.destinationPath('.flowconfig'),
       {
-        'Libraries\/react-native\/react-native-interface.js' : 'node_modules/react-native-desktop/Libraries/react-native/react-native-interface.js',
-        '^flow/$' : 'node_modules/react-native-desktop/flow\nflow/'
+        'Libraries\/react-native\/react-native-interface.js' : 'node_modules/react-native-macos/Libraries/react-native/react-native-interface.js',
+        '^flow/$' : 'node_modules/react-native-macos/flow\nflow/'
       }
     );
 

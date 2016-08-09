@@ -67,27 +67,27 @@ SINOPIA_PID=$!
 
 # Make sure to remove old version of react-native in
 # case it was cached
-npm unpublish react-native-desktop --force
-npm unpublish react-native-desktop-cli --force
+npm unpublish react-native-macos --force
+npm unpublish react-native-macos-cli --force
 npm publish $ROOT
-npm publish $ROOT/react-native-desktop-cli
+npm publish $ROOT/react-native-macos-cli
 
-npm install -g react-native-desktop-cli
-react-native-desktop init EndToEndTest
+npm install -g react-native-macos-cli
+react-native-macos init EndToEndTest
 cd EndToEndTest
 
 case $1 in
 "--packager"*)
   echo "Running a basic packager test"
   # Check the packager produces a bundle (doesn't throw an error)
-  react-native-desktop bundle --platform macos --dev true --entry-file index.macos.js --bundle-output macos-bundle.js
+  react-native-macos bundle --platform macos --dev true --entry-file index.macos.js --bundle-output macos-bundle.js
   ;;
 "--macos"*)
   echo "Running a macOS app"
   cd macos
   # Make sure we installed local version of react-native
   ls EndToEndTest/`basename $MARKER_IOS` > /dev/null
-  ../node_modules/react-native-desktop/packager/packager.sh --nonPersistent &
+  ../node_modules/react-native-macos/packager/packager.sh --nonPersistent &
   SERVER_PID=$!
   # Start the app on the simulator
   xctool -scheme EndToEndTest -sdk iphonesimulator test

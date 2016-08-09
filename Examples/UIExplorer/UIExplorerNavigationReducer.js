@@ -16,7 +16,7 @@
 'use strict';
 
 const React = require('React');
-const ReactNative = require('react-native-desktop');
+const ReactNative = require('react-native-macos');
 // $FlowFixMe : This is a platform-forked component, and flow seems to only run on iOS?
 const UIExplorerList = require('./UIExplorerList');
 const {

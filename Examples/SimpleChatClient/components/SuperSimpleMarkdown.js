@@ -1,6 +1,6 @@
 /* @noflow */
 import React from 'react';
-import ReactNative from 'react-native-desktop';
+import ReactNative from 'react-native-macos';
 /* $FlowFixMe(>=17.0.0) - config */
 import SimpleMarkdown from 'simple-markdown';
 

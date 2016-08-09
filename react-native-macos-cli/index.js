@@ -60,7 +60,7 @@ var CLI_MODULE_PATH = function() {
   return path.resolve(
     process.cwd(),
     'node_modules',
-    'react-native-desktop',
+    'react-native-macos',
     'cli.js'
   );
 };
@@ -69,7 +69,7 @@ var REACT_NATIVE_PACKAGE_JSON_PATH = function() {
   return path.resolve(
     process.cwd(),
     'node_modules',
-    'react-native-desktop',
+    'react-native-macos',
     'package.json'
   );
 };
@@ -89,7 +89,7 @@ if (cli) {
 } else {
   if (commands.length === 0) {
     console.error(
-      'You did not pass any commands, did you mean to run `react-native-desktop init`?'
+      'You did not pass any commands, did you mean to run `react-native-macos init`?'
     );
     process.exit(1);
   }
@@ -98,7 +98,7 @@ if (cli) {
   case 'init':
     if (!commands[1]) {
       console.error(
-        'Usage: react-native-desktop init <ProjectName> [--verbose]'
+        'Usage: react-native-macos init <ProjectName> [--verbose]'
       );
       process.exit(1);
     } else {
@@ -108,7 +108,7 @@ if (cli) {
   default:
     console.error(
       'Command `%s` unrecognized. ' +
-      'Did you mean to run this inside a react-native-desktop project?',
+      'Did you mean to run this inside a react-native-macos project?',
       commands[0]
     );
     process.exit(1);
@@ -185,13 +185,13 @@ function createProject(name, verbose, rnPackage) {
     version: '0.0.1',
     private: true,
     scripts: {
-      start: 'node node_modules/react-native-desktop/local-cli/cli.js start'
+      start: 'node node_modules/react-native-macos/local-cli/cli.js start'
     }
   };
   fs.writeFileSync(path.join(root, 'package.json'), JSON.stringify(packageJson, null, 2));
   process.chdir(root);
 
-  console.log('Installing react-native-desktop package from npm...');
+  console.log('Installing react-native-macos package from npm...');
 
   if (verbose) {
     runVerbose(root, projectName, rnPackage);
@@ -218,7 +218,7 @@ function run(root, projectName, rnPackage) {
     if (e) {
       console.log(stdout);
       console.error(stderr);
-      console.error('`npm install --save react-native-desktop` failed');
+      console.error('`npm install --save react-native-macos` failed');
       process.exit(1);
     }
 
@@ -233,7 +233,7 @@ function runVerbose(root, projectName, rnPackage) {
   var proc = spawn('npm', ['install', '--verbose', '--save', getInstallPackage(rnPackage)], {stdio: 'inherit'});
   proc.on('close', function (code) {
     if (code !== 0) {
-      console.error('`npm install --save react-native-desktop` failed');
+      console.error('`npm install --save react-native-macos` failed');
       return;
     }
 
@@ -261,11 +261,11 @@ function checkNodeVersion() {
 function checkForVersionArgument() {
 
   if (argv._.length === 0 && (argv.v || argv.version)) {
-    console.log('react-native-desktop-cli: ' + require('./package.json').version);
+    console.log('react-native-macos-cli: ' + require('./package.json').version);
     try {
-      console.log('react-native-desktop-cli:: ' + require(REACT_NATIVE_PACKAGE_JSON_PATH()).version);
+      console.log('react-native-macos-cli:: ' + require(REACT_NATIVE_PACKAGE_JSON_PATH()).version);
     } catch (e) {
-      console.log('react-native-desktop-cli:: n/a - not inside a React Native project directory')
+      console.log('react-native-macos-cli:: n/a - not inside a React Native project directory')
     }
     process.exit();
   }

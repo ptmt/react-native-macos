@@ -642,7 +642,7 @@ dispatch_queue_t RCTGetUIManagerQueue(void)
 
       // Update without animation
       } else {
-        // Workaround for https://github.com/ptmt/react-native-desktop/issues/47
+        // Workaround for https://github.com/ptmt/react-native-macos/issues/47
         // Need to speedup layout or make a cancelling mechanism
         if (!view.isReactRootView) {
           [view reactSetFrame:frame];

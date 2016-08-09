@@ -2,7 +2,7 @@
 'use strict';
 
 import React from 'react';
-import ReactNative from 'react-native-desktop';
+import ReactNative from 'react-native-macos';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import logger from 'redux-logger';

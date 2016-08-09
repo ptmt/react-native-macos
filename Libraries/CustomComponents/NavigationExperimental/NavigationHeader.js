@@ -33,7 +33,7 @@
 'use strict';
 
 const React = require('React');
-const ReactNative = require('react-native-desktop');
+const ReactNative = require('react-native-macos');
 
 const NavigationHeaderTitle = require('NavigationHeaderTitle');
 const NavigationHeaderBackButton = require('NavigationHeaderBackButton');

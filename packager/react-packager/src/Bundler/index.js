@@ -639,7 +639,7 @@ class Bundler {
       };
 
       const json = JSON.stringify(asset);
-      const assetRegistryPath = 'react-native-desktop/Libraries/Image/AssetRegistry';
+      const assetRegistryPath = 'react-native-macos/Libraries/Image/AssetRegistry';
       const code =
         `module.exports = require(${JSON.stringify(assetRegistryPath)}).registerAsset(${json});`;
       const dependencies = [assetRegistryPath];

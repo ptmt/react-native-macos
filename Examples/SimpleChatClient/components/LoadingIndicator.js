@@ -5,7 +5,7 @@ import React,  {
   View,
   Text,
   ActivityIndicatorIOS,
-} from 'react-native-desktop';
+} from 'react-native-macos';
 
 export default class LoadingIndicator extends React.Component {
   render() {

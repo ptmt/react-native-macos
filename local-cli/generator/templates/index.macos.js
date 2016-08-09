@@ -1,9 +1,9 @@
 /**
  * Sample React Native Desktop App
- * https://github.com/ptmt/react-native-desktop
+ * https://github.com/ptmt/react-native-macos
  */
  import React from 'react';
- import ReactNative from 'react-native-desktop';
+ import ReactNative from 'react-native-macos';
  const {
    AppRegistry,
    StyleSheet,

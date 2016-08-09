@@ -6,7 +6,7 @@ import React,  {
   Text,
   Image,
   StyleSheet
-} from 'react-native-desktop';
+} from 'react-native-macos';
 
 import Markdown from './SuperSimpleMarkdown';
 

@@ -1,9 +1,9 @@
-## React Native Desktop
+## React Native for macOS (ex react-native-desktop)
 
-Build OS X desktop apps using React Native and Cocoa.
+Build macOS desktop apps using React Native and Cocoa.
 
-[![Build Status](https://travis-ci.org/ptmt/react-native-desktop.svg)](https://travis-ci.org/ptmt/react-native-desktop)
-[![npm version](https://badge.fury.io/js/react-native-desktop.svg)](https://badge.fury.io/js/react-native-desktop)
+[![Build Status](https://travis-ci.org/ptmt/react-native-macos.svg)](https://travis-ci.org/ptmt/react-native-macos)
+[![npm version](https://badge.fury.io/js/react-native-macos.svg)](https://badge.fury.io/js/react-native-macos)
 [![discord #react-native-platforms](https://img.shields.io/badge/reactiflux-%23react--native--platforms-blue.svg)](http://reactiflux.com)
 
 ```jsx
@@ -16,8 +16,8 @@ Build OS X desktop apps using React Native and Cocoa.
 ## Getting started
 
 ``` bash
-$ npm install react-native-desktop-cli -g
-$ react-native-desktop init MyProject
+$ npm install react-native-macos-cli -g
+$ react-native-macos init MyProject
 $ cd MyProject
 $ open macos/MyProject.xcodeproj
 ```
@@ -25,15 +25,11 @@ Since it's simply just a fork, you can follow [the same instruction on facebook.
 
 **Disclaimer**. Having previous experience with React Native highly recommended. There is no success story for any RN desktop app yet, so it's not proven by production use.
 
-Feel free to ask anything on `#react-native-desktop` channel if you run into problems (and you probably will).
-
-## Sponsorship
-
-Support for development on Patreon: https://www.patreon.com/reactnativedesktop
+Feel free to ask anything on `#react-native-platforms` channel if you run into problems.
 
 ## Examples
 
-[Download UIExplorer](https://github.com/ptmt/react-native-desktop/files/199128/UIExplorer.zip)
+[Download UIExplorer](https://github.com/ptmt/react-native-macos/files/199128/UIExplorer.zip)
 
 UIExplorer includes a set of examples and allows to you load external javascript bundle by http. Just copy&paste URL into SearchField.
 

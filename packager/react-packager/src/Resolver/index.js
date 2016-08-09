@@ -94,9 +94,9 @@ class Resolver {
       },
       providesModuleNodeModules: [
         'react',
-        'react-native-desktop',
+        'react-native-macos',
         // Parse requires AsyncStorage. They will
-        // change that to require('react-native-desktop') which
+        // change that to require('react-native-macos') which
         // should work after this release and we can
         // remove it from here.
         'parse',
@@ -107,7 +107,7 @@ class Resolver {
       cache: opts.cache,
       shouldThrowOnUnresolvedErrors: (_, platform) => (platform === 'ios' ||  platform === 'macos'),
       transformCode: opts.transformCode,
-      assetDependencies: ['react-native-desktop/Libraries/Image/AssetRegistry'],
+      assetDependencies: ['react-native-macos/Libraries/Image/AssetRegistry'],
       extraNodeModules: opts.extraNodeModules,
     });
 

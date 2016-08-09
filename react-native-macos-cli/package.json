@@ -1,21 +1,21 @@
 {
-  "name": "react-native-desktop-cli",
+  "name": "react-native-macos-cli",
   "version": "0.2.0",
   "license" : "BSD-3-Clause",
-  "description": "The React Native Desktop CLI tools",
+  "description": "The React Native MacOS CLI tools",
   "main": "index.js",
   "engines": {
     "node": ">=4"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ptmt/react-native-desktop.git"
+    "url": "https://github.com/ptmt/react-native-macos.git"
   },
   "scripts": {
     "test": "mocha"
   },
   "bin": {
-    "react-native-desktop": "index.js"
+    "react-native-macos": "index.js"
   },
   "dependencies": {
     "chalk": "^1.1.1",

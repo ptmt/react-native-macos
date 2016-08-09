@@ -100,7 +100,7 @@ function generateWrapper(args, config) {
 
 function printUsage() {
   console.log([
-    'Usage: react-native-desktop <command>',
+    'Usage: react-native-macos <command>',
     '',
     'Commands:'
   ].concat(Object.keys(documentedCommands).map(function(name) {
@@ -115,7 +115,7 @@ function printInitWarning() {
   return Promise.resolve().then(function() {
     console.log([
       'Looks like React Native project already exists in the current',
-      'folder. Run this command from a different folder or remove node_modules/react-native-desktop'
+      'folder. Run this command from a different folder or remove node_modules/react-native-macos'
     ].join('\n'));
     process.exit(1);
   });

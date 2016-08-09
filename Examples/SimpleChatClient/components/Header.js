@@ -9,7 +9,7 @@ import React,  {
   Component,
   TouchableHighlight,
   Image
-} from 'react-native-desktop';
+} from 'react-native-macos';
 
 import Tabs from './Tabs';
 

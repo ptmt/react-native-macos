@@ -23,7 +23,7 @@
 'use strict';
 
 const React = require('React');
-const ReactNative = require('react-native-desktop');
+const ReactNative = require('react-native-macos');
 const NavigationExampleRow = require('./NavigationExampleRow');
 const NavigationExampleTabBar = require('./NavigationExampleTabBar');
 

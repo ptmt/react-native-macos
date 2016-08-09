@@ -16,7 +16,7 @@
 'use strict';
 
 const React = require('React');
-const ReactNative = require('react-native-desktop');
+const ReactNative = require('react-native-macos');
 const StyleSheet = require('StyleSheet');
 const UIExplorerBlock = require('UIExplorerBlock');
 const UIExplorerPage = require('UIExplorerPage');

@@ -4,7 +4,7 @@
 'use strict';
 
 const React = require('React');
-const ReactNative = require('react-native-desktop');
+const ReactNative = require('react-native-macos');
 const {
   MenuManager,
   TouchableOpacity,

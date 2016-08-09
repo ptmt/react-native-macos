@@ -5,7 +5,7 @@ import React,  {
   Text,
   StyleSheet,
   ListView
-} from 'react-native-desktop';
+} from 'react-native-macos';
 
 import Message from './Message';
 

@@ -14,10 +14,10 @@ var installedGlobally = script.indexOf('node_modules/.bin/react-native') === -1;
 
 if (installedGlobally) {
   console.error([
-    '\033[31mLooks like you installed react-native-desktop globally, maybe you meant react-native-desktop-cli?',
+    '\033[31mLooks like you installed react-native-macos globally, maybe you meant react-native-macos-cli?',
     'To fix the issue, run:\033[0m',
-    'npm uninstall -g react-native-desktop',
-    'npm install -g react-native-desktop-cli'
+    'npm uninstall -g react-native-macos',
+    'npm install -g react-native-macos-cli'
   ].join('\n'));
   process.exit(1);
 } else {

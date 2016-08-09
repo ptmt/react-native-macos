@@ -17,7 +17,7 @@
 'use strict';
 
 var React = require('react');
-var ReactNative = require('react-native-desktop');
+var ReactNative = require('react-native-macos');
 var {
   Platform,
 } = ReactNative;

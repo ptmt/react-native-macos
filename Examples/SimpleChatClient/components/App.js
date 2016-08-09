@@ -1,7 +1,7 @@
 /* @flow */
 'use strict';
 
-import React, { Component, View } from 'react-native-desktop';
+import React, { Component, View } from 'react-native-macos';
 import SigninForm from './SigninForm';
 import ChatLayout from './ChatLayout';
 import Header from './Header';

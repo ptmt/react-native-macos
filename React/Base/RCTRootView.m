@@ -66,7 +66,7 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 
   if ((self = [super initWithFrame:CGRectZero])) {
 
-    // TODO: Turn on layer backing just to avoid https://github.com/ptmt/react-native-desktop/issues/47
+    // TODO: Turn on layer backing just to avoid https://github.com/ptmt/react-native-macos/issues/47
     // Maybe we could turn it off after the bug fixed in the future.
     if (([self window].styleMask & NSFullSizeContentViewWindowMask) != NSFullSizeContentViewWindowMask
         && [self window].contentView == self) {

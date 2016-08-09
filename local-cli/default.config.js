@@ -33,7 +33,7 @@ var config = {
   },
 
   extraNodeModules: {
-    'react-native': getRoots()[0] + '/node_modules/react-native-desktop',
+    'react-native': getRoots()[0] + '/node_modules/react-native-macos',
   }
 };
 
@@ -42,7 +42,7 @@ function getRoots() {
   if (root) {
     return [path.resolve(root)];
   }
-  if (__dirname.match(/node_modules[\/\\]react-native-desktop[\/\\]local-cli$/)) {
+  if (__dirname.match(/node_modules[\/\\]react-native-macos[\/\\]local-cli$/)) {
     // Packager is running from node_modules.
     // This is the default case for all projects created using 'react-native init'.
     return [path.resolve(__dirname, '../../..')];

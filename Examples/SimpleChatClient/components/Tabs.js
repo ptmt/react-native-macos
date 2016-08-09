@@ -9,7 +9,7 @@ import React,  {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Animated
-} from 'react-native-desktop';
+} from 'react-native-macos';
 
 
 class Tab extends React.Component {
