@@ -172,7 +172,7 @@ function createProject(name, verbose, rnPackage) {
   var projectName = path.basename(root);
 
   console.log(
-    'This will walk you through creating a new React Native project in',
+    'This will walk you through creating a new React Native for macOS project in',
     root
   );
 
@@ -201,7 +201,7 @@ function createProject(name, verbose, rnPackage) {
 }
 
 function getInstallPackage(rnPackage) {
-  var packageToInstall = 'react-native';
+  var packageToInstall = 'react-native-macos';
   var valideSemver = semver.valid(rnPackage);
   if (valideSemver) {
     packageToInstall += '@' + valideSemver;
