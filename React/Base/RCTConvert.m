@@ -135,6 +135,23 @@ RCT_CUSTOM_CONVERTER(NSData *, NSData, [json dataUsingEncoding:NSUTF8StringEncod
     if ([method isEqualToString:@"GET"] && headers == nil && body == nil) {
       return [NSURLRequest requestWithURL:URL];
     }
+
+    if (headers) {
+      __block BOOL allHeadersAreStrings = YES;
+      [headers enumerateKeysAndObjectsUsingBlock:^(NSString *key, id header, BOOL *stop) {
+        if (![header isKindOfClass:[NSString class]]) {
+          RCTLogError(@"Values of HTTP headers passed must be  of type string. "
+                      "Value of header '%@' is not a string.", key);
+          allHeadersAreStrings = NO;
+          *stop = YES;
+        }
+      }];
+      if (!allHeadersAreStrings) {
+        // Set headers to nil here to avoid crashing later.
+        headers = nil;
+      }
+    }
+
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
     request.HTTPBody = body;
     request.HTTPMethod = method;
@@ -233,13 +250,12 @@ NSNumber *RCTConvertMultiEnumValue(const char *typeName, NSDictionary *mapping, 
 }
 
 RCT_ENUM_CONVERTER(NSLineBreakMode, (@{
+  @"clip": @(NSLineBreakByClipping),
+  @"head": @(NSLineBreakByTruncatingHead),
+  @"tail": @(NSLineBreakByTruncatingTail),
+  @"middle": @(NSLineBreakByTruncatingMiddle),
   @"wordWrapping": @(NSLineBreakByWordWrapping),
-  @"charWrapping": @(NSLineBreakByCharWrapping),
-  @"clipping": @(NSLineBreakByClipping),
-  @"truncatingHead": @(NSLineBreakByTruncatingHead),
-  @"truncatingTail": @(NSLineBreakByTruncatingTail),
-  @"truncatingMiddle": @(NSLineBreakByTruncatingMiddle),
-}), NSLineBreakByWordWrapping, integerValue)
+}), NSLineBreakByTruncatingTail, integerValue)
 
 RCT_ENUM_CONVERTER(NSTextAlignment, (@{
   @"auto": @(NSTextAlignmentNatural),
@@ -408,225 +424,6 @@ RCT_CGSTRUCT_CONVERTER(CGAffineTransform, (@[
   return [self NSColor:json].CGColor;
 }
 
-#if !defined(__IPHONE_8_2) || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_8_2
-
-// These constants are defined in iPhone SDK 8.2, but the app cannot run on
-// iOS < 8.2 unless we redefine them here. If you target iOS 8.2 or above
-// as a base target, the standard constants will be used instead.
-
-#define UIFontWeightUltraLight -0.8
-#define UIFontWeightThin -0.6
-#define UIFontWeightLight -0.4
-#define UIFontWeightRegular 0
-#define UIFontWeightMedium 0.23
-#define UIFontWeightSemibold 0.3
-#define UIFontWeightBold 0.4
-#define UIFontWeightHeavy 0.56
-#define UIFontWeightBlack 0.62
-
-#endif
-
-typedef CGFloat RCTFontWeight;
-RCT_ENUM_CONVERTER(RCTFontWeight, (@{
-  @"normal": @(NSFontWeightRegular),
-  @"bold": @(NSFontWeightBold),
-  @"100": @(NSFontWeightUltraLight),
-  @"200": @(NSFontWeightThin),
-  @"300": @(NSFontWeightLight),
-  @"400": @(NSFontWeightRegular),
-  @"500": @(NSFontWeightMedium),
-  @"600": @(NSFontWeightSemibold),
-  @"700": @(NSFontWeightBold),
-  @"800": @(NSFontWeightHeavy),
-  @"900": @(NSFontWeightBlack),
-}), NSFontWeightRegular, doubleValue)
-
-typedef BOOL RCTFontStyle;
-RCT_ENUM_CONVERTER(RCTFontStyle, (@{
-  @"normal": @NO,
-  @"italic": @YES,
-  @"oblique": @YES,
-}), NO, boolValue)
-
-static RCTFontWeight RCTWeightOfFont(NSFont *font)
-{
-  static NSDictionary *nameToWeight;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    nameToWeight = @{
-      @"normal": @(NSFontWeightRegular),
-      @"bold": @(NSFontWeightBold),
-      @"ultralight": @(NSFontWeightUltraLight),
-      @"thin": @(NSFontWeightThin),
-      @"light": @(NSFontWeightLight),
-      @"regular": @(NSFontWeightRegular),
-      @"medium": @(NSFontWeightMedium),
-      @"semibold": @(NSFontWeightSemibold),
-      @"bold": @(NSFontWeightBold),
-      @"heavy": @(NSFontWeightHeavy),
-      @"black": @(NSFontWeightBlack),
-    };
-  });
-
-  NSDictionary *traits = [font.fontDescriptor objectForKey:NSFontTraitsAttribute];
-  RCTFontWeight weight = [traits[NSFontWeightTrait] doubleValue];
-  if (weight == 0.0) {
-    for (NSString *name in nameToWeight) {
-      if ([font.fontName.lowercaseString hasSuffix:name]) {
-        return [nameToWeight[name] doubleValue];
-      }
-    }
-  }
-  return weight;
-}
-
-static BOOL RCTFontIsItalic(NSFont *font)
-{
-  NSDictionary *traits = [font.fontDescriptor objectForKey:NSFontTraitsAttribute];
-  NSFontSymbolicTraits symbolicTraits = [traits[NSFontSymbolicTrait] unsignedIntValue];
-  return (symbolicTraits & kCTFontTraitItalic) != 0;
-}
-
-static BOOL RCTFontIsCondensed(NSFont *font)
-{
-  NSDictionary *traits = [font.fontDescriptor objectForKey:NSFontTraitsAttribute];
-  NSFontSymbolicTraits symbolicTraits = [traits[NSFontSymbolicTrait] unsignedIntValue];
-  return (symbolicTraits & kCTFontTraitCondensed) != 0;
-}
-
-+ (NSFont *)NSFont:(id)json
-{
-  json = [self NSDictionary:json];
-  return [self NSFont:nil
-           withFamily:json[@"fontFamily"]
-                 size:json[@"fontSize"]
-               weight:json[@"fontWeight"]
-                style:json[@"fontStyle"]
-          scaleMultiplier:1.0f];
-}
-
-+ (NSFont *)NSFont:(NSFont *)font withSize:(id)json
-{
-  return [self NSFont:font withFamily:nil size:json weight:nil style:nil scaleMultiplier:1.0];
-}
-
-+ (NSFont *)NSFont:(NSFont *)font withWeight:(id)json
-{
-  return [self NSFont:font withFamily:nil size:nil weight:json style:nil scaleMultiplier:1.0];
-}
-
-+ (NSFont *)NSFont:(NSFont *)font withStyle:(id)json
-{
-  return [self NSFont:font withFamily:nil size:nil weight:nil style:json scaleMultiplier:1.0];
-}
-
-+ (NSFont *)NSFont:(NSFont *)font withFamily:(id)json
-{
-  return [self NSFont:font withFamily:json size:nil weight:nil style:nil scaleMultiplier:1.0];
-}
-
-+ (NSFont *)NSFont:(NSFont *)font withFamily:(id)family
-              size:(id)size weight:(id)weight style:(id)style
-   scaleMultiplier:(CGFloat)scaleMultiplier
-{
-  // Defaults
-  NSString *const RCTDefaultFontFamily = @"'System";
-  NSString *const RCTIOS8SystemFontFamily = @"'San Francisco";
-  const RCTFontWeight RCTDefaultFontWeight = NSFontWeightRegular;
-  const CGFloat RCTDefaultFontSize = 14;
-
-  // Initialize properties to defaults
-  CGFloat fontSize = RCTDefaultFontSize;
-  RCTFontWeight fontWeight = RCTDefaultFontWeight;
-  NSString *familyName = RCTDefaultFontFamily;
-  BOOL isItalic = NO;
-  BOOL isCondensed = NO;
-
-  if (font) {
-    familyName = font.familyName ?: RCTDefaultFontFamily;
-    fontSize = font.pointSize ?: RCTDefaultFontSize;
-    fontWeight = RCTWeightOfFont(font);
-    isItalic = RCTFontIsItalic(font);
-    isCondensed = RCTFontIsCondensed(font);
-  }
-
-  // Get font attributes
-  fontSize = [self CGFloat:size] ?: fontSize;
-  if (scaleMultiplier > 0.0 && scaleMultiplier != 1.0) {
-    fontSize = round(fontSize * scaleMultiplier);
-  }
-  familyName = [self NSString:family] ?: familyName;
-  isItalic = style ? [self RCTFontStyle:style] : isItalic;
-  fontWeight = weight ? [self RCTFontWeight:weight] : fontWeight;
-
-  // Handle system font as special case. This ensures that we preserve
-  // the specific metrics of the standard system font as closely as possible.
-  if ([familyName isEqual:RCTDefaultFontFamily]) {
-    if ([NSFont respondsToSelector:@selector(systemFontOfSize:weight:)]) {
-      font = [NSFont systemFontOfSize:fontSize weight:fontWeight];
-      if (isItalic || isCondensed) {
-        NSFontDescriptor *fontDescriptor = [font fontDescriptor];
-        NSFontSymbolicTraits symbolicTraits = fontDescriptor.symbolicTraits;
-        if (isItalic) {
-          symbolicTraits |= NSFontItalicTrait;
-        }
-        if (isCondensed) {
-          symbolicTraits |= NSFontCondensedTrait;
-        }
-        fontDescriptor = [fontDescriptor fontDescriptorWithSymbolicTraits:symbolicTraits];
-        font = [NSFont fontWithDescriptor:fontDescriptor size:fontSize];
-      }
-      return font;
-    } else {
-      // systemFontOfSize:weight: isn't available prior to iOS 8.2, so we
-      // fall back to finding the correct font manually, by linear search.
-      familyName = RCTIOS8SystemFontFamily;
-    }
-  }
-
-  // Gracefully handle being given a font name rather than font family, for
-  // example: "Helvetica Light Oblique" rather than just "Helvetica".
-  if ([[NSFontManager sharedFontManager] availableMembersOfFontFamily:familyName].count == 0) {
-    font = [NSFont fontWithName:familyName size:fontSize];
-    if (font) {
-      // It's actually a font name, not a font family name,
-      // but we'll do what was meant, not what was said.
-      familyName = font.familyName;
-      fontWeight = weight ? fontWeight : RCTWeightOfFont(font);
-      isItalic = style ? isItalic : RCTFontIsItalic(font);
-      isCondensed = RCTFontIsCondensed(font);
-    } else {
-      // Not a valid font or family
-      RCTLogError(@"Unrecognized font family '%@'", familyName);
-      if ([NSFont respondsToSelector:@selector(systemFontOfSize:weight:)]) {
-        font = [NSFont systemFontOfSize:fontSize weight:fontWeight];
-      } else if (fontWeight > NSFontWeightRegular) {
-        font = [NSFont boldSystemFontOfSize:fontSize];
-      } else {
-        font = [NSFont systemFontOfSize:fontSize];
-      }
-    }
-  }
-
-  // Get the closest font that matches the given weight for the fontFamily
-  NSFont *bestMatch = font;
-  CGFloat closestWeight = INFINITY;
-  for (NSArray* candidate in [[NSFontManager sharedFontManager] availableMembersOfFontFamily:familyName]) {
-    NSFont *match = [NSFont fontWithName:candidate[0] size:fontSize];
-    // TODO: we already have an array with the following information
-    if (isItalic == RCTFontIsItalic(match) &&
-        isCondensed == RCTFontIsCondensed(match)) {
-      CGFloat testWeight = RCTWeightOfFont(match);
-      if (ABS(testWeight - fontWeight) < ABS(closestWeight - fontWeight)) {
-        bestMatch = match;
-        closestWeight = testWeight;
-      }
-    }
-  }
-
-  return bestMatch;
-}
-
 NSArray *RCTConvertArrayValue(SEL type, id json)
 {
   __block BOOL copy = NO;
@@ -750,36 +547,38 @@ RCT_ENUM_CONVERTER(css_clip_t, (@{
   @"visible": @NO
 }), NO, boolValue)
 
-RCT_ENUM_CONVERTER(css_flex_direction_t, (@{
-  @"row": @(CSS_FLEX_DIRECTION_ROW),
-  @"column": @(CSS_FLEX_DIRECTION_COLUMN)
-}), CSS_FLEX_DIRECTION_COLUMN, intValue)
+RCT_ENUM_CONVERTER(CSSFlexDirection, (@{
+  @"row": @(CSSFlexDirectionRow),
+  @"row-reverse": @(CSSFlexDirectionRowReverse),
+  @"column": @(CSSFlexDirectionColumn),
+  @"column-reverse": @(CSSFlexDirectionColumnReverse)
+}), CSSFlexDirectionColumn, intValue)
 
-RCT_ENUM_CONVERTER(css_justify_t, (@{
-  @"flex-start": @(CSS_JUSTIFY_FLEX_START),
-  @"flex-end": @(CSS_JUSTIFY_FLEX_END),
-  @"center": @(CSS_JUSTIFY_CENTER),
-  @"space-between": @(CSS_JUSTIFY_SPACE_BETWEEN),
-  @"space-around": @(CSS_JUSTIFY_SPACE_AROUND)
-}), CSS_JUSTIFY_FLEX_START, intValue)
+RCT_ENUM_CONVERTER(CSSJustify, (@{
+  @"flex-start": @(CSSJustifyFlexStart),
+  @"flex-end": @(CSSJustifyFlexEnd),
+  @"center": @(CSSJustifyCenter),
+  @"space-between": @(CSSJustifySpaceBetween),
+  @"space-around": @(CSSJustifySpaceAround)
+}), CSSJustifyFlexStart, intValue)
 
-RCT_ENUM_CONVERTER(css_align_t, (@{
-  @"flex-start": @(CSS_ALIGN_FLEX_START),
-  @"flex-end": @(CSS_ALIGN_FLEX_END),
-  @"center": @(CSS_ALIGN_CENTER),
-  @"auto": @(CSS_ALIGN_AUTO),
-  @"stretch": @(CSS_ALIGN_STRETCH)
-}), CSS_ALIGN_FLEX_START, intValue)
+RCT_ENUM_CONVERTER(CSSAlign, (@{
+  @"flex-start": @(CSSAlignFlexStart),
+  @"flex-end": @(CSSAlignFlexEnd),
+  @"center": @(CSSAlignCenter),
+  @"auto": @(CSSAlignAuto),
+  @"stretch": @(CSSAlignStretch)
+}), CSSAlignFlexStart, intValue)
 
-RCT_ENUM_CONVERTER(css_position_type_t, (@{
-  @"absolute": @(CSS_POSITION_ABSOLUTE),
-  @"relative": @(CSS_POSITION_RELATIVE)
-}), CSS_POSITION_RELATIVE, intValue)
+RCT_ENUM_CONVERTER(CSSPositionType, (@{
+  @"absolute": @(CSSPositionTypeAbsolute),
+  @"relative": @(CSSPositionTypeRelative)
+}), CSSPositionTypeRelative, intValue)
 
-RCT_ENUM_CONVERTER(css_wrap_type_t, (@{
-  @"wrap": @(CSS_WRAP),
-  @"nowrap": @(CSS_NOWRAP)
-}), CSS_NOWRAP, intValue)
+RCT_ENUM_CONVERTER(CSSWrapType, (@{
+  @"wrap": @(CSSWrapTypeWrap),
+  @"nowrap": @(CSSWrapTypeNoWrap)
+}), CSSWrapTypeNoWrap, intValue)
 
 RCT_ENUM_CONVERTER(RCTPointerEvents, (@{
   @"none": @(RCTPointerEventsNone),
@@ -831,11 +630,11 @@ RCT_ENUM_CONVERTER(RCTAnimationType, (@{
     return image;
   }
 
-  NSURL *URL = imageSource.imageURL;
+  NSURL *URL = imageSource.request.URL;
   NSString *scheme = URL.scheme.lowercaseString;
   if ([scheme isEqualToString:@"file"]) {
     NSString *assetName = RCTBundlePathForURL(URL);
-    image = [NSImage imageNamed:assetName];
+    image = assetName ? [NSImage imageNamed:assetName] : nil;
     if (!image) {
       // Attempt to load from the file system
       NSString *filePath = URL.path;
@@ -867,7 +666,7 @@ RCT_ENUM_CONVERTER(RCTAnimationType, (@{
 
   if (!CGSizeEqualToSize(imageSource.size, CGSizeZero) &&
       !CGSizeEqualToSize(imageSource.size, image.size)) {
-    RCTLogError(@"Image source size %f x %f does not match loaded image size %f x %f", imageSource.size.width, imageSource.size.height, image.size.width, image.size.height);
+    RCTLogError(@"Image source size %f x %f does not match loaded image size %f x %f", URL.path.lastPathComponent, imageSource.size.height, image.size.width, image.size.height);
   }
 
   return image;

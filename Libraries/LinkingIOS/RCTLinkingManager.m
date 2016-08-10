@@ -21,17 +21,13 @@ NSString *const RCTOpenURLNotification = @"RCTOpenURLNotification";
 
 RCT_EXPORT_MODULE()
 
-- (instancetype)init
-{
-  // We're only overriding this to ensure the module gets created at startup
-  // TODO (t11106126): Remove once we have more declarative control over module setup.
-  return [super init];
-}
-
 - (void)setBridge:(RCTBridge *)bridge
 {
-  _bridge = bridge;
+    _bridge = bridge;
+}
 
+- (void)startObserving
+{
   [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
 
   [[NSNotificationCenter defaultCenter] addObserver:self
@@ -40,15 +36,20 @@ RCT_EXPORT_MODULE()
                                              object:nil];
 }
 
+- (void)stopObserving
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (NSDictionary<NSString *, id> *)constantsToExport
 {
   NSString *argv = _bridge.launchOptions[@"argv"];
   return @{@"argv": RCTNullIfNil(argv)};
 }
 
-- (void)dealloc
+- (NSArray<NSString *> *)supportedEvents
 {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  return @[@"url"];
 }
 
 + (BOOL)application:(NSApplication *)application
@@ -87,13 +88,12 @@ continueUserActivity:(NSUserActivity *)userActivity
 
 - (void)handleOpenURLNotification:(NSNotification *)notification
 {
-  [_bridge.eventDispatcher sendDeviceEventWithName:@"openURL"
-                                              body:notification.userInfo];
+  [self sendEventWithName:@"url" body:notification.userInfo];
 }
 
 RCT_EXPORT_METHOD(openURL:(NSURL *)URL
                   resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(__unused RCTPromiseRejectBlock)reject)
+                  reject:(RCTPromiseRejectBlock)reject)
 {
   // TODO: we should really return success/failure via a callback here
   // Doesn't really matter what thread we call this on since it exits the app
@@ -113,9 +113,31 @@ RCT_EXPORT_METHOD(canOpenURL:(NSURL *)URL
     return;
   }
 
+  // TODO: on iOS9 this will fail if URL isn't included in the plist
+  // we should probably check for that and reject in that case instead of
+  // simply resolving with NO
+
   // This can be expensive, so we deliberately don't call on main thread
   BOOL canOpen = YES; // TODO: actual checking
   resolve(@(canOpen));
 }
+
+//RCT_EXPORT_METHOD(getInitialURL:(RCTPromiseResolveBlock)resolve
+//                  reject:(__unused RCTPromiseRejectBlock)reject)
+//{
+//  NSURL *initialURL = nil;
+//  if (self.bridge.launchOptions[UIApplicationLaunchOptionsURLKey]) {
+//    initialURL = self.bridge.launchOptions[UIApplicationLaunchOptionsURLKey];
+//  } else if (&UIApplicationLaunchOptionsUserActivityDictionaryKey &&
+//             self.bridge.launchOptions[UIApplicationLaunchOptionsUserActivityDictionaryKey]) {
+//    NSDictionary *userActivityDictionary =
+//      self.bridge.launchOptions[UIApplicationLaunchOptionsUserActivityDictionaryKey];
+//
+//    if ([userActivityDictionary[UIApplicationLaunchOptionsUserActivityTypeKey] isEqual:NSUserActivityTypeBrowsingWeb]) {
+//      initialURL = ((NSUserActivity *)userActivityDictionary[@"UIApplicationLaunchOptionsUserActivityKey"]).webpageURL;
+//    }
+//  }
+//  resolve(RCTNullIfNil(initialURL.absoluteString));
+//}
 
 @end

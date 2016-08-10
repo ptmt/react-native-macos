@@ -9,9 +9,9 @@
 
 #import <AppKit/AppKit.h>
 
-#import "RCTBridgeModule.h"
+#import "RCTEventEmitter.h"
 
-@interface RCTLinkingManager : NSObject <RCTBridgeModule>
+@interface RCTLinkingManager : RCTEventEmitter
 
 + (BOOL)application:(NSApplication *)application
             openURL:(NSURL *)URL

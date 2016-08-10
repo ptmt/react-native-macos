@@ -80,7 +80,7 @@ RCT_EXPORT_METHOD(scrollTo:(nonnull NSNumber *)reactTag
   [self.bridge.uiManager addUIBlock:
    ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, RCTNativeScrollView *> *viewRegistry){
      RCTNativeScrollView *view = viewRegistry[reactTag];
-     
+
      if ([view conformsToProtocol:@protocol(RCTScrollableProtocol)]) {
        [(id<RCTScrollableProtocol>)view scrollToOffset:(CGPoint){x, y} animated:animated];
      } else {

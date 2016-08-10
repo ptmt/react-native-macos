@@ -39,6 +39,7 @@ static BOOL RCTShouldReloadImageForSizeChange(CGSize currentSize, CGSize idealSi
 
 @interface RCTImageView ()
 
+@property (nonatomic, strong) RCTImageSource *imageSource;
 @property (nonatomic, copy) RCTDirectEventBlock onLoadStart;
 @property (nonatomic, copy) RCTDirectEventBlock onProgress;
 @property (nonatomic, copy) RCTDirectEventBlock onError;
@@ -67,6 +68,11 @@ static BOOL RCTShouldReloadImageForSizeChange(CGSize currentSize, CGSize idealSi
     [self setWantsLayer:YES];
   }
   return self;
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 RCT_NOT_IMPLEMENTED(- (instancetype)init)
@@ -145,10 +151,10 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
   }
 }
 
-- (void)setSource:(RCTImageSource *)source
+- (void)setSource:(NSArray<RCTImageSource *> *)source
 {
   if (![source isEqual:_source]) {
-    _source = source;
+    _source = [source copy];
     [self reloadImage];
   }
 }
@@ -185,11 +191,58 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
   self.image = nil;
 }
 
+- (void)clearImageIfDetached
+{
+  if (!self.window) {
+    [self clearImage];
+  }
+}
+
+- (BOOL)hasMultipleSources
+{
+  return _source.count > 1;
+}
+
+- (RCTImageSource *)imageSourceForSize:(CGSize)size
+{
+  if (![self hasMultipleSources]) {
+    return _source.firstObject;
+  }
+  // Need to wait for layout pass before deciding.
+  if (CGSizeEqualToSize(size, CGSizeZero)) {
+    return nil;
+  }
+  const CGFloat scale = RCTScreenScale();
+  const CGFloat targetImagePixels = size.width * size.height * scale * scale;
+
+  RCTImageSource *bestSource = nil;
+  CGFloat bestFit = CGFLOAT_MAX;
+  for (RCTImageSource *source in _source) {
+    CGSize imgSize = source.size;
+    const CGFloat imagePixels =
+      imgSize.width * imgSize.height * source.scale * source.scale;
+    const CGFloat fit = ABS(1 - (imagePixels / targetImagePixels));
+
+    if (fit < bestFit) {
+      bestFit = fit;
+      bestSource = source;
+    }
+  }
+  return bestSource;
+}
+
+- (BOOL)desiredImageSourceDidChange
+{
+  return ![[self imageSourceForSize:self.frame.size] isEqual:_imageSource];
+}
+
 - (void)reloadImage
 {
   [self cancelImageLoad];
 
-  if (_source && self.frame.size.width > 0 && self.frame.size.height > 0) {
+  _imageSource = [self imageSourceForSize:self.frame.size];
+
+  if (_imageSource && self.frame.size.width > 0 && self.frame.size.height > 0) {
     if (_onLoadStart) {
       _onLoadStart(nil);
     }
@@ -197,7 +250,7 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
     RCTImageLoaderProgressBlock progressHandler = nil;
     if (_onProgress) {
       progressHandler = ^(int64_t loaded, int64_t total) {
-        _onProgress(@{
+        self->_onProgress(@{
           @"loaded": @((double)loaded),
           @"total": @((double)total),
         });
@@ -209,18 +262,20 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
     if (!UIEdgeInsetsEqualToEdgeInsets(_capInsets, NSEdgeInsetsZero)) {
       // Don't resize images that use capInsets
       imageSize = CGSizeZero;
-      imageScale = _source.scale;
+      imageScale = _imageSource.scale;
     }
 
-    RCTImageSource *source = _source;
+    RCTImageSource *source = _imageSource;
     CGFloat blurRadius = _blurRadius;
     __weak RCTImageView *weakSelf = self;
-    _reloadImageCancellationBlock = [_bridge.imageLoader loadImageWithoutClipping:_source.imageURL.absoluteString
-                                                                             size:imageSize
-                                                                            scale:imageScale
-                                                                       resizeMode:(RCTResizeMode)self.contentMode
-                                                                    progressBlock:progressHandler
-                                                                  completionBlock:^(NSError *error, NSImage *loadedImage) {
+    [_bridge.imageLoader loadImageWithURLRequest:source.request
+                                            size:imageSize
+                                           scale:imageScale
+                                         clipped:NO
+                                      resizeMode:_resizeMode
+                                   progressBlock:progressHandler
+                                 completionBlock:^(NSError *error, NSImage *loadedImage) {
+
       RCTImageView *strongSelf = weakSelf;
       void (^setImageBlock)(NSImage *) = ^(NSImage *image) {
         if (![source isEqual:strongSelf.source]) {
@@ -251,22 +306,18 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
         // Blur on a background thread to avoid blocking interaction
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
           NSImage *image = RCTBlurredImageWithRadius(loadedImage, blurRadius);
-          RCTExecuteOnMainThread(^{
+          RCTExecuteOnMainQueue(^{
             setImageBlock(image);
-          }, NO);
+          });
         });
       } else {
         // No blur, so try to set the image on the main thread synchronously to minimize image
         // flashing. (For instance, if this view gets attached to a window, then -didMoveToWindow
         // calls -reloadImage, and we want to set the image synchronously if possible so that the
         // image property is set in the same CATransaction that attaches this view to the window.)
-        if ([NSThread isMainThread]) {
+        RCTExecuteOnMainQueue(^{
           setImageBlock(loadedImage);
-        } else {
-          RCTExecuteOnMainThread(^{
-            setImageBlock(loadedImage);
-          }, NO);
-        }
+        });
       }
     }];
   } else {
@@ -287,9 +338,13 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
     CGSize idealSize = RCTTargetSize(imageSize, 1.0f, frame.size,
                                      RCTScreenScale(), (RCTResizeMode)self.contentMode, YES);
 
-    if (RCTShouldReloadImageForSizeChange(imageSize, idealSize)) {
+    if ([self desiredImageSourceDidChange]) {
+      // Reload to swap to the proper image source.
+      _targetSize = idealSize;
+      [self reloadImage];
+    } else if (RCTShouldReloadImageForSizeChange(imageSize, idealSize)) {
       if (RCTShouldReloadImageForSizeChange(_targetSize, idealSize)) {
-        RCTLogInfo(@"[PERF IMAGEVIEW] Reloading image %@ as size %f %f", _source.imageURL, idealSize.width, idealSize.height);
+        RCTLogInfo(@"[PERF IMAGEVIEW] Reloading image %@ as size %f %f", _imageSource.request.URL.absoluteString, idealSize.width, idealSize.height);
 
         // If the existing image or an image being loaded are not the right
         // size, reload the asset in case there is a better size available.
@@ -309,22 +364,11 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
   //[super didMoveToWindow];
 
   if (!self.window) {
-    // Don't keep self alive through the asynchronous dispatch, if the intention
-    // was to remove the view so it would deallocate.
-    __weak typeof(self) weakSelf = self;
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-      __strong typeof(self) strongSelf = weakSelf;
-      if (!strongSelf) {
-        return;
-      }
-
-      // If we haven't been re-added to a window by this run loop iteration,
-      // clear out the image to save memory.
-      if (!strongSelf.window) {
-        [strongSelf clearImage];
-      }
-    });
+    // Cancel loading the image if we've moved offscreen. In addition to helping
+    // prioritise image requests that are actually on-screen, this removes
+    // requests that have gotten "stuck" from the queue, unblocking other images
+    // from loading.
+    [self cancelImageLoad];
   } else if (!self.image || self.image == _defaultImage) {
     [self reloadImage];
   }

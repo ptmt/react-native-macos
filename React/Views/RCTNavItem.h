@@ -14,6 +14,7 @@
 @interface RCTNavItem : NSView
 
 @property (nonatomic, copy) NSString *title;
+@property (nonatomic, strong) NSImage *titleImage;
 @property (nonatomic, strong) NSImage *leftButtonIcon;
 @property (nonatomic, copy) NSString *leftButtonTitle;
 @property (nonatomic, strong) NSImage *rightButtonIcon;
@@ -27,9 +28,10 @@
 @property (nonatomic, strong) NSColor *titleTextColor;
 @property (nonatomic, assign) BOOL translucent;
 
-@property (nonatomic, readonly) NSBarButtonItem *backButtonItem;
-@property (nonatomic, readonly) UIBarButtonItem *leftButtonItem;
-@property (nonatomic, readonly) UIBarButtonItem *rightButtonItem;
+// @property (nonatomic, readonly) UIImageView *titleImageView;
+// @property (nonatomic, readonly) UIBarButtonItem *backButtonItem;
+// @property (nonatomic, readonly) UIBarButtonItem *leftButtonItem;
+// @property (nonatomic, readonly) UIBarButtonItem *rightButtonItem;
 
 @property (nonatomic, copy) RCTBubblingEventBlock onLeftButtonPress;
 @property (nonatomic, copy) RCTBubblingEventBlock onRightButtonPress;

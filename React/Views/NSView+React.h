@@ -9,16 +9,36 @@
 
 #import <AppKit/AppKit.h>
 
-@class RCTShadowView;
-
 #import "RCTComponent.h"
 
-//TODO: let's try to eliminate this category if possible
+@class RCTShadowView;
 
 @interface NSView (React) <RCTComponent>
 
-- (NSArray<NSView *> *)reactSubviews;
-- (NSView *)reactSuperview;
+/**
+ * RCTComponent interface.
+ */
+- (NSArray<NSView *> *)reactSubviews NS_REQUIRES_SUPER;
+- (NSView *)reactSuperview NS_REQUIRES_SUPER;
+- (void)insertReactSubview:(NSView *)subview atIndex:(NSInteger)atIndex NS_REQUIRES_SUPER;
+- (void)removeReactSubview:(NSView *)subview NS_REQUIRES_SUPER;
+
+/**
+ * z-index, used to override sibling order in didUpdateReactSubviews.
+ */
+@property (nonatomic, assign) NSInteger reactZIndex;
+
+/**
+ * The reactSubviews array, sorted by zIndex. This value is cached and
+ * automatically recalculated if views are added or removed.
+ */
+@property (nonatomic, copy, readonly) NSArray<NSView *> *sortedReactSubviews;
+
+/**
+ * Updates the subviews array based on the reactSubviews. Default behavior is
+ * to insert the sortedReactSubviews into the UIView.
+ */
+- (void)didUpdateReactSubviews;
 
 /**
  * Used by the UIIManager to set the view frame.
@@ -56,11 +76,14 @@
  */
 @property (nonatomic, assign) BOOL clipsToBounds;
 
+#if RCT_DEV
+
 /**
  Tools for debugging
  */
-#if RCT_DEV
+
 @property (nonatomic, strong, setter=_DEBUG_setReactShadowView:) RCTShadowView *_DEBUG_reactShadowView;
+
 #endif
 
 @end

@@ -102,7 +102,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     _maxFPS = MAX(_maxFPS, _FPS);
 
     dispatch_async(dispatch_get_main_queue(), ^{
-      _label.stringValue = [NSString stringWithFormat:@"%lu", (unsigned long)_FPS];
+      self->_label.stringValue = [NSString stringWithFormat:@"%lu", (unsigned long)self->_FPS];
     });
 
 

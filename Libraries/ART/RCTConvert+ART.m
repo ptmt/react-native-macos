@@ -14,6 +14,7 @@
 #import "ARTRadialGradient.h"
 #import "ARTSolidColor.h"
 #import "RCTLog.h"
+#import "RCTFont.h"
 
 @implementation RCTConvert (ART)
 
@@ -94,7 +95,7 @@ RCT_ENUM_CONVERTER(CTTextAlignment, (@{
 
   // Create a dictionary for this font
   CFDictionaryRef attributes = (__bridge CFDictionaryRef)@{
-    (NSString *)kCTFontAttributeName: (__bridge id)font,
+    (NSString *)kCTFontAttributeName:(__bridge id)font,
     (NSString *)kCTForegroundColorFromContextAttributeName: @YES
   };
 

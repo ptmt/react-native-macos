@@ -14,6 +14,8 @@ typedef NS_ENUM(NSInteger, RCTResizeMode) {
   RCTResizeModeContain = 0,
   RCTResizeModeCover = 1,
   RCTResizeModeStretch = 2,
+  RCTResizeModeCenter = 3,
+  RCTResizeModeRepeat = -1,
 };
 
 @interface RCTConvert(RCTResizeMode)

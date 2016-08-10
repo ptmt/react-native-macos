@@ -63,6 +63,7 @@
 @implementation RCTTextView
 {
   RCTEventDispatcher *_eventDispatcher;
+
   NSString *_placeholder;
   RCTUITextView *_textView;
   NSInteger _nativeEventCount;
@@ -70,10 +71,18 @@
   RCTText *_richTextView;
   NSAttributedString *_pendingAttributedText;
   NSMutableArray<NSView *> *_subviews;
+  NSString *_predictedText;
   BOOL _blockTextShouldChange;
+  BOOL _nativeUpdatesInFlight;
   NSArray <NSValue *> * _previousSelectionRanges;
   NSScrollView *_scrollView;
+
+  NSUInteger _previousTextLength;
+  CGFloat _previousContentHeight;
   BOOL _jsRequestingFirstResponder;
+
+  CGSize _previousContentSize;
+  BOOL _viewDidCompleteInitialLayout;
 }
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
@@ -114,19 +123,14 @@
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
-- (NSArray<NSView *> *)reactSubviews
-{
-  return _subviews;
-}
-
 - (void)insertReactSubview:(NSView *)subview atIndex:(NSInteger)index
 {
+  [super insertReactSubview:subview atIndex:index];
   if ([subview isKindOfClass:[RCTText class]]) {
     if (_richTextView) {
       RCTLogError(@"Tried to insert a second <Text> into <TextInput> - there can only be one.");
     }
     _richTextView = (RCTText *)subview;
-    [_subviews insertObject:_richTextView atIndex:index];
 
     // If this <TextInput> is in rich text editing mode, and the child <Text> node providing rich text
     // styling has a backgroundColor, then the attributedText produced by the child <Text> node will have an
@@ -134,22 +138,28 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     // always has a clear background color in -initWithEventDispatcher:.
     //
     // TODO: This should be removed when the related hack in -performPendingTextUpdate is removed.
-    
-  } else {
-    [_subviews insertObject:subview atIndex:index];
-    [self addSubview:subview];
+    if (subview.layer.backgroundColor) {
+      NSMutableDictionary<NSString *, id> *attrs = [_textView.typingAttributes mutableCopy];
+      attrs[NSBackgroundColorAttributeName] = (__bridge id _Nullable)(subview.layer.backgroundColor);
+      _textView.typingAttributes = attrs;
+    }
+
+    [self performTextUpdate];
   }
 }
 
 - (void)removeReactSubview:(NSView *)subview
 {
+  [super removeReactSubview:subview];
   if (_richTextView == subview) {
-    [_subviews removeObject:_richTextView];
     _richTextView = nil;
-  } else {
-    [_subviews removeObject:subview];
-    [subview removeFromSuperview];
+    [self performTextUpdate];
   }
+}
+
+- (void)didUpdateReactSubviews
+{
+  // Do nothing, as we don't allow non-text subviews
 }
 
 - (void)setMostRecentEventCount:(NSInteger)mostRecentEventCount
@@ -174,8 +184,52 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
+static NSAttributedString *removeReactTagFromString(NSAttributedString *string)
+{
+  if (string.length == 0) {
+    return string;
+  } else {
+    NSMutableAttributedString *mutableString = [[NSMutableAttributedString alloc] initWithAttributedString:string];
+    [mutableString removeAttribute:RCTReactTagAttributeName range:NSMakeRange(0, mutableString.length)];
+    return mutableString;
+  }
+}
+
 - (void)performPendingTextUpdate
 {
+  if (!_pendingAttributedText || _mostRecentEventCount < _nativeEventCount || _nativeUpdatesInFlight) {
+    return;
+  }
+
+  // The underlying <Text> node that produces _pendingAttributedText has a react tag attribute on it that causes the
+  // -isEqualToAttributedString: comparison below to spuriously fail. We don't want that comparison to fail unless it
+  // needs to because when the comparison fails, we end up setting attributedText on the text view, which clears
+  // autocomplete state for CKJ text input.
+  //
+  // TODO: Kill this after we finish passing all style/attribute info into JS.
+  _pendingAttributedText = removeReactTagFromString(_pendingAttributedText);
+
+  if ([_textView.attributedString isEqualToAttributedString:_pendingAttributedText]) {
+    _pendingAttributedText = nil; // Don't try again.
+    return;
+  }
+
+  // When we update the attributed text, there might be pending autocorrections
+  // that will get accepted by default. In order for this to not garble our text,
+  // we temporarily block all textShouldChange events so they are not applied.
+  _blockTextShouldChange = YES;
+
+  // NSInteger oldTextLength = _textView.attributedString.length;
+
+  [_textView.textStorage setAttributedString:_pendingAttributedText];
+  _predictedText = _pendingAttributedText.string;
+  _pendingAttributedText = nil;
+
+  [_textView layoutSubtreeIfNeeded];
+
+  [self updatePlaceholderVisibility];
+
+  _blockTextShouldChange = NO;
 }
 
 - (void)updateFrames
@@ -199,10 +253,21 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)updateContentSize
 {
-//  CGSize size = (CGSize){_scrollView.frame.size.width, INFINITY};
-//  size.height = [_textView sizeThatFits:size].height;
-//  _scrollView.contentSize = size;
-//  _textView.frame = (CGRect){CGPointZero, size};
+  CGSize size = (CGSize){_scrollView.frame.size.width, INFINITY};
+  // size.height = [_textView sizeThatFits:size].height;
+
+  _textView.frame = (CGRect){CGPointZero, size};
+
+  if (_viewDidCompleteInitialLayout && _onContentSizeChange && !CGSizeEqualToSize(_previousContentSize, size)) {
+    _previousContentSize = size;
+    _onContentSizeChange(@{
+      @"contentSize": @{
+        @"height": @(size.height),
+        @"width": @(size.width),
+      },
+      @"target": self.reactTag,
+    });
+  }
 }
 
 - (void)updatePlaceholder
@@ -279,7 +344,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return [_textView string];
 }
 
-- (BOOL)textView:(NSTextView *)aTextView shouldChangeTextInRange:(NSRange)range replacementString:(NSString *)text
+- (BOOL)textView:(NSTextView *)textView shouldChangeTextInRange:(NSRange)range replacementString:(NSString *)text
 {
   if (_blockTextShouldChange) {
     return NO;
@@ -295,7 +360,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
                                  eventCount:_nativeEventCount];
 
     if (_blurOnSubmit && [text isEqualToString:@"\n"]) {
-
       // TODO: the purpose of blurOnSubmit on RCTextField is to decide if the
       // field should lose focus when return is pressed or not. We're cheating a
       // bit here by using it on RCTextView to decide if return character should
@@ -307,7 +371,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
       // where _blurOnSubmit = YES, this is still the correct and expected
       // behavior though, so we'll leave the don't-blur-or-add-newline problem
       // to be solved another day.
-
       [_eventDispatcher sendTextEventWithType:RCTTextEventTypeSubmit
                                      reactTag:self.reactTag
                                          text:self.text
@@ -318,24 +381,64 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     }
   }
 
-  if (_maxLength == nil) {
-    return YES;
-  }
-  NSUInteger allowedLength = _maxLength.integerValue - _textView.string.length + range.length;
-  if (text.length > allowedLength) {
-    if (text.length > 1) {
-      // Truncate the input string so the result is exactly maxLength
-      NSString *limitedString = [text substringToIndex:allowedLength];
-      NSMutableString *newString = [_textView string].mutableCopy;
-      [newString replaceCharactersInRange:range withString:limitedString];
-      [_textView setString:newString];
-      // Collapse selection at end of insert to match normal paste behavior
-      [self textDidChange:[[NSNotification alloc] init]];
-    }
+  // So we need to track that there is a native update in flight just in case JS manages to come back around and update
+  // things /before/ UITextView can update itself asynchronously.  If there is a native update in flight, we defer the
+  // JS update when it comes in and apply the deferred update once textViewDidChange fires with the native update applied.
+  if (_blockTextShouldChange) {
     return NO;
-  } else {
-    return YES;
   }
+
+  if (_maxLength) {
+    NSUInteger allowedLength = _maxLength.integerValue - textView.string.length + range.length;
+    if (text.length > allowedLength) {
+      // If we typed/pasted more than one character, limit the text inputted
+      if (text.length > 1) {
+        // Truncate the input string so the result is exactly maxLength
+        NSString *limitedString = [text substringToIndex:allowedLength];
+        NSMutableString *newString = textView.string.mutableCopy;
+        [newString replaceCharactersInRange:range withString:limitedString];
+        textView.string = newString;
+        _predictedText = newString;
+
+        // Collapse selection at end of insert to match normal paste behavior
+//        UITextPosition *insertEnd = [textView positionFromPosition:textView.beginningOfDocument
+//                                                            offset:(range.location + allowedLength)];
+//        textView.selectedTextRange = [textView textRangeFromPosition:insertEnd toPosition:insertEnd];
+
+        [self textViewDidChange:textView];
+      }
+      return NO;
+    }
+  }
+
+  _nativeUpdatesInFlight = YES;
+
+  if (range.location + range.length > _predictedText.length) {
+    // _predictedText got out of sync in a bad way, so let's just force sync it.  Haven't been able to repro this, but
+    // it's causing a real crash here: #6523822
+    _predictedText = textView.string;
+  }
+
+  NSString *previousText = [_predictedText substringWithRange:range];
+  if (_predictedText) {
+    _predictedText = [_predictedText stringByReplacingCharactersInRange:range withString:text];
+  } else {
+    _predictedText = text;
+  }
+
+  if (_onTextInput) {
+    _onTextInput(@{
+      @"text": text,
+      @"previousText": previousText ?: @"",
+      @"range": @{
+        @"start": @(range.location),
+        @"end": @(range.location + range.length)
+      },
+      @"eventCount": @(_nativeEventCount),
+    });
+  }
+
+  return YES;
 }
 
 - (void)textViewDidChangeSelection:(__unused NSNotification *)notification
@@ -365,14 +468,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     NSArray <NSValue *> *previousRanges = [_textView selectedRanges];
     [_textView setString:text];
     [_textView setSelectedRanges:previousRanges];
-    [self _setPlaceholderVisibility];
+    [self updatePlaceholderVisibility];
     [self updateContentSize];
   } else if (eventLag > RCTTextUpdateLagWarningThreshold) {
     RCTLogWarn(@"Native TextInput(%@) is %zd events ahead of JS - try to make your JS faster.", self.text, eventLag);
   }
 }
 
-- (void)_setPlaceholderVisibility
+- (void)updatePlaceholderVisibility
 {
 }
 
@@ -388,25 +491,106 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)textDidChange:(__unused NSNotification *)notification
 {
-  [self _setPlaceholderVisibility];
+  if (_clearTextOnFocus) {
+    [_textView setString:@""];
+    [self updatePlaceholderVisibility];
+  }
+
+  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeFocus
+                                 reactTag:self.reactTag
+                                     text:nil
+                                      key:nil
+                               eventCount:_nativeEventCount];
+}
+
+static BOOL findMismatch(NSString *first, NSString *second, NSRange *firstRange, NSRange *secondRange)
+{
+  NSInteger firstMismatch = -1;
+  for (NSUInteger ii = 0; ii < MAX(first.length, second.length); ii++) {
+    if (ii >= first.length || ii >= second.length || [first characterAtIndex:ii] != [second characterAtIndex:ii]) {
+      firstMismatch = ii;
+      break;
+    }
+  }
+
+  if (firstMismatch == -1) {
+    return NO;
+  }
+
+  NSUInteger ii = second.length;
+  NSUInteger lastMismatch = first.length;
+  while (ii > firstMismatch && lastMismatch > firstMismatch) {
+    if ([first characterAtIndex:(lastMismatch - 1)] != [second characterAtIndex:(ii - 1)]) {
+      break;
+    }
+    ii--;
+    lastMismatch--;
+  }
+
+  *firstRange = NSMakeRange(firstMismatch, lastMismatch - firstMismatch);
+  *secondRange = NSMakeRange(firstMismatch, ii - firstMismatch);
+  return YES;
+}
+
+- (void)textViewDidChange:(NSTextView *)textView
+{
+  [self updatePlaceholderVisibility];
+  [self updateContentSize];
+
+  // Detect when textView updates happend that didn't invoke `shouldChangeTextInRange`
+  // (e.g. typing simplified chinese in pinyin will insert and remove spaces without
+  // calling shouldChangeTextInRange).  This will cause JS to get out of sync so we
+  // update the mismatched range.
+  NSRange currentRange;
+  NSRange predictionRange;
+  if (findMismatch(textView.string, _predictedText, &currentRange, &predictionRange)) {
+    NSString *replacement = [textView.string substringWithRange:currentRange];
+    [self textView:textView shouldChangeTextInRange:predictionRange replacementString:replacement];
+    // JS will assume the selection changed based on the location of our shouldChangeTextInRange, so reset it.
+    [self textViewDidChangeSelection:(NSNotification *)textView];
+    _predictedText = textView.string;
+  }
+
+  _nativeUpdatesInFlight = NO;
   _nativeEventCount++;
 
-  if (!self.reactTag) {
+  if (!self.reactTag || !_onChange) {
     return;
   }
 
-  NSDictionary *event = @{
-                          @"text": self.text,
-                          @"target": self.reactTag,
-                          @"eventCount": @(_nativeEventCount),
-                          };
-  [_eventDispatcher sendInputEventWithName:@"change" body:event];
+  // When the context size increases, iOS updates the contentSize twice; once
+  // with a lower height, then again with the correct height. To prevent a
+  // spurious event from being sent, we track the previous, and only send the
+  // update event if it matches our expectation that greater text length
+  // should result in increased height. This assumption is, of course, not
+  // necessarily true because shorter text might include more linebreaks, but
+  // in practice this works well enough.
+  NSUInteger textLength = textView.string.length;
+  NSTextContainer* textContainer = [textView textContainer];
+  NSLayoutManager* layoutManager = [textView layoutManager];
+  [layoutManager ensureLayoutForTextContainer: textContainer];
+  CGSize contentSize = [layoutManager usedRectForTextContainer: textContainer].size;
+  CGFloat contentHeight = contentSize.height;
+  if (textLength >= _previousTextLength) {
+    contentHeight = MAX(contentHeight, _previousContentHeight);
+  }
+  _previousTextLength = textLength;
+  _previousContentHeight = contentHeight;
+  _onChange(@{
+    @"text": self.text,
+    @"contentSize": @{
+      @"height": @(contentHeight),
+      @"width": @(contentSize.width)
+    },
+    @"target": self.reactTag,
+    @"eventCount": @(_nativeEventCount),
+  });
 }
 
 - (void)textDidEndEditing:(NSNotification *)aNotification
 {
   [self updateContentSize];
-  [self _setPlaceholderVisibility];
+  [self updatePlaceholderVisibility];
   _nativeEventCount++;
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeEnd
                                  reactTag:self.reactTag
@@ -421,7 +605,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   if (_clearTextOnFocus) {
     [_textView setString:@""];
   }
-  [self _setPlaceholderVisibility];
+  [self updatePlaceholderVisibility];
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeFocus
                                  reactTag:self.reactTag
                                      text:[_textView string]
@@ -471,6 +655,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)layout
 {
   [super layout];
+
+  // Start sending content size updates only after the view has been laid out
+  // otherwise we send multiple events with bad dimensions on initial render.
+  _viewDidCompleteInitialLayout = YES;
+
   [self updateFrames];
 }
 

@@ -16,6 +16,7 @@
 #import <Cocoa/Cocoa.h>
 
 #import "RCTBridge.h"
+#import "RCTBundleURLProvider.h"
 #import "RCTJavaScriptLoader.h"
 #import "RCTRootView.h"
 #import "RCTEventDispatcher.h"
@@ -79,11 +80,11 @@
 
 - (void)setDefaultURL
 {
-#if RUNNING_ON_CI
-  _sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
-#else
-  _sourceURL = [NSURL URLWithString:@"http://localhost:8081/Examples/UIExplorer/UIExplorerApp.macos.bundle?platform=macos&dev=true"];
-#endif
+  _sourceURL = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"Examples/UIExplorer/js/UIExplorerApp.macos" fallbackResource:nil];
+
+  if (!getenv("CI_USE_PACKAGER")) {
+    _sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+  }
 }
 
 - (void)resetBridgeToDefault

@@ -25,15 +25,30 @@
 
 const Image = require('Image');
 const React = require('React');
-const StyleSheet = require('StyleSheet');
 const Text = require('Text');
 const TouchableHighlight = require('TouchableHighlight');
 const View = require('View');
 
 const {PropTypes} = React;
 
-const SwipeableQuickActionButton = React.createClass({
-  propTypes: {
+/**
+ * Standard set of quick action buttons that can, if the user chooses, be used
+ * with SwipeableListView. Each button takes an image and text with optional
+ * formatting.
+ */
+class SwipeableQuickActionButton extends React.Component {
+  props: {
+    accessibilityLabel?: string,
+    imageSource: $FlowFixMe,
+    imageStyle?: $FlowFixMe,
+    onPress?: Function,
+    style?: $FlowFixMe,
+    testID?: string,
+    text?: string,
+    textStyle?: $FlowFixMe,
+  };
+
+  static propTypes = {
     accessibilityLabel: PropTypes.string,
     imageSource: Image.propTypes.source.isRequired,
     imageStyle: Image.propTypes.style,
@@ -42,9 +57,9 @@ const SwipeableQuickActionButton = React.createClass({
     testID: PropTypes.string,
     text: PropTypes.string,
     textStyle: Text.propTypes.style,
-  },
+  };
 
-  render(): ?ReactElement {
+  render(): ?ReactElement<any> {
     if (!this.props.imageSource && !this.props.text) {
       return null;
     }
@@ -54,38 +69,19 @@ const SwipeableQuickActionButton = React.createClass({
         onPress={this.props.onPress}
         testID={this.props.testID}
         underlayColor="transparent">
-        <View style={[styles.button, this.props.style]}>
+        <View style={this.props.style}>
           <Image
             accessibilityLabel={this.props.accessibilityLabel}
             source={this.props.imageSource}
-            style={[styles.image, this.props.imageStyle]}
+            style={this.props.imageStyle}
           />
-          <Text style={[styles.text, this.props.textStyle]}>
+          <Text style={this.props.textStyle}>
             {this.props.text}
           </Text>
         </View>
       </TouchableHighlight>
     );
-  },
-});
-
-const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    width: 76,
-  },
-  image: {
-    height: 33,
-    width: 33,
-  },
-  text: {
-    color: '#ffffff',
-    fontSize: 12,
-    textAlign: 'center', // For Android to align properly
-  },
-});
+  }
+}
 
 module.exports = SwipeableQuickActionButton;

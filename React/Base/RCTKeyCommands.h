@@ -14,22 +14,41 @@
 + (instancetype)sharedInstance;
 
 /**
- * Register a keyboard command. UIKeyModifierFlags
+ * Register a single-press keyboard command.
  */
 - (void)registerKeyCommandWithInput:(NSString *)input
                       modifierFlags:(NSEventModifierFlags)flags
                              action:(void (^)(NSEvent *command))block;
 
 /**
- * Unregister a keyboard command.
+ * Unregister a single-press keyboard command.
  */
 - (void)unregisterKeyCommandWithInput:(NSString *)input
                         modifierFlags:(NSEventModifierFlags)flags;
 
 /**
- * Check if a command is registered.
+ * Check if a single-press command is registered.
  */
 - (BOOL)isKeyCommandRegisteredForInput:(NSString *)input
+                         modifierFlags:(NSEventModifierFlags)flags;
+
+/**
+ * Register a double-press keyboard command.
+ */
+- (void)registerDoublePressKeyCommandWithInput:(NSString *)input
+                      modifierFlags:(NSEventModifierFlags)flags
+                             action:(void (^)(NSEvent *command))block;
+
+/**
+ * Unregister a double-press keyboard command.
+ */
+- (void)unregisterDoublePressKeyCommandWithInput:(NSString *)input
+                        modifierFlags:(NSEventModifierFlags)flags;
+
+/**
+ * Check if a double-press command is registered.
+ */
+- (BOOL)isDoublePressKeyCommandRegisteredForInput:(NSString *)input
                          modifierFlags:(NSEventModifierFlags)flags;
 
 @end

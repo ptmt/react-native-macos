@@ -56,12 +56,14 @@ RCT_EXPORT_MODULE()
                                            selector:@selector(hide)
                                                name:RCTJavaScriptDidLoadNotification
                                              object:nil];
-
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(hide)
                                                name:RCTJavaScriptDidFailToLoadNotification
                                              object:nil];
-  [self showWithURL:bridge.bundleURL];
+
+  if (bridge.loading) {
+    [self showWithURL:bridge.bundleURL];
+  }
 }
 
 RCT_EXPORT_METHOD(showMessage:(NSString *)message color:(NSColor *)color backgroundColor:(NSColor *)backgroundColor)
@@ -119,7 +121,7 @@ RCT_EXPORT_METHOD(hide)
 
   dispatch_async(dispatch_get_main_queue(), ^{
     const NSTimeInterval MIN_PRESENTED_TIME = 0.6;
-    NSTimeInterval presentedTime = [[NSDate date] timeIntervalSinceDate:_showDate];
+    NSTimeInterval presentedTime = [[NSDate date] timeIntervalSinceDate:self->_showDate];
     NSTimeInterval delay = MAX(0, MIN_PRESENTED_TIME - presentedTime);
     [NSThread sleepForTimeInterval:delay]; // blocking the thread
     CGRect windowFrame = _window.frame;

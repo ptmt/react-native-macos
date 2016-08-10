@@ -52,31 +52,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
-- (NSArray *)reactSubviews
-{
-  // TODO: do we support subviews of textfield in React?
-  // In any case, we should have a better approach than manually
-  // maintaining array in each view subclass like this
-  return _reactSubviews;
-}
-
-- (void)removeReactSubview:(NSView *)subview
-{
-  // TODO: this is a bit broken - if the TextField inserts any of
-  // its own views below or between React's, the indices won't match
-  [_reactSubviews removeObject:subview];
-  [subview removeFromSuperview];
-}
-
-- (void)insertReactSubview:(NSView *)view atIndex:(NSInteger)atIndex
-{
-  // TODO: this is a bit broken - if the TextField inserts any of
-  // its own views below or between React's, the indices won't match
-  [_reactSubviews insertObject:view atIndex:atIndex];
-  [super addSubview:view];
-}
-
-
 - (void)textDidChange:(NSNotification *)aNotification
 {
   _nativeEventCount++;

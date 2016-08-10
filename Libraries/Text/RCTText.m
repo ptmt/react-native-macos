@@ -84,7 +84,7 @@ static void collectNonTextDescendants(RCTText *view, NSMutableArray *nonTextDesc
   for (NSView *child in view.reactSubviews) {
     if ([child isKindOfClass:[RCTText class]]) {
       collectNonTextDescendants((RCTText *)child, nonTextDescendants);
-    } else {
+    } else if (!CGRectEqualToRect(child.frame, CGRectZero)) {
       [nonTextDescendants addObject:child];
     }
   }
@@ -93,7 +93,6 @@ static void collectNonTextDescendants(RCTText *view, NSMutableArray *nonTextDesc
 @implementation RCTText
 {
   NSTextStorage *_textStorage;
-  NSMutableArray<NSView *> *_reactSubviews;
   CAShapeLayer *_highlightLayer;
 }
 
@@ -101,7 +100,6 @@ static void collectNonTextDescendants(RCTText *view, NSMutableArray *nonTextDesc
 {
   if ((self = [super initWithFrame:frame])) {
     _textStorage = [NSTextStorage new];
-    _reactSubviews = [NSMutableArray array];
     _respondsToLiveResizing = YES;
   }
   return self;
@@ -137,25 +135,33 @@ static void collectNonTextDescendants(RCTText *view, NSMutableArray *nonTextDesc
   self.layer.backgroundColor = [inheritedBackgroundColor CGColor];
 }
 
-- (void)insertReactSubview:(NSView *)subview atIndex:(NSInteger)atIndex
+- (void)didUpdateReactSubviews
 {
-  [_reactSubviews insertObject:subview atIndex:atIndex];
-}
-
-- (void)removeReactSubview:(NSView *)subview
-{
-  [_reactSubviews removeObject:subview];
-}
-
-- (NSArray<NSView *> *)reactSubviews
-{
-  return _reactSubviews;
+  // Do nothing, as subviews are managed by `setTextStorage:` method
 }
 
 - (void)setTextStorage:(NSTextStorage *)textStorage
 {
-  _textStorage = textStorage;
-  [self setNeedsDisplay:YES];
+  if (_textStorage != textStorage) {
+    _textStorage = textStorage;
+
+    // Update subviews
+    NSMutableArray *nonTextDescendants = [NSMutableArray new];
+    collectNonTextDescendants(self, nonTextDescendants);
+    NSArray *subviews = self.subviews;
+    if (![subviews isEqualToArray:nonTextDescendants]) {
+      for (NSView *child in subviews) {
+        if (![nonTextDescendants containsObject:child]) {
+          [child removeFromSuperview];
+        }
+      }
+      for (NSView *child in nonTextDescendants) {
+        [self addSubview:child];
+      }
+    }
+
+    [self setNeedsDisplay:YES];
+  }
 }
 
 - (void)drawRect:(CGRect)dirtyRect
@@ -197,15 +203,6 @@ static void collectNonTextDescendants(RCTText *view, NSMutableArray *nonTextDesc
   } else {
     [_highlightLayer removeFromSuperlayer];
     _highlightLayer = nil;
-  }
-// Disabled due to "collection was mutated"
-//  for (NSView *child in [self subviews]) {
-//    [child removeFromSuperview];
-//  }
-  NSMutableArray *nonTextDescendants = [NSMutableArray new];
-  collectNonTextDescendants(self, nonTextDescendants);
-  for (NSView *child in nonTextDescendants) {
-    [self addSubview:child];
   }
 }
 

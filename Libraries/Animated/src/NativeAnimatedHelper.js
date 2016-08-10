@@ -30,6 +30,14 @@ var API = {
     assertNativeAnimatedModule();
     NativeAnimatedModule.createAnimatedNode(tag, config);
   },
+  startListeningToAnimatedNodeValue: function(tag: number) {
+    assertNativeAnimatedModule();
+    NativeAnimatedModule.startListeningToAnimatedNodeValue(tag);
+  },
+  stopListeningToAnimatedNodeValue: function(tag: number) {
+    assertNativeAnimatedModule();
+    NativeAnimatedModule.stopListeningToAnimatedNodeValue(tag);
+  },
   connectAnimatedNodes: function(parentTag: number, childTag: number): void {
     assertNativeAnimatedModule();
     NativeAnimatedModule.connectAnimatedNodes(parentTag, childTag);
@@ -74,14 +82,25 @@ var API = {
 var PROPS_WHITELIST = {
   style: {
     opacity: true,
-
+    transform: true,
     /* legacy android transform properties */
     scaleX: true,
     scaleY: true,
-    rotation: true,
     translateX: true,
     translateY: true,
   },
+};
+
+var TRANSFORM_WHITELIST = {
+  translateX: true,
+  translateY: true,
+  scale: true,
+  scaleX: true,
+  scaleY: true,
+  rotate: true,
+  rotateX: true,
+  rotateY: true,
+  perspective: true,
 };
 
 function validateProps(params: Object): void {
@@ -90,6 +109,14 @@ function validateProps(params: Object): void {
       throw new Error(`Property '${key}' is not supported by native animated module`);
     }
   }
+}
+
+function validateTransform(configs: Array<Object>): void {
+  configs.forEach((config) => {
+    if (!TRANSFORM_WHITELIST.hasOwnProperty(config.property)) {
+      throw new Error(`Property '${config.property}' is not supported by native animated module`);
+    }
+  });
 }
 
 function validateStyles(styles: Object): void {
@@ -125,12 +152,19 @@ function assertNativeAnimatedModule(): void {
   invariant(NativeAnimatedModule, 'Native animated module is not available');
 }
 
+// TODO: remove this when iOS supports native listeners.
+function supportsNativeListener(): bool {
+  return !!NativeAnimatedModule.startListeningToAnimatedNodeValue;
+}
+
 module.exports = {
   API,
   validateProps,
   validateStyles,
+  validateTransform,
   validateInterpolation,
   generateNewNodeTag,
   generateNewAnimationId,
   assertNativeAnimatedModule,
+  supportsNativeListener,
 };

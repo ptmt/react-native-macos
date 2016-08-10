@@ -10,11 +10,13 @@
 
 #import "RCTRedBox.h"
 
+#import "RCTView.h"
 #import "RCTBridge.h"
 #import "RCTConvert.h"
 #import "RCTDefines.h"
+#import "RCTErrorInfo.h"
 #import "RCTUtils.h"
-#import "RCTView.h"
+#import "RCTJSStackFrame.h"
 
 #if RCT_DEBUG
 
@@ -32,22 +34,22 @@
 
 @protocol RCTRedBoxWindowActionDelegate <NSObject>
 
-- (void)redBoxWindow:(RCTRedBoxWindow *)redBoxWindow openStackFrameInEditor:(NSDictionary *)stackFrame;
+- (void)redBoxWindow:(RCTRedBoxWindow *)redBoxWindow openStackFrameInEditor:(RCTJSStackFrame *)stackFrame;
 - (void)reloadFromRedBoxWindow:(RCTRedBoxWindow *)redBoxWindow;
 @end
 
 @interface RCTRedBoxWindow : NSWindow <NSTableViewDelegate, NSTableViewDataSource>
 @property (nonatomic, weak) id<RCTRedBoxWindowActionDelegate> actionDelegate;
+@property (nonatomic, weak) RCTBridge *bridge;
 @end
 
 @implementation RCTRedBoxWindow
 {
   ErrorNSTableView *_stackTraceTableView;
   NSString *_lastErrorMessage;
+  NSArray<RCTJSStackFrame *> *_lastStackTrace;
   NSTextField * _temporaryHeader;
-  NSArray<NSDictionary *> *_lastStackTrace;
 }
-
 
 - (instancetype)initWithContentRect:(NSRect)frame
 {
@@ -143,8 +145,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)openStackFrameInEditor:(NSDictionary *)stackFrame
+- (void)redBoxWindow:(__unused RCTRedBoxWindow *)redBoxWindow openStackFrameInEditor:(RCTJSStackFrame *)stackFrame
 {
+  if (![_bridge.bundleURL.scheme hasPrefix:@"http"]) {
+    RCTLogWarn(@"Cannot open stack frame in editor because you're not connected to the packager.");
+    return;
+  }
   NSData *stackFrameJSON = [RCTJSONStringify(stackFrame, NULL) dataUsingEncoding:NSUTF8StringEncoding];
   NSString *postLength = [NSString stringWithFormat:@"%tu", stackFrameJSON.length];
   NSMutableURLRequest *request = [NSMutableURLRequest new];
@@ -157,9 +163,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   [[[NSURLSession sharedSession] dataTaskWithRequest:request] resume];
 }
 
-- (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack showIfHidden:(BOOL)shouldShow
+- (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack isUpdate:(BOOL)isUpdate
 {
-  if ((!self.isVisible && shouldShow) || (self.isVisible && [_lastErrorMessage isEqualToString:message])) {
+  if ((!self.isVisible && isUpdate) || (self.isVisible && [_lastErrorMessage isEqualToString:message])) {
     _lastStackTrace = stack;
     _lastErrorMessage = [message substringToIndex:MIN((NSUInteger)10000, message.length)];
     NSMutableArray *result = [NSMutableArray arrayWithCapacity:stack.count];
@@ -203,19 +209,27 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     fullStackTrace = [NSMutableString string];
   }
 
-  for (NSDictionary *stackFrame in _lastStackTrace) {
-    [fullStackTrace appendString:[NSString stringWithFormat:@"%@\n", stackFrame[@"methodName"]]];
-    if (stackFrame[@"file"]) {
-      NSString *lineInfo = [NSString stringWithFormat:@"    %@ @ %zd:%zd\n",
-                            [stackFrame[@"file"] lastPathComponent],
-                            [stackFrame[@"lineNumber"] integerValue],
-                            [stackFrame[@"column"] integerValue]];
-      [fullStackTrace appendString:lineInfo];
+for (RCTJSStackFrame *stackFrame in _lastStackTrace) {
+    [fullStackTrace appendString:[NSString stringWithFormat:@"%@\n", stackFrame.methodName]];
+    if (stackFrame.file) {
+      [fullStackTrace appendFormat:@"    %@\n", [self formatFrameSource:stackFrame]];
     }
   }
 
   NSPasteboard *pb = [NSPasteboard generalPasteboard];
   [pb writeObjects:[NSArray arrayWithObject:fullStackTrace]];
+}
+
+- (NSString *)formatFrameSource:(RCTJSStackFrame *)stackFrame
+{
+  NSString *lineInfo = [NSString stringWithFormat:@"%@:%zd",
+                        [stackFrame.file lastPathComponent],
+                        stackFrame.lineNumber];
+
+  if (stackFrame.column != 0) {
+    lineInfo = [lineInfo stringByAppendingFormat:@":%zd", stackFrame.column];
+  }
+  return lineInfo;
 }
 
 #pragma mark - TableView
@@ -348,11 +362,41 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 @implementation RCTRedBox
 {
   RCTRedBoxWindow *_window;
+  NSMutableArray<id<RCTErrorCustomizer>> *_errorCustomizers;
 }
 
 @synthesize bridge = _bridge;
 
 RCT_EXPORT_MODULE()
+
+- (void)registerErrorCustomizer:(id<RCTErrorCustomizer>)errorCustomizer
+{
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if (!self->_errorCustomizers) {
+      self->_errorCustomizers = [NSMutableArray array];
+    }
+    if (![self->_errorCustomizers containsObject:errorCustomizer]) {
+      [self->_errorCustomizers addObject:errorCustomizer];
+    }
+  });
+}
+
+// WARNING: Should only be called from the main thread/dispatch queue.
+- (RCTErrorInfo *)_customizeError:(RCTErrorInfo *)error
+{
+  RCTAssertMainQueue();
+
+  if (!self->_errorCustomizers) {
+    return error;
+  }
+  for (id<RCTErrorCustomizer> customizer in self->_errorCustomizers) {
+    RCTErrorInfo *newInfo = [customizer customizeErrorInfo:error];
+    if (newInfo) {
+      error = newInfo;
+    }
+  }
+  return error;
+}
 
 - (void)showError:(NSError *)error
 {
@@ -373,6 +417,12 @@ RCT_EXPORT_MODULE()
   [self showErrorMessage:combinedMessage];
 }
 
+- (void)showErrorMessage:(NSString *)message withRawStack:(NSString *)rawStack
+{
+  NSArray<RCTJSStackFrame *> *stack = [RCTJSStackFrame stackFramesWithLines:rawStack];
+  [self _showErrorMessage:message withStack:stack isUpdate:NO];
+}
+
 - (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack
 {
   [self showErrorMessage:message withStack:stack isUpdate:NO];
@@ -385,19 +435,30 @@ RCT_EXPORT_MODULE()
 
 - (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack isUpdate:(BOOL)isUpdate
 {
+  [self _showErrorMessage:message withStack:[RCTJSStackFrame stackFramesWithDictionaries:stack] isUpdate:isUpdate];
+}
+
+- (void)_showErrorMessage:(NSString *)message withStack:(NSArray<RCTJSStackFrame *> *)stack isUpdate:(BOOL)isUpdate
+{
   dispatch_async(dispatch_get_main_queue(), ^{
-    if (!_window) {
-      _window = [[RCTRedBoxWindow alloc] initWithContentRect:[[NSApplication sharedApplication] mainWindow].frame];
-      _window.actionDelegate = self;
+    if (!self->_window) {
+      self->_window = [[RCTRedBoxWindow alloc] initWithContentRect:[[NSApplication sharedApplication] mainWindow].frame];
+      self->_window.actionDelegate = self;
+      self->_window.bridge = _bridge;
     }
-    [self showErrorMessage:message withStack:stack isUpdate:isUpdate];
+    RCTErrorInfo *errorInfo = [[RCTErrorInfo alloc] initWithErrorMessage:message
+                                                                   stack:stack];
+    errorInfo = [self _customizeError:errorInfo];
+    [self->_window showErrorMessage:errorInfo.errorMessage
+                          withStack:errorInfo.stack
+                           isUpdate:isUpdate];
   });
 }
 
 RCT_EXPORT_METHOD(dismiss)
 {
   dispatch_async(dispatch_get_main_queue(), ^{
-    [_window dismiss];
+    [self->_window dismiss];
   });
 }
 
@@ -406,14 +467,14 @@ RCT_EXPORT_METHOD(dismiss)
   [self dismiss];
 }
 
-- (void)redBoxWindow:(RCTRedBoxWindow *)redBoxWindow openStackFrameInEditor:(NSDictionary *)stackFrame
+- (void)redBoxWindow:(__unused RCTRedBoxWindow *)redBoxWindow openStackFrameInEditor:(RCTJSStackFrame *)stackFrame
 {
   if (![_bridge.bundleURL.scheme hasPrefix:@"http"]) {
     RCTLogWarn(@"Cannot open stack frame in editor because you're not connected to the packager.");
     return;
   }
 
-  NSData *stackFrameJSON = [RCTJSONStringify(stackFrame, NULL) dataUsingEncoding:NSUTF8StringEncoding];
+  NSData *stackFrameJSON = [RCTJSONStringify([stackFrame toDictionary], NULL) dataUsingEncoding:NSUTF8StringEncoding];
   NSString *postLength = [NSString stringWithFormat:@"%tu", stackFrameJSON.length];
   NSMutableURLRequest *request = [NSMutableURLRequest new];
   request.URL = [NSURL URLWithString:@"/open-stack-frame" relativeToURL:_bridge.bundleURL];
@@ -425,7 +486,7 @@ RCT_EXPORT_METHOD(dismiss)
   [[[NSURLSession sharedSession] dataTaskWithRequest:request] resume];
 }
 
-- (void)reloadFromRedBoxWindow:(RCTRedBoxWindow *)redBoxWindow {
+- (void)reloadFromRedBoxWindow:(__unused RCTRedBoxWindow *)redBoxWindow {
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTReloadNotification object:nil userInfo:nil];
 }
 
@@ -445,12 +506,14 @@ RCT_EXPORT_METHOD(dismiss)
 @implementation RCTRedBox
 
 + (NSString *)moduleName { return nil; }
+- (void)registerErrorCustomizer:(id<RCTErrorCustomizer>)errorCustomizer {}
 - (void)showError:(NSError *)message {}
 - (void)showErrorMessage:(NSString *)message {}
 - (void)showErrorMessage:(NSString *)message withDetails:(NSString *)details {}
+- (void)showErrorMessage:(NSString *)message withRawStack:(NSString *)rawStack {}
 - (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack {}
 - (void)updateErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack {}
-- (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack showIfHidden:(BOOL)shouldShow {}
+- (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack isUpdate:(BOOL)isUpdate {}
 - (void)dismiss {}
 
 @end

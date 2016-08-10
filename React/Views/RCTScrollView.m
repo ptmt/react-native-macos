@@ -163,8 +163,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   NSString *_lastEmittedEventName;
 }
 
-@synthesize nativeScrollDelegate = _nativeScrollDelegate;
-
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
@@ -423,19 +421,6 @@ for (NSObject<UIScrollViewDelegate> *scrollViewListener in _scrollListeners) { \
 //RCT_SCROLL_EVENT_HANDLER(scrollViewWillBeginDecelerating, onMomentumScrollBegin)
 //RCT_SCROLL_EVENT_HANDLER(scrollViewDidZoom, onScroll)
 
-- (void)setNativeScrollDelegate:(NSObject<NSScrollViewDelegate> *)nativeScrollDelegate
-{
-  if (nativeScrollDelegate != _nativeScrollDelegate) {
-    if (_nativeScrollDelegate) {
-      [_scrollListeners removeObject:_nativeScrollDelegate];
-    }
-    if (nativeScrollDelegate) {
-      [_scrollListeners addObject:nativeScrollDelegate];
-    }
-    _nativeScrollDelegate = nativeScrollDelegate;
-  }
-}
-
 - (void)addScrollListener:(NSObject<NSScrollViewDelegate> *)scrollListener
 {
   [_scrollListeners addObject:scrollListener];
@@ -443,11 +428,7 @@ for (NSObject<UIScrollViewDelegate> *scrollViewListener in _scrollListeners) { \
 
 - (void)removeScrollListener:(NSObject<NSScrollViewDelegate> *)scrollListener
 {
-  if (scrollListener == _nativeScrollDelegate) {
-    [self setNativeScrollDelegate:nil];
-  } else {
-    [_scrollListeners removeObject:scrollListener];
-  }
+  [_scrollListeners removeObject:scrollListener];
 }
 
 - (void)boundsDidChange:(__unused NSEvent *)theEvent

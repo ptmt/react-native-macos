@@ -13,6 +13,7 @@
 #import "RCTConvert.h"
 #import "RCTShadowView.h"
 #import "RCTTextView.h"
+#import "RCTFont.h"
 
 @implementation RCTTextViewManager
 
@@ -30,29 +31,32 @@ RCT_REMAP_VIEW_PROPERTY(editable, textView.editable, BOOL)
 RCT_REMAP_VIEW_PROPERTY(selectionColor, textView.insertionPointColor, NSColor)
 
 RCT_EXPORT_VIEW_PROPERTY(maxLength, NSNumber)
+RCT_EXPORT_VIEW_PROPERTY(onChange, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onContentSizeChange, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onSelectionChange, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onTextInput, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(placeholder, NSString)
 RCT_EXPORT_VIEW_PROPERTY(placeholderTextColor, NSColor)
 RCT_EXPORT_VIEW_PROPERTY(padding, CGFloat)
 RCT_EXPORT_VIEW_PROPERTY(text, NSString)
-RCT_REMAP_VIEW_PROPERTY(color, textColor, NSColor)
-RCT_CUSTOM_VIEW_PROPERTY(fontSize, CGFloat, RCTTextView)
+RCT_CUSTOM_VIEW_PROPERTY(fontSize, NSNumber, RCTTextView)
 {
-  view.font = [RCTConvert NSFont:view.font withSize:json ?: @(defaultView.font.pointSize)];
+  view.font = [RCTFont updateFont:view.font withSize:json ?: @(defaultView.font.pointSize)];
 }
-RCT_CUSTOM_VIEW_PROPERTY(fontWeight, NSString, RCTTextView)
+RCT_CUSTOM_VIEW_PROPERTY(fontWeight, NSString, __unused RCTTextView)
 {
-  view.font = [RCTConvert NSFont:view.font withWeight:json]; // defaults to normal
+  view.font = [RCTFont updateFont:view.font withWeight:json]; // defaults to normal
 }
-RCT_CUSTOM_VIEW_PROPERTY(fontStyle, NSString, RCTTextView)
+RCT_CUSTOM_VIEW_PROPERTY(fontStyle, NSString, __unused RCTTextView)
 {
-  view.font = [RCTConvert NSFont:view.font withStyle:json]; // defaults to normal
+  view.font = [RCTFont updateFont:view.font withStyle:json]; // defaults to normal
 }
 RCT_CUSTOM_VIEW_PROPERTY(fontFamily, NSString, RCTTextView)
 {
-  view.font = [RCTConvert NSFont:view.font withFamily:json ?: defaultView.font.familyName];
+  view.font = [RCTFont updateFont:view.font withFamily:json ?: defaultView.font.familyName];
 }
 RCT_EXPORT_VIEW_PROPERTY(mostRecentEventCount, NSInteger)
+RCT_REMAP_VIEW_PROPERTY(dataDetectorTypes, textView.dataDetectorTypes, UIDataDetectorTypes)
 
 - (RCTViewManagerUIBlock)uiBlockToAmendWithShadowView:(RCTShadowView *)shadowView
 {

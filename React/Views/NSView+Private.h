@@ -9,10 +9,14 @@
 
 #import <AppKit/AppKit.h>
 
-@interface NSView (RCTViewUnmounting)
+@interface NSView (Private)
 
+// remove clipped subviews implementation
 - (void)react_remountAllSubviews;
 - (void)react_updateClippedSubviewsWithClipRect:(CGRect)clipRect relativeToView:(NSView *)clipView;
 - (NSView *)react_findClipView;
+
+// zIndex sorting
+- (void)clearSortedSubviews;
 
 @end

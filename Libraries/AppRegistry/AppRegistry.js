@@ -13,7 +13,7 @@
 
 var BatchedBridge = require('BatchedBridge');
 var BugReporting = require('BugReporting');
-var ReactNative = require('ReactNative');
+var ReactNative = require('react/lib/ReactNative');
 
 var invariant = require('fbjs/lib/invariant');
 var renderApplication = require('renderApplication');
@@ -89,9 +89,7 @@ var AppRegistry = {
       ', development-level warning are ' + (__DEV__ ? 'ON' : 'OFF') +
       ', performance optimizations are ' + (__DEV__ ? 'OFF' : 'ON');
     infoLog(msg);
-    BugReporting.init();
     BugReporting.addSource('AppRegistry.runApplication' + runCount++, () => msg);
-    BugReporting.addFileSource('react_hierarchy.txt', () => require('dumpReactTree')());
     invariant(
       runnables[appKey] && runnables[appKey].run,
       'Application ' + appKey + ' has not been registered. This ' +

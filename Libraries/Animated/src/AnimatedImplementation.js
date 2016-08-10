@@ -11,7 +11,7 @@
  */
 'use strict';
 
-var Easing = require('Easing');
+var DeviceEventEmitter = require('RCTDeviceEventEmitter');
 var InteractionManager = require('InteractionManager');
 var Interpolation = require('Interpolation');
 var React = require('React');
@@ -20,7 +20,7 @@ var SpringConfig = require('SpringConfig');
 var ViewStylePropTypes = require('ViewStylePropTypes');
 var NativeAnimatedHelper = require('NativeAnimatedHelper');
 
-var findNodeHandle = require('findNodeHandle');
+var findNodeHandle = require('react/lib/findNodeHandle');
 var flattenStyle = require('flattenStyle');
 var invariant = require('fbjs/lib/invariant');
 var requestAnimationFrame = require('fbjs/lib/requestAnimationFrame');
@@ -220,7 +220,14 @@ type TimingAnimationConfigSingle = AnimationConfig & {
   delay?: number;
 };
 
-var easeInOut = Easing.inOut(Easing.ease);
+let _easeInOut;
+function easeInOut() {
+  if (!_easeInOut) {
+    const Easing = require('Easing');
+    _easeInOut = Easing.inOut(Easing.ease);
+  }
+  return _easeInOut;
+}
 
 class TimingAnimation extends Animation {
   _startTime: number;
@@ -239,23 +246,25 @@ class TimingAnimation extends Animation {
   ) {
     super();
     this._toValue = config.toValue;
-    this._easing = config.easing !== undefined ? config.easing : easeInOut;
+    this._easing = config.easing !== undefined ? config.easing : easeInOut();
     this._duration = config.duration !== undefined ? config.duration : 500;
     this._delay = config.delay !== undefined ? config.delay : 0;
     this.__isInteraction = config.isInteraction !== undefined ? config.isInteraction : true;
-    this._useNativeDriver = !!config.useNativeDriver;
+    this._useNativeDriver = config.useNativeDriver !== undefined ? config.useNativeDriver : false;
   }
 
   _getNativeAnimationConfig(): any {
     var frameDuration = 1000.0 / 60.0;
     var frames = [];
-    for (var dt = 0.0; dt <= this._duration; dt += frameDuration) {
+    for (var dt = 0.0; dt < this._duration; dt += frameDuration) {
       frames.push(this._easing(dt / this._duration));
     }
+    frames.push(this._easing(1));
     return {
       type: 'frames',
       frames,
       toValue: this._toValue,
+      delay: this._delay
     };
   }
 
@@ -319,7 +328,7 @@ class TimingAnimation extends Animation {
     super.stop();
     this.__active = false;
     clearTimeout(this._timeout);
-    window.cancelAnimationFrame(this._animationFrame);
+    global.cancelAnimationFrame(this._animationFrame);
     this.__debouncedOnEnd({finished: false});
   }
 }
@@ -389,7 +398,7 @@ class DecayAnimation extends Animation {
   stop(): void {
     super.stop();
     this.__active = false;
-    window.cancelAnimationFrame(this._animationFrame);
+    global.cancelAnimationFrame(this._animationFrame);
     this.__debouncedOnEnd({finished: false});
   }
 }
@@ -440,6 +449,7 @@ class SpringAnimation extends Animation {
   _lastTime: number;
   _onUpdate: (value: number) => void;
   _animationFrame: any;
+  _useNativeDriver: bool;
 
   constructor(
     config: SpringAnimationConfigSingle,
@@ -452,6 +462,7 @@ class SpringAnimation extends Animation {
     this._initialVelocity = config.velocity;
     this._lastVelocity = withDefault(config.velocity, 0);
     this._toValue = config.toValue;
+    this._useNativeDriver = config.useNativeDriver !== undefined ? config.useNativeDriver : false;
     this.__isInteraction = config.isInteraction !== undefined ? config.isInteraction : true;
 
     var springConfig;
@@ -474,11 +485,25 @@ class SpringAnimation extends Animation {
     this._friction = springConfig.friction;
   }
 
+  _getNativeAnimationConfig() {
+    return {
+      type: 'spring',
+      overshootClamping: this._overshootClamping,
+      restDisplacementThreshold: this._restDisplacementThreshold,
+      restSpeedThreshold: this._restSpeedThreshold,
+      tension: this._tension,
+      friction: this._friction,
+      initialVelocity: withDefault(this._initialVelocity, this._lastVelocity),
+      toValue: this._toValue,
+    };
+  }
+
   start(
     fromValue: number,
     onUpdate: (value: number) => void,
     onEnd: ?EndCallback,
     previousAnimation: ?Animation,
+    animatedValue: AnimatedValue
   ): void {
     this.__active = true;
     this._startPosition = fromValue;
@@ -498,7 +523,11 @@ class SpringAnimation extends Animation {
         this._initialVelocity !== null) {
       this._lastVelocity = this._initialVelocity;
     }
-    this.onUpdate();
+    if (this._useNativeDriver) {
+      this.__startNativeAnimation(animatedValue);
+    } else {
+      this.onUpdate();
+    }
   }
 
   getInternalState(): Object {
@@ -604,7 +633,7 @@ class SpringAnimation extends Animation {
   stop(): void {
     super.stop();
     this.__active = false;
-    window.cancelAnimationFrame(this._animationFrame);
+    global.cancelAnimationFrame(this._animationFrame);
     this.__debouncedOnEnd({finished: false});
   }
 }
@@ -626,6 +655,7 @@ class AnimatedValue extends AnimatedWithChildren {
   _animation: ?Animation;
   _tracking: ?Animated;
   _listeners: {[key: string]: ValueListenerCallback};
+  __nativeAnimatedValueListener: ?any;
 
   constructor(value: number) {
     super();
@@ -642,6 +672,14 @@ class AnimatedValue extends AnimatedWithChildren {
 
   __getValue(): number {
     return this._value + this._offset;
+  }
+
+  __makeNative() {
+    super.__makeNative();
+
+    if (Object.keys(this._listeners).length) {
+      this._startListeningToNativeValueUpdates();
+    }
   }
 
   /**
@@ -685,15 +723,49 @@ class AnimatedValue extends AnimatedWithChildren {
   addListener(callback: ValueListenerCallback): string {
     var id = String(_uniqueId++);
     this._listeners[id] = callback;
+    if (this.__isNative) {
+      this._startListeningToNativeValueUpdates();
+    }
     return id;
   }
 
   removeListener(id: string): void {
     delete this._listeners[id];
+    if (this.__isNative && Object.keys(this._listeners).length === 0) {
+      this._stopListeningForNativeValueUpdates();
+    }
   }
 
   removeAllListeners(): void {
     this._listeners = {};
+    if (this.__isNative) {
+      this._stopListeningForNativeValueUpdates();
+    }
+  }
+
+  _startListeningToNativeValueUpdates() {
+    if (this.__nativeAnimatedValueListener ||
+        !NativeAnimatedHelper.supportsNativeListener()) {
+      return;
+    }
+
+    NativeAnimatedAPI.startListeningToAnimatedNodeValue(this.__getNativeTag());
+    this.__nativeAnimatedValueListener = DeviceEventEmitter.addListener('onAnimatedValueUpdate', (data) => {
+      if (data.tag !== this.__getNativeTag()) {
+        return;
+      }
+      this._updateValue(data.value, false /* flush */);
+    });
+  }
+
+  _stopListeningForNativeValueUpdates() {
+    if (!this.__nativeAnimatedValueListener ||
+        !NativeAnimatedHelper.supportsNativeListener()) {
+      return;
+    }
+
+    this.__nativeAnimatedValueListener.remove();
+    NativeAnimatedAPI.stopListeningToAnimatedNodeValue(this.__getNativeTag());
   }
 
   /**
@@ -956,10 +1028,30 @@ class AnimatedInterpolation extends AnimatedWithChildren {
     super.__detach();
   }
 
+  __transformDataType(range) {
+    // Change the string array type to number array
+    // So we can reuse the same logic in iOS and Android platform
+    return range.map(function (value) {
+      if (typeof value !== 'string') {
+        return value;
+      }
+      if (/deg$/.test(value)) {
+        let degrees = parseFloat(value, 10) || 0;
+        let radians = degrees * Math.PI / 180.0;
+        return radians;
+      } else {
+        // Assume radians
+        return parseFloat(value, 10) || 0;
+      }
+    });
+  }
+
   __getNativeConfig(): any {
     NativeAnimatedHelper.validateInterpolation(this._config);
     return {
       ...this._config,
+      // Only the `outputRange` can contain strings so we don't need to tranform `inputRange` here
+      outputRange: this.__transformDataType(this._config.outputRange),
       type: 'interpolation',
     };
   }
@@ -1086,6 +1178,18 @@ class AnimatedTransform extends AnimatedWithChildren {
     this._transforms = transforms;
   }
 
+  __makeNative() {
+    super.__makeNative();
+    this._transforms.forEach(transform => {
+      for (var key in transform) {
+        var value = transform[key];
+        if (value instanceof Animated) {
+          value.__makeNative();
+        }
+      }
+    });
+  }
+
   __getValue(): Array<Object> {
     return this._transforms.map(transform => {
       var result = {};
@@ -1138,6 +1242,35 @@ class AnimatedTransform extends AnimatedWithChildren {
       }
     });
   }
+
+  __getNativeConfig(): any {
+    var transConfigs = [];
+
+    this._transforms.forEach(transform => {
+      for (var key in transform) {
+        var value = transform[key];
+        if (value instanceof Animated) {
+          transConfigs.push({
+            type: 'animated',
+            property: key,
+            nodeTag: value.__getNativeTag(),
+          });
+        } else {
+          transConfigs.push({
+            type: 'static',
+            property: key,
+            value,
+          });
+        }
+      }
+    });
+
+    NativeAnimatedHelper.validateTransform(transConfigs);
+    return {
+      type: 'transform',
+      transforms: transConfigs,
+    };
+  }
 }
 
 class AnimatedStyle extends AnimatedWithChildren {
@@ -1162,7 +1295,7 @@ class AnimatedStyle extends AnimatedWithChildren {
       if (value instanceof Animated) {
         if (!value.__isNative) {
           // We cannot use value of natively driven nodes this way as the value we have access from JS
-          // may not be up to date
+          // may not be up to date.
           style[key] = value.__getValue();
         }
       } else {
@@ -1254,9 +1387,9 @@ class AnimatedProps extends Animated {
     for (var key in this._props) {
       var value = this._props[key];
       if (value instanceof Animated) {
-        if (!value.__isNative) {
+        if (!value.__isNative || value instanceof AnimatedStyle) {
           // We cannot use value of natively driven nodes this way as the value we have access from JS
-          // may not be up to date
+          // may not be up to date.
           props[key] = value.__getValue();
         }
       } else {

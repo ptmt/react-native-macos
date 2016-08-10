@@ -10,10 +10,10 @@ Build macOS desktop apps using React Native and Cocoa.
 <View>
   <Button onClick={() => alert('clicked')} />
 </View>
-```
-<img width="407" alt="screenshot 2016-03-03 17 18 33" src="https://cloud.githubusercontent.com/assets/1004115/13496949/fe98e5e2-e163-11e5-9ded-0b4449950c8f.png">
 
 ## Getting started
+
+Node 4.x+, OS X 10.10+ required.
 
 ``` bash
 $ npm install react-native-macos-cli -g

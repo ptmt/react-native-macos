@@ -429,7 +429,7 @@ RCT_EXPORT_MODULE()
           const void *buffer,
           size_t size
         ) {
-          write(_stderr, buffer, size);
+          write(self->_stderr, buffer, size);
 
           NSString *log = [[NSString alloc] initWithBytes:buffer
                                                    length:size
@@ -522,11 +522,11 @@ RCT_EXPORT_MODULE()
     [self loadPerformanceLoggerData];
   }
 
-  //[NSView animateWithDuration:.25 animations:^{
+  // [NSView animateWithDuration:.25 animations:^{
     CGRect tmp = self.container.frame;
-    self.container.frame = _storedMonitorFrame;
-    _storedMonitorFrame = tmp;
-  //}];
+    self.container.frame = self->_storedMonitorFrame;
+    self->_storedMonitorFrame = tmp;
+  // }];
 }
 
 - (void)threadUpdate:(id)sender
@@ -537,10 +537,11 @@ RCT_EXPORT_MODULE()
 
 - (void)loadPerformanceLoggerData
 {
-  NSMutableArray *data = [NSMutableArray new];
-  NSArray<NSNumber *> *values = RCTPerformanceLoggerOutput();
   NSUInteger i = 0;
-  for (NSString *label in RCTPerformanceLoggerLabels()) {
+  NSMutableArray<NSString *> *data = [NSMutableArray new];
+  RCTPerformanceLogger *performanceLogger = [_bridge performanceLogger];
+  NSArray<NSNumber *> *values = [performanceLogger valuesForTags];
+  for (NSString *label in [performanceLogger labelsForTags]) {
     long long value = values[i+1].longLongValue - values[i].longLongValue;
     NSString *unit = @"ms";
     if ([label hasSuffix:@"Size"]) {

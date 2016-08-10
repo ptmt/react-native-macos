@@ -89,6 +89,7 @@ RCT_EXPORT_MODULE();
 - (NSArray<NSView<RCTComponent> *> *)reactSubviews
 {
   // this is to avoid unregistering our RCTRootView when the component is removed from RN hierarchy
+  (void)[super reactSubviews];
   return @[];
 }
 

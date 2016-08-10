@@ -21,16 +21,9 @@
   return YES;
 }
 
-- (void)insertSubview:(NSView *)subview atIndex:(NSInteger)index
+- (void)didUpdateReactSubviews
 {
-  [self invalidate];
-  [super addSubview:subview];
-}
-
-- (void)removeFromSuperview
-{
-  [self invalidate];
-  [super removeFromSuperview];
+  // Do nothing, as subviews are inserted by insertReactSubview:
 }
 
 - (void)setOpacity:(CGFloat)opacity

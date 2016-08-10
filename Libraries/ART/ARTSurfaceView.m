@@ -20,6 +20,11 @@
   return YES;
 }
 
+- (void)didUpdateReactSubviews
+{
+  // Do nothing, as subviews are inserted by insertReactSubview:
+}
+
 - (void)invalidate
 {
   [self setNeedsDisplay:YES];
