@@ -467,7 +467,7 @@ exports.examples = [
   },
   {
     title: 'Event handling',
-    render: function(): ReactElement { return <TextEventsExample />; },
+    render: function() { return <TextEventsExample />; },
   },
   {
     title: 'Colored input text',
@@ -565,7 +565,7 @@ exports.examples = [
   },
   {
     title: 'Blur on submit',
-    render: function(): ReactElement { return <BlurOnSubmitExample />; },
+    render: function() { return <BlurOnSubmitExample />; },
   },
   {
     title: 'Multiline blur on submit',

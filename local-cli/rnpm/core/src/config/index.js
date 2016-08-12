@@ -2,6 +2,7 @@ const path = require('path');
 
 const android = require('./android');
 const ios = require('./ios');
+const macos = require('./macos');
 const findAssets = require('./findAssets');
 const wrapCommands = require('./wrapCommands');
 
@@ -18,6 +19,7 @@ exports.getProjectConfig = function getProjectConfig() {
 
   return Object.assign({}, rnpm, {
     ios: ios.projectConfig(folder, rnpm.ios || {}),
+    macos: macos.projectConfig(folder, rnpm.macos || {}),
     android: android.projectConfig(folder, rnpm.android || {}),
     assets: findAssets(folder, rnpm.assets),
   });
@@ -37,6 +39,7 @@ exports.getDependencyConfig = function getDependencyConfig(packageName) {
   return Object.assign({}, rnpm, {
     ios: ios.dependencyConfig(folder, rnpm.ios || {}),
     android: android.dependencyConfig(folder, rnpm.android || {}),
+    macos: android.dependencyConfig(folder, rnpm.macos || {}),
     assets: findAssets(folder, rnpm.assets),
     commands: wrapCommands(rnpm.commands),
     params: rnpm.params || [],

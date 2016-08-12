@@ -243,7 +243,8 @@ RCT_ENUM_CONVERTER(RCTFontStyle, (@{
   // Get the closest font that matches the given weight for the fontFamily
   NSFont *bestMatch = font;
   CGFloat closestWeight = INFINITY;
-  for (NSString *name in [[NSFontManager sharedFontManager] availableMembersOfFontFamily:familyName]) {
+  for (NSArray *fontFamily in [[NSFontManager sharedFontManager] availableMembersOfFontFamily:familyName]) {
+    NSString *name = fontFamily[0];
     NSFont *match = [NSFont fontWithName:name size:fontSize];
     if (isItalic == isItalicFont(match) &&
         isCondensed == isCondensedFont(match)) {

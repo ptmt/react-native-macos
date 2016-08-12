@@ -303,10 +303,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
     if ([components.scheme isEqualToString:@"wss"]) {
       components.scheme = @"https";
     }
-
     // Load and set the cookie header.
-    NSArray<NSHTTPCookie *> *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:components.URL];
-    [request setAllHTTPHeaderFields:[NSHTTPCookie requestHeaderFieldsWithCookies:cookies]];
+    if ([NSHTTPCookieStorage sharedHTTPCookieStorage].cookies.count > 0) {
+      NSArray<NSHTTPCookie *> *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:components.URL];
+      [request setAllHTTPHeaderFields:[NSHTTPCookie requestHeaderFieldsWithCookies:cookies]];
+    }
   }
   return [self initWithURLRequest:request protocols:protocols];
 }

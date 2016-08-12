@@ -70,7 +70,7 @@ class Button extends React.Component {
 
 class ModalExample extends React.Component {
   state = {
-    presentationType: 'none',
+    presentationType: 'window',
     modalVisible: false,
     transparent: false,
   };
@@ -81,7 +81,7 @@ class ModalExample extends React.Component {
 
   _setPresentationType(type) {
     this.setState({presentationType: type});
-  },
+  };
 
   _toggleTransparent = () => {
     this.setState({transparent: !this.state.transparent});
@@ -174,6 +174,7 @@ var styles = StyleSheet.create({
   },
   button: {
     borderRadius: 5,
+    backgroundColor: 'lightblue',
     flex: 1,
     height: 44,
     alignSelf: 'stretch',

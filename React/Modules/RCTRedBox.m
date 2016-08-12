@@ -55,7 +55,7 @@
 {
 
   if ((self = [super initWithContentRect:frame
-                               styleMask:NSClosableWindowMask | NSResizableWindowMask
+                               styleMask:NSClosableWindowMask | NSResizableWindowMask | NSFullSizeContentViewWindowMask
                                  backing:NSBackingStoreBuffered defer:NO])) {
 
     RCTView *rootView = [[RCTView alloc] initWithFrame:frame];
@@ -69,8 +69,6 @@
     detailsFrame.size.height -= buttonHeight;
 
     _stackTraceTableView = [[ErrorNSTableView alloc] initWithFrame:detailsFrame];
-//    _stackTraceTableView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
-    //_stackTraceTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _stackTraceTableView.delegate = self;
     _stackTraceTableView.dataSource = self;
     NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:@"column"];
@@ -81,10 +79,8 @@
     [_stackTraceTableView setBackgroundColor:[NSColor colorWithRed:0.8 green:0 blue:0 alpha:1]];
     [_stackTraceTableView setWantsLayer:YES];
     [_stackTraceTableView setLayer:viewLayer];
-    //[self.contentView addSubview:_stackTraceTableView];
 
-
-    _temporaryHeader = [[NSTextField alloc] initWithFrame: CGRectMake(20, 20, self.frame.size.width, self.frame.size.height - buttonHeight)];
+    _temporaryHeader = [[NSTextField alloc] initWithFrame: CGRectMake(20, 20, self.frame.size.width - 100, self.frame.size.height - buttonHeight)];
     _temporaryHeader.textColor = [NSColor whiteColor];
     [_temporaryHeader setBackgroundColor:[NSColor colorWithRed:0.8 green:0 blue:0 alpha:1]];
     //_temporaryHeader.alignment = NSTextAlignmentCenter;
@@ -105,7 +101,6 @@
     [dismissButton setTarget:self];
     [dismissButton setAction:@selector(dismiss)];
 
-
     NSButton *reloadButton = [[NSButton alloc] init];
     [reloadButton setBezelStyle:NSRecessedBezelStyle];
     reloadButton.autoresizingMask = NSViewMaxXMargin | NSViewMaxYMargin;
@@ -116,18 +111,18 @@
     [reloadButton setAction:@selector(reload)];
 
     NSButton *copyButton = [[NSButton alloc] init];
-    [reloadButton setBezelStyle:NSRecessedBezelStyle];
+    [copyButton setBezelStyle:NSRecessedBezelStyle];
     copyButton.autoresizingMask = NSViewMaxXMargin | NSViewMaxYMargin;
-    copyButton.accessibilityIdentifier = @"redbox-reload";
+    copyButton.accessibilityIdentifier = @"redbox-copy";
     copyButton.font = [NSFont systemFontOfSize:20];
     [copyButton setTitle:@"Copy (\u2325\u2318C)"];
     [copyButton setTarget:self];
     [copyButton setAction:@selector(copyStack)];
 
-    CGFloat buttonWidth = self.frame.size.width / 2;
-    dismissButton.frame = CGRectMake(0, self.frame.size.height - buttonHeight, buttonWidth, buttonHeight);
-    reloadButton.frame = CGRectMake(buttonWidth, self.frame.size.height - buttonHeight, buttonWidth, buttonHeight);
-    copyButton.frame = CGRectMake(buttonWidth*2, self.frame.size.height - buttonHeight, buttonWidth, buttonHeight);
+    CGFloat buttonWidth = self.frame.size.width / 3;
+    dismissButton.frame = CGRectMake(0, self.frame.size.height - buttonHeight + 1, buttonWidth, buttonHeight);
+    reloadButton.frame = CGRectMake(buttonWidth, self.frame.size.height - buttonHeight + 1, buttonWidth, buttonHeight);
+    copyButton.frame = CGRectMake(buttonWidth*2, self.frame.size.height - buttonHeight + 1, buttonWidth, buttonHeight);
     [rootView addSubview:dismissButton];
     [rootView addSubview:reloadButton];
     [rootView addSubview:copyButton];
@@ -163,17 +158,23 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   [[[NSURLSession sharedSession] dataTaskWithRequest:request] resume];
 }
 
-- (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack isUpdate:(BOOL)isUpdate
+- (void)showErrorMessage:(NSString *)message withStack:(NSArray<RCTJSStackFrame *> *)stack isUpdate:(BOOL)isUpdate
 {
   if ((!self.isVisible && isUpdate) || (self.isVisible && [_lastErrorMessage isEqualToString:message])) {
     _lastStackTrace = stack;
     _lastErrorMessage = [message substringToIndex:MIN((NSUInteger)10000, message.length)];
     NSMutableArray *result = [NSMutableArray arrayWithCapacity:stack.count];
-    [stack enumerateObjectsUsingBlock:^(id obj, __unused NSUInteger idx, __unused BOOL *stop) {
-      NSString *methodName = obj[@"methodName"];
-      NSString *fileAndLine = [obj[@"file"] lastPathComponent];
-      NSString *details = fileAndLine ? [fileAndLine stringByAppendingFormat:@":%@", obj[@"lineNumber"]] : nil;
-      [result addObject:[methodName stringByAppendingFormat:@"\t%@", details]];
+    [stack enumerateObjectsUsingBlock:^(RCTJSStackFrame* stackFrame, __unused NSUInteger idx, __unused BOOL *stop) {
+      NSString *lineInfo = [NSString stringWithFormat:@"%@:%zd",
+                            [stackFrame.file lastPathComponent],
+                            stackFrame.lineNumber];
+      if (stackFrame.column != 0) {
+        lineInfo = [lineInfo stringByAppendingFormat:@":%zd", stackFrame.column];
+      }
+
+      NSString *methodName = [@"\t in " stringByAppendingString:stackFrame.methodName];
+
+      [result addObject:[methodName stringByAppendingFormat:@"(at %@)", lineInfo]];
     }];
 
 
@@ -189,7 +190,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 {
   [self resignFirstResponder];
   [[[NSApplication sharedApplication] mainWindow] makeKeyWindow];
-  //[self close]; // TODO: fix BAD_ACCESS when uncommented
+  [self orderOut:nil];
 }
 
 - (void)reload

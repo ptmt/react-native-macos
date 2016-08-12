@@ -19,7 +19,6 @@
 
 @property (nonatomic, assign) NSEdgeInsets capInsets;
 @property (nonatomic, strong) NSImage *defaultImage;
-@property (nonatomic, assign) NSImageScaling contentMode;
 @property (nonatomic, copy) NSString *src;
 @property (nonatomic, strong) NSArray<RCTImageSource *> *source;
 @property (nonatomic, assign) CGFloat blurRadius;

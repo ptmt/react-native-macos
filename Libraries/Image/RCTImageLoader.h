@@ -114,13 +114,6 @@ typedef dispatch_block_t RCTImageLoaderCancellationBlock;
 - (RCTImageLoaderCancellationBlock)getImageSizeForURLRequest:(NSURLRequest *)imageURLRequest
                                                        block:(void(^)(NSError *error, CGSize size))completionBlock;
 
-/**
- * Allows developers to set their own caching implementation for
- * decoded images as long as it conforms to the RCTImageCacheDelegate
- * protocol. This method should be called in bridgeDidInitializeModule.
- */
-- (void)setImageCache:(id<RCTImageCache>)cache;
-
 @end
 
 @interface RCTBridge (RCTImageLoader)

@@ -9,12 +9,11 @@ const ReactNative = require('react-native-macos');
 const {
   Button,
   View,
-  Image
 } = ReactNative;
 
-const BEZEL_STYLES = ["rounded", "regularSquare", "thickSquare", "thickerSquare", "disclosure",
-  "shadowlessSquare", "circular", "texturedSquare", "helpButton", "smallSquare", "texturedRounded",
-  "roundRect", "recessed", "roundedDisclosure", "inline"];
+const BEZEL_STYLES = ['rounded', 'regularSquare', 'thickSquare', 'thickerSquare', 'disclosure',
+  'shadowlessSquare', 'circular', 'texturedSquare', 'helpButton', 'smallSquare', 'texturedRounded',
+  'roundRect', 'recessed', 'roundedDisclosure', 'inline'];
 
 const AllStyles = ({type}) => {
   return (
@@ -30,11 +29,11 @@ const AllStyles = ({type}) => {
             onClick={() => alert(`clicked on: style=${style} type=${type}`)}/>
         </View>)}
     </View>
-  )
-}
+  );
+};
 
 exports.title = '<Button>';
-exports.description = 'OS X native buttons with different styles';
+exports.description = 'macOS native buttons with different styles';
 exports.examples = [
   {
     title: 'Momentary Light',
@@ -90,11 +89,11 @@ exports.examples = [
       </View>;
     }
   },
-]
+];
 
 const styles = {
   icon: {
     width: 40,
     height: 40,
   },
-}
+};

@@ -106,19 +106,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)coder)
 
 - (void)setImage:(NSImage *)image
 {
-
   image = image ?: _defaultImage;
   if (image != super.image) {
     super.image = image;
     [self updateImage];
   }
-  CGFloat desiredScaleFactor = [[RCTSharedApplication() mainWindow] backingScaleFactor];
-  CGFloat actualScaleFactor = [image recommendedLayerContentsScale:desiredScaleFactor];
-
-  id layerContents = [image layerContentsForContentsScale:actualScaleFactor];
-
-  [self.layer setContents:layerContents];
-  [self.layer setContentsScale:actualScaleFactor];
 }
 
 // TODO: Replace it with proper mechanism
@@ -165,15 +157,28 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
   return UIEdgeInsetsEqualToEdgeInsets(_capInsets, NSEdgeInsetsZero);
 }
 
-- (void)setContentMode:(NSImageScaling)contentMode
+- (void)setResizeMode:(RCTResizeMode)resizeMode
 {
-  if (_contentMode != contentMode) {
-    super.imageScaling = contentMode;
+  if (_resizeMode != resizeMode) {
+    _resizeMode = resizeMode;
+    if (_resizeMode == RCTResizeModeRepeat) {
+      // Repeat resize mode is handled by the UIImage. Use scale to fill
+      // so the repeated image fills the UIImageView.
+      self.imageScaling = NSImageScaleAxesIndependently;
+    } else if (_resizeMode == RCTResizeModeCover) {
+      self.imageScaling = NSImageScaleNone;
+    } else if (_resizeMode == RCTResizeModeStretch) {
+      self.imageScaling = NSImageScaleAxesIndependently;
+    } else {
+      self.imageScaling = NSImageScaleProportionallyDown;
+    }
+
     if ([self sourceNeedsReload]) {
       [self reloadImage];
     }
   }
 }
+
 
 - (void)cancelImageLoad
 {
@@ -275,32 +280,32 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
                                       resizeMode:_resizeMode
                                    progressBlock:progressHandler
                                  completionBlock:^(NSError *error, NSImage *loadedImage) {
-
       RCTImageView *strongSelf = weakSelf;
-      void (^setImageBlock)(NSImage *) = ^(NSImage *image) {
-        if (![source isEqual:strongSelf.source]) {
-          // Bail out if source has changed since we started loading
-          return;
-        }
-        if (image.reactKeyframeAnimation) {
-          [strongSelf.layer addAnimation:image.reactKeyframeAnimation forKey:@"contents"];
-        } else {
-          [strongSelf.layer removeAnimationForKey:@"contents"];
-          strongSelf.image = image;
-        }
-        if (error) {
-          if (strongSelf->_onError) {
-            strongSelf->_onError(@{ @"error": error.localizedDescription });
-          }
-        } else {
-          if (strongSelf->_onLoad) {
-            strongSelf->_onLoad(nil);
-          }
-        }
-        if (strongSelf->_onLoadEnd) {
-          strongSelf->_onLoadEnd(nil);
-        }
-      };
+       void (^setImageBlock)(NSImage *) = ^(NSImage *image) {
+         if (![source isEqual:strongSelf.imageSource]) {
+           // Bail out if source has changed since we started loading
+           return;
+         }
+         if (image.reactKeyframeAnimation) {
+           [strongSelf.layer addAnimation:image.reactKeyframeAnimation forKey:@"contents"];
+         } else {
+           [strongSelf.layer removeAnimationForKey:@"contents"];
+           strongSelf.image = image;
+         }
+         if (error) {
+           if (strongSelf->_onError) {
+             strongSelf->_onError(@{ @"error": error.localizedDescription });
+           }
+         } else {
+           if (strongSelf->_onLoad) {
+             strongSelf->_onLoad(nil);
+           }
+         }
+         if (strongSelf->_onLoadEnd) {
+           strongSelf->_onLoadEnd(nil);
+         }
+       };
+
 
       if (blurRadius > __FLT_EPSILON__) {
         // Blur on a background thread to avoid blocking interaction
@@ -336,7 +341,7 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
     CGSize imageSize = self.image.size;
     // TODO: scale should not be hardcoded
     CGSize idealSize = RCTTargetSize(imageSize, 1.0f, frame.size,
-                                     RCTScreenScale(), (RCTResizeMode)self.contentMode, YES);
+                                     RCTScreenScale(), (RCTResizeMode)self.resizeMode, YES);
 
     if ([self desiredImageSourceDidChange]) {
       // Reload to swap to the proper image source.
@@ -359,9 +364,9 @@ static inline BOOL UIEdgeInsetsEqualToEdgeInsets(NSEdgeInsets insets1, NSEdgeIns
   }
 }
 
-- (void)didMoveToWindow
+- (void)viewDidMoveToWindow
 {
-  //[super didMoveToWindow];
+  [super viewDidMoveToWindow];
 
   if (!self.window) {
     // Cancel loading the image if we've moved offscreen. In addition to helping

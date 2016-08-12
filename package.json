@@ -24,6 +24,7 @@
       "defaultPlatform": "macos",
       "providesModuleNodeModules": [
         "react-native-macos",
+        "react",
         "parse"
       ],
       "platforms": [
@@ -33,7 +34,7 @@
       ]
     },
     "modulePathIgnorePatterns": [
-      "Libraries/react-native/",
+      "Libraries/react-native-macos/",
       "/node_modules/(?!react|fbjs|react-native-macos|parse|react-transform-hmr|core-js|promise)/",
       "node_modules/react/node_modules/fbjs/",
       "node_modules/react/lib/ReactDOM.js",
@@ -209,6 +210,7 @@
     "mock-fs": "^3.11.0",
     "portfinder": "0.4.0",
     "react": "~15.3.0",
-    "shelljs": "0.6.0"
+    "shelljs": "0.6.0",
+    "react-native": "0.32.0-rc.0"
   }
 }

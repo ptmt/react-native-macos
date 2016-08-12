@@ -517,9 +517,6 @@ RCT_EXPORT_MODULE()
         break;
       }
       case RCTDevMenuTypeToggle: {
-        if ([item.key isEqualToString:@"RCTPerfMonitorKey"]) {
-          item.value = _settings[@"RCTPerfMonitorKey"];
-        }
         BOOL selected = [item.value boolValue];
         NSMenuItem *selectedItem = [item copy]; // TODO: could you please make it elegant?
         selectedItem.title = (selected ? item.selectedTitle : item.title);

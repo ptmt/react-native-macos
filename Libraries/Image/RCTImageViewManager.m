@@ -27,7 +27,7 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_VIEW_PROPERTY(capInsets, MSEdgeInsets)
 RCT_REMAP_VIEW_PROPERTY(defaultSource, defaultImage, NSImage)
-RCT_REMAP_VIEW_PROPERTY(resizeMode, contentMode, RCTResizeMode)
+RCT_EXPORT_VIEW_PROPERTY(resizeMode, RCTResizeMode)
 RCT_EXPORT_VIEW_PROPERTY(blurRadius, CGFloat)
 RCT_EXPORT_VIEW_PROPERTY(onLoadStart, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onProgress, RCTDirectEventBlock)

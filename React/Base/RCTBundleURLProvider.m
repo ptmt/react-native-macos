@@ -139,7 +139,7 @@ static NSURL *serverRootWithHost(NSString *host)
   NSURLComponents *components = [NSURLComponents componentsWithURL:serverRootWithHost(packagerHost) resolvingAgainstBaseURL:NO];
   components.path = [NSString stringWithFormat:@"/%@.bundle", bundleRoot];
   // When we support only iOS 8 and above, use queryItems for a better API.
-  components.query = [NSString stringWithFormat:@"platform=ios&dev=%@&minify=%@",
+  components.query = [NSString stringWithFormat:@"platform=macos&dev=%@&minify=%@",
                       enableDev ? @"true" : @"false",
                       enableMinification ? @"true": @"false"];
   return components.URL;

@@ -104,7 +104,6 @@ var ReactNative = {
   StyleSheet: require('StyleSheet'),
   Share: require('Share'),
   StatusBarIOS: require('StatusBarIOS'),
-  StyleSheet: require('StyleSheet'),
   Systrace: require('Systrace'),
   TimePickerAndroid: require('TimePickerAndroid'),
   UIManager: require('UIManager'),

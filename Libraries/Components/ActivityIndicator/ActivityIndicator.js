@@ -67,7 +67,7 @@ const ActivityIndicator = React.createClass({
   getDefaultProps(): DefaultProps {
     return {
       animating: true,
-      color: Platform.OS === 'ios' ? GRAY : undefined,
+      color: Platform.OS === 'ios' || Platform.OS === 'macos' ? GRAY : undefined,
       hidesWhenStopped: true,
       size: 'small',
     };
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   },
 });
 
-if (Platform.OS === 'ios') {
+if (Platform.OS === 'ios' || Platform.OS === 'macos') {
   var RCTActivityIndicator = requireNativeComponent(
     'RCTActivityIndicatorView',
     ActivityIndicator,

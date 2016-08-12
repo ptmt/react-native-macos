@@ -27,7 +27,6 @@ var ReactNative = require('react-native-macos');
 var {
   AlertIOS,
   Platform,
-  ToastAndroid,
   Text,
   View,
 } = ReactNative;
@@ -156,10 +155,10 @@ var TimerTester = React.createClass({
       var msg = 'Finished ' + this._ii + ' ' + this.props.type + ' calls.\n' +
         'Elapsed time: ' + e + ' ms\n' + (e / this._ii) + ' ms / iter';
       console.log(msg);
-      if (Platform.OS === 'ios') {
+      if (Platform.OS === 'macos') {
         AlertIOS.alert(msg);
       } else if (Platform.OS === 'android') {
-        ToastAndroid.show(msg, ToastAndroid.SHORT);
+        // ToastAndroid.show(msg, ToastAndroid.SHORT);
       }
       this._start = 0;
       this.forceUpdate(() => { this._ii = 0; });

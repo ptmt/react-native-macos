@@ -33,7 +33,6 @@ var {
   TouchableOpacity,
   UIManager,
   Platform,
-  TouchableNativeFeedback,
   View,
 } = ReactNative;
 
@@ -344,32 +343,6 @@ class TouchableDisabled extends React.Component {
           </Text>
         </TouchableHighlight>
 
-        {Platform.OS === 'android' &&
-          <TouchableNativeFeedback
-            style={[styles.row, styles.block]}
-            onPress={() => console.log('custom TNF has been clicked')}
-            background={TouchableNativeFeedback.SelectableBackground()}>
-            <View>
-              <Text style={[styles.button, styles.nativeFeedbackButton]}>
-                Enabled TouchableNativeFeedback
-              </Text>
-            </View>
-          </TouchableNativeFeedback>
-        }
-
-        {Platform.OS === 'android' &&
-          <TouchableNativeFeedback
-            disabled={true}
-            style={[styles.row, styles.block]}
-            onPress={() => console.log('custom TNF has been clicked')}
-            background={TouchableNativeFeedback.SelectableBackground()}>
-            <View>
-              <Text style={[styles.disabledButton, styles.nativeFeedbackButton]}>
-                Disabled TouchableNativeFeedback
-              </Text>
-            </View>
-          </TouchableNativeFeedback>
-        }
       </View>
     );
   }

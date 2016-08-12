@@ -19,7 +19,7 @@
 var React = require('React');
 var ReactNative = require('react-native-macos');
 var {
-  AppStateIOS,
+  AppState,
   Text,
   View
 } = ReactNative;
@@ -27,18 +27,16 @@ var {
 var AppStateSubscription = React.createClass({
   getInitialState() {
     return {
-      appState: AppStateIOS.currentState,
+      appState: AppState.currentState,
       previousAppStates: [],
       memoryWarnings: 0,
     };
   },
   componentDidMount: function() {
-    AppStateIOS.addEventListener('change', this._handleAppStateChange);
-    AppStateIOS.addEventListener('memoryWarning', this._handleMemoryWarning);
+    AppState.addEventListener('change', this._handleAppStateChange);
   },
   componentWillUnmount: function() {
-    AppStateIOS.removeEventListener('change', this._handleAppStateChange);
-    AppStateIOS.removeEventListener('memoryWarning', this._handleMemoryWarning);
+    AppState.removeEventListener('change', this._handleAppStateChange);
   },
   _handleMemoryWarning: function() {
     this.setState({memoryWarnings: this.state.memoryWarnings + 1});
@@ -80,20 +78,20 @@ exports.examples = [
   {
     title: 'AppStateIOS.currentState',
     description: 'Can be null on app initialization',
-    render() { return <Text>{AppStateIOS.currentState}</Text>; }
+    render() { return <Text>{AppState.currentState}</Text>; }
   },
   {
     title: 'Subscribed AppStateIOS:',
     description: 'This changes according to the current state, so you can only ever see it rendered as "active"',
-    render(): ReactElement { return <AppStateSubscription showCurrentOnly={true} />; }
+    render() { return <AppStateSubscription showCurrentOnly={true} />; }
   },
   {
     title: 'Previous states:',
-    render(): ReactElement { return <AppStateSubscription showCurrentOnly={false} />; }
+    render() { return <AppStateSubscription showCurrentOnly={false} />; }
   },
   {
     title: 'Memory Warnings',
     description: 'In the simulator, hit Shift+Command+M to simulate a memory warning.',
-    render(): ReactElement { return <AppStateSubscription showMemoryWarnings={true} />; }
+    render() { return <AppStateSubscription showMemoryWarnings={true} />; }
   },
 ];

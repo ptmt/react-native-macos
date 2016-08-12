@@ -29,11 +29,6 @@ const resolveAssetSource = require('resolveAssetSource');
 
 const ImageViewManager = NativeModules.ImageViewManager;
 
-var {
-  ImageViewManager,
-  NetworkImageViewManager,
-} = require('NativeModules');
-
 /**
  * A React component for displaying different types of images,
  * including network images, static resources, temporary local images, and

@@ -25,7 +25,7 @@ import type  {
 const Animated = require('Animated');
 const React = require('React');
 
-const PropTypes = require('ReactPropTypes');
+const PropTypes = require('react/lib/ReactPropTypes');
 
 /* NavigationAction */
 const action =  PropTypes.shape({

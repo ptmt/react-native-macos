@@ -80,6 +80,8 @@ const DatePickerIOS = React.createClass({
      */
     mode: PropTypes.oneOf(['date', 'time', 'datetime']),
 
+    datePickerMode: PropTypes.oneOf(['single', 'range']),
+
     datePickerStyle: PropTypes.oneOf(['textField', 'clockAndCalendar', 'textFieldAndStepper']),
 
     /**

@@ -75,7 +75,7 @@ RCT_EXPORT_METHOD(markTestCompleted)
 
 RCT_EXPORT_METHOD(markTestPassed:(BOOL)success)
 {
-  [_bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, __unused NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+  [_bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, __unused NSDictionary<NSNumber *, NSView *> *viewRegistry) {
     self->_status = success ? RCTTestStatusPassed : RCTTestStatusFailed;
   }];
 }

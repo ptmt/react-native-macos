@@ -406,7 +406,7 @@ var ListView = React.createClass({
       for (var rowIdx = 0; rowIdx < rowIDs.length; rowIdx++) {
         // Inverting index if this is inverting ListView
         var rowID = this.props.autoScrollToBottom ?
-          rowIDs[rowIdx] :
+          parseInt(rowIDs[rowIdx], 10) :
           rowIDs.length - 1 - rowIdx;
 
         var comboID = sectionID + '_' + rowID;

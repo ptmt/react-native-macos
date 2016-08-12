@@ -92,7 +92,6 @@ CGRect RCTTargetRect(CGSize sourceSize, CGSize destSize,
       };
 
     case RCTResizeModeCover:
-
       if (targetAspect <= aspect) { // target is taller than content
 
         sourceSize.height = destSize.height;
@@ -198,7 +197,7 @@ BOOL RCTUpscalingRequired(CGSize sourceSize, CGFloat sourceScale,
 
   // Calculate aspect ratios if needed (don't bother if resizeMode == stretch)
   CGFloat aspect = 0.0, targetAspect = 0.0;
-  if (resizeMode != UIViewContentModeScaleToFill) {
+  if (resizeMode != RCTResizeModeStretch) {
     aspect = sourceSize.width / sourceSize.height;
     targetAspect = destSize.width / destSize.height;
     if (aspect == targetAspect) {

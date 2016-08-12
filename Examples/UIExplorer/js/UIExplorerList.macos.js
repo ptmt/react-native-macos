@@ -27,7 +27,7 @@ var {
 var UIExplorerListBase = require('./UIExplorerListBase');
 
 var COMPONENTS = [
-  require('./ActivityIndicatorIOSExample'),
+  require('./ActivityIndicatorExample'),
   require('./ButtonExample'),
   require('./DatePickerIOSExample'),
   require('./ImageExample'),
@@ -84,7 +84,7 @@ class UIExplorerList extends React.Component {
     );
   }
 
-  renderAdditionalView(renderRow: Function, renderTextInput: Function): React.Component {
+  renderAdditionalView(renderRow: Function, renderTextInput: Function) {
     return renderTextInput(styles.searchTextInput);
   }
 

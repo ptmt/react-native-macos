@@ -29,7 +29,7 @@ RCT_EXPORT_MODULE()
 
 - (NSView *)view
 {
-  NSProgressIndicator* indicator = [[NSProgressIndicator alloc] init];
+  RCTActivityIndicatorView* indicator = [[RCTActivityIndicatorView alloc] init];
   [indicator setControlSize:NSRegularControlSize];
   [indicator setStyle:NSProgressIndicatorSpinningStyle];
   [indicator setUsesThreadedAnimation:YES];
@@ -37,7 +37,7 @@ RCT_EXPORT_MODULE()
   return indicator;
 }
 
-//RCT_EXPORT_VIEW_PROPERTY(color, NSColor) // imlement drawRect
+//RCT_EXPORT_VIEW_PROPERTY(color, NSColor) // implement drawRect
 //RCT_EXPORT_VIEW_PROPERTY(hidesWhenStopped, BOOL)
 //RCT_REMAP_VIEW_PROPERTY(size, activityIndicatorViewStyle, NSProgressIndicatorSpinningStyle)
 RCT_CUSTOM_VIEW_PROPERTY(animating, BOOL, NSProgressIndicator)

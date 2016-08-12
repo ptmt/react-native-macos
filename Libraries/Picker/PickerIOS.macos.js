@@ -12,16 +12,14 @@
  */
 'use strict';
 
-var NativeMethodsMixin = require('NativeMethodsMixin');
+const NativeMethodsMixin = require('react/lib/NativeMethodsMixin');
 var React = require('React');
-var ReactChildren = require('ReactChildren');
-var ReactNativeViewAttributes = require('ReactNativeViewAttributes');
+var ReactChildren = require('react/lib/ReactChildren');
 var RCTPickerIOSConsts = require('NativeModules').UIManager.RCTPicker.Constants;
 var StyleSheet = require('StyleSheet');
 var View = require('View');
 
 var requireNativeComponent = require('requireNativeComponent');
-var merge = require('merge');
 
 var PICKER = 'picker';
 

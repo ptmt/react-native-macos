@@ -28,10 +28,10 @@ jest
   .mock('Text')
   .mock('View');
 
-const mockEmptyObject = {};
-jest.mock('ReactNativePropRegistry', () => ({
-  register: id => id,
-  getByID: () => mockEmptyObject,
-}));
+// const mockEmptyObject = {};
+// jest.mock('ReactNativePropRegistry', () => ({
+//   register: id => id,
+//   getByID: () => mockEmptyObject,
+// }));
 
 jest.setMock('ErrorUtils', require('ErrorUtils'));

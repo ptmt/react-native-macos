@@ -880,9 +880,9 @@ RCT_EXPORT_METHOD(manageChildren:(nonnull NSNumber *)containerTag
 
   // Removes (both permanent and temporary moves) are using "before" indices
   NSArray<id<RCTComponent>> *permanentlyRemovedChildren =
-    [self _childrenToRemoveFromContainer:container atIndices:removeAtIndices];
+  [self _childrenToRemoveFromContainer:container atIndices:removeAtIndices];
   NSArray<id<RCTComponent>> *temporarilyRemovedChildren =
-    [self _childrenToRemoveFromContainer:container atIndices:moveFromIndices];
+  [self _childrenToRemoveFromContainer:container atIndices:moveFromIndices];
 
   BOOL isUIViewRegistry = ((id)registry == (id)_viewRegistry);
   if (isUIViewRegistry && _layoutAnimation.deleteAnimation) {
@@ -909,7 +909,7 @@ RCT_EXPORT_METHOD(manageChildren:(nonnull NSNumber *)containerTag
   }
 
   NSArray<NSNumber *> *sortedIndices =
-    [destinationsToChildrenToAdd.allKeys sortedArrayUsingSelector:@selector(compare:)];
+  [destinationsToChildrenToAdd.allKeys sortedArrayUsingSelector:@selector(compare:)];
   for (NSNumber *reactIndex in sortedIndices) {
     NSInteger insertAtIndex = reactIndex.integerValue;
 

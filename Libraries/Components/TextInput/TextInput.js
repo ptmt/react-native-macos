@@ -28,10 +28,12 @@ const TouchableWithoutFeedback = require('TouchableWithoutFeedback');
 const UIManager = require('UIManager');
 const View = require('View');
 const warning = require('fbjs/lib/warning');
+const NativeModules = require('NativeModules');
 
 const emptyFunction = require('fbjs/lib/emptyFunction');
 const invariant = require('fbjs/lib/invariant');
 const requireNativeComponent = require('requireNativeComponent');
+const processColor = require('processColor');
 
 const onlyMultiline = {
   onTextInput: true,

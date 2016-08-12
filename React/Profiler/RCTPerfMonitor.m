@@ -162,7 +162,8 @@ RCT_EXPORT_MODULE()
                                  hotkey:@"M"
                                 handler:
                                 ^(BOOL selected) {
-                                  [_bridge.devMenu updateSetting:RCTPerfMonitorKey value:@(selected)];
+                                  // TODO: fix the storing value in NSUserSettings
+//                                  [_bridge.devMenu updateSetting:RCTPerfMonitorKey value:@(selected)];
 
                                   if (selected) {
                                     [weakSelf show];

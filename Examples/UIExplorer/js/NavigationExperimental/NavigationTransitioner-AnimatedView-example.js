@@ -24,7 +24,7 @@
 
 const NavigationExampleRow = require('./NavigationExampleRow');
 const React = require('react');
-const ReactNative = require('react-native');
+const ReactNative = require('react-native-macos');
 
 /**
  * Basic example that shows how to use <NavigationTransitioner /> and

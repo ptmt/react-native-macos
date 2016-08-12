@@ -263,7 +263,7 @@ exports.examples = [
         <NetworkImageExample source={{uri: 'http://TYPO_ERROR_facebook.github.io/react/img/logo_og.png'}} />
       );
     },
-    platform: 'ios',
+    platform: 'macos',
   },
   {
     title: 'Image Download Progress',
@@ -272,7 +272,7 @@ exports.examples = [
         <NetworkImageExample source={{uri: 'http://facebook.github.io/origami/public/images/blog-hero.jpg?r=1'}}/>
       );
     },
-    platform: 'ios',
+    platform: 'macos',
   },
   {
     title: 'defaultSource',
@@ -609,8 +609,8 @@ var smallImage = {uri: 'http://facebook.github.io/react/img/logo_small_2x.png'};
 
 var styles = StyleSheet.create({
   base: {
-    width: 38,
-    height: 38,
+    width: 40,
+    height: 40,
   },
   progress: {
     flex: 1,

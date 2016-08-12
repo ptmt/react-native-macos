@@ -150,7 +150,7 @@ class Linking extends NativeEventEmitter {
    * NOTE: For web URLs, the protocol ("http://", "https://") must be set accordingly!
    */
   openURL(url: string): Promise<any> {
-    this._validateURL(url);
+    Linking._validateURL(url);
     return LinkingManager.openURL(url);
   }
 
@@ -165,7 +165,7 @@ class Linking extends NativeEventEmitter {
    * @param URL the URL to open
    */
   canOpenURL(url: string): Promise<boolean> {
-    this._validateURL(url);
+    Linking._validateURL(url);
     return LinkingManager.canOpenURL(url);
   }
 
