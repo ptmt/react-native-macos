@@ -17,21 +17,16 @@ function cleanup {
     WATCHMAN_LOGS=/usr/local/Cellar/watchman/3.1/var/run/watchman/$USER.log
     [ -f $WATCHMAN_LOGS ] && cat $WATCHMAN_LOGS
   fi
-<<<<<<< HEAD
   SERVER_PID=$(lsof -n -i4TCP:8081 | grep 'LISTEN' | awk -F" " '{print $2}')
   [ $SERVER_PID ] && kill -9 $SERVER_PID
-=======
-  # kill whatever is occupying port 8081 
-  lsof -i tcp:8081 | awk 'NR!=1 {print $2}' | xargs kill
->>>>>>> 0561336ae4f2e9bd9d418c18b30bc32951f2c2ac
 }
 trap cleanup EXIT
 
 XCODE_PROJECT="Examples/UIExplorer/UIExplorer.xcodeproj"
 XCODE_SCHEME="UIExplorer"
-XCODE_SDK="iphonesimulator"
+XCODE_SDK="macosx10.11"
 if [ -z "$XCODE_DESTINATION" ]; then
-  XCODE_DESTINATION="platform=iOS Simulator,name=iPhone 5s,OS=9.3"
+  XCODE_DESTINATION="platform=OS X,arch=x86_64"
 fi
 
 # Support for environments without xcpretty installed
@@ -42,15 +37,6 @@ set -e
 # TODO: We use xcodebuild because xctool would stall when collecting info about
 # the tests before running them. Switch back when this issue with xctool has
 # been resolved.
-<<<<<<< HEAD
-xcodebuild \
-  -project Examples/UIExplorer/UIExplorer.xcodeproj \
-  -scheme UIExplorer \
-  -sdk macosx10.11 \
-  -destination 'platform=OS X,arch=x86_64' \
-  test
-| xcpretty && exit ${PIPESTATUS[0]}
-=======
 if [ -z "$OUTPUT_TOOL" ]; then
   xcodebuild \
     -project $XCODE_PROJECT \
@@ -66,4 +52,3 @@ else
     -destination "$XCODE_DESTINATION" \
     test | $OUTPUT_TOOL && exit ${PIPESTATUS[0]}
 fi
->>>>>>> 0561336ae4f2e9bd9d418c18b30bc32951f2c2ac
