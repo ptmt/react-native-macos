@@ -54,30 +54,37 @@ NSString *const RCTErrorUnableToRequestPermissions = @"E_UNABLE_TO_REQUEST_PERMI
   RCTPromiseResolveBlock _requestPermissionsResolveBlock;
 }
 
-static NSDictionary *RCTFormatLocalNotification(UILocalNotification *notification)
+static NSDictionary *RCTFormatLocalNotification(NSUserNotification *notification)
 {
   NSMutableDictionary *formattedLocalNotification = [NSMutableDictionary dictionary];
-  if (notification.fireDate) {
+  if (notification.actualDeliveryDate) {
     NSDateFormatter *formatter = [NSDateFormatter new];
     [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"];
-    NSString *fireDateString = [formatter stringFromDate:notification.fireDate];
+    NSString *fireDateString = [formatter stringFromDate:notification.actualDeliveryDate];
     formattedLocalNotification[@"fireDate"] = fireDateString;
   }
-  formattedLocalNotification[@"alertAction"] = RCTNullIfNil(notification.alertAction);
-  formattedLocalNotification[@"alertBody"] = RCTNullIfNil(notification.alertBody);
-  formattedLocalNotification[@"applicationIconBadgeNumber"] = @(notification.applicationIconBadgeNumber);
-  formattedLocalNotification[@"category"] = RCTNullIfNil(notification.category);
+  formattedLocalNotification[@"alertAction"] = RCTNullIfNil(notification.actionButtonTitle);
+  formattedLocalNotification[@"alertBody"] = RCTNullIfNil(notification.informativeText);
+//  formattedLocalNotification[@"applicationIconBadgeNumber"] = @(notification.applicationIconBadgeNumber);
+//  formattedLocalNotification[@"category"] = RCTNullIfNil(notification.category);
   formattedLocalNotification[@"soundName"] = RCTNullIfNil(notification.soundName);
   formattedLocalNotification[@"userInfo"] = RCTNullIfNil(RCTJSONClean(notification.userInfo));
   formattedLocalNotification[@"remote"] = @NO;
   return formattedLocalNotification;
 }
 
+@synthesize bridge = _bridge;
+
 RCT_EXPORT_MODULE()
 
 - (dispatch_queue_t)methodQueue
 {
   return dispatch_get_main_queue();
+}
+
+- (void)setBridge:(RCTBridge *)bridge
+{
+  _bridge = bridge;
 }
 
 - (void)startObserving
@@ -170,24 +177,6 @@ RCT_EXPORT_MODULE()
 {
   [self sendEventWithName:@"remoteNotificationsRegistered" body:notification.userInfo];
 }
-
-- (void)handleRegisterUserNotificationSettings:(NSNotification *)notification
-{
-  if (_requestPermissionsResolveBlock == nil) {
-    return;
-  }
-
-  UIUserNotificationSettings *notificationSettings = notification.userInfo[@"notificationSettings"];
-  NSDictionary *notificationTypes = @{
-    @"alert": @((notificationSettings.types & UIUserNotificationTypeAlert) > 0),
-    @"sound": @((notificationSettings.types & UIUserNotificationTypeSound) > 0),
-    @"badge": @((notificationSettings.types & UIUserNotificationTypeBadge) > 0),
-  };
-
-  _requestPermissionsResolveBlock(notificationTypes);
-  _requestPermissionsResolveBlock = nil;
-}
-
 
 - (void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification
 {

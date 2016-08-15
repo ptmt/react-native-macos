@@ -25,9 +25,7 @@ trap cleanup EXIT
 XCODE_PROJECT="Examples/UIExplorer/UIExplorer.xcodeproj"
 XCODE_SCHEME="UIExplorer"
 XCODE_SDK="macosx10.11"
-if [ -z "$XCODE_DESTINATION" ]; then
-  XCODE_DESTINATION="platform=OS X,arch=x86_64"
-fi
+XCODE_DESTINATION="platform=OS X,arch=x86_64"
 
 # Support for environments without xcpretty installed
 set +e
