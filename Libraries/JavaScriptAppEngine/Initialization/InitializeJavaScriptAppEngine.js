@@ -36,6 +36,7 @@ if (global.window === undefined) {
 function setUpProcess(): void {
   global.process = global.process || {};
   global.process.env = global.process.env || {};
+  global.process.argv = global.process.argv || {};
   if (!global.process.env.NODE_ENV) {
     global.process.env.NODE_ENV = __DEV__ ? 'development' : 'production';
   }
