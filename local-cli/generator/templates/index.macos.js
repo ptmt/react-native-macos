@@ -16,7 +16,7 @@ const <%= name %> = React.createClass({
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          Welcome to React Native Desktop!
+          Welcome to React Native macOS!
         </Text>
         <Text style={styles.instructions}>
           To get started, edit index.macos.js
