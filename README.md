@@ -23,7 +23,7 @@ $ open macos/MyProject.xcodeproj
 ```
 Since it's simply just a fork, you can follow [the same instruction on facebook.github.io/react-native](http://facebook.github.io/react-native/docs/getting-started.html#content).
 
-**Disclaimer**. Having previous experience with React Native highly recommended. There is no success story for any RN desktop app yet, so it's not proven by production use.
+**Disclaimer**. Having previous experience with React Native highly recommended. There is no success story for any RN for macOS app yet, so it's not proven by production use.
 
 Feel free to ask anything on `#react-native-platforms` channel if you run into problems.
 

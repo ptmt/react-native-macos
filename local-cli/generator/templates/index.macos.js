@@ -1,5 +1,5 @@
 /**
- * Sample React Native Desktop App
+ * Sample React Native macOS App
  * https://github.com/ptmt/react-native-macos
  */
  import React from 'react';
