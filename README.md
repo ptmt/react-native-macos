@@ -10,6 +10,7 @@ Build macOS desktop apps using React Native and Cocoa.
 <View>
   <Button onClick={() => alert('clicked')} />
 </View>
+```
 
 ## Getting started
 
