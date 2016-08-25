@@ -77,6 +77,8 @@ const Button = React.createClass({
      *   {nativeEvent: { state }}.
      */
     onClick: PropTypes.func,
+    allowsMixedState: PropTypes.bool,
+    state: PropTypes.number
   },
 
   getDefaultProps: function(): DefaultProps {
