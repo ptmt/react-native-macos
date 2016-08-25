@@ -64,6 +64,8 @@ RCT_EXPORT_VIEW_PROPERTY(bezelStyle, NSBezelStyle)
 RCT_EXPORT_VIEW_PROPERTY(image, NSImage)
 RCT_EXPORT_VIEW_PROPERTY(alternateImage, NSImage)
 RCT_EXPORT_VIEW_PROPERTY(onClick, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(allowsMixedState, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(state, NSInteger)
 
 RCT_CUSTOM_VIEW_PROPERTY(type, NSButtonType, __unused NSButton)
 {

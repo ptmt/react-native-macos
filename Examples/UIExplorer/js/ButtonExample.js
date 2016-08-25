@@ -60,14 +60,22 @@ exports.examples = [
     title: 'Switch',
     description: 'This style is a variant of NSToggleButton that has no border and is typically used to represent a checkbox.',
     render() {
-      return <Button type={'switch'} style={{width: 200}} title={'Single Checkbox'}/>;
+      return <View>
+        <Button type={'switch'} style={{width: 200}} title={'Single Checkbox'} state={0} />
+        <Button type={'switch'} style={{width: 200}} title={'Single Checkbox'} state={1} />
+        <Button type={'switch'} style={{width: 200}} title={'Single Checkbox'} allowsMixedState={true} state={-1} />
+      </View>
     }
   },
   {
     title: 'Radio',
     description: 'This style is similar to NSSwitchButton, but it is used to constrain a selection to a single element from several elements.',
     render() {
-      return <Button type={'radio'} style={{width: 200}} title={'Single Radio'}/>;
+      return <View>
+        <Button type={'radio'} style={{width: 200}} title={'Single Radio'} state={0} />
+        <Button type={'radio'} style={{width: 200}} title={'Single Radio'} state={1} />
+        <Button type={'radio'} style={{width: 200}} title={'Single Radio'} allowsMixedState={true} state={-1} />
+      </View>
     }
   },
   {
