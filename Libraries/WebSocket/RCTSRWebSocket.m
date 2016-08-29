@@ -304,7 +304,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
       components.scheme = @"https";
     }
     // Load and set the cookie header.
-    if ([NSHTTPCookieStorage sharedHTTPCookieStorage].cookies.count > 0) {
+    if ([NSHTTPCookieStorage sharedHTTPCookieStorage].cookies.count > 0 && components) {
       NSArray<NSHTTPCookie *> *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:components.URL];
       [request setAllHTTPHeaderFields:[NSHTTPCookie requestHeaderFieldsWithCookies:cookies]];
     }
