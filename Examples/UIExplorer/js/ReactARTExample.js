@@ -73,7 +73,6 @@ class ErasingShape extends React.Component {
   }
 
   render() {
-    // console.log(this.state)
     return (
       <View {...this._panResponder.panHandlers}
         ref={ref => { this.ref = ref; }}
@@ -85,18 +84,13 @@ class ErasingShape extends React.Component {
           <Shape d={this.state.svgPath.join('')}
                  stroke="#88C76D"
                  strokeWidth={this.state.strokeWidth} />
-
         </Surface>
-        <View {...this._panResponder.panHandlers} style={{ position: 'absolute', }}/>
       </View>
     );
   }
 }
 
 var MOUSE_UP_DRAG = 0.978;
-var MOUSE_DOWN_DRAG = 0.9;
-var MAX_VEL = 11;
-var CLICK_ACCEL = 3;
 var BASE_VEL = 0.15;
 /**
  * An animated SVG component.
