@@ -20,6 +20,20 @@
   return YES;
 }
 
+- (void)insertReactSubview:(NSView *)subview atIndex:(NSInteger)atIndex
+{
+    [super insertReactSubview:subview atIndex:atIndex];
+    [self addSubview:subview];
+    [self invalidate];
+}
+
+- (void)removeReactSubview:(NSView *)subview
+{
+    [super removeReactSubview:subview];
+    [self invalidate];
+}
+
+
 - (void)didUpdateReactSubviews
 {
   // Do nothing, as subviews are inserted by insertReactSubview:

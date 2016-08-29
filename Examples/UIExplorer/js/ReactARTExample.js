@@ -6,7 +6,6 @@ import ReactNative from 'react-native-macos';
 const {
   View,
   PanResponder,
-  TouchableWithoutFeedback
 } = ReactNative;
 
 var ReactART = require('ReactNativeART');
@@ -18,8 +17,6 @@ const {
   Transform
 } = ReactART;
 
-const layout = require('Dimensions').get('window');
-
 class ErasingShape extends React.Component {
 
   constructor() {
@@ -29,7 +26,7 @@ class ErasingShape extends React.Component {
       svgPath: [],
       value: 0,
       letter: 'M',
-      strokeWidth: 50
+      strokeWidth: 8
     };
   }
 
@@ -42,22 +39,20 @@ class ErasingShape extends React.Component {
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 
       onPanResponderGrant: (evt, gestureState) => {
-        // The guesture has started. Show visual feedback so the user knows
-        // what is happening!
+        // console.log('onPanResponderGrant', gestureState, this.state.fx, this.state.fy)
         //var letter = this.state.svgPath.length > 0 ? 'L' : 'M';
-        this.state.svgPath.push(this.state.letter + Math.round(gestureState.x0) + ',' +  Math.round(gestureState.y0));
+        this.state.svgPath.push(
+            this.state.letter + Math.round(gestureState.x0 - this.state.px)
+            + ',' +  Math.round(gestureState.y0 - this.state.py));
         this.setState({svgPath: this.state.svgPath, letter: 'L'});
         // gestureState.{x,y}0 will be set to zero now
       },
       onPanResponderMove: (evt, gestureState) => {
         // The most recent move distance is gestureState.move{X,Y}
-        this.state.svgPath.push(this.state.letter +  Math.round(gestureState.moveX) + ',' +  Math.round(gestureState.moveY));
+        this.state.svgPath.push(this.state.letter +
+          Math.round(gestureState.moveX - this.state.px) + ',' +
+          Math.round(gestureState.moveY - this.state.py));
         this.setState({svgPath: this.state.svgPath});
-        // if (evt.nativeEvent.force && evt.nativeEvent.force > 0) {
-        //   this.setState({strokeWidth: 50 + 50 * (evt.nativeEvent.force / evt.nativeEvent.maxForce) })
-        // }
-        // The accumulated gesture distance since becoming responder is
-        // gestureState.d{x,y}
       },
       onPanResponderTerminationRequest: (evt, gestureState) => true,
       onPanResponderRelease: (evt, gestureState) => {
@@ -78,17 +73,21 @@ class ErasingShape extends React.Component {
   }
 
   render() {
-    var {width, height} = layout;
+    // console.log(this.state)
     return (
       <View {...this._panResponder.panHandlers}
-        style={[this.props.style, {flex: 1, top: 0, left: 0, height: 200, width: 300}]}>
-        <Surface width={width} height={height}
-          style={{backgroundColor: 'green', top: 0, left: 0, position: 'absolute'}}>
+        ref={ref => { this.ref = ref; }}
+        onLayout={(e) => this.ref.measure( (fx, fy, w, h, px, py) => {
+          this.setState({ px, py });
+        })}
+        style={[this.props.style, {flex: 1, height: 200, width: 500, backgroundColor: '#eee'}]}>
+        <Surface width={500} height={200}>
           <Shape d={this.state.svgPath.join('')}
                  stroke="#88C76D"
                  strokeWidth={this.state.strokeWidth} />
 
         </Surface>
+        <View {...this._panResponder.panHandlers} style={{ position: 'absolute', }}/>
       </View>
     );
   }
@@ -135,7 +134,7 @@ var VectorWidget = React.createClass({
     return (
       <Surface
         width={700}
-        height={500}
+        height={400}
       >
         {this.renderGraphic(this.state.degrees)}
       </Surface>
@@ -184,7 +183,7 @@ exports.title = 'ReactART';
 exports.description = 'React Native bridge to ART drawing library';
 exports.displayName = 'ReactART';
 exports.examples = [ {
-  title: 'Erasing Shape',
+  title: 'Simple vector editor',
   render: function () { return <ErasingShape />; }
 }, {
   title: 'Vector Widget',

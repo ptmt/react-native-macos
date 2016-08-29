@@ -97,21 +97,22 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
       touchLocation = NSMakePoint(touchLocation.x - rootOrigin.x, touchLocation.y - rootOrigin.y);
     }
 
-    // TODO: get rid of this
+    // TODO: get rid of explicit comparison
     //
     // Check if item is becoming first responder to delete touch
     NSView *targetView = [self.view hitTest:touchLocation];
 
     if (![targetView.className isEqualToString:@"RCTText"] &&
         ![targetView.className isEqualToString:@"RCTView"] &&
-        ![targetView.className isEqualToString:@"RCTImageView"]) {
+        ![targetView.className isEqualToString:@"RCTImageView"] &&
+        ![targetView.className isEqualToString:@"ARTSurfaceView"]) {
       self.state = NSGestureRecognizerStateEnded;
       return;
     }
 
     NSNumber *reactTag = [self.view reactTagAtPoint:CGPointMake(touchLocation.x, touchLocation.y)];
 
-    if (!reactTag) {// || !targetView.userInteractionEnabled) {
+    if (!reactTag) {
       return;
     }
 
@@ -164,6 +165,12 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
   CGPoint location = [nativeTouch locationInWindow];
   CGPoint flippedLocation = CGPointMake(location.x, self.view.window.frame.size.height - location.y);
 
+  // adjust touchLocation if our view placed inside custom PopoverWindow
+  if ([[self.view window].className isEqualToString:@"_NSPopoverWindow"]) {
+    NSPoint rootOrigin = [self.view window].contentView.frame.origin;
+    flippedLocation = NSMakePoint(flippedLocation.x - rootOrigin.x, flippedLocation.y - rootOrigin.y);
+  }
+
   NSMutableDictionary *reactTouch = _reactTouches[touchIndex];
   reactTouch[@"pageX"] = @(flippedLocation.x);
   reactTouch[@"pageY"] = @(flippedLocation.y);
@@ -212,7 +219,6 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
     [reactTouches addObject:[touch copy]];
   }
   eventName = RCTNormalizeInputEventName(eventName);
-
   [_bridge enqueueJSCall:@"RCTEventEmitter.receiveTouches"
                     args:@[eventName, reactTouches, changedIndexes]];
 }
@@ -323,8 +329,6 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
   [self _recordRemovedTouches:touches];
 }
 
-  // Mouse move events
-  // https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/EventOverview/MouseTrackingEvents/MouseTrackingEvents.html
 
 - (BOOL)canPreventGestureRecognizer:(__unused NSGestureRecognizer *)preventedGestureRecognizer
 {
