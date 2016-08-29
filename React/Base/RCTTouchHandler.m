@@ -159,21 +159,16 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
   }
 }
 
-- (void)_updateReactTouchAtIndex:(NSInteger)touchIndex
+- (void)_updateReactTouchAtIndex:(NSInteger)touchIndex withNativeTouch:(NSEvent *)nativeTouch
 {
-  // TODO: actual coordinates
-  NSEvent *nativeTouch = _nativeTouches[touchIndex];
- // CGPoint windowLocation = self.view.window.frame.origin;
-  CGPoint rootViewLocation = [nativeTouch locationInWindow];//[self.view.window convertPoint:windowLocation toView:self.view];
-
- // NSView *touchView = _touchViews[touchIndex];
-  CGPoint touchViewLocation = rootViewLocation;//[nativeTouch locatiion][nativeTouch.window convertPoint:windowLocation toView:touchView];
+  CGPoint location = [nativeTouch locationInWindow];
+  CGPoint flippedLocation = CGPointMake(location.x, self.view.window.frame.size.height - location.y);
 
   NSMutableDictionary *reactTouch = _reactTouches[touchIndex];
-  reactTouch[@"pageX"] = @(rootViewLocation.x);
-  reactTouch[@"pageY"] = @(rootViewLocation.y);
-  reactTouch[@"locationX"] = @(touchViewLocation.x);
-  reactTouch[@"locationY"] = @(touchViewLocation.y);
+  reactTouch[@"pageX"] = @(flippedLocation.x);
+  reactTouch[@"pageY"] = @(flippedLocation.y);
+  reactTouch[@"locationX"] = @(flippedLocation.x);
+  reactTouch[@"locationY"] = @(flippedLocation.y);
   reactTouch[@"timestamp"] =  @(nativeTouch.timestamp * 1000); // in ms, for JS
 }
 
@@ -201,7 +196,7 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
       continue;
     }
 
-    [self _updateReactTouchAtIndex:index];
+    [self _updateReactTouchAtIndex:index withNativeTouch:touch];
     [changedIndexes addObject:@(index)];
   }
 

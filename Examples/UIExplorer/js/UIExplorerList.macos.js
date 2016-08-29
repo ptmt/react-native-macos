@@ -61,6 +61,7 @@ var APIS = [
   require('./XHRExample.macos'),
   require('./DragnDropExample.macos'),
   require('./MenuExample.macos'),
+  require('./PanResponderExample')
 ];
 
 type Props = {
