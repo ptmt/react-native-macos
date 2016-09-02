@@ -480,12 +480,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   // the content. For this reason, only use iOS border drawing when clipping
   // or when the border is hidden.
 
-  (borderInsets.top == 0 || CGColorGetAlpha(borderColors.top) == 0 || self.clipsToBounds);
+  (borderInsets.top == 0 || borderColors.top && CGColorGetAlpha(borderColors.top) == 0 || self.clipsToBounds);
 
   // iOS clips to the outside of the border, but CSS clips to the inside. To
   // solve this, we'll need to add a container view inside the main view to
   // correctly clip the subviews.
-
   if (useIOSBorderRendering) {
     layer.cornerRadius = cornerRadii.topLeft;
     layer.borderColor = borderColors.left;
@@ -502,7 +501,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
                                      borderInsets,
                                      borderColors,
                                      _backgroundColor.CGColor,
-                                     YES);
+                                     self.clipsToBounds);
 
   layer.backgroundColor = NULL;
 
@@ -536,14 +535,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   layer.contentsCenter = contentsCenter;
   layer.magnificationFilter = kCAFilterNearest;
   layer.needsDisplayOnBoundsChange = YES;
-
-  // TODO: make it resizable
-//  const BOOL isResizable = !UIEdgeInsetsEqualToEdgeInsets(image.capInsets, NSEdgeInsetsZero);
-//  if (isResizable) {
-//    layer.contentsCenter = contentsCenter;
-//  } else {
-//    layer.contentsCenter = CGRectMake(0.0, 0.0, 1.0, 1.0);
-//  }
 
   [self updateClippingForLayer:layer];
 }

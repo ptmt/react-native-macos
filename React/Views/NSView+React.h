@@ -72,7 +72,7 @@
 - (BOOL)reactRespondsToTouch:(NSEvent *)touch;
 
 /**
- * UIView alternative
+ * UIView replacement
  */
 @property (nonatomic, assign) BOOL clipsToBounds;
 

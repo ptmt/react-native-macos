@@ -203,7 +203,16 @@ exports.examples = [
         <View style={{borderRadius: 10, borderWidth: 1, width: 20, height: 20}} />
       );
     },
-  }, {
+  },
+  {
+    title: 'Circle with Border Radius coloured',
+    render: function() {
+      return (
+        <View style={{backgroundColor: '#527FE4', borderWidth: 10, borderColor: '#bb0000', borderRadius: 30, width: 60, height: 60}} />
+      );
+    },
+  },
+  {
     title: 'Overflow',
     render: function() {
       return (
@@ -229,7 +238,24 @@ exports.examples = [
         </View>
       );
     },
-  }, {
+  },
+  {
+    title: 'Circle with Border Radius coloured and overflow',
+    render: function() {
+      return (
+        <View style={{
+          backgroundColor: '#527FE4',
+          borderWidth: 5,
+          borderColor: '#bb0000',
+          borderRadius: 30,
+          width: 60,
+          height: 60}}>
+          <Text>Overflow visible</Text>
+        </View>
+      );
+    },
+  },
+  {
     title: 'Opacity',
     render: function() {
       return (
