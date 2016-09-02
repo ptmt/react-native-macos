@@ -119,7 +119,7 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
     self.needsLayout = NO;
     _borderStyle = RCTBorderStyleSolid;
     self.clipsToBounds = NO;
-
+    [self setLayerContentsRedrawPolicy:NSViewLayerContentsRedrawOnSetNeedsDisplay];
   }
 
   return self;
@@ -384,7 +384,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   }
   if (![self wantsLayer] || self.layer == NULL) {
     [self setWantsLayer:YES];
-    [self.layer setBackgroundColor:[backgroundColor CGColor]];
+    CALayer* hostedLayer = [CALayer layer];
+    [hostedLayer setBackgroundColor:[backgroundColor CGColor]];
+    [self setLayer:hostedLayer];
     self.layer.delegate = self;
   } else {
     [self.layer setBackgroundColor:[backgroundColor CGColor]];
