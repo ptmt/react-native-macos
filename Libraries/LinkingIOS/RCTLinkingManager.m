@@ -24,6 +24,9 @@ RCT_EXPORT_MODULE()
 - (void)setBridge:(RCTBridge *)bridge
 {
     _bridge = bridge;
+    // TODO: it's not a right place
+    // it should be called automatically
+    [self startObserving];
 }
 
 - (void)startObserving
