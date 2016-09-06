@@ -1471,12 +1471,18 @@ static NSDictionary *RCTExportedDimensions(BOOL rotateBounds)
 
   // Don't use RCTScreenSize since it the interface orientation doesn't apply to it
   CGRect screenSize = [[NSScreen mainScreen] frame];
+  NSSize windowSize = [[NSApp mainWindow] frame].size;
   return @{
-    @"window": @{
+    @"screen": @{
         @"width": @(rotateBounds ? screenSize.size.height : screenSize.size.width),
         @"height": @(rotateBounds ? screenSize.size.width : screenSize.size.height),
         @"scale": @(RCTScreenScale()),
     },
+    @"window": @{
+        @"width": @(windowSize.width),
+        @"height": @(windowSize.height),
+        @"scale": @(RCTScreenScale()),
+        },
   };
 }
 
