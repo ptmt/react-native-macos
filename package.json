@@ -1,6 +1,6 @@
 {
   "name": "react-native-macos",
-  "version": "0.10.0-rc6",
+  "version": "0.10.0",
   "description": "A framework for building native macOS apps using React",
   "license": "BSD-3-Clause",
   "repository": {
