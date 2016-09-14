@@ -119,7 +119,6 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
     self.needsLayout = NO;
     _borderStyle = RCTBorderStyleSolid;
     self.clipsToBounds = NO;
-    [self setLayerContentsRedrawPolicy:NSViewLayerContentsRedrawOnSetNeedsDisplay];
   }
 
   return self;
@@ -377,22 +376,19 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   if ([_backgroundColor isEqual:backgroundColor]) {
     return;
   }
-  if ([backgroundColor isEqual:NULL]) {
+  if (backgroundColor == nil) {
     [self setWantsLayer:NO];
     self.layer = NULL;
     return;
   }
-  if (![self wantsLayer] || self.layer == NULL) {
+  if (![self wantsLayer] || self.layer == nil) {
     [self setWantsLayer:YES];
-    CALayer* hostedLayer = [CALayer layer];
-    [hostedLayer setBackgroundColor:[backgroundColor CGColor]];
-    [self setLayer:hostedLayer];
     self.layer.delegate = self;
-  } else {
-    [self.layer setBackgroundColor:[backgroundColor CGColor]];
   }
+  [self.layer setBackgroundColor:[backgroundColor CGColor]];
+  [self.layer setNeedsDisplay];
   [self setNeedsDisplay:YES];
-  _backgroundColor = backgroundColor; // TODO: why does it stop working when color is constantly changing
+  _backgroundColor = backgroundColor;
 }
 
 - (NSEdgeInsets)bordersAsInsets

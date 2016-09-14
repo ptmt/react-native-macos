@@ -130,6 +130,44 @@ class ZIndexExample extends React.Component {
   };
 }
 
+class BackgroundUpdatesExample extends React.Component {
+  state = {
+    backgroundColorIndex: 0
+  };
+
+  componentWillMount() {
+    const changeColor = () => {
+      this.t = setTimeout(() => {
+        this.setState({
+          backgroundColorIndex: this.state.backgroundColorIndex === 3 ?
+            0 :  this.state.backgroundColorIndex + 1
+        });
+        changeColor();
+      }, 1000);
+    };
+    changeColor();
+  }
+  componentWillUnmount() {
+    clearTimeout(this.t);
+  }
+
+  render() {
+    const colors = ['yellow', 'red', 'blue', 'green'];
+    return (
+      <View>
+        <View style={{
+          width: 100,
+          height: 100,
+          borderWidth: 1,
+          borderRadius: 50,
+          borderColor: 'orange',
+          backgroundColor: colors[this.state.backgroundColorIndex],
+        }} />
+      </View>
+    );
+  }
+}
+
 exports.title = '<View>';
 exports.description = 'Basic building block of all UI, examples that ' +
   'demonstrate some of the many styles available.';
@@ -146,6 +184,11 @@ exports.examples = [
           </Text>
         </View>
       );
+    },
+  }, {
+    title: 'Background Color with updates',
+    render: function() {
+      return <BackgroundUpdatesExample />;
     },
   }, {
     title: 'Border',
