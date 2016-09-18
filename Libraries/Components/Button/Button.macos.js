@@ -79,7 +79,6 @@ const Button = React.createClass({
     onClick: PropTypes.func,
     allowsMixedState: PropTypes.bool,
     state: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
-    fontSize: PropTypes.number,
   },
 
   getDefaultProps: function(): DefaultProps {

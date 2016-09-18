@@ -52,6 +52,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
     _modalViewController.initCompletionHandler = ^(NSWindow *modal) {
       modal.delegate = weakSelf;
     };
+    _modalViewController.closeCompletionHandler = ^{
+      [self dismissModalViewController];
+    };
   }
 
   return self;
@@ -91,7 +94,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
 - (void)dismissModalViewController
 {
   if (_isPresented) {
-    [self.reactViewController dismissViewController:_modalViewController];
+    // [self.reactViewController dismissViewController:_modalViewController];
     _isPresented = NO;
     _onRequestClose(nil);
   }

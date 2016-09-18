@@ -29,4 +29,11 @@
   }
 }
 
+- (void)viewDidDisappear
+{
+  dispatch_async(dispatch_get_main_queue(), ^{
+    self.closeCompletionHandler();
+  });
+}
+
 @end
