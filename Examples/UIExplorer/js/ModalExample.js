@@ -29,7 +29,7 @@ var {
   StyleSheet,
   Switch,
   Text,
-  TouchableHighlight,
+  Button,
   View,
 } = ReactNative;
 
@@ -37,36 +37,6 @@ exports.displayName = (undefined: ?string);
 exports.framework = 'React';
 exports.title = '<Modal>';
 exports.description = 'Component for presenting modal views.';
-
-class Button extends React.Component {
-  state = {
-    active: false,
-  };
-
-  _onHighlight = () => {
-    this.setState({active: true});
-  };
-
-  _onUnhighlight = () => {
-    this.setState({active: false});
-  };
-
-  render() {
-    var colorStyle = {
-      color: this.state.active ? '#fff' : '#000',
-    };
-    return (
-      <TouchableHighlight
-        onHideUnderlay={this._onUnhighlight}
-        onPress={this.props.onPress}
-        onShowUnderlay={this._onHighlight}
-        style={[styles.button, this.props.style]}
-        underlayColor="#a9d9d4">
-          <Text style={[styles.buttonText, colorStyle]}>{this.props.children}</Text>
-      </TouchableHighlight>
-    );
-  }
-}
 
 class ModalExample extends React.Component {
   state = {
@@ -77,6 +47,7 @@ class ModalExample extends React.Component {
 
   _setModalVisible = (visible) => {
     this.setState({modalVisible: visible});
+    console.log('hide modal')
   };
 
   _setPresentationType(type) {
@@ -112,23 +83,31 @@ class ModalExample extends React.Component {
               <Text>This modal was presented with type: {this.state.presentationType }.</Text>
               <Button
                 onPress={this._setModalVisible.bind(this, false)}
-                style={styles.modalButton}>
-                Close
-              </Button>
+                style={styles.modalButton}
+                title="Close" />
             </View>
           </View>
         </Modal>
         <View style={styles.row}>
           <Text style={styles.rowTitle}>Presentation Type</Text>
-          <Button onPress={this._setPresentationType.bind(this, 'window')} style={this.state.presentationType === 'window' ? activeButtonStyle : {}}>
-            window
-          </Button>
-          <Button onPress={this._setPresentationType.bind(this, 'sheet')} style={this.state.presentationType === 'sheet' ? activeButtonStyle : {}}>
-            sheet
-          </Button>
-          <Button onPress={this._setPresentationType.bind(this, 'popover')} style={this.state.presentationType === 'popover' ? activeButtonStyle : {}}>
-            popover
-          </Button>
+          <Button
+            onClick={this._setPresentationType.bind(this, 'window')}
+            state={this.state.presentationType === 'window'}
+            style={{ width: 200 }}
+            type="radio"
+            title="window" />
+          <Button
+            onClick={this._setPresentationType.bind(this, 'sheet')}
+            state={this.state.presentationType === 'sheet'}
+            style={{ width: 200 }}
+            type="radio"
+            title="sheet" />
+          <Button
+            onClick={this._setPresentationType.bind(this, 'popover')}
+            state={this.state.presentationType === 'popover'}
+            style={{ width: 200 }}
+            type="radio"
+            title="popover" />
         </View>
 
         <View style={styles.row}>
@@ -136,9 +115,12 @@ class ModalExample extends React.Component {
           <Switch value={this.state.transparent} onValueChange={this._toggleTransparent} />
         </View>
 
-        <Button onPress={this._setModalVisible.bind(this, true)}>
-          Present
-        </Button>
+        <Button
+          bezelStyle={'rounded'}
+          style={{ width: 100, fontSize: 18, height: 40 }}
+          onClick={this._setModalVisible.bind(this, true)}
+          title="Present" />
+
       </View>
     );
   }
@@ -174,6 +156,7 @@ var styles = StyleSheet.create({
   },
   button: {
     borderRadius: 5,
+    margin: 10,
     backgroundColor: 'lightblue',
     flex: 1,
     height: 44,

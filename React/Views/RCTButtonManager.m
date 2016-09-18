@@ -11,6 +11,7 @@
 
 #import "RCTBridge.h"
 #import "RCTButton.h"
+#import "RCTFont.h"
 
 @implementation RCTConvert(RCTButton)
 
@@ -66,6 +67,22 @@ RCT_EXPORT_VIEW_PROPERTY(alternateImage, NSImage)
 RCT_EXPORT_VIEW_PROPERTY(onClick, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(allowsMixedState, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(state, NSInteger)
+RCT_CUSTOM_VIEW_PROPERTY(fontSize, NSNumber, RCTButton)
+{
+  view.font = [RCTFont updateFont:view.font withSize:json ?: @(defaultView.font.pointSize)];
+}
+RCT_CUSTOM_VIEW_PROPERTY(fontWeight, NSString, __unused RCTButton)
+{
+  view.font = [RCTFont updateFont:view.font withWeight:json]; // defaults to normal
+}
+RCT_CUSTOM_VIEW_PROPERTY(fontStyle, NSString, __unused RCTButton)
+{
+  view.font = [RCTFont updateFont:view.font withStyle:json]; // defaults to normal
+}
+RCT_CUSTOM_VIEW_PROPERTY(fontFamily, NSString, RCTButton)
+{
+  view.font = [RCTFont updateFont:view.font withFamily:json ?: defaultView.font.familyName];
+}
 
 RCT_CUSTOM_VIEW_PROPERTY(type, NSButtonType, __unused NSButton)
 {
