@@ -10,8 +10,6 @@
  */
 'use strict';
 
-var ScrollViewConsts = require('UIManager').RCTNativeScrollView.Constants;
-
 function processDecelerationRate(decelerationRate) {
   if (decelerationRate === 'normal') {
     decelerationRate = 0.998;
