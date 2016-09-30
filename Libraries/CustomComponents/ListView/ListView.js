@@ -617,7 +617,6 @@ var ListView = React.createClass({
         visibleSection = {};
       }
       for (var rowIdx = 0; rowIdx < rowIDs.length; rowIdx++) {
-        console.log(rowIdx, rowIDs)
         var rowID = rowIDs[rowIdx];
         var frame = this._childFrames[totalIndex];
         totalIndex++;
