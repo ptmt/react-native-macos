@@ -238,6 +238,7 @@ var ListView = React.createClass({
      * If empty sections are not desired to be rendered their indices should be excluded from sectionID object.
      */
     enableEmptySections: PropTypes.bool,
+
   },
 
   /**
@@ -292,6 +293,7 @@ var ListView = React.createClass({
       scrollRenderAheadDistance: DEFAULT_SCROLL_RENDER_AHEAD,
       onEndReachedThreshold: DEFAULT_END_REACHED_THRESHOLD,
       stickyHeaderIndices: [],
+      autoScrollToBottom: false,
     };
   },
 
@@ -406,8 +408,8 @@ var ListView = React.createClass({
       for (var rowIdx = 0; rowIdx < rowIDs.length; rowIdx++) {
         // Inverting index if this is inverting ListView
         var rowID = this.props.autoScrollToBottom ?
-          parseInt(rowIDs[rowIdx], 10) :
-          rowIDs.length - 1 - rowIdx;
+          rowIDs.length - 1 - rowIdx :
+          rowIDs[rowIdx];
 
         var comboID = sectionID + '_' + rowID;
         var shouldUpdateRow = rowCount >= this._prevRenderedRowsCount &&
@@ -615,6 +617,7 @@ var ListView = React.createClass({
         visibleSection = {};
       }
       for (var rowIdx = 0; rowIdx < rowIDs.length; rowIdx++) {
+        console.log(rowIdx, rowIDs)
         var rowID = rowIDs[rowIdx];
         var frame = this._childFrames[totalIndex];
         totalIndex++;
