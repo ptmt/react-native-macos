@@ -52,7 +52,7 @@ module.exports = {
   examples: [
     {
       desc: 'Pass a non-standard location of macOS directory',
-      cmd: 'react-native run-macos --project-path "./app/macos"',
+      cmd: 'react-native-macos run-macos --project-path "./app/macos"',
     },
   ],
   options: [{
