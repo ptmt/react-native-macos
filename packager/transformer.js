@@ -32,7 +32,15 @@ const getBabelRC = (function() {
       return babelRC;
     }
 
-    babelRC = { plugins: [] }; // empty babelrc
+    babelRC = {
+      plugins: [
+        ['module-resolver', {
+          'alias': {
+            'react-native': 'react-native-macos',
+          },
+        }],
+      ],
+    };
 
     // Let's look for the .babelrc in the first project root.
     // In the future let's look into adding a command line option to specify
