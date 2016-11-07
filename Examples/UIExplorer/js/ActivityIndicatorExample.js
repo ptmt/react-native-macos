@@ -23,7 +23,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native-macos';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 /**
  * Optional Flowtype state and timer types definition
