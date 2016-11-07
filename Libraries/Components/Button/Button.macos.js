@@ -91,7 +91,7 @@ const Button = React.createClass({
     const { props } = this;
     return (
       <RCTButton {...props}
-        style={[styles.defaultButton, props.style]}/>
+        style={[styles.defaultButton, props.style]} />
     );
   }
 });

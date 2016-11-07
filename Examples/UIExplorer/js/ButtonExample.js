@@ -19,15 +19,15 @@ const AllStyles = ({type}) => {
   return (
     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
       {BEZEL_STYLES.map((style, i) =>
-        <View key={i} style={{margin: 5}}>
-          <Button
-            type={type}
-            style={{width: 150}}
-            title={style}
-            toolTip={`tooltip: for style=${style} with type=${type}`}
-            bezelStyle={style}
-            onClick={() => alert(`clicked on: style=${style} type=${type}`)}/>
-        </View>)}
+        <Button
+          key={i}
+          style={{ width: 150, margin: 15 }}
+          type={type}
+          title={style}
+          toolTip={`tooltip: for style=${style} with type=${type}`}
+          bezelStyle={style}
+          onClick={() => alert(`clicked on: style=${style} type=${type}`)}/>
+      )}
     </View>
   );
 };
@@ -35,6 +35,13 @@ const AllStyles = ({type}) => {
 exports.title = '<Button>';
 exports.description = 'macOS native buttons with different styles';
 exports.examples = [
+  {
+    title: 'Default',
+    description: 'Default button',
+    render() {
+      return <Button title="Button example" />;
+    }
+  },
   {
     title: 'Momentary Light',
     description: 'This type of button is best for simply triggering actions because it doesn’t show its state; it always displays its normal image or title.',
