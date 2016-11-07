@@ -55,7 +55,14 @@ RCT_EXPORT_MODULE()
 
 - (NSView *)view
 {
-  return [RCTButton new];
+  if (floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_12)
+  {
+    /* On a 10.11.x or earlier system */
+    return [RCTButton new];
+  } else {
+    RCTButton *button = [RCTButton buttonWithTitle:@"Button" target:button action:@selector(onPressHandler:)];
+    return button;
+  }
 }
 
 RCT_EXPORT_VIEW_PROPERTY(title, NSString)
@@ -100,10 +107,11 @@ RCT_CUSTOM_VIEW_PROPERTY(systemImage, NSString, __unused NSButton)
 
 - (NSDictionary<NSString *, id> *)constantsToExport
 {
-  NSButton *view = [NSButton new];
+  NSButton *view = [self view];
+
   return @{
-           @"ComponentHeight": @(view.intrinsicContentSize.height),
-           @"ComponentWidth": @(view.intrinsicContentSize.width)
+           @"ComponentHeight": @(view.frame.size.height),
+           @"ComponentWidth": @(view.frame.size.width)
            };
 }
 

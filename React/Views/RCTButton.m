@@ -13,6 +13,8 @@
 
 @implementation RCTButton
 
+#ifdef NSAppKitVersionNumber10_12
+#else
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if ((self = [super initWithFrame:frame])) {
@@ -21,6 +23,7 @@
   }
   return self;
 }
+#endif
 
 -(void)onPressHandler:(__unused NSEvent *)theEvent
 {
