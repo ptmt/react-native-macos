@@ -39,7 +39,7 @@ exports.examples = [
     title: 'Default',
     description: 'Default button',
     render() {
-      return <Button title="Button example" />;
+      return <Button title="Button" />;
     }
   },
   {

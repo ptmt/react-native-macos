@@ -53,17 +53,19 @@ RCT_ENUM_CONVERTER(NSBezelStyle, (@{
 
 RCT_EXPORT_MODULE()
 
+#ifdef NSAppKitVersionNumber10_12
 - (NSView *)view
 {
-  if (floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_12)
-  {
-    /* On a 10.11.x or earlier system */
-    return [RCTButton new];
-  } else {
-    RCTButton *button = [RCTButton buttonWithTitle:@"Button" target:button action:@selector(onPressHandler:)];
-    return button;
-  }
+  RCTButton *button = [RCTButton buttonWithTitle:@"Button" target:button action:@selector(onPressHandler:)];
+  return button;
 }
+
+#else
+- (NSView *)view
+{
+  return [RCTButton new];
+}
+#endif
 
 RCT_EXPORT_VIEW_PROPERTY(title, NSString)
 RCT_EXPORT_VIEW_PROPERTY(alternateTitle, NSString)
