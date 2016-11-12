@@ -27,6 +27,7 @@ var ReactNative = require('react-native-macos');
 var {
   StyleSheet,
   Text,
+  Button,
   TextInput,
   TouchableWithoutFeedback,
   TouchableOpacity,
@@ -133,6 +134,7 @@ class WebViewExample extends React.Component {
 
   onShouldStartLoadWithRequest = (event) => {
     // Implement any custom loading logic here, don't forget to return!
+    console.log('onShouldStartLoadWithRequest')
     return true;
   };
 
@@ -165,7 +167,7 @@ class WebViewExample extends React.Component {
   };
 }
 
-class Button extends React.Component {
+class PseudoButton extends React.Component {
   _handlePress = () => {
     if (this.props.enabled !== false && this.props.onPress) {
       this.props.onPress();
@@ -217,10 +219,54 @@ class ScaledWebView extends React.Component {
   }
 }
 
+class MessagingTest extends React.Component {
+  webview = null
+
+  state = {
+    messagesReceivedFromWebView: 0,
+    message: '',
+  }
+
+  onMessage = e => this.setState({
+    messagesReceivedFromWebView: this.state.messagesReceivedFromWebView + 1,
+    message: e.nativeEvent.data,
+  })
+
+  postMessage = () => {
+    if (this.webview) {
+      this.webview.postMessage('"Hello" from React Native!');
+    }
+  }
+
+  render(): ReactElement<any> {
+    const {messagesReceivedFromWebView, message} = this.state;
+
+    return (
+      <View style={[styles.container, { height: 200 }]}>
+        <View>
+          <Text>Messages received from web view: {messagesReceivedFromWebView}</Text>
+          <Text>{message || '(No message)'}</Text>
+          <Button title="Send Message to Web View" style={{ width: 300 }} onClick={this.postMessage} />
+        </View>
+        <View style={styles.container}>
+          <WebView
+            ref={webview => { this.webview = webview; }}
+            style={{
+              backgroundColor: BGWASH,
+              height: 100,
+            }}
+            source={require('./messagingtest.html')}
+            onMessage={this.onMessage}
+          />
+        </View>
+      </View>
+    );
+  }
+}
+
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: HEADER,
   },
   addressBarRow: {
     flexDirection: 'row',
@@ -335,61 +381,65 @@ exports.displayName = (undefined: ?string);
 exports.title = '<WebView>';
 exports.description = 'Base component to display web content';
 exports.examples = [
+  // {
+  //   title: 'Simple Browser',
+  //   render(): ReactElement<any> { return <WebViewExample />; }
+  // },
+  // {
+  //   title: 'Scale Page to Fit',
+  //   render(): ReactElement<any> { return <ScaledWebView/>; }
+  // },
+  // {
+  //   title: 'Bundled HTML',
+  //   render(): ReactElement<any> {
+  //     return (
+  //       <WebView
+  //         style={{
+  //           backgroundColor: BGWASH,
+  //           height: 100,
+  //         }}
+  //         source={require('./helloworld.html')}
+  //         scalesPageToFit={true}
+  //       />
+  //     );
+  //   }
+  // },
+  // {
+  //   title: 'Static HTML',
+  //   render(): ReactElement<any> {
+  //     return (
+  //       <WebView
+  //         style={{
+  //           backgroundColor: BGWASH,
+  //           height: 100,
+  //         }}
+  //         source={{html: HTML}}
+  //         scalesPageToFit={true}
+  //       />
+  //     );
+  //   }
+  // },
+  // {
+  //   title: 'POST Test',
+  //   render(): ReactElement<any> {
+  //     return (
+  //       <WebView
+  //         style={{
+  //           backgroundColor: BGWASH,
+  //           height: 100,
+  //         }}
+  //         source={{
+  //           uri: 'http://www.posttestserver.com/post.php',
+  //           method: 'POST',
+  //           body: 'foo=bar&bar=foo'
+  //         }}
+  //         scalesPageToFit={false}
+  //       />
+  //     );
+  //   }
+  // },
   {
-    title: 'Simple Browser',
-    render(): ReactElement<any> { return <WebViewExample />; }
-  },
-  {
-    title: 'Scale Page to Fit',
-    render(): ReactElement<any> { return <ScaledWebView/>; }
-  },
-  {
-    title: 'Bundled HTML',
-    render(): ReactElement<any> {
-      return (
-        <WebView
-          style={{
-            backgroundColor: BGWASH,
-            height: 100,
-          }}
-          source={require('./helloworld.html')}
-          scalesPageToFit={true}
-        />
-      );
-    }
-  },
-  {
-    title: 'Static HTML',
-    render(): ReactElement<any> {
-      return (
-        <WebView
-          style={{
-            backgroundColor: BGWASH,
-            height: 100,
-          }}
-          source={{html: HTML}}
-          scalesPageToFit={true}
-        />
-      );
-    }
-  },
-  {
-    title: 'POST Test',
-    render(): ReactElement<any> {
-      return (
-        <WebView
-          style={{
-            backgroundColor: BGWASH,
-            height: 100,
-          }}
-          source={{
-            uri: 'http://www.posttestserver.com/post.php',
-            method: 'POST',
-            body: 'foo=bar&bar=foo'
-          }}
-          scalesPageToFit={false}
-        />
-      );
-    }
+    title: 'Mesaging Test',
+    render(): ReactElement<any> { return <MessagingTest />; }
   }
 ];

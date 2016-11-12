@@ -21,13 +21,15 @@
 #import "NSView+React.h"
 
 NSString *const RCTJSNavigationScheme = @"react-js-navigation";
+NSString *const RCTJSPostMessageHost = @"postMessage";
 
-@interface RCTWebView () <WebFrameLoadDelegate, RCTAutoInsetsProtocol>
+@interface RCTWebView () <WebFrameLoadDelegate, WebResourceLoadDelegate, RCTAutoInsetsProtocol>
 
 @property (nonatomic, copy) RCTDirectEventBlock onLoadingStart;
 @property (nonatomic, copy) RCTDirectEventBlock onLoadingFinish;
 @property (nonatomic, copy) RCTDirectEventBlock onLoadingError;
 @property (nonatomic, copy) RCTDirectEventBlock onShouldStartLoadWithRequest;
+@property (nonatomic, copy) RCTDirectEventBlock onMessage;
 
 @end
 
@@ -40,6 +42,7 @@ NSString *const RCTJSNavigationScheme = @"react-js-navigation";
 - (void)dealloc
 {
   _webView.frameLoadDelegate = nil;
+  _webView.resourceLoadDelegate = nil;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -52,7 +55,9 @@ NSString *const RCTJSNavigationScheme = @"react-js-navigation";
     _automaticallyAdjustContentInsets = YES;
     _contentInset = NSEdgeInsetsZero;
     _webView = [[WebView alloc] initWithFrame:self.bounds];
+    [WebView registerURLSchemeAsLocal:RCTJSNavigationScheme];
     [_webView setFrameLoadDelegate:self];
+    [_webView setResourceLoadDelegate:self];
     [self addSubview:_webView];
   }
   return self;
@@ -84,6 +89,18 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)stopLoading
 {
   [_webView.webFrame stopLoading];
+}
+
+- (void)postMessage:(NSString *)message
+{
+  NSDictionary *eventInitDict = @{
+                                  @"data": message,
+                                  };
+  NSString *source = [NSString
+                      stringWithFormat:@"document.dispatchEvent(new MessageEvent('message', %@));",
+                      RCTJSONStringify(eventInitDict, NULL)
+                      ];
+  [_webView stringByEvaluatingJavaScriptFromString:source];
 }
 
 - (void)setSource:(NSDictionary *)source
@@ -172,6 +189,63 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 #pragma mark - UIWebViewDelegate methods
 
+- (void)webView:(WebView *)sender
+willPerformClientRedirectToURL:(NSURL *)URL
+          delay:(NSTimeInterval)seconds
+       fireDate:(NSDate *)date
+       forFrame:(WebFrame *)frame {
+  NSLog(@"client redirect");
+}
+- (NSURLRequest *)webView:(WebView *)sender
+                 resource:(id)identifier
+          willSendRequest:(NSURLRequest *)request
+         redirectResponse:(NSURLResponse *)redirectResponse
+           fromDataSource:(WebDataSource *)dataSource
+{
+  BOOL isJSNavigation = [request.URL.scheme isEqualToString:RCTJSNavigationScheme];
+  NSString *navigationType = @"Not supported yet";
+
+  // skip this for the JS Navigation handler
+  if (!isJSNavigation && _onShouldStartLoadWithRequest) {
+    NSMutableDictionary<NSString *, id> *event = [self baseEvent];
+    [event addEntriesFromDictionary: @{
+                                       @"url": (request.URL).absoluteString,
+                                       @"navigationType": navigationType
+                                       }];
+    if (![self.delegate webView:self
+      shouldStartLoadForRequest:event
+                   withCallback:_onShouldStartLoadWithRequest]) {
+      return nil;
+    }
+  }
+
+  if (_onLoadingStart) {
+    // We have this check to filter out iframe requests and whatnot
+    BOOL isTopFrame = [request.URL isEqual:request.mainDocumentURL];
+    if (isTopFrame) {
+      NSMutableDictionary<NSString *, id> *event = [self baseEvent];
+      [event addEntriesFromDictionary: @{
+                                         @"url": (request.URL).absoluteString,
+                                         @"navigationType": navigationType
+                                         }];
+      _onLoadingStart(event);
+    }
+  }
+
+  if (isJSNavigation && [request.URL.host isEqualToString:RCTJSPostMessageHost]) {
+    NSString *data = request.URL.query;
+    data = [data stringByReplacingOccurrencesOfString:@"+" withString:@" "];
+    data = [data stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+    NSMutableDictionary<NSString *, id> *event = [self baseEvent];
+    [event addEntriesFromDictionary: @{
+                                       @"data": data,
+                                       }];
+    _onMessage(event);
+  }
+
+  return request;
+}
 - (void)webView:(__unused WebView *)sender didFailLoadWithError:(NSError *)error
        forFrame:(__unused WebFrame *)frame
 {
@@ -196,6 +270,26 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)webView:(__unused WebView *)sender didFinishLoadForFrame:(WebFrame *)frame
 {
+  if (_messagingEnabled) {
+#if RCT_DEV
+    // See isNative in lodash
+    NSString *testPostMessageNative = @"String(window.postMessage) === String(Object.hasOwnProperty).replace('hasOwnProperty', 'postMessage')";
+    BOOL postMessageIsNative = [
+                                [_webView stringByEvaluatingJavaScriptFromString:testPostMessageNative]
+                                isEqualToString:@"true"
+                                ];
+    if (!postMessageIsNative) {
+      RCTLogError(@"Setting onMessage on a WebView overrides existing values of window.postMessage, but a previous value was defined");
+    }
+#endif
+    NSString *source = [NSString stringWithFormat:
+                        @"window.originalPostMessage = window.postMessage;"
+                        "window.postMessage = function(data) {"
+                        "window.location = '%@://%@?' + encodeURIComponent(String(data));"
+                        "};", RCTJSNavigationScheme, RCTJSPostMessageHost
+                        ];
+    [_webView stringByEvaluatingJavaScriptFromString:source];
+  }
   if (_injectedJavaScript != nil) {
     NSString *jsEvaluationValue = [frame.webView stringByEvaluatingJavaScriptFromString:_injectedJavaScript];
 

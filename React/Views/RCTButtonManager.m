@@ -56,7 +56,8 @@ RCT_EXPORT_MODULE()
 #ifdef NSAppKitVersionNumber10_12
 - (NSView *)view
 {
-  RCTButton *button = [RCTButton buttonWithTitle:@"Button" target:button action:@selector(onPressHandler:)];
+  RCTButton *button = [RCTButton buttonWithTitle:@"Button" target:nil action:@selector(onPressHandler:)];
+  [button setTarget:button];
   return button;
 }
 
