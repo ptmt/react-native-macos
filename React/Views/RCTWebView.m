@@ -194,7 +194,19 @@ willPerformClientRedirectToURL:(NSURL *)URL
           delay:(NSTimeInterval)seconds
        fireDate:(NSDate *)date
        forFrame:(WebFrame *)frame {
-  NSLog(@"client redirect");
+   BOOL isJSNavigation = [URL.scheme isEqualToString:RCTJSNavigationScheme];
+  if (isJSNavigation && [URL.host isEqualToString:RCTJSPostMessageHost]) {
+    NSString *data = URL.query;
+    data = [data stringByReplacingOccurrencesOfString:@"+" withString:@" "];
+    data = [data stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+
+    NSMutableDictionary<NSString *, id> *event = [self baseEvent];
+    [event addEntriesFromDictionary: @{
+                                       @"data": data,
+                                       }];
+    _onMessage(event);
+  }
+
 }
 - (NSURLRequest *)webView:(WebView *)sender
                  resource:(id)identifier
@@ -266,6 +278,14 @@ willPerformClientRedirectToURL:(NSURL *)URL
                                       }];
     _onLoadingError(event);
   }
+}
+
+- (void)webView:(WebView *)sender
+decidePolicyForNavigationAction:(NSDictionary *)actionInformation
+        request:(NSURLRequest *)request frame:(WebFrame *)frame
+decisionListener:(id<WebPolicyDecisionListener>)listener
+{
+  NSLog(@"log");
 }
 
 - (void)webView:(__unused WebView *)sender didFinishLoadForFrame:(WebFrame *)frame

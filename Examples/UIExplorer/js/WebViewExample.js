@@ -381,63 +381,63 @@ exports.displayName = (undefined: ?string);
 exports.title = '<WebView>';
 exports.description = 'Base component to display web content';
 exports.examples = [
-  // {
-  //   title: 'Simple Browser',
-  //   render(): ReactElement<any> { return <WebViewExample />; }
-  // },
-  // {
-  //   title: 'Scale Page to Fit',
-  //   render(): ReactElement<any> { return <ScaledWebView/>; }
-  // },
-  // {
-  //   title: 'Bundled HTML',
-  //   render(): ReactElement<any> {
-  //     return (
-  //       <WebView
-  //         style={{
-  //           backgroundColor: BGWASH,
-  //           height: 100,
-  //         }}
-  //         source={require('./helloworld.html')}
-  //         scalesPageToFit={true}
-  //       />
-  //     );
-  //   }
-  // },
-  // {
-  //   title: 'Static HTML',
-  //   render(): ReactElement<any> {
-  //     return (
-  //       <WebView
-  //         style={{
-  //           backgroundColor: BGWASH,
-  //           height: 100,
-  //         }}
-  //         source={{html: HTML}}
-  //         scalesPageToFit={true}
-  //       />
-  //     );
-  //   }
-  // },
-  // {
-  //   title: 'POST Test',
-  //   render(): ReactElement<any> {
-  //     return (
-  //       <WebView
-  //         style={{
-  //           backgroundColor: BGWASH,
-  //           height: 100,
-  //         }}
-  //         source={{
-  //           uri: 'http://www.posttestserver.com/post.php',
-  //           method: 'POST',
-  //           body: 'foo=bar&bar=foo'
-  //         }}
-  //         scalesPageToFit={false}
-  //       />
-  //     );
-  //   }
-  // },
+  {
+    title: 'Simple Browser',
+    render(): ReactElement<any> { return <WebViewExample />; }
+  },
+  {
+    title: 'Scale Page to Fit',
+    render(): ReactElement<any> { return <ScaledWebView/>; }
+  },
+  {
+    title: 'Bundled HTML',
+    render(): ReactElement<any> {
+      return (
+        <WebView
+          style={{
+            backgroundColor: BGWASH,
+            height: 100,
+          }}
+          source={require('./helloworld.html')}
+          scalesPageToFit={true}
+        />
+      );
+    }
+  },
+  {
+    title: 'Static HTML',
+    render(): ReactElement<any> {
+      return (
+        <WebView
+          style={{
+            backgroundColor: BGWASH,
+            height: 100,
+          }}
+          source={{html: HTML}}
+          scalesPageToFit={true}
+        />
+      );
+    }
+  },
+  {
+    title: 'POST Test',
+    render(): ReactElement<any> {
+      return (
+        <WebView
+          style={{
+            backgroundColor: BGWASH,
+            height: 100,
+          }}
+          source={{
+            uri: 'http://www.posttestserver.com/post.php',
+            method: 'POST',
+            body: 'foo=bar&bar=foo'
+          }}
+          scalesPageToFit={false}
+        />
+      );
+    }
+  },
   {
     title: 'Mesaging Test',
     render(): ReactElement<any> { return <MessagingTest />; }
