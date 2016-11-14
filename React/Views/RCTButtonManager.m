@@ -111,11 +111,18 @@ RCT_CUSTOM_VIEW_PROPERTY(systemImage, NSString, __unused NSButton)
 - (NSDictionary<NSString *, id> *)constantsToExport
 {
   NSButton *view = [self view];
-
+#ifdef NSAppKitVersionNumber10_12
   return @{
            @"ComponentHeight": @(view.frame.size.height),
            @"ComponentWidth": @(view.frame.size.width)
            };
+#else
+  return @{
+           @"ComponentHeight": @(view.intrinsicContentSize.height),
+           @"ComponentWidth": @(view.intrinsicContentSize.width)
+           };
+#endif
+
 }
 
 @end
