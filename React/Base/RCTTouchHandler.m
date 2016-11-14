@@ -343,6 +343,9 @@ typedef NS_ENUM(NSInteger, RCTTouchEventType) {
 - (void)reset
 {
   _dispatchedInitialTouches = NO;
+  [_touchViews removeAllObjects];
+  [_nativeTouches removeAllObjects];
+  [_reactTouches removeAllObjects];
 }
 
 - (void)cancel
