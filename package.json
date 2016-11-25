@@ -132,6 +132,7 @@
     "art": "^0.10.0",
     "babel-core": "^6.10.4",
     "babel-plugin-external-helpers": "^6.8.0",
+    "babel-plugin-module-resolver": "^2.3.0",
     "babel-plugin-syntax-trailing-function-commas": "^6.5.0",
     "babel-plugin-transform-flow-strip-types": "^6.6.5",
     "babel-plugin-transform-object-rest-spread": "^6.6.5",

@@ -20,7 +20,7 @@
  */
 'use strict';
 
-var ReactNative = require('react-native-macos');
+var ReactNative = require('react-native');
 var {
   Image,
   StyleSheet,

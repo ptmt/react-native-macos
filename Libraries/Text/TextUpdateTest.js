@@ -17,7 +17,7 @@
 'use strict';
 
 var React = require('React');
-var ReactNative = require('react-native-macos');
+var ReactNative = require('react-native');
 var TimerMixin = require('react-timer-mixin');
 var {
   NativeModules,

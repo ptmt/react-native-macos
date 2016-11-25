@@ -25,7 +25,7 @@
 /* eslint-env browser */
 
 const React = require('react');
-const ReactNative = require('react-native-macos');
+const ReactNative = require('react-native');
 const {
   PixelRatio,
   StyleSheet,

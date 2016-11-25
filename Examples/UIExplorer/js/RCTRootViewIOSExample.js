@@ -24,7 +24,7 @@
 'use strict';
 
 const React = require('React');
-const ReactNative = require('react-native-macos');
+const ReactNative = require('react-native');
 const {
   StyleSheet,
   Text,
