@@ -99,7 +99,10 @@ RCT_EXPORT_METHOD(alertWithArgs:(NSDictionary *)args
   [_alertCallbacks addObject:callback ?: ^(__unused id unused) {}];
   [_alertButtonKeys addObject:buttonKeys];
 
-  [alertView runModal];
+  NSInteger buttonPosition = [alertView runModal];
+  NSString *buttonKey = [buttonKeys objectAtIndex: buttonPosition - NSAlertFirstButtonReturn];
+  
+  callback(@[buttonKey]);
 }
 
 @end
