@@ -90,6 +90,7 @@
 		B233E6EA1D2D845D00BC68BA /* RCTI18nManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B233E6E91D2D845D00BC68BA /* RCTI18nManager.m */; };
 		B95154321D1B34B200FE7B80 /* RCTActivityIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = B95154311D1B34B200FE7B80 /* RCTActivityIndicatorView.m */; };
 		C924C30F1C2EBDA100D7ED48 /* NSView+NSViewAnimationWithBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = C924C30E1C2EBDA100D7ED48 /* NSView+NSViewAnimationWithBlocks.m */; };
+		CE2E95411E12CABF00404FA4 /* RCTCursorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2E95401E12CABF00404FA4 /* RCTCursorManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -299,6 +300,8 @@
 		B95154311D1B34B200FE7B80 /* RCTActivityIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTActivityIndicatorView.m; sourceTree = "<group>"; };
 		C924C30D1C2EBDA100D7ED48 /* NSView+NSViewAnimationWithBlocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSView+NSViewAnimationWithBlocks.h"; sourceTree = "<group>"; };
 		C924C30E1C2EBDA100D7ED48 /* NSView+NSViewAnimationWithBlocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSView+NSViewAnimationWithBlocks.m"; sourceTree = "<group>"; };
+		CE2E953F1E12CABF00404FA4 /* RCTCursorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCursorManager.h; sourceTree = "<group>"; };
+		CE2E95401E12CABF00404FA4 /* RCTCursorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCursorManager.m; sourceTree = "<group>"; };
 		E3BBC8EB1ADE6F47001BBD81 /* RCTTextDecorationLineType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTTextDecorationLineType.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -340,6 +343,8 @@
 		13B07FE01A69315300A75B9A /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				CE2E953F1E12CABF00404FA4 /* RCTCursorManager.h */,
+				CE2E95401E12CABF00404FA4 /* RCTCursorManager.m */,
 				13D9FEE91CDCCECF00158BD7 /* RCTEventEmitter.h */,
 				13D9FEEA1CDCCECF00158BD7 /* RCTEventEmitter.m */,
 				13B07FE71A69327A00A75B9A /* RCTAlertManager.h */,
@@ -741,6 +746,7 @@
 				1450FF871BCFF28A00208362 /* RCTProfileTrampoline-arm.S in Sources */,
 				031631861BDF5E2E003A8A7A /* RCTAsyncLocalStorage.m in Sources */,
 				58114A171AAE854800E7D092 /* RCTPickerManager.m in Sources */,
+				CE2E95411E12CABF00404FA4 /* RCTCursorManager.m in Sources */,
 				68EFE4EE1CF6EB3900A1DE13 /* RCTBundleURLProvider.m in Sources */,
 				B95154321D1B34B200FE7B80 /* RCTActivityIndicatorView.m in Sources */,
 				13F17A851B8493E5007D4C75 /* RCTRedBox.m in Sources */,
