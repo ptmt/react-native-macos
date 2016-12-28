@@ -74,6 +74,7 @@ const ReactNative = {
   get BackAndroid() { return require('BackAndroid'); },
   get CameraRoll() { return require('CameraRoll'); },
   get Clipboard() { return require('Clipboard'); },
+  get Cursor() { return require('Cursor'); },
   get Dimensions() { return require('Dimensions'); },
   get Easing() { return require('Easing'); },
   get ImagePickerIOS() { return require('ImagePickerIOS'); },
