@@ -1,6 +1,29 @@
 language: objective-c
 
-osx_image: xcode8.2
+matrix:
+    include:
+        - os: osx
+          osx_image: xcode8.2
+          env:
+          - TEST_TYPE=objc
+          - SDK_TO_TEST='macosx10.12'
+        - os: osx
+          osx_image: xcode7.3
+          env:
+          - TEST_TYPE=objc
+          - SDK_TO_TEST='macosx10.11'
+        - os: osx
+          osx_image: xcode6.4
+          env:
+          - TEST_TYPE=objc
+          - SDK_TO_TEST='macosx10.10'
+        - os: osx
+          osx_image: xcode6.4
+          env:
+          - TEST_TYPE=objc
+          - SDK_TO_TEST='macosx10.9'
+        - os: osx
+          env: TEST_TYPE=js
 
 install:
   - mkdir -p /Users/travis/build/facebook/.nvm
@@ -21,12 +44,6 @@ script:
   - if [[ "$TEST_TYPE" = e2e-objc ]]; then node ./scripts/run-ci-e2e-tests.js --macos --js --retries 3; fi
   - if [[ "$TEST_TYPE" = js ]]; then npm run flow check; fi
   - if [[ "$TEST_TYPE" = js ]]; then npm test -- --maxWorkers=1; fi
-
-env:
-  matrix:
-    #- TEST_TYPE=e2e-objc
-    - TEST_TYPE=objc
-    - TEST_TYPE=js
 
 branches:
   only:
