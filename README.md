@@ -1,7 +1,6 @@
-# React Native macOS
-### (ex react-native-desktop)
+# React Native macOS (ex react-native-desktop)
 
-Build macOS desktop apps using React Native and Cocoa.
+Build macOS desktop applications using React Native and Cocoa.
 
 [![Build Status](https://travis-ci.org/ptmt/react-native-macos.svg)](https://travis-ci.org/ptmt/react-native-macos)
 [![npm version](https://badge.fury.io/js/react-native-macos.svg)](https://badge.fury.io/js/react-native-macos)
