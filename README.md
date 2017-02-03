@@ -1,5 +1,4 @@
 # React Native macOS (ex react-native-desktop)
-
 Build macOS desktop applications using React Native and Cocoa.
 
 [![Build Status](https://travis-ci.org/ptmt/react-native-macos.svg)](https://travis-ci.org/ptmt/react-native-macos)
@@ -23,7 +22,9 @@ $ react-native-macos init MyProject
 $ cd MyProject
 $ open macos/MyProject.xcodeproj
 ```
-Since it's simply just a fork, you can follow [the same instructions on React Native Documentation](http://facebook.github.io/react-native/docs/getting-started.html#content).
+
+## Documentation
+Since React Native macOS is just a fork, you can follow [the same instructions on the React Native Documentation](http://facebook.github.io/react-native/docs/getting-started.html#content).
 
 ## Disclaimer
 React Native macOS is a fork of React Native for iOS. The library is still fairly new to proceed at your own risk. There has been no successful story for any React Native macOS application yet, so it's not proven by production use.
