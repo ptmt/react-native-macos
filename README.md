@@ -1,4 +1,5 @@
-# React Native for macOS (ex react-native-desktop)
+# React Native macOS
+### (ex react-native-desktop)
 
 Build macOS desktop apps using React Native and Cocoa.
 
@@ -14,6 +15,7 @@ Build macOS desktop apps using React Native and Cocoa.
 
 ## Getting Started
 Node 4.x+, OS X 10.10+ required.
+
 *Previous React Native experience is highly recommended*.
 
 ``` bash
@@ -25,13 +27,13 @@ $ open macos/MyProject.xcodeproj
 Since it's simply just a fork, you can follow [the same instructions on React Native Documentation](http://facebook.github.io/react-native/docs/getting-started.html#content).
 
 ## Disclaimer
-React Native macOS is a fork of React Native for iOS. The library is still fairly new to proceed at your own risk. There is to this day, no successful story for any React Native macOS application yet, so it's not proven by production use.
+React Native macOS is a fork of React Native for iOS. The library is still fairly new to proceed at your own risk. There has been no successful story for any React Native macOS application yet, so it's not proven by production use.
 
 ## Community Help
 Feel free to ask anything on `#react-native-platforms` channel on Reactiflux if you happen to run into problems.
 
 ## Examples
-# UIExplorer
+### UIExplorer
 UIExplorer includes a set of component examples that illustrate their functionality. It also allows you to load external JavaScript bundle files through HTTP. Simply copy and paste an URL into the Search Field.
 
 [Download UIExplorer](https://github.com/ptmt/react-native-macos/files/199128/UIExplorer.zip)
@@ -44,4 +46,5 @@ UIExplorer includes a set of component examples that illustrate their functional
 
 ## Video Demo
 Running a simple Chat app in React Native macOS.
+
 [![Youtube play](https://cloud.githubusercontent.com/assets/1004115/11685246/75db9d6a-9e99-11e5-8378-1d5cea6053c0.png)](https://www.youtube.com/watch?v=m1-LNKIuqtI)
