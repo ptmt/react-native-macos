@@ -1,4 +1,4 @@
-## React Native for macOS (ex react-native-desktop)
+# React Native for macOS (ex react-native-desktop)
 
 Build macOS desktop apps using React Native and Cocoa.
 
@@ -12,9 +12,9 @@ Build macOS desktop apps using React Native and Cocoa.
 </View>
 ```
 
-## Getting started
-
+## Getting Started
 Node 4.x+, OS X 10.10+ required.
+*Previous React Native experience is highly recommended*.
 
 ``` bash
 $ npm install react-native-macos-cli -g
@@ -22,18 +22,19 @@ $ react-native-macos init MyProject
 $ cd MyProject
 $ open macos/MyProject.xcodeproj
 ```
-Since it's simply just a fork, you can follow [the same instruction on facebook.github.io/react-native](http://facebook.github.io/react-native/docs/getting-started.html#content).
+Since it's simply just a fork, you can follow [the same instructions on React Native Documentation](http://facebook.github.io/react-native/docs/getting-started.html#content).
 
-**Disclaimer**. Having previous experience with React Native highly recommended. There is no success story for any RN for macOS app yet, so it's not proven by production use.
+## Disclaimer
+React Native macOS is a fork of React Native for iOS. The library is still fairly new to proceed at your own risk. There is to this day, no successful story for any React Native macOS application yet, so it's not proven by production use.
 
-Feel free to ask anything on `#react-native-platforms` channel if you run into problems.
+## Community Help
+Feel free to ask anything on `#react-native-platforms` channel on Reactiflux if you happen to run into problems.
 
 ## Examples
+# UIExplorer
+UIExplorer includes a set of component examples that illustrate their functionality. It also allows you to load external JavaScript bundle files through HTTP. Simply copy and paste an URL into the Search Field.
 
 [Download UIExplorer](https://github.com/ptmt/react-native-macos/files/199128/UIExplorer.zip)
-
-UIExplorer includes a set of examples and allows to you load external javascript bundle by http. Just copy&paste URL into SearchField.
-
 
 ![screenshot 2016-03-31 21 06 33](https://cloud.githubusercontent.com/assets/1004115/14185918/91648d8c-f784-11e5-82b6-fcd08b74b89a.png)
 
@@ -41,5 +42,6 @@ UIExplorer includes a set of examples and allows to you load external javascript
 
 <img width="986" alt="screenshot 2015-10-24 16 40 36" src="https://cloud.githubusercontent.com/assets/1004115/14185895/7c133eb0-f784-11e5-8e3c-ca36aa351a26.png">
 
-
+## Video Demo
+Running a simple Chat app in React Native macOS.
 [![Youtube play](https://cloud.githubusercontent.com/assets/1004115/11685246/75db9d6a-9e99-11e5-8378-1d5cea6053c0.png)](https://www.youtube.com/watch?v=m1-LNKIuqtI)
