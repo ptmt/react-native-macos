@@ -27,14 +27,14 @@ $ open macos/MyProject.xcodeproj
 Since React Native macOS is just a fork, you can follow [the same instructions on the React Native Documentation](http://facebook.github.io/react-native/docs/getting-started.html#content).
 
 ## Disclaimer
-React Native macOS is a fork of React Native for iOS. The library is still fairly new to proceed at your own risk. There has been no successful story for any React Native macOS application yet, so it's not proven by production use.
+React Native macOS is a fork of React Native for iOS. The library is still fairly new so proceed at your own risk. There has been no successful story for any React Native macOS application yet, so it's not proven by production use.
 
 ## Community Help
 Feel free to ask anything on `#react-native-platforms` channel on Reactiflux if you happen to run into problems.
 
 ## Examples
 ### UIExplorer
-UIExplorer includes a set of component examples that illustrate their functionality. It also allows you to load external JavaScript bundle files through HTTP. Simply copy and paste an URL into the Search Field.
+UIExplorer includes a set of component examples that illustrate their functionality. It also allows you to load external JavaScript bundle files through HTTP. Simply copy and paste a URL into the Search Field.
 
 [Download UIExplorer](https://github.com/ptmt/react-native-macos/files/199128/UIExplorer.zip)
 
