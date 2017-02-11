@@ -108,14 +108,24 @@ class Package {
 }
 
 function getReplacements(pkg) {
+  let rnm = pkg['react-native-macos'];
   let rn = pkg['react-native'];
   let browser = pkg.browser;
-  if (rn == null) {
+  
+  if (rnm == null && rn == null) {
     return browser;
   }
-
-  if (browser == null) {
+  
+  if (rnm == null && browser == null) {
     return rn;
+  }
+
+  if (rn == null && browser == null) {
+    return rnm;
+  }
+
+  if (typeof rnm === 'string') {
+    rnm = { [pkg.main]: rnm };
   }
 
   if (typeof rn === 'string') {
@@ -127,8 +137,9 @@ function getReplacements(pkg) {
   }
 
   // merge with "browser" as default,
-  // "react-native" as override
-  return { ...browser, ...rn };
+  // "react-native" as override 1
+  // "react-native-macos" as override 2
+  return { ...browser, ...rn, ...rnm };
 }
 
 module.exports = Package;
