@@ -24,7 +24,7 @@ trap cleanup EXIT
 
 XCODE_PROJECT="Examples/UIExplorer/UIExplorer.xcodeproj"
 XCODE_SCHEME="UIExplorer"
-XCODE_SDK="macosx10.11"
+XCODE_SDK="$SDK_TO_TEST" # Set by TravisCI.
 XCODE_DESTINATION="platform=OS X,arch=x86_64"
 
 # Support for environments without xcpretty installed

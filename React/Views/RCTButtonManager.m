@@ -53,14 +53,13 @@ RCT_ENUM_CONVERTER(NSBezelStyle, (@{
 
 RCT_EXPORT_MODULE()
 
-#ifdef NSAppKitVersionNumber10_12
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_12
 - (NSView *)view
 {
   RCTButton *button = [RCTButton buttonWithTitle:@"Button" target:nil action:@selector(onPressHandler:)];
   [button setTarget:button];
   return button;
 }
-
 #else
 - (NSView *)view
 {
