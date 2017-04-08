@@ -18,7 +18,6 @@
 #import "RCTLog.h"
 #import "RCTUtils.h"
 
-static NSString *const RCTStorageDirectory = @"RCTAsyncLocalStorage_V1";
 static NSString *const RCTManifestFileName = @"manifest.json";
 static const NSUInteger RCTInlineValueThreshold = 1024;
 
@@ -68,7 +67,7 @@ static NSString *RCTGetStorageDirectory()
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     storageDirectory = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject;
-    storageDirectory = [storageDirectory stringByAppendingPathComponent:RCTStorageDirectory];
+    storageDirectory = [storageDirectory stringByAppendingPathComponent:[[[NSBundle mainBundle] infoDictionary] objectForKey:(id)kCFBundleNameKey]];
   });
   return storageDirectory;
 }
