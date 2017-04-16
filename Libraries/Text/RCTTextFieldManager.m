@@ -40,6 +40,21 @@ RCT_EXPORT_MODULE()
   return textField;
 }
 
+- (BOOL)control:(NSControl *)control textView:(NSTextView * __unused)textView doCommandBySelector:(SEL)commandSelector {
+  if (![control isKindOfClass:[RCTTextField class]]) {
+    return YES;
+  }
+  
+  RCTTextField *textField = (RCTTextField*)control;
+  
+  if (commandSelector == @selector(insertNewline:)) {
+    [textField textFieldSubmitEditingWithString:@"\n"];
+    return YES;
+  }
+  
+  return NO;
+}
+
 - (BOOL)textField:(RCTTextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
   // Only allow single keypresses for onKeyPress, pasted text will not be sent.
@@ -52,6 +67,7 @@ RCT_EXPORT_MODULE()
   if (textField.maxLength == nil || [string isEqualToString:@"\n"]) {  // Make sure forms can be submitted via return
     return YES;
   }
+  
   return YES;
 }
 
