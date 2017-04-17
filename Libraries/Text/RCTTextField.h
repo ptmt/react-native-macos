@@ -16,7 +16,7 @@
 @interface TextFieldCellWithPaddings : NSTextFieldCell
 @end
 
-@interface RCTTextField : NSTextField <NSTextFieldDelegate>
+@interface RCTTextField : NSTextField <NSTextFieldDelegate, NSControlTextEditingDelegate>
 
 @property (nonatomic, assign) BOOL caretHidden;
 @property (nonatomic, assign) BOOL autoCorrect;
@@ -35,5 +35,6 @@
 //- (void)textFieldDidChange:(NSNotification *)aNotification;
 - (void)sendKeyValueForString:(NSString *)string;
 - (BOOL)textFieldShouldEndEditing:(RCTTextField *)textField;
+- (void)textFieldSubmitEditingWithString:(NSString *)key;
 
 @end

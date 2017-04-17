@@ -521,8 +521,10 @@ const TextInput = React.createClass({
   },
 
   render: function() {
-    if (Platform.OS === 'ios' || Platform.OS === 'macos') {
+    if (Platform.OS === 'ios') {
       return this._renderIOS();
+    } else if (Platform.OS === 'macos') {
+      return this._renderMacOS();
     } else if (Platform.OS === 'android') {
       return this._renderAndroid();
     }
@@ -532,6 +534,90 @@ const TextInput = React.createClass({
     return typeof this.props.value === 'string' ?
       this.props.value :
       this.props.defaultValue;
+  },
+
+  _renderMacOS: function() {
+    var textContainer;
+
+    var onSelectionChange;
+    if (this.props.selectionState || this.props.onSelectionChange) {
+      onSelectionChange = (event: Event) => {
+        if (this.props.selectionState) {
+          var selection = event.nativeEvent.selection;
+          this.props.selectionState.update(selection.start, selection.end);
+        }
+        this.props.onSelectionChange && this.props.onSelectionChange(event);
+      };
+    }
+
+    var props = Object.assign({}, this.props);
+    props.style = [styles.input, this.props.style];
+    if (!props.multiline) {
+      if (__DEV__) {
+        for (var propKey in onlyMultiline) {
+          if (props[propKey]) {
+            const error = new Error(
+              'TextInput prop `' + propKey + '` is only supported with multiline.'
+            );
+            warning(false, '%s', error.stack);
+          }
+        }
+      }
+      var TextField = props.password ? RCTSecureTextField : RCTTextField;
+      textContainer =
+        <TextField
+          ref="input"
+          {...props}
+          onFocus={this._onFocus}
+          onBlur={this._onBlur}
+          onChange={this._onChange}
+          onSubmitEditing={this.props.onSubmitEditing}
+          onSelectionChange={onSelectionChange}
+          onSelectionChangeShouldSetResponder={emptyFunction.thatReturnsTrue}
+          text={this._getText()}
+        />;
+    } else {
+      var children = props.children;
+      var childCount = 0;
+      ReactChildren.forEach(children, () => ++childCount);
+      invariant(
+        !(props.value && childCount),
+        'Cannot specify both value and children.'
+      );
+      if (childCount >= 1) {
+        children = <Text style={props.style}>{children}</Text>;
+      }
+      if (props.inputView) {
+        children = [children, props.inputView];
+      }
+      textContainer =
+        <RCTTextView
+          ref="input"
+          {...props}
+          children={children}
+          onFocus={this._onFocus}
+          onBlur={this._onBlur}
+          onChange={this._onChange}
+          onContentSizeChange={this.props.onContentSizeChange}
+          onSelectionChange={onSelectionChange}
+          onSubmitEditing={this.props.onSubmitEditing}
+          onTextInput={this._onTextInput}
+          onSelectionChangeShouldSetResponder={emptyFunction.thatReturnsTrue}
+          placeholderTextColor={processColor(props.placeholderTextColor)}
+          text={this._getText()}
+          dataDetectorTypes={this.props.dataDetectorTypes}
+        />;
+    }
+
+    return (
+      <TouchableWithoutFeedback
+        onLayout={props.onLayout}
+        onPress={this._onPress}
+        rejectResponderTermination={true}
+        testID={props.testID}>
+        {textContainer}
+      </TouchableWithoutFeedback>
+    );
   },
 
   _renderIOS: function() {

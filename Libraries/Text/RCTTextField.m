@@ -185,13 +185,13 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
                                       key:nil
                                eventCount:_nativeEventCount];
 }
-- (void)textFieldSubmitEditing
+- (void)textFieldSubmitEditingWithString:(NSString *)key
 {
   _submitted = YES;
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeSubmit
                                  reactTag:self.reactTag
                                      text:[self stringValue]
-                                      key:nil
+                                      key:key
                                eventCount:_nativeEventCount];
 }
 
