@@ -647,7 +647,7 @@ const TextInput = React.createClass({
           }
         }
       }
-      var TextField = props.password ? RCTSecureTextField : RCTTextField;
+      var TextField = props.secureTextEntry ? RCTSecureTextField : RCTTextField;
       textContainer =
         <TextField
           ref="input"
