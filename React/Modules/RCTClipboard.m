@@ -8,7 +8,6 @@
  */
 
 #import "RCTClipboard.h"
-#import "RCTUtils.h"
 #import <AppKit/AppKit.h>
 
 @implementation RCTClipboard

@@ -14,6 +14,8 @@
 const InteractionManager = require('InteractionManager');
 const React = require('React');
 
+const PropTypes = require('prop-types');
+
 const infoLog = require('infoLog');
 
 const DEBUG = false;
@@ -84,12 +86,12 @@ export type Props = {
   * Called when all the decendents have finished rendering and mounting
   * recursively.
   */
- onDone?: () => void;
+ onDone?: () => void,
  /**
   * Tags instances and associated tasks for easier debugging.
   */
- name: string;
- children?: any;
+ name: string,
+ children?: any,
 };
 type DefaultProps = {
   name: string,
@@ -110,8 +112,8 @@ class Incremental extends React.Component<DefaultProps, Props, State> {
   };
 
   static contextTypes = {
-    incrementalGroup: React.PropTypes.object,
-    incrementalGroupEnabled: React.PropTypes.bool,
+    incrementalGroup: PropTypes.object,
+    incrementalGroupEnabled: PropTypes.bool,
   };
 
   constructor(props: Props, context: Context) {
@@ -152,7 +154,7 @@ class Incremental extends React.Component<DefaultProps, Props, State> {
     }).done();
   }
 
-  render(): ?ReactElement<any> {
+  render(): ?React.Element<any> {
     if (this._rendered || // Make sure that once we render once, we stay rendered even if incrementalGroupEnabled gets flipped.
         !this.context.incrementalGroupEnabled ||
         this.state.doIncrementalRender) {
@@ -176,11 +178,11 @@ class Incremental extends React.Component<DefaultProps, Props, State> {
 }
 
 export type Context = {
-  incrementalGroupEnabled: boolean;
+  incrementalGroupEnabled: boolean,
   incrementalGroup: ?{
-    groupId: string;
-    incrementalCount: number;
-  };
+    groupId: string,
+    incrementalCount: number,
+  },
 };
 
 module.exports = Incremental;

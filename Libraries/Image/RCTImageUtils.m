@@ -9,14 +9,12 @@
 
 #import "RCTImageUtils.h"
 
-
-#import <ImageIO/ImageIO.h>
 #import <tgmath.h>
 
-#import "UIImageUtils.h"
-#import "RCTLog.h"
-#import "RCTImageLoader.h"
-#import "RCTUtils.h"
+#import <ImageIO/ImageIO.h>
+
+#import <React/RCTLog.h>
+#import <React/RCTUtils.h>
 
 static CGFloat RCTCeilValue(CGFloat value, CGFloat scale)
 {

@@ -1,7 +1,11 @@
 ---
 title: Toward Better Documentation
 author: Kevin Lacker
+authorTitle: Engineering Manager at Facebook
 authorURL: https://twitter.com/lacker
+authorImage: http://www.gravatar.com/avatar/9b790592be15d4f55a5ed7abb5103304?s=128
+authorTwitter: lacker
+category: announcements
 ---
 
 Part of having a great developer experience is having great documentation. A lot goes into creating good docs - the ideal documentation is concise, helpful, accurate, complete, and delightful. Recently we've been working hard to make the docs better based on your feedback, and we wanted to share some of the improvements we've made.
@@ -60,6 +64,6 @@ Your feedback lets us know what we should prioritize. I know some people will re
 
 If you find a mistake in the documentation, like inaccurate descriptions or code that doesn't actually work, [file an issue](https://github.com/facebook/react-native/issues). Tag it with "Documentation", so that it's easier to route it to the right people.
 
-If there isn't a specific mistake, but something in the documentation is fundamentally confusing, it's not a great fit for a GitHub issue. Instead, complain on [Product Pains](https://productpains.com/product/react-native/) about the area of the docs that could use help. This helps us prioritize when we are doing more general work like guide-writing.
+If there isn't a specific mistake, but something in the documentation is fundamentally confusing, it's not a great fit for a GitHub issue. Instead, post on [Canny](https://react-native.canny.io/feature-requests) about the area of the docs that could use help. This helps us prioritize when we are doing more general work like guide-writing.
 
 Thanks for reading this far, and thanks for using React Native!

@@ -22,16 +22,9 @@
  */
 'use strict';
 
-var React = require('React');
+var React = require('react');
 var ReactNative = require('react-native');
-var {
-  Modal,
-  StyleSheet,
-  Switch,
-  Text,
-  Button,
-  View,
-} = ReactNative;
+var { Modal, StyleSheet, Switch, Text, Button, View } = ReactNative;
 
 exports.displayName = (undefined: ?string);
 exports.framework = 'React';
@@ -45,28 +38,30 @@ class ModalExample extends React.Component {
     transparent: false,
   };
 
-  _setModalVisible = (visible) => {
-    this.setState({modalVisible: visible});
-    console.log('hide modal')
+  _setModalVisible = visible => {
+    this.setState({ modalVisible: visible });
+    console.log('hide modal');
   };
 
   _setPresentationType(type) {
-    this.setState({presentationType: type});
-  };
+    this.setState({ presentationType: type });
+  }
 
   _toggleTransparent = () => {
-    this.setState({transparent: !this.state.transparent});
+    this.setState({ transparent: !this.state.transparent });
   };
 
   render() {
     var modalBackgroundStyle = {
-      backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff',
+      backgroundColor: this.state.transparent
+        ? 'rgba(0, 0, 0, 0.5)'
+        : '#f5fcff',
     };
     var innerContainerTransparentStyle = this.state.transparent
-      ? {backgroundColor: '#fff', padding: 20}
+      ? { backgroundColor: '#fff', padding: 20 }
       : null;
     var activeButtonStyle = {
-      backgroundColor: '#ddd'
+      backgroundColor: '#ddd',
     };
 
     return (
@@ -76,15 +71,23 @@ class ModalExample extends React.Component {
           presentationType={this.state.presentationType}
           transparent={this.state.transparent}
           visible={this.state.modalVisible}
-          onRequestClose={() => {this._setModalVisible(false)}}
-          >
+          onRequestClose={() => {
+            this._setModalVisible(false);
+          }}>
           <View style={[styles.container, modalBackgroundStyle]}>
-            <View style={[styles.innerContainer, innerContainerTransparentStyle]}>
-              <Text>This modal was presented with type: {this.state.presentationType }.</Text>
+            <View
+              style={[styles.innerContainer, innerContainerTransparentStyle]}>
+              <Text>
+                This modal was presented with type:
+                {' '}
+                {this.state.presentationType}
+                .
+              </Text>
               <Button
                 onPress={this._setModalVisible.bind(this, false)}
                 style={styles.modalButton}
-                title="Close" />
+                title="Close"
+              />
             </View>
           </View>
         </Modal>
@@ -95,31 +98,38 @@ class ModalExample extends React.Component {
             state={this.state.presentationType === 'window'}
             style={{ width: 200 }}
             type="radio"
-            title="window" />
+            title="window"
+          />
           <Button
             onClick={this._setPresentationType.bind(this, 'sheet')}
             state={this.state.presentationType === 'sheet'}
             style={{ width: 200 }}
             type="radio"
-            title="sheet" />
+            title="sheet"
+          />
           <Button
             onClick={this._setPresentationType.bind(this, 'popover')}
             state={this.state.presentationType === 'popover'}
             style={{ width: 200 }}
             type="radio"
-            title="popover" />
+            title="popover"
+          />
         </View>
 
         <View style={styles.row}>
           <Text style={styles.rowTitle}>Transparent</Text>
-          <Switch value={this.state.transparent} onValueChange={this._toggleTransparent} />
+          <Switch
+            value={this.state.transparent}
+            onValueChange={this._toggleTransparent}
+          />
         </View>
 
         <Button
           bezelStyle={'rounded'}
           style={{ width: 100, fontSize: 18, height: 40 }}
           onClick={this._setModalVisible.bind(this, true)}
-          title="Present" />
+          title="Present"
+        />
 
       </View>
     );

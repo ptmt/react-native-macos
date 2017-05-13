@@ -11,11 +11,16 @@ package com.facebook.react.devsupport;
 
 import javax.annotation.Nullable;
 
+import java.io.File;
+
 import com.facebook.react.bridge.DefaultNativeModuleCallExceptionHandler;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.devsupport.StackTraceHelper.StackFrame;
-import com.facebook.react.modules.debug.DeveloperSettings;
+import com.facebook.react.devsupport.interfaces.DevOptionHandler;
+import com.facebook.react.devsupport.interfaces.DevSupportManager;
+import com.facebook.react.devsupport.interfaces.PackagerStatusCallback;
+import com.facebook.react.devsupport.interfaces.StackFrame;
+import com.facebook.react.modules.debug.interfaces.DeveloperSettings;
 
 /**
  * A dummy implementation of {@link DevSupportManager} to be used in production mode where
@@ -105,11 +110,6 @@ public class DisabledDevSupportManager implements DevSupportManager {
   }
 
   @Override
-  public String getHeapCaptureUploadUrl() {
-    return null;
-  }
-
-  @Override
   public boolean hasUpToDateJSBundleInCache() {
     return false;
   }
@@ -125,8 +125,20 @@ public class DisabledDevSupportManager implements DevSupportManager {
   }
 
   @Override
-  public void isPackagerRunning(DevServerHelper.PackagerStatusCallback callback) {
+  public void reloadJSFromServer(String bundleURL) {
 
+  }
+
+  @Override
+  public void isPackagerRunning(PackagerStatusCallback callback) {
+
+  }
+
+  @Override
+  public @Nullable File downloadBundleResourceFromUrlSync(
+      final String resourceURL,
+      final File outputFile) {
+    return null;
   }
 
   @Override

@@ -10,7 +10,7 @@
 
 #import <AppKit/AppKit.h>
 
-#import "RCTComponent.h"
+#import <React/RCTComponent.h>
 
 @interface RCTSwitch : NSButton
 

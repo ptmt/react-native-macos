@@ -10,7 +10,7 @@
 #import <AppKit/AppKit.h>
 #import "NSView+React.h"
 
-@interface RCTPicker : NSComboBox
+#import <React/UIView+React.h>
 
 @property (nonatomic, copy) NSArray<NSDictionary *> *items;
 @property (nonatomic, assign) NSInteger selectedIndex;

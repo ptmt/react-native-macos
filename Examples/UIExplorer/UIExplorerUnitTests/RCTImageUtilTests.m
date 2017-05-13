@@ -16,7 +16,8 @@
 #import <Foundation/Foundation.h>
 #import <APpKit/NSView.h>
 #import <XCTest/XCTest.h>
-#import "RCTImageUtils.h"
+
+#import <RCTImage/RCTImageUtils.h>
 
 #define RCTAssertEqualPoints(a, b) { \
 XCTAssertEqual(a.x, b.x); \

@@ -9,68 +9,52 @@
 
 #import "RCTTextField.h"
 
-#import "RCTConvert.h"
-#import "RCTEventDispatcher.h"
-#import "RCTUtils.h"
-#import "NSView+React.h"
-#import "RCTText.h"
+#import <React/RCTConvert.h>
+#import <React/RCTEventDispatcher.h>
+#import <React/RCTUtils.h>
+#import <React/UIView+React.h>
 
+#import "RCTTextSelection.h"
 
-//
-//@implementation TextFieldCellWithPaddings
-//
-//- (id)init
-//{
-//  self = [super init];
-//  if (self) {
-////    self.bordered = NO;
-////    self.drawsBackground = NO;
-//  }
-//  return self;
-//}
-//
-////- (NSRect)titleRectForBounds:(NSRect)theRect
-////{
-////  //NSRect titleFrame = [super titleRectForBounds:theRect];
-////
-////  //NSSize titleSize = [[self attributedStringValue] size];
-////  //titleFrame.origin.y = theRect.origin.y + (theRect.size.height - titleSize.height) / 2.0;
-////  return UIEdgeInsetsInsetRect(theRect, ((RCTTextField *)[self controlView]).contentInset);
-////}
-//
-//- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-//  NSRect titleRect = [self titleRectForBounds:cellFrame];
-//  [[self attributedStringValue] drawInRect:titleRect];
-//}
-//
-//
-////- (NSRect)drawingRectForBounds:(NSRect)rect
-////{
-////  NSRect rectInset = UIEdgeInsetsInsetRect(rect, _contentInset);
-////  return [super drawingRectForBounds:rectInset];
-////}
-//
-//// Required methods
-//- (id)initWithCoder:(NSCoder *)decoder {
-//  return [super initWithCoder:decoder];
-//}
-//- (id)initImageCell:(NSImage *)image {
-//  return [super initImageCell:image];
-//}
-//- (id)initTextCell:(NSString *)string {
-//  return [super initTextCell:string];
-//}
-//@end
+@interface RCTTextField()
+
+- (BOOL)shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string;
+- (BOOL)keyboardInputShouldDelete;
+- (BOOL)textFieldShouldEndEditing;
+
+@end
+
+@interface RCTTextFieldDelegateProxy: NSObject <UITextFieldDelegate>
+@end
+
+@implementation RCTTextFieldDelegateProxy
+
+- (BOOL)textField:(RCTTextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+  return [textField shouldChangeCharactersInRange:range replacementString:string];
+}
+
+- (BOOL)keyboardInputShouldDelete:(RCTTextField *)textField
+{
+  return [textField keyboardInputShouldDelete];
+}
+
+- (BOOL)textFieldShouldEndEditing:(RCTTextField *)textField {
+  return [textField textFieldShouldEndEditing];
+}
+
+@end
 
 @implementation RCTTextField
 {
   RCTEventDispatcher *_eventDispatcher;
-  BOOL _jsRequestingFirstResponder;
   NSInteger _nativeEventCount;
   NSString * _placeholderString;
   BOOL _submitted;
-  NSRange _previousSelectionRange;
-
+  UITextRange *_previousSelectionRange;
+  BOOL _textWasPasted;
+  NSString *_finalText;
+  RCTTextFieldDelegateProxy *_delegateProxy;
 }
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
@@ -83,9 +67,17 @@
     self.bezeled = YES;
 
     _eventDispatcher = eventDispatcher;
-    _previousSelectionRange = self.currentEditor.selectedRange;
-
+    [self addTarget:self action:@selector(textFieldDidChange) forControlEvents:UIControlEventEditingChanged];
+    [self addTarget:self action:@selector(textFieldBeginEditing) forControlEvents:UIControlEventEditingDidBegin];
+    [self addTarget:self action:@selector(textFieldEndEditing) forControlEvents:UIControlEventEditingDidEnd];
+    [self addTarget:self action:@selector(textFieldSubmitEditing) forControlEvents:UIControlEventEditingDidEndOnExit];
     [self addObserver:self forKeyPath:@"selectedTextRange" options:0 context:nil];
+    _blurOnSubmit = YES;
+
+    // We cannot use `self.delegate = self;` here because `UITextField` implements some of these delegate methods itself,
+    // so if we implement this delegate on self, we will override some of its behaviours.
+    _delegateProxy = [RCTTextFieldDelegateProxy new];
+    self.delegate = _delegateProxy;
   }
   return self;
 }
@@ -113,6 +105,26 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 {
   _textWasPasted = YES;
   [[super currentEditor] paste:sender];
+}
+
+- (void)setSelection:(RCTTextSelection *)selection
+{
+  if (!selection) {
+    return;
+  }
+
+  UITextRange *currentSelection = self.selectedTextRange;
+  UITextPosition *start = [self positionFromPosition:self.beginningOfDocument offset:selection.start];
+  UITextPosition *end = [self positionFromPosition:self.beginningOfDocument offset:selection.end];
+  UITextRange *selectedTextRange = [self textRangeFromPosition:start toPosition:end];
+
+  NSInteger eventLag = _nativeEventCount - _mostRecentEventCount;
+  if (eventLag == 0 && ![currentSelection isEqual:selectedTextRange]) {
+    _previousSelectionRange = selectedTextRange;
+    self.selectedTextRange = selectedTextRange;
+  } else if (eventLag > RCTTextUpdateLagWarningThreshold) {
+    RCTLogWarn(@"Native TextInput(%@) is %zd events ahead of JS - try to make your JS faster.", self.text, eventLag);
+  }
 }
 
 - (void)setText:(NSString *)text
@@ -164,6 +176,17 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)textDidChange:(NSNotification *)aNotification
 {
+  CGRect rect = [super textRectForBounds:bounds];
+  return UIEdgeInsetsInsetRect(rect, _contentInset);
+}
+
+- (CGRect)editingRectForBounds:(CGRect)bounds
+{
+  return [self textRectForBounds:bounds];
+}
+
+- (void)textFieldDidChange
+{
   _nativeEventCount++;
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeChange
                                  reactTag:self.reactTag
@@ -178,14 +201,22 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)textDidEndEditing:(NSNotification *)aNotification
 {
-  _nativeEventCount++;
+  if (![_finalText isEqualToString:self.text]) {
+    _finalText = nil;
+    // iOS does't send event `UIControlEventEditingChanged` if the change was happened because of autocorrection
+    // which was triggered by loosing focus. We assume that if `text` was changed in the middle of loosing focus process,
+    // we did not receive that event. So, we call `textFieldDidChange` manually.
+    [self textFieldDidChange];
+  }
+
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeEnd
                                  reactTag:self.reactTag
                                      text:[self stringValue]
                                       key:nil
                                eventCount:_nativeEventCount];
 }
-- (void)textFieldSubmitEditingWithString:(NSString *)key
+
+- (void)textFieldSubmitEditing
 {
   _submitted = YES;
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeSubmit
@@ -197,25 +228,19 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)textDidBeginEditing:(NSNotification *)aNotification
 {
-  if (_selectTextOnFocus) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [self selectAll:nil];
-    });
-  }
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeFocus
                                  reactTag:self.reactTag
                                      text:[self stringValue]
                                       key:nil
                                eventCount:_nativeEventCount];
-}
 
-- (BOOL)textFieldShouldEndEditing:(RCTTextField *)textField
-{
-//  if (_submitted) {
-//    _submitted = NO;
-//    return _blurOnSubmit;
-//  }
-  return YES;
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if (self->_selectTextOnFocus) {
+      [self selectAll:nil];
+    }
+
+    [self sendSelectionEvent];
+  });
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
@@ -246,35 +271,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
       },
     });
   }
-}
-
--(BOOL)becomeFirstResponder
-{
-  BOOL success = [super becomeFirstResponder];
-  if (success)
-  {
-    NSTextView* textField = (NSTextView*) [self currentEditor];
-    if( [textField respondsToSelector: @selector(setInsertionPointColor:)] ) {
-      [textField setInsertionPointColor:[self selectionColor]];
-    }
-    [self updatePlaceholder];
-  }
-  return success;
-}
-
-- (BOOL)canBecomeFirstResponder
-{
-  return _jsRequestingFirstResponder;
-}
-
-- (void)reactWillMakeFirstResponder
-{
-  _jsRequestingFirstResponder = YES;
-}
-
-- (void)reactDidMakeFirstResponder
-{
-  _jsRequestingFirstResponder = NO;
 }
 
 - (BOOL)resignFirstResponder

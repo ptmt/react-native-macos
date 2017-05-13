@@ -7,31 +7,12 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @providesModule BatchedBridge
+ * @flow
  */
 'use strict';
 
 const MessageQueue = require('MessageQueue');
-
-const serializeNativeParams = typeof global.__fbBatchedBridgeSerializeNativeParams !== 'undefined';
-
-const BatchedBridge = new MessageQueue(
-  () => global.__fbBatchedBridgeConfig,
-  serializeNativeParams
-);
-
-// TODO: Move these around to solve the cycle in a cleaner way.
-
-const Systrace = require('Systrace');
-const JSTimersExecution = require('JSTimersExecution');
-
-BatchedBridge.registerCallableModule('Systrace', Systrace);
-BatchedBridge.registerCallableModule('JSTimersExecution', JSTimersExecution);
-BatchedBridge.registerCallableModule('HeapCapture', require('HeapCapture'));
-BatchedBridge.registerCallableModule('SamplingProfiler', require('SamplingProfiler'));
-
-if (__DEV__) {
-  BatchedBridge.registerCallableModule('HMRClient', require('HMRClient'));
-}
+const BatchedBridge = new MessageQueue();
 
 // Wire up the batched bridge on the global object so that we can call into it.
 // Ideally, this would be the inverse relationship. I.e. the native environment

@@ -12,11 +12,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import <AppKit/AppKit.h>
-
+#import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
-#import "RCTUIManager.h"
-#import "NSView+React.h"
+
+#import <React/RCTUIManager.h>
+#import <React/NSView+React.h>
 
 @interface RCTUIManager (Testing)
 

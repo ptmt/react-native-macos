@@ -11,27 +11,35 @@
  */
 'use strict';
 
-const NativeMethodsMixin = require('react/lib/NativeMethodsMixin');
+const ColorPropType = require('ColorPropType');
+const EdgeInsetsPropType = require('EdgeInsetsPropType');
+const NativeMethodsMixin = require('NativeMethodsMixin');
 const Platform = require('Platform');
 const React = require('React');
+const PropTypes = require('prop-types');
 const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const StyleSheetPropType = require('StyleSheetPropType');
 const TextStylePropTypes = require('TextStylePropTypes');
 const Touchable = require('Touchable');
 
-const createReactNativeComponentClass =
-  require('react/lib/createReactNativeComponentClass');
-const merge = require('merge');
+const createReactNativeComponentClass = require('createReactNativeComponentClass');
+const mergeFast = require('mergeFast');
+const processColor = require('processColor');
 
 const stylePropType = StyleSheetPropType(TextStylePropTypes);
 
 const viewConfig = {
-  validAttributes: merge(ReactNativeViewAttributes.UIView, {
+  validAttributes: mergeFast(ReactNativeViewAttributes.UIView, {
     isHighlighted: true,
     numberOfLines: true,
     ellipsizeMode: true,
     allowFontScaling: true,
+    disabled: true,
     selectable: true,
+    selectionColor: true,
+    adjustsFontSizeToFit: true,
+    minimumFontScale: true,
+    textBreakStrategy: true,
   }),
   uiViewClassName: 'RCTText',
 };
@@ -62,7 +70,7 @@ const viewConfig = {
  *     return (
  *       <Text style={styles.baseText}>
  *         <Text style={styles.titleText} onPress={this.onPressTitle}>
- *           {this.state.titleText}<br /><br />
+ *           {this.state.titleText}{'\n'}{'\n'}
  *         </Text>
  *         <Text numberOfLines={5}>
  *           {this.state.bodyText}
@@ -87,9 +95,13 @@ const viewConfig = {
  * ```
  */
 
+// $FlowFixMe(>=0.41.0)
 const Text = React.createClass({
   propTypes: {
     /**
+     * When `numberOfLines` is set, this prop defines how text will be truncated.
+     * `numberOfLines` must be set in conjunction with this prop.
+     *
      * This can be one of the following values:
      *
      * - `head` - The line is displayed so that the end fits in the container and the missing text
@@ -102,11 +114,9 @@ const Text = React.createClass({
      *
      * The default is `tail`.
      *
-     * `numberOfLines` must be set in conjunction with this prop.
-     *
      * > `clip` is working only for iOS
      */
-    ellipsizeMode: React.PropTypes.oneOf(['head', 'middle', 'tail', 'clip']),
+    ellipsizeMode: PropTypes.oneOf(['head', 'middle', 'tail', 'clip']),
     /**
      * Used to truncate the text with an ellipsis after computing the text
      * layout, including line wrapping, such that the total number of lines
@@ -114,54 +124,94 @@ const Text = React.createClass({
      *
      * This prop is commonly used with `ellipsizeMode`.
      */
-    numberOfLines: React.PropTypes.number,
+    numberOfLines: PropTypes.number,
+    /**
+     * Set text break strategy on Android API Level 23+, possible values are `simple`, `highQuality`, `balanced`
+     * The default value is `highQuality`.
+     * @platform android
+     */
+    textBreakStrategy: PropTypes.oneOf(['simple', 'highQuality', 'balanced']),
     /**
      * Invoked on mount and layout changes with
      *
      *   `{nativeEvent: {layout: {x, y, width, height}}}`
      */
-    onLayout: React.PropTypes.func,
+    onLayout: PropTypes.func,
     /**
      * This function is called on press.
      *
-     * e.g., `onPress={() => console.log('1st')}``
+     * e.g., `onPress={() => console.log('1st')}`
      */
-    onPress: React.PropTypes.func,
+    onPress: PropTypes.func,
     /**
      * This function is called on long press.
      *
-     * e.g., `onLongPress={this.increaseSize}>``
+     * e.g., `onLongPress={this.increaseSize}>`
      */
-    onLongPress: React.PropTypes.func,
+    onLongPress: PropTypes.func,
+    /**
+     * When the scroll view is disabled, this defines how far your touch may
+     * move off of the button, before deactivating the button. Once deactivated,
+     * try moving it back and you'll see that the button is once again
+     * reactivated! Move it back and forth several times while the scroll view
+     * is disabled. Ensure you pass in a constant to reduce memory allocations.
+     */
+    pressRetentionOffset: EdgeInsetsPropType,
     /**
      * Lets the user select text, to use the native copy and paste functionality.
-     *
+     */
+    selectable: PropTypes.bool,
+    /**
+     * The highlight color of the text.
      * @platform android
      */
-    selectable: React.PropTypes.bool,
+    selectionColor: ColorPropType,
     /**
      * When `true`, no visual change is made when text is pressed down. By
      * default, a gray oval highlights the text on press down.
-     *
      * @platform ios
      */
-    suppressHighlighting: React.PropTypes.bool,
+    suppressHighlighting: PropTypes.bool,
     style: stylePropType,
     /**
      * Used to locate this view in end-to-end tests.
      */
-    testID: React.PropTypes.string,
+    testID: PropTypes.string,
     /**
-     * Specifies whether fonts should scale to respect Text Size accessibility setting on iOS. The
+     * Used to locate this view from native code.
+     * @platform android
+     */
+    nativeID: PropTypes.string,
+    /**
+     * Specifies whether fonts should scale to respect Text Size accessibility settings. The
      * default is `true`.
+     */
+    allowFontScaling: PropTypes.bool,
+    /**
+     * When set to `true`, indicates that the view is an accessibility element. The default value
+     * for a `Text` element is `true`.
      *
+     * See the
+     * [Accessibility guide](docs/accessibility.html#accessible-ios-android)
+     * for more information.
+     */
+    accessible: PropTypes.bool,
+    /**
+     * Specifies whether font should be scaled down automatically to fit given style constraints.
      * @platform ios
      */
-    allowFontScaling: React.PropTypes.bool,
+    adjustsFontSizeToFit: PropTypes.bool,
+
     /**
-     * Mapped to toolTip property of NSView.
+     * Specifies smallest possible scale a font can reach when adjustsFontSizeToFit is enabled. (values 0.01-1.0).
+     * @platform ios
      */
-    toolTip: React.PropTypes.string,
+    minimumFontScale: PropTypes.number,
+    /**
+     * Specifies the disabled state of the text view for testing purposes
+     * @platform android
+     */
+    disabled: PropTypes.bool,
   },
   getDefaultProps(): Object {
     return {
@@ -169,10 +219,11 @@ const Text = React.createClass({
       testRole: 'AXText',
       allowFontScaling: true,
       ellipsizeMode: 'tail',
+      disabled: false,
     };
   },
   getInitialState: function(): Object {
-    return merge(Touchable.Mixin.touchableGetInitialState(), {
+    return mergeFast(Touchable.Mixin.touchableGetInitialState(), {
       isHighlighted: false,
     });
   },
@@ -182,10 +233,10 @@ const Text = React.createClass({
     return {isInAParentText: true};
   },
   childContextTypes: {
-    isInAParentText: React.PropTypes.bool
+    isInAParentText: PropTypes.bool
   },
   contextTypes: {
-    isInAParentText: React.PropTypes.bool
+    isInAParentText: PropTypes.bool
   },
   /**
    * Only assigned if touch is needed.
@@ -203,13 +254,14 @@ const Text = React.createClass({
   touchableHandlePress: (null: ?Function),
   touchableHandleLongPress: (null: ?Function),
   touchableGetPressRectOffset: (null: ?Function),
-  render(): ReactElement<any> {
+  render(): React.Element<any> {
     let newProps = this.props;
     if (this.props.onStartShouldSetResponder || this._hasPressHandler()) {
       if (!this._handlers) {
         this._handlers = {
           onStartShouldSetResponder: (): bool => {
             const shouldSetFromProps = this.props.onStartShouldSetResponder &&
+                // $FlowFixMe(>=0.41.0)
                 this.props.onStartShouldSetResponder();
             const setResponder = shouldSetFromProps || this._hasPressHandler();
             if (setResponder && !this.touchableHandleActivePressIn) {
@@ -238,45 +290,56 @@ const Text = React.createClass({
                 });
               };
 
-              this.touchableHandlePress = () => {
-                this.props.onPress && this.props.onPress();
+              this.touchableHandlePress = (e: SyntheticEvent) => {
+                this.props.onPress && this.props.onPress(e);
               };
 
-              this.touchableHandleLongPress = () => {
-                this.props.onLongPress && this.props.onLongPress();
+              this.touchableHandleLongPress = (e: SyntheticEvent) => {
+                this.props.onLongPress && this.props.onLongPress(e);
               };
 
               this.touchableGetPressRectOffset = function(): RectOffset {
-                return PRESS_RECT_OFFSET;
+                return this.props.pressRetentionOffset || PRESS_RECT_OFFSET;
               };
             }
+            // $FlowFixMe(>=0.41.0)
             return setResponder;
           },
           onResponderGrant: function(e: SyntheticEvent, dispatchID: string) {
+            // $FlowFixMe(>=0.41.0)
             this.touchableHandleResponderGrant(e, dispatchID);
             this.props.onResponderGrant &&
+              // $FlowFixMe(>=0.41.0)
               this.props.onResponderGrant.apply(this, arguments);
           }.bind(this),
           onResponderMove: function(e: SyntheticEvent) {
+            // $FlowFixMe(>=0.41.0)
             this.touchableHandleResponderMove(e);
             this.props.onResponderMove &&
+              // $FlowFixMe(>=0.41.0)
               this.props.onResponderMove.apply(this, arguments);
           }.bind(this),
           onResponderRelease: function(e: SyntheticEvent) {
+            // $FlowFixMe(>=0.41.0)
             this.touchableHandleResponderRelease(e);
             this.props.onResponderRelease &&
+              // $FlowFixMe(>=0.41.0)
               this.props.onResponderRelease.apply(this, arguments);
           }.bind(this),
           onResponderTerminate: function(e: SyntheticEvent) {
+            // $FlowFixMe(>=0.41.0)
             this.touchableHandleResponderTerminate(e);
             this.props.onResponderTerminate &&
+              // $FlowFixMe(>=0.41.0)
               this.props.onResponderTerminate.apply(this, arguments);
           }.bind(this),
           onResponderTerminationRequest: function(): bool {
             // Allow touchable or props.onResponderTerminationRequest to deny
             // the request
+            // $FlowFixMe(>=0.41.0)
             var allowTermination = this.touchableHandleResponderTerminationRequest();
             if (allowTermination && this.props.onResponderTerminationRequest) {
+              // $FlowFixMe(>=0.41.0)
               allowTermination = this.props.onResponderTerminationRequest.apply(this, arguments);
             }
             return allowTermination;
@@ -287,6 +350,12 @@ const Text = React.createClass({
         ...this.props,
         ...this._handlers,
         isHighlighted: this.state.isHighlighted,
+      };
+    }
+    if (newProps.selectionColor != null) {
+      newProps = {
+        ...newProps,
+        selectionColor: processColor(newProps.selectionColor)
       };
     }
     if (Touchable.TOUCH_TARGET_DEBUG && newProps.onPress) {
@@ -304,10 +373,10 @@ const Text = React.createClass({
 });
 
 type RectOffset = {
-  top: number;
-  left: number;
-  right: number;
-  bottom: number;
+  top: number,
+  left: number,
+  right: number,
+  bottom: number,
 }
 
 var PRESS_RECT_OFFSET = {top: 20, left: 20, right: 20, bottom: 30};
@@ -317,7 +386,7 @@ var RCTVirtualText = RCTText;
 
 if (Platform.OS === 'android') {
   RCTVirtualText = createReactNativeComponentClass({
-    validAttributes: merge(ReactNativeViewAttributes.UIView, {
+    validAttributes: mergeFast(ReactNativeViewAttributes.UIView, {
       isHighlighted: true,
     }),
     uiViewClassName: 'RCTVirtualText',

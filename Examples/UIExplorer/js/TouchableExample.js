@@ -19,22 +19,27 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * @flow
+ * @providesModule TouchableExample
  */
 'use strict';
 
 var React = require('React');
 var ReactNative = require('react-native');
 var {
-  PixelRatio,
+  Animated,
   Image,
   StyleSheet,
   Text,
   TouchableHighlight,
   TouchableOpacity,
-  UIManager,
   Platform,
   View,
 } = ReactNative;
+
+const NativeModules = require('NativeModules');
+
+const forceTouchAvailable = (NativeModules.PlatformConstants &&
+  NativeModules.PlatformConstants.forceTouchAvailable) || false;
 
 exports.displayName = (undefined: ?string);
 exports.description = 'Touchable and onPress examples.';
@@ -75,16 +80,40 @@ exports.examples = [
       </View>
     );
   },
+ }, {
+  title: 'TouchableNativeFeedback with Animated child',
+  description: 'TouchableNativeFeedback can have an AnimatedComponent as a' +
+    'direct child.',
+  platform: 'android',
+  render: function() {
+    const mScale = new Animated.Value(1);
+    Animated.timing(mScale, {toValue: 0.3, duration: 1000}).start();
+    const style = {
+      backgroundColor: 'rgb(180, 64, 119)',
+      width: 200,
+      height: 100,
+      transform: [{scale: mScale}]
+    };
+    return (
+      <View>
+        <View style={styles.row}>
+          <TouchableNativeFeedback>
+            <Animated.View style={style}/>
+          </TouchableNativeFeedback>
+        </View>
+      </View>
+    );
+  },
 }, {
   title: '<Text onPress={fn}> with highlight',
-  render: function(): ReactElement<any> {
+  render: function(): React.Element<any> {
     return <TextOnPressBox />;
   },
 }, {
   title: 'Touchable feedback events',
   description: '<Touchable*> components accept onPress, onPressIn, ' +
     'onPressOut, and onLongPress as props.',
-  render: function(): ReactElement<any> {
+  render: function(): React.Element<any> {
     return <TouchableFeedbackEvents />;
   },
 }, {
@@ -92,13 +121,13 @@ exports.examples = [
   description: '<Touchable*> components also accept delayPressIn, ' +
     'delayPressOut, and delayLongPress as props. These props impact the ' +
     'timing of feedback events.',
-  render: function(): ReactElement<any> {
+  render: function(): React.Element<any> {
     return <TouchableDelayEvents />;
   },
 }, {
   title: '3D Touch / Force Touch',
   description: 'iPhone 6s and 6s plus support 3D touch, which adds a force property to touches',
-  render: function(): ReactElement<any> {
+  render: function(): React.Element<any> {
     return <ForceTouchExample />;
   },
   platform: 'ios',
@@ -106,14 +135,14 @@ exports.examples = [
    title: 'Touchable Hit Slop',
    description: '<Touchable*> components accept hitSlop prop which extends the touch area ' +
      'without changing the view bounds.',
-   render: function(): ReactElement<any> {
+   render: function(): React.Element<any> {
      return <TouchableHitSlop />;
    },
- }, {
+}, {
    title: 'Disabled Touchable*',
    description: '<Touchable*> components accept disabled prop which prevents ' +
      'any interaction with component',
-   render: function(): ReactElement<any> {
+   render: function(): React.Element<any> {
      return <TouchableDisabled />;
    },
  }];
@@ -238,7 +267,7 @@ class ForceTouchExample extends React.Component {
   };
 
   _renderConsoleText = () => {
-    return View.forceTouchAvailable ?
+    return forceTouchAvailable ?
       'Force: ' + this.state.force.toFixed(3) :
       '3D Touch is not available on this device';
   };

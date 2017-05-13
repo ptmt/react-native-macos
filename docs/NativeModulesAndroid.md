@@ -4,6 +4,7 @@ title: Native Modules
 layout: docs
 category: Guides (Android)
 permalink: docs/native-modules-android.html
+banner: ejected
 next: native-components-android
 previous: communication-ios
 ---
@@ -11,6 +12,10 @@ previous: communication-ios
 Sometimes an app needs access to a platform API that React Native doesn't have a corresponding module for yet. Maybe you want to reuse some existing Java code without having to reimplement it in JavaScript, or write some high performance, multi-threaded code such as for image processing, a database, or any number of advanced extensions.
 
 We designed React Native such that it is possible for you to write real native code and have access to the full power of the platform. This is a more advanced feature and we don't expect it to be part of the usual development process, however it is essential that it exists. If React Native doesn't support a native feature that you need, you should be able to build it yourself.
+
+### Enable Gradle
+
+If you plan to make changes in Java code, we recommend enabling [Gradle Daemon](https://docs.gradle.org/2.9/userguide/gradle_daemon.html) to speed up builds.
 
 ## The Toast Module
 
@@ -94,7 +99,19 @@ Read more about [ReadableMap](https://github.com/facebook/react-native/blob/mast
 The last step within Java is to register the Module; this happens in the `createNativeModules` of your apps package. If a module is not registered it will not be available from JavaScript.
 
 ```java
-class AnExampleReactPackage implements ReactPackage {
+package com.facebook.react.modules.toast;
+
+import com.facebook.react.ReactPackage;
+import com.facebook.react.bridge.JavaScriptModule;
+import com.facebook.react.bridge.NativeModule;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.uimanager.ViewManager;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class AnExampleReactPackage implements ReactPackage {
 
   @Override
   public List<Class<? extends JavaScriptModule>> createJSModules() {
@@ -115,6 +132,8 @@ class AnExampleReactPackage implements ReactPackage {
 
     return modules;
   }
+
+}
 ```
 
 The package needs to be provided in the `getPackages` method of the `MainApplication.java` file. This file exists under the android folder in your react-native application directory. The path to this file is: `android/app/src/main/java/com/your-app-name/MainApplication.java`.
@@ -209,10 +228,12 @@ Native modules can also fulfill a promise, which can simplify your code, especia
 Refactoring the above code to use a promise instead of callbacks looks like this:
 
 ```java
+import com.facebook.react.bridge.Promise;
+
 public class UIManagerModule extends ReactContextBaseJavaModule {
 
 ...
-
+  private static final String E_LAYOUT_ERROR = "E_LAYOUT_ERROR";
   @ReactMethod
   public void measureLayout(
       int tag,
@@ -230,7 +251,7 @@ public class UIManagerModule extends ReactContextBaseJavaModule {
 
       promise.resolve(map);
     } catch (IllegalViewOperationException e) {
-      promise.reject(e);
+      promise.reject(E_LAYOUT_ERROR, e);
     }
   }
 
@@ -262,73 +283,23 @@ measureLayout();
 
 Native modules should not have any assumptions about what thread they are being called on, as the current assignment is subject to change in the future. If a blocking call is required, the heavy work should be dispatched to an internally managed worker thread, and any callbacks distributed from there.
 
-### Sending Events to JavaScript
-
-Native modules can signal events to JavaScript without being invoked directly. The easiest way to do this is to use the `RCTDeviceEventEmitter` which can be obtained from the `ReactContext` as in the code snippet below.
-
-```java
-...
-private void sendEvent(ReactContext reactContext,
-                       String eventName,
-                       @Nullable WritableMap params) {
-  reactContext
-      .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-      .emit(eventName, params);
-}
-...
-WritableMap params = Arguments.createMap();
-...
-sendEvent(reactContext, "keyboardWillShow", params);
-```
-
-JavaScript modules can then register to receive events by `addListenerOn` using the `Subscribable` mixin
-
-```js
-import { DeviceEventEmitter } from 'react-native';
-...
-
-var ScrollResponderMixin = {
-  mixins: [Subscribable.Mixin],
-
-
-  componentWillMount: function() {
-    ...
-    this.addListenerOn(DeviceEventEmitter,
-                       'keyboardWillShow',
-                       this.scrollResponderKeyboardWillShow);
-    ...
-  },
-  scrollResponderKeyboardWillShow:function(e: Event) {
-    this.keyboardWillOpenTo = e;
-    this.props.onKeyboardWillShow && this.props.onKeyboardWillShow(e);
-  },
-```
-
-You can also directly use the `DeviceEventEmitter` module to listen for events.
-
-```js
-...
-componentWillMount: function() {
-  DeviceEventEmitter.addListener('keyboardWillShow', function(e: Event) {
-    // handle event.
-  });
-}
-...
-```
-
 ### Getting activity result from `startActivityForResult`
 
-You'll need to listen to `onActivityResult` if you want to get results from an activity you started with `startActivityForResult`. To do this, the module must implement `ActivityEventListener`. Then, you need to register a listener in the module's constructor,
+You'll need to listen to `onActivityResult` if you want to get results from an activity you started with `startActivityForResult`. To do this, you must extend `BaseActivityEventListener` or implement `ActivityEventListener`. The former is preferred as it is more resilient to API changes. Then, you need to register the listener in the module's constructor,
 
 ```java
-reactContext.addActivityEventListener(this);
+reactContext.addActivityEventListener(mActivityResultListener);
 ```
 
 Now you can listen to `onActivityResult` by implementing the following method:
 
 ```java
 @Override
-public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+public void onActivityResult(
+  final Activity activity,
+  final int requestCode,
+  final int resultCode,
+  final Intent intent) {
   // Your logic here
 }
 ```
@@ -336,7 +307,7 @@ public void onActivityResult(final int requestCode, final int resultCode, final 
 We will implement a simple image picker to demonstrate this. The image picker will expose the method `pickImage` to JavaScript, which will return the path of the image when called.
 
 ```java
-public class ImagePickerModule extends ReactContextBaseJavaModule implements ActivityEventListener {
+public class ImagePickerModule extends ReactContextBaseJavaModule {
 
   private static final int IMAGE_PICKER_REQUEST = 467081;
   private static final String E_ACTIVITY_DOES_NOT_EXIST = "E_ACTIVITY_DOES_NOT_EXIST";
@@ -346,11 +317,35 @@ public class ImagePickerModule extends ReactContextBaseJavaModule implements Act
 
   private Promise mPickerPromise;
 
+  private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
+
+    @Override
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent intent) {
+      if (requestCode == IMAGE_PICKER_REQUEST) {
+        if (mPickerPromise != null) {
+          if (resultCode == Activity.RESULT_CANCELED) {
+            mPickerPromise.reject(E_PICKER_CANCELLED, "Image picker was cancelled");
+          } else if (resultCode == Activity.RESULT_OK) {
+            Uri uri = intent.getData();
+
+            if (uri == null) {
+              mPickerPromise.reject(E_NO_IMAGE_DATA_FOUND, "No image data found");
+            } else {
+              mPickerPromise.resolve(uri.toString());
+            }
+          }
+
+          mPickerPromise = null;
+        }
+      }
+    }
+  };
+
   public ImagePickerModule(ReactApplicationContext reactContext) {
     super(reactContext);
 
     // Add the listener for `onActivityResult`
-    reactContext.addActivityEventListener(this);
+    reactContext.addActivityEventListener(mActivityEventListener);
   }
 
   @Override
@@ -381,28 +376,6 @@ public class ImagePickerModule extends ReactContextBaseJavaModule implements Act
     } catch (Exception e) {
       mPickerPromise.reject(E_FAILED_TO_SHOW_PICKER, e);
       mPickerPromise = null;
-    }
-  }
-
-  // You can get the result here
-  @Override
-  public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
-    if (requestCode == IMAGE_PICKER_REQUEST) {
-      if (mPickerPromise != null) {
-        if (resultCode == Activity.RESULT_CANCELED) {
-          mPickerPromise.reject(E_PICKER_CANCELLED, "Image picker was cancelled");
-        } else if (resultCode == Activity.RESULT_OK) {
-          Uri uri = intent.getData();
-
-          if (uri == null) {
-            mPickerPromise.reject(E_NO_IMAGE_DATA_FOUND, "No image data found");
-          } else {
-            mPickerPromise.resolve(uri.toString());
-          }
-        }
-
-        mPickerPromise = null;
-      }
     }
   }
 }

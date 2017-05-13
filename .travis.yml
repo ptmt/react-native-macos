@@ -1,51 +1,37 @@
 language: objective-c
 
-matrix:
-    include:
-        - os: osx
-          osx_image: xcode8.2
-          env:
-          - TEST_TYPE=objc
-          - SDK_TO_TEST='macosx10.12'
-        - os: osx
-          osx_image: xcode7.3
-          env:
-          - TEST_TYPE=objc
-          - SDK_TO_TEST='macosx10.11'
-        - os: osx
-          osx_image: xcode6.4
-          env:
-          - TEST_TYPE=objc
-          - SDK_TO_TEST='macosx10.10'
-        - os: osx
-          osx_image: xcode6.4
-          env:
-          - TEST_TYPE=objc
-          - SDK_TO_TEST='macosx10.9'
-        - os: osx
-          env: TEST_TYPE=js
+osx_image: xcode8.2
 
 install:
   - mkdir -p /Users/travis/build/facebook/.nvm
   - export NVM_DIR="/Users/travis/build/facebook/.nvm"
   - brew install nvm
   - source $(brew --prefix nvm)/nvm.sh
-  # TODO npm 2 started stalling on Travis, t11852928
+
+  # Use node 6 because that is what runs on land-blocking tests
   - nvm install 6
   - rm -Rf "${TMPDIR}/jest_preprocess_cache"
-  - npm config set spin=false
-  - npm config set progress=false
-  - travis_wait npm install
-  - node --version
-  - npm --version
+  - wget https://github.com/yarnpkg/yarn/releases/download/v0.16.0/yarn-0.16.0.js
+  - export yarn="node $(pwd)/yarn-0.16.0.js"
+  - $yarn install
 
 script:
-  - if [[ "$TEST_TYPE" = objc ]]; then travis_retry travis_wait ./scripts/objc-test.sh; fi
-  - if [[ "$TEST_TYPE" = e2e-objc ]]; then node ./scripts/run-ci-e2e-tests.js --macos --js --retries 3; fi
-  - if [[ "$TEST_TYPE" = js ]]; then npm run flow check; fi
-  - if [[ "$TEST_TYPE" = js ]]; then npm test -- --maxWorkers=1; fi
+  - if [[ "$TEST_TYPE" = objc-macos ]]; then travis_retry travis_wait ./scripts/objc-test-macos.sh test; fi
+  - if [[ "$TEST_TYPE" = e2e-objc ]]; then node ./scripts/run-ci-e2e-tests.js --ios --js --retries 3; fi
+  - if [[ ( "$TEST_TYPE" = podspecs ) && ( "$TRAVIS_PULL_REQUEST" = "false" ) ]]; then gem install cocoapods && ./scripts/process-podspecs.sh; fi
+
+
+matrix:
+  - fast_finish: true # Fail the whole build as soon as one test type fails. Should help with Travis capacity issues (very long queues).
+
+# The order of these tests says which are more likely to run first and fail the whole build fast.
+env:
+  - TEST_TYPE=objc-macos
+  - TEST_TYPE=podspecs
+  - TEST_TYPE=e2e-objc
 
 branches:
   only:
     - master
     - /^.*-stable$/
+    - /^merge-.*$/

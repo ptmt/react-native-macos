@@ -94,13 +94,18 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)postMessage:(NSString *)message
 {
   NSDictionary *eventInitDict = @{
-                                  @"data": message,
-                                  };
+    @"data": message,
+  };
   NSString *source = [NSString
-                      stringWithFormat:@"document.dispatchEvent(new MessageEvent('message', %@));",
-                      RCTJSONStringify(eventInitDict, NULL)
-                      ];
+    stringWithFormat:@"document.dispatchEvent(new MessageEvent('message', %@));",
+    RCTJSONStringify(eventInitDict, NULL)
+  ];
   [_webView stringByEvaluatingJavaScriptFromString:source];
+}
+
+- (void)injectJavaScript:(NSString *)script
+{
+  [_webView stringByEvaluatingJavaScriptFromString:script];
 }
 
 - (void)setSource:(NSDictionary *)source
@@ -248,15 +253,16 @@ willPerformClientRedirectToURL:(NSURL *)URL
     NSString *data = request.URL.query;
     data = [data stringByReplacingOccurrencesOfString:@"+" withString:@" "];
     data = [data stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    
+
     NSMutableDictionary<NSString *, id> *event = [self baseEvent];
     [event addEntriesFromDictionary: @{
-                                       @"data": data,
-                                       }];
+      @"data": data,
+    }];
     _onMessage(event);
   }
 
-  return request;
+  // JS Navigation handler
+  return !isJSNavigation;
 }
 - (void)webView:(__unused WebView *)sender didFailLoadWithError:(NSError *)error
        forFrame:(__unused WebFrame *)frame
@@ -285,29 +291,24 @@ decidePolicyForNavigationAction:(NSDictionary *)actionInformation
         request:(NSURLRequest *)request frame:(WebFrame *)frame
 decisionListener:(id<WebPolicyDecisionListener>)listener
 {
-  NSLog(@"log");
-}
-
-- (void)webView:(__unused WebView *)sender didFinishLoadForFrame:(WebFrame *)frame
-{
   if (_messagingEnabled) {
-#if RCT_DEV
+    #if RCT_DEV
     // See isNative in lodash
     NSString *testPostMessageNative = @"String(window.postMessage) === String(Object.hasOwnProperty).replace('hasOwnProperty', 'postMessage')";
     BOOL postMessageIsNative = [
-                                [_webView stringByEvaluatingJavaScriptFromString:testPostMessageNative]
-                                isEqualToString:@"true"
-                                ];
+      [_webView stringByEvaluatingJavaScriptFromString:testPostMessageNative]
+      isEqualToString:@"true"
+    ];
     if (!postMessageIsNative) {
       RCTLogError(@"Setting onMessage on a WebView overrides existing values of window.postMessage, but a previous value was defined");
     }
-#endif
+    #endif
     NSString *source = [NSString stringWithFormat:
-                        @"window.originalPostMessage = window.postMessage;"
-                        "window.postMessage = function(data) {"
-                        "window.location = '%@://%@?' + encodeURIComponent(String(data));"
-                        "};", RCTJSNavigationScheme, RCTJSPostMessageHost
-                        ];
+      @"window.originalPostMessage = window.postMessage;"
+      "window.postMessage = function(data) {"
+        "window.location = '%@://%@?' + encodeURIComponent(String(data));"
+      "};", RCTJSNavigationScheme, RCTJSPostMessageHost
+    ];
     [_webView stringByEvaluatingJavaScriptFromString:source];
   }
   if (_injectedJavaScript != nil) {

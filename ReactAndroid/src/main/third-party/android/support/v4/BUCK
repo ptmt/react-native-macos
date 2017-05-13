@@ -1,0 +1,11 @@
+android_prebuilt_aar(
+    name = "lib-support-v4",
+    aar = ":lib-support-v4-binary-aar",
+    visibility = ["PUBLIC"],
+)
+
+remote_file(
+    name = "lib-support-v4-binary-aar",
+    sha1 = "9e8da0e4ecf9f63258c7fbd273889252cba2d0c3",
+    url = "mvn:com.android.support:support-v4:aar:23.0.1",
+)

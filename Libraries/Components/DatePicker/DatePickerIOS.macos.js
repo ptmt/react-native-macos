@@ -13,16 +13,17 @@
  */
 'use strict';
 
-const NativeMethodsMixin = require('react/lib/NativeMethodsMixin');
-const PropTypes = require('react/lib/ReactPropTypes');
+const NativeMethodsMixin = require('NativeMethodsMixin');
 const React = require('React');
+const PropTypes = require('prop-types');
 const StyleSheet = require('StyleSheet');
 const View = require('View');
+const ViewPropTypes = require('ViewPropTypes');
 
 const requireNativeComponent = require('requireNativeComponent');
 
 type DefaultProps = {
-  mode: 'date' | 'time' | 'datetime';
+  mode: 'date' | 'time' | 'datetime',
 };
 
 type Event = Object;
@@ -34,6 +35,7 @@ type Event = Object;
  * the user's change will be reverted immediately to reflect `props.date` as the
  * source of truth.
  */
+// $FlowFixMe(>=0.41.0)
 const DatePickerIOS = React.createClass({
   // TOOD: Put a better type for _picker
   _picker: (undefined: ?$FlowFixMe),
@@ -41,7 +43,7 @@ const DatePickerIOS = React.createClass({
   mixins: [NativeMethodsMixin],
 
   propTypes: {
-    ...View.propTypes,
+    ...ViewPropTypes,
     /**
      * The currently selected date.
      */
@@ -111,6 +113,7 @@ const DatePickerIOS = React.createClass({
     this.props.onDateChange && this.props.onDateChange(
       new Date(nativeTimeStamp), event.nativeEvent.timeInterval
     );
+    // $FlowFixMe(>=0.41.0)
     this.props.onChange && this.props.onChange(event);
 
     // We expect the onChange* handlers to be in charge of updating our `date`
@@ -145,6 +148,8 @@ const DatePickerIOS = React.createClass({
           minuteInterval={props.minuteInterval}
           timeZoneOffsetInMinutes={props.timeZoneOffsetInMinutes}
           onChange={this._onChange}
+          onStartShouldSetResponder={() => true}
+          onResponderTerminationRequest={() => false}
         />
       </View>
     );

@@ -19,6 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * @flow
+ * @providesModule XHRExampleFetch
  */
 'use strict';
 
@@ -36,6 +37,7 @@ var {
 class XHRExampleFetch extends React.Component {
   state: any;
   responseURL: ?string;
+  responseHeaders: ?Object;
 
   constructor(props: any) {
     super(props);
@@ -43,15 +45,32 @@ class XHRExampleFetch extends React.Component {
      responseText: null,
     };
     this.responseURL = null;
+    this.responseHeaders = null;
   }
 
   submit(uri: String) {
     fetch(uri).then((response) => {
       this.responseURL = response.url;
+      this.responseHeaders = response.headers;
       return response.text();
     }).then((body) => {
       this.setState({responseText: body});
     });
+  }
+
+  _renderHeaders() {
+    if (!this.responseHeaders) {
+      return null;
+    }
+
+    var responseHeaders = [];
+    var keys = Object.keys(this.responseHeaders.map);
+    for (var i = 0; i < keys.length; i++) {
+      var key = keys[i];
+      var value = this.responseHeaders.get(key);
+      responseHeaders.push(<Text>{key}: {value}</Text>);
+    }
+    return responseHeaders;
   }
 
   render() {
@@ -60,6 +79,13 @@ class XHRExampleFetch extends React.Component {
       <View style={{marginTop: 10}}>
         <Text style={styles.label}>Server response URL:</Text>
         <Text>{this.responseURL}</Text>
+      </View>
+    ) : null;
+
+    var responseHeaders = this.responseHeaders ? (
+      <View style={{marginTop: 10}}>
+        <Text style={styles.label}>Server response headers:</Text>
+        {this._renderHeaders()}
       </View>
     ) : null;
 
@@ -87,6 +113,7 @@ class XHRExampleFetch extends React.Component {
           style={styles.textInput}
         />
         {responseURL}
+        {responseHeaders}
         {response}
       </View>
     );

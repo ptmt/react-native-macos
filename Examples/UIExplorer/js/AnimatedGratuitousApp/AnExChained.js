@@ -27,7 +27,6 @@ var React = require('React');
 var ReactNative = require('react-native');
 var {
   Animated,
-  Image,
   PanResponder,
   StyleSheet,
   View,

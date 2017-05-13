@@ -1,21 +1,36 @@
-Hey there and thank you for using React Native!
+Please read the following carefully before opening a new issue.
+Your issue may be closed if it does not provide the information required by this template.
 
-React Native, as you've probably heard, is getting really popular and truth is we're getting a bit overwhelmed by the activity surrounding it. There are just too many issues for us to manage properly.
+We use GitHub Issues exclusively for tracking bugs in React Native.
 
-Do the checklist before filing an issue:
+- If you have a question, ask on Stack Overflow: http://stackoverflow.com/questions/tagged/react-native
+- If you have a feature request, post it on Canny: https://react-native.canny.io/feature-requests
 
-- [ ] Is this something you can **debug and fix**? Send a pull request! Bug fixes and documentation fixes are welcome.
-- [ ] Have a usage question? Ask your question on [StackOverflow](http://stackoverflow.com/questions/tagged/react-native). We use StackOverflow for usage question and GitHub for bugs.
-- [ ] Have an idea for a feature? Post the feature request on [Product Pains](https://productpains.com/product/react-native/). It has a voting system to surface the important issues. GitHub issues should only be used for bugs.
+Make sure your issue reproduces on master. Your issue may already have been fixed!
+If your issue is present in master and in the stable release, try to reproduce your bug on https://snack.expo.io/
+If you can't reproduce the bug on Snack, provide a sample project. 
+At the very least, provide an example of your code.
+
+--- Delete everything above this line ---
+
+### Description
+
+Explain what you did, what you expected to happen, and what actually happens.
+
+### Reproduction Steps and Sample Code
+
+List all the steps required to reproduce the issue you're reporting. These steps should be clear and concise.
+
+  ***An example of your code is REQUIRED***
 
 
-None of the above, create a bug report
-------------------------------------------------------------------
+### Solution
 
-Make sure to add **all the information needed to understand the bug** so that someone can help. If the info is missing we'll add the 'Needs more information' label and close the issue until there is enough information.
+What needs to be done to address this issue? Ideally, provide a pull request with a fix.
 
-- [ ] Provide a **minimal code snippet** / [rnplay](https://rnplay.org/) example that reproduces the bug.
-- [ ] Provide **screenshots** where appropriate
-- [ ] What's the **version** of React Native you're using?
-- [ ] Does this occur on iOS, Android or both?
-- [ ] Are you using Mac, Linux or Windows?
+### Additional Information
+
+* React Native version: [FILL THIS OUT: Be specific, filling out "latest" here is not enough.]
+* Platform: [FILL THIS OUT: iOS, Android, or both?]
+* Development Operating System: [FILL THIS OUT: Are you developing on MacOS, Linux, or Windows?]
+* Dev tools: [FILL THIS OUT: Xcode or Android Studio version, iOS or Android SDK version, if applicable]

@@ -12,12 +12,18 @@
 
 #import <RCTTest/RCTTestRunner.h>
 
-#import "RCTAssert.h"
-
 #define RCT_TEST(name)                  \
 - (void)test##name                      \
 {                                       \
   [_runner runTest:_cmd module:@#name]; \
+}
+
+#define RCT_TEST_ONLY_WITH_PACKAGER(name) \
+- (void)test##name                        \
+{                                         \
+  if (getenv("CI_USE_PACKAGER")) {        \
+    [_runner runTest:_cmd module:@#name]; \
+  }                                       \
 }
 
 @interface UIExplorerIntegrationTests : XCTestCase
@@ -63,10 +69,13 @@ RCT_TEST(IntegrationTestHarnessTest)
 RCT_TEST(AsyncStorageTest)
 RCT_TEST(TimersTest)
 RCT_TEST(AppEventsTest)
-//RCT_TEST(ImageSnapshotTest) // Disabled: #8985988
+RCT_TEST(ImageCachePolicyTest)
+RCT_TEST(ImageSnapshotTest)
 //RCT_TEST(LayoutEventsTest) // Disabled due to flakiness: #8686784
-//RCT_TEST(SimpleSnapshotTest) // disabled because AppKit vs UIKit
+RCT_TEST(SimpleSnapshotTest)
+RCT_TEST(SyncMethodTest)
 RCT_TEST(PromiseTest)
+RCT_TEST_ONLY_WITH_PACKAGER(WebSocketTest)
 
 
 

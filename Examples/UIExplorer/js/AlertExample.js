@@ -18,6 +18,7 @@
  * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
+ * @providesModule AlertExample
  */
 
 'use strict';
@@ -104,6 +105,21 @@ class SimpleAlertExampleBlock extends React.Component {
           )}>
           <View style={styles.button}>
             <Text>Alert with too many buttons</Text>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight style={styles.wrapper}
+          onPress={() => Alert.alert(
+            'Alert Title',
+            null,
+            [
+              {text: 'OK', onPress: () => console.log('OK Pressed!')},
+            ],
+            {
+              cancelable: false
+            }
+          )}>
+          <View style={styles.button}>
+            <Text>Alert that cannot be dismissed</Text>
           </View>
         </TouchableHighlight>
       </View>

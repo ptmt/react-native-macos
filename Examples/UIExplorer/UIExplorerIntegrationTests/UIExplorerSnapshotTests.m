@@ -17,10 +17,6 @@
 
 #import <RCTTest/RCTTestRunner.h>
 
-#import "RCTAssert.h"
-#import "RCTRedBox.h"
-#import "RCTRootView.h"
-
 @interface UIExplorerSnapshotTests : XCTestCase
 {
   RCTTestRunner *_runner;
@@ -32,11 +28,10 @@
 
 - (void)setUp
 {
-
-  NSOperatingSystemVersion version = [NSProcessInfo processInfo].operatingSystemVersion;
-  RCTAssert(version.majorVersion == 10 || version.minorVersion >= 11, @"Snapshot tests should be run on OSX 10.11+, found %zd.%zd.%zd", version.majorVersion, version.minorVersion, version.patchVersion);
-  _runner = RCTInitRunnerForApp(@"Examples/UIExplorer/UIExplorerApp.macos", nil);
-
+  _runner = RCTInitRunnerForApp(@"Examples/UIExplorer/js/UIExplorerApp.ios", nil);
+  if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 10) {
+    _runner.testSuffix = @"-iOS10";
+  }
   _runner.recordMode = NO;
 }
 
@@ -46,12 +41,11 @@
   [_runner runTest:_cmd module:@#name]; \
 }
 
+RCT_TEST(ViewExample)
+RCT_TEST(LayoutExample)
+RCT_TEST(ScrollViewExample)
+RCT_TEST(TextExample)
 
-//RCT_TEST(ViewExample) // Examples-UIExplorer-UIExplorerApp.macos/testViewExample_1@2x.png
-//RCT_TEST(LayoutExample)
-//RCT_TEST(TextExample)
-//RCT_TEST(SwitchExample)
-//RCT_TEST(SliderExample)
 
 - (void)testZZZNotInRecordMode
 {

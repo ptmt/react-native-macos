@@ -15,11 +15,11 @@
 #import "AppDelegate.h"
 #import <Cocoa/Cocoa.h>
 
-#import "RCTBridge.h"
-#import "RCTBundleURLProvider.h"
-#import "RCTJavaScriptLoader.h"
-#import "RCTRootView.h"
-#import "RCTEventDispatcher.h"
+#import <React/RCTBridge.h>
+#import <React/RCTBundleURLProvider.h>
+#import <React/RCTJavaScriptLoader.h>
+#import <React/RCTLinkingManager.h>
+#import <React/RCTRootView.h>
 
 @interface AppDelegate() <RCTBridgeDelegate, NSSearchFieldDelegate>
 
@@ -80,17 +80,8 @@
 
 - (void)setDefaultURL
 {
-  _sourceURL = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"Examples/UIExplorer/js/UIExplorerApp.macos" fallbackResource:nil];
-
-  if (!getenv("CI_USE_PACKAGER")) {
-    _sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
-  }
-}
-
-- (void)resetBridgeToDefault
-{
-  [self setDefaultURL];
-  [_bridge reload];
+  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"Examples/UIExplorer/js/UIExplorerApp.ios"
+                                                        fallbackResource:nil];
 }
 
 - (NSURL *)sourceURLForBridge:(__unused RCTBridge *)bridge
@@ -99,9 +90,11 @@
 }
 
 - (void)loadSourceForBridge:(RCTBridge *)bridge
-                  withBlock:(RCTSourceLoadBlock)loadCallback
+                 onProgress:(RCTSourceLoadProgressBlock)onProgress
+                 onComplete:(RCTSourceLoadBlock)loadCallback
 {
   [RCTJavaScriptLoader loadBundleAtURL:[self sourceURLForBridge:bridge]
+                            onProgress:onProgress
                             onComplete:loadCallback];
 }
 

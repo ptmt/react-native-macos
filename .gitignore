@@ -29,6 +29,13 @@ project.xcworkspace
 /Examples/**/android/app/gradlew.bat
 /ReactAndroid/build/
 
+# Buck
+.buckd
+buck-out
+/ReactAndroid/src/main/jni/prebuilt/lib/armeabi-v7a/
+/ReactAndroid/src/main/jni/prebuilt/lib/x86/
+/ReactAndroid/src/main/gen
+
 # Android
 .idea
 .gradle
@@ -48,3 +55,7 @@ rn-cli.config.js
 
 # Test generated files
 /ReactAndroid/src/androidTest/assets/AndroidTestBundle.js
+*.js.meta
+
+/coverage
+/third-party

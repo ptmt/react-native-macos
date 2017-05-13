@@ -15,6 +15,8 @@
 #import <AppKit/AppKit.h>
 #import "RCTView.h"
 
+#import <React/RCTView.h>
+
 @interface UpdatePropertiesExampleView : RCTView
 
 @end

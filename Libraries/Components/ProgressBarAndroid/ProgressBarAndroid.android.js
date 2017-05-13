@@ -10,10 +10,10 @@
  */
 'use strict';
 
-var NativeMethodsMixin = require('react/lib/NativeMethodsMixin');
+var NativeMethodsMixin = require('NativeMethodsMixin');
 var React = require('React');
-var ReactPropTypes = require('react/lib/ReactPropTypes');
-var View = require('View');
+var PropTypes = require('prop-types');
+var ViewPropTypes = require('ViewPropTypes');
 var ColorPropType = require('ColorPropType');
 
 var requireNativeComponent = require('requireNativeComponent');
@@ -25,7 +25,7 @@ var STYLE_ATTRIBUTES = [
   'Large',
   'Inverse',
   'SmallInverse',
-  'LargeInverse'
+  'LargeInverse',
 ];
 
 var indeterminateType = function(props, propName, componentName) {
@@ -37,7 +37,7 @@ var indeterminateType = function(props, propName, componentName) {
     }
   };
 
-  return ReactPropTypes.bool(props, propName, componentName) || checker();
+  return PropTypes.bool(props, propName, componentName) || checker();
 };
 
 /**
@@ -65,7 +65,7 @@ var indeterminateType = function(props, propName, componentName) {
  */
 var ProgressBarAndroid = React.createClass({
   propTypes: {
-    ...View.propTypes,
+    ...ViewPropTypes,
     /**
      * Style of the ProgressBar. One of:
      *
@@ -77,7 +77,7 @@ var ProgressBarAndroid = React.createClass({
      * - SmallInverse
      * - LargeInverse
      */
-    styleAttr: ReactPropTypes.oneOf(STYLE_ATTRIBUTES),
+    styleAttr: PropTypes.oneOf(STYLE_ATTRIBUTES),
     /**
      * If the progress bar will show indeterminate progress. Note that this
      * can only be false if styleAttr is Horizontal.
@@ -86,7 +86,7 @@ var ProgressBarAndroid = React.createClass({
     /**
      * The progress value (between 0 and 1).
      */
-    progress: ReactPropTypes.number,
+    progress: PropTypes.number,
     /**
      * Color of the progress bar.
      */
@@ -94,7 +94,7 @@ var ProgressBarAndroid = React.createClass({
     /**
      * Used to locate this view in end-to-end tests.
      */
-    testID: ReactPropTypes.string,
+    testID: PropTypes.string,
   },
 
   getDefaultProps: function() {

@@ -250,6 +250,9 @@ typedef NS_ENUM(NSUInteger, FBTestSnapshotFileNameType) {
   if ([[NSScreen mainScreen] backingScaleFactor] > 1.0) {
     fileName = [fileName stringByAppendingFormat:@"@%.fx", [[NSScreen mainScreen] backingScaleFactor]];
   }
+#if TARGET_OS_TV
+  fileName = [fileName stringByAppendingString:@"_tvOS"];
+#endif
   fileName = [fileName stringByAppendingPathExtension:@"png"];
   return fileName;
 }

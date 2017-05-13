@@ -1,15 +1,21 @@
 /**
  * marked - a markdown parser
- * Copyright (c) 2011-2013, Christopher Jeffrey. (MIT Licensed)
  * https://github.com/chjj/marked
  *
+ * @copyright 2011-2013 Christopher Jeffrey. MIT License.
  * @providesModule Marked
+ * @noflow
  */
 
-var React = require('React');
-var Prism = require('Prism');
-var WebPlayer = require('WebPlayer');
+/* eslint-disable */
+
+'use strict';
+
 var Header = require('Header');
+var Prism = require('Prism');
+var React = require('React');
+var WebPlayer = require('WebPlayer');
+var SnackPlayer = require('SnackPlayer');
 
 /**
  * Block-Level Grammar
@@ -834,6 +840,12 @@ Parser.prototype.tok = function() {
       if (lang && lang.indexOf('ReactNativeWebPlayer') === 0) {
         return (
           <WebPlayer params={lang.split('?')[1]}>{text}</WebPlayer>
+        );
+      }
+
+      if (lang && lang.indexOf('SnackPlayer') === 0) {
+        return (
+          <SnackPlayer params={lang.split('?')[1]}>{text}</SnackPlayer>
         );
       }
 

@@ -16,6 +16,13 @@
 
 @implementation RCTConvert (NSAlertViewStyle)
 
+RCT_ENUM_CONVERTER(RCTAlertViewStyle, (@{
+  @"default": @(RCTAlertViewStyleDefault),
+  @"secure-text": @(RCTAlertViewStyleSecureTextInput),
+  @"plain-text": @(RCTAlertViewStylePlainTextInput),
+  @"login-password": @(RCTAlertViewStyleLoginAndPasswordInput),
+}), RCTAlertViewStyleDefault, integerValue)
+
 RCT_ENUM_CONVERTER(NSAlertStyle, (@{
   @"default": @(NSWarningAlertStyle),
   @"information": @(NSInformationalAlertStyle),
@@ -76,8 +83,17 @@ RCT_EXPORT_METHOD(alertWithArgs:(NSDictionary *)args
     return;
   }
 
-  if (RCTRunningInAppExtension()) {
-    return;
+  if (buttons.count == 0) {
+    if (type == RCTAlertViewStyleDefault) {
+      buttons = @[@{@"0": RCTUIKitLocalizedString(@"OK")}];
+      cancelButtonKey = @"0";
+    } else {
+      buttons = @[
+        @{@"0": RCTUIKitLocalizedString(@"OK")},
+        @{@"1": RCTUIKitLocalizedString(@"Cancel")},
+      ];
+      cancelButtonKey = @"1";
+    }
   }
 
   NSAlert *alertView = RCTAlertView(title, message, self, nil, nil);

@@ -9,13 +9,17 @@
 
 #import <AppKit/AppKit.h>
 
-#import "RCTFrameUpdate.h"
+#import <React/RCTFrameUpdate.h>
 
 @class RCTBridge;
 
 @interface RCTTouchHandler : NSGestureRecognizer
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge NS_DESIGNATED_INITIALIZER;
+
+- (void)attachToView:(UIView *)view;
+- (void)detachFromView:(UIView *)view;
+
 - (void)cancel;
 
 - (void)mouseMoved:(NSEvent *)theEvent;

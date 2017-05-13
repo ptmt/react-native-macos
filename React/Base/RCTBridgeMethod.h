@@ -14,16 +14,27 @@
 typedef NS_ENUM(NSUInteger, RCTFunctionType) {
   RCTFunctionTypeNormal,
   RCTFunctionTypePromise,
+  RCTFunctionTypeSync,
+};
+
+static inline const char *RCTFunctionDescriptorFromType(RCTFunctionType type) {
+  switch (type) {
+    case RCTFunctionTypeNormal:
+      return "async";
+    case RCTFunctionTypePromise:
+      return "promise";
+    case RCTFunctionTypeSync:
+      return "sync";
+  }
 };
 
 @protocol RCTBridgeMethod <NSObject>
 
 @property (nonatomic, copy, readonly) NSString *JSMethodName;
-@property (nonatomic, copy, readonly) NSDictionary *profileArgs;
 @property (nonatomic, readonly) RCTFunctionType functionType;
 
-- (void)invokeWithBridge:(RCTBridge *)bridge
-                  module:(id)module
-               arguments:(NSArray *)arguments;
+- (id)invokeWithBridge:(RCTBridge *)bridge
+                module:(id)module
+             arguments:(NSArray *)arguments;
 
 @end

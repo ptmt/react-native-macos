@@ -7,13 +7,12 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import "RCTView.h"
-
 #import <AppKit/AppKit.h>
 
-#import "RCTBorderStyle.h"
-#import "RCTComponent.h"
-#import "RCTPointerEvents.h"
+#import <React/RCTBorderStyle.h>
+#import <React/RCTComponent.h>
+#import <React/RCTPointerEvents.h>
+#import <React/RCTView.h>
 
 @protocol RCTAutoInsetsProtocol;
 
@@ -42,6 +41,13 @@
 + (NSEdgeInsets)contentInsetsForView:(NSView *)curView;
 
 - (void)setBackgroundColor:(NSColor *)backgroundColor;
+
+/**
+ * Layout direction of the view.
+ * This is inherited from UIView+React, but we override it here
+ * to improve perfomance and make subclassing/overriding possible/easier.
+ */
+@property (nonatomic, assign) UIUserInterfaceLayoutDirection reactLayoutDirection;
 
 /**
  * z-index, used to override sibling order in didUpdateReactSubviews. This is

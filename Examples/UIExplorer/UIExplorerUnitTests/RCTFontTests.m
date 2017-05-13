@@ -12,9 +12,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#import <CoreText/CoreText.h>
 #import <XCTest/XCTest.h>
 
-#import "RCTFont.h"
+#import <React/RCTFont.h>
 
 @interface RCTFontTests : XCTestCase
 
@@ -22,8 +23,12 @@
 
 @implementation RCTFontTests
 
+// It can happen (particularly in tvOS simulator) that expected and result font objects
+// will be different objects, but the same font, so this macro now explicitly
+// checks that fontName (which includes the style) and pointSize are equal.
 #define RCTAssertEqualFonts(font1, font2) { \
-  XCTAssertEqualObjects(font1, font2); \
+  XCTAssertTrue([font1.fontName isEqualToString:font2.fontName]); \
+  XCTAssertEqual(font1.pointSize,font2.pointSize); \
 }
 
 - (void)testWeight
@@ -61,11 +66,13 @@
 
 - (void)testFamily
 {
+#if !TARGET_OS_TV
   {
     NSFont *expected = [NSFont fontWithName:@"Cochin" size:14];
     NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"Cochin"}];
     RCTAssertEqualFonts(expected, result);
   }
+#endif
   {
     NSFont *expected = [NSFont fontWithName:@"HelveticaNeue" size:14];
     NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"Helvetica Neue"}];
@@ -133,6 +140,7 @@
     NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"HelveticaNeue-Bold", @"fontWeight": @"normal"}];
     RCTAssertEqualFonts(expected, result);
   }
+#if !TARGET_OS_TV
   {
     NSFont *expected = [NSFont fontWithName:@"Cochin-Bold" size:14];
     NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"Cochin", @"fontWeight": @"700"}];
@@ -143,6 +151,7 @@
     NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"Cochin", @"fontWeight": @"100"}];
     RCTAssertEqualFonts(expected, result);
   }
+#endif
 }
 
 - (void)testFamilyAndStyle
@@ -174,6 +183,27 @@
   {
     NSFont *expected = [NSFont fontWithName:@"HelveticaNeue" size:14];
     NSFont *result = [RCTConvert NSFont:@{@"fontFamily": @"HelveticaNeue-Italic", @"fontStyle": @"normal", @"fontWeight": @"normal"}];
+    RCTAssertEqualFonts(expected, result);
+  }
+}
+
+- (void)testVariant
+{
+  {
+    UIFont *expected = [UIFont monospacedDigitSystemFontOfSize:14 weight:UIFontWeightRegular];
+    UIFont *result = [RCTConvert UIFont:@{@"fontVariant": @[@"tabular-nums"]}];
+    RCTAssertEqualFonts(expected, result);
+  }
+  {
+    UIFont *monospaceFont = [UIFont monospacedDigitSystemFontOfSize:14 weight:UIFontWeightRegular];
+    UIFontDescriptor *fontDescriptor = [monospaceFont.fontDescriptor fontDescriptorByAddingAttributes:@{
+      UIFontDescriptorFeatureSettingsAttribute: @[@{
+        UIFontFeatureTypeIdentifierKey: @(kLowerCaseType),
+        UIFontFeatureSelectorIdentifierKey: @(kLowerCaseSmallCapsSelector),
+      }]
+    }];
+    UIFont *expected = [UIFont fontWithDescriptor:fontDescriptor size:14];
+    UIFont *result = [RCTConvert UIFont:@{@"fontVariant": @[@"tabular-nums", @"small-caps"]}];
     RCTAssertEqualFonts(expected, result);
   }
 }

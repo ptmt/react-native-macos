@@ -9,11 +9,14 @@
 
 #import "RCTModalHostView.h"
 
+#import <AppKit/AppKit.h>
+
 #import "RCTAssert.h"
 #import "RCTBridge.h"
 #import "RCTModalHostViewController.h"
 #import "RCTTouchHandler.h"
 #import "RCTUIManager.h"
+#import "RCTUtils.h"
 #import "NSView+React.h"
 
 @implementation RCTModalHostView
@@ -82,7 +85,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:coder)
 {
   RCTAssert(subview == _reactSubview, @"Cannot remove view other than modal view");
   [super removeReactSubview:subview];
-  [subview removeGestureRecognizer:_touchHandler];
+  [_touchHandler detachFromView:subview];
   _reactSubview = nil;
 }
 

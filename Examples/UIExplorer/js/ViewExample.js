@@ -19,11 +19,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * @flow
+ * @providesModule ViewExample
  */
 'use strict';
 
-var Platform = require('Platform');
-var React = require('React');
+var React = require('react');
 var ReactNative = require('react-native');
 var {
   StyleSheet,

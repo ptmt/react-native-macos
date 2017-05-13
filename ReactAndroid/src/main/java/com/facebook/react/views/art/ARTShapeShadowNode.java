@@ -15,6 +15,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.graphics.DashPathEffect;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.JSApplicationIllegalArgumentException;
@@ -158,8 +159,7 @@ public class ARTShapeShadowNode extends ARTVirtualNode {
         (int) (mStrokeColor[1] * 255),
         (int) (mStrokeColor[2] * 255));
     if (mStrokeDash != null && mStrokeDash.length > 0) {
-      // TODO(6352067): Support dashes
-      FLog.w(ReactConstants.TAG, "ART: Dashes are not supported yet!");
+      paint.setPathEffect(new DashPathEffect(mStrokeDash, 0));
     }
     return true;
   }
@@ -189,6 +189,20 @@ public class ARTShapeShadowNode extends ARTVirtualNode {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Returns the floor modulus of the float arguments. Java modulus will return a negative remainder
+   * when the divisor is negative. Modulus should always be positive. This mimics the behavior of
+   * Math.floorMod, introduced in Java 8.
+   */
+  private float modulus(float x, float y) {
+    float remainder = x % y;
+    float modulus = remainder;
+    if (remainder < 0) {
+      modulus += y;
+    }
+    return modulus;
   }
 
   /**
@@ -232,13 +246,21 @@ public class ARTShapeShadowNode extends ARTVirtualNode {
           float r = data[i++] * mScale;
           float start = (float) Math.toDegrees(data[i++]);
           float end = (float) Math.toDegrees(data[i++]);
-          boolean clockwise = data[i++] == 0f;
-          if (!clockwise) {
-            end = 360 - end;
+
+          boolean clockwise = data[i++] == 1f;
+          float sweep = end - start;
+          if (Math.abs(sweep) > 360) {
+            sweep = 360;
+          } else {
+            sweep = modulus(sweep, 360);
           }
-          float sweep = start - end;
+          if (!clockwise && sweep < 360) {
+            start = end;
+            sweep = 360 - sweep;
+          }
+
           RectF oval = new RectF(x - r, y - r, x + r, y + r);
-          path.addArc(oval, start, sweep);
+          path.arcTo(oval, start, sweep);
           break;
         }
         default:

@@ -20,7 +20,7 @@ import java.util.Locale;
 public class I18nUtil {
   private static I18nUtil sharedI18nUtilInstance = null;
 
-  private static final String MY_PREFS_NAME =
+  private static final String SHARED_PREFS_NAME =
     "com.facebook.react.modules.i18nmanager.I18nUtil";
   private static final String KEY_FOR_PREFS_ALLOWRTL =
     "RCTI18nUtil_allowRTL";
@@ -32,7 +32,7 @@ public class I18nUtil {
   }
 
   public static I18nUtil getInstance() {
-    if(sharedI18nUtilInstance == null) {
+    if (sharedI18nUtilInstance == null) {
       sharedI18nUtilInstance = new I18nUtil();
     }
     return sharedI18nUtilInstance;
@@ -55,18 +55,14 @@ public class I18nUtil {
   /**
    * Should be used very early during app start up
    * Before the bridge is initialized
+   * @return whether the app allows RTL layout, default is true
    */
   private boolean isRTLAllowed(Context context) {
-    SharedPreferences prefs =
-      context.getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE);
-    return prefs.getBoolean(KEY_FOR_PREFS_ALLOWRTL, false);
+    return isPrefSet(context, KEY_FOR_PREFS_ALLOWRTL, true);
   }
 
   public void allowRTL(Context context, boolean allowRTL) {
-    SharedPreferences.Editor editor =
-      context.getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit();
-    editor.putBoolean(KEY_FOR_PREFS_ALLOWRTL, allowRTL);
-    editor.apply();
+    setPref(context, KEY_FOR_PREFS_ALLOWRTL, allowRTL);
   }
 
   /**
@@ -74,16 +70,11 @@ public class I18nUtil {
    * Used for development and testing purpose
    */
   private boolean isRTLForced(Context context) {
-    SharedPreferences prefs =
-      context.getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE);
-    return prefs.getBoolean(KEY_FOR_PREFS_FORCERTL, false);
+    return isPrefSet(context, KEY_FOR_PREFS_FORCERTL, false);
   }
 
-  public void forceRTL(Context context, boolean allowRTL) {
-    SharedPreferences.Editor editor =
-      context.getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit();
-    editor.putBoolean(KEY_FOR_PREFS_FORCERTL, allowRTL);
-    editor.apply();
+  public void forceRTL(Context context, boolean forceRTL) {
+    setPref(context, KEY_FOR_PREFS_FORCERTL, forceRTL);
   }
 
   // Check if the current device language is RTL
@@ -92,4 +83,17 @@ public class I18nUtil {
       TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault());
     return directionality == ViewCompat.LAYOUT_DIRECTION_RTL;
    }
+
+  private boolean isPrefSet(Context context, String key, boolean defaultValue) {
+    SharedPreferences prefs =
+      context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE);
+    return prefs.getBoolean(key, defaultValue);
+  }
+
+  private void setPref(Context context, String key, boolean value) {
+    SharedPreferences.Editor editor =
+      context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE).edit();
+    editor.putBoolean(key, value);
+    editor.apply();
+  }
 }

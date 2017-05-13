@@ -11,15 +11,15 @@
  */
 'use strict';
 
+const AppContainer = require('AppContainer');
 const I18nManager = require('I18nManager');
 const Platform = require('Platform');
-const PropTypes = require('react/lib/ReactPropTypes');
 const React = require('React');
+const PropTypes = require('prop-types');
 const StyleSheet = require('StyleSheet');
-const UIManager = require('UIManager');
 const View = require('View');
-const deprecatedPropType = require('deprecatedPropType');
 
+const deprecatedPropType = require('deprecatedPropType');
 const requireNativeComponent = require('requireNativeComponent');
 const RCTModalHostView = requireNativeComponent('RCTModalHostView', null);
 
@@ -27,7 +27,7 @@ const RCTModalHostView = requireNativeComponent('RCTModalHostView', null);
  * The Modal component is a simple way to present content above an enclosing view.
  *
  * _Note: If you need more control over how to present modals over the rest of your app,
- * then consider using a top-level Navigator. Go [here](/react-native/docs/navigator-comparison.html) to compare navigation options._
+ * then consider using a top-level Navigator._
  *
  * ```javascript
  * import React, { Component } from 'react';
@@ -35,9 +35,8 @@ const RCTModalHostView = requireNativeComponent('RCTModalHostView', null);
  *
  * class ModalExample extends Component {
  *
- *   constructor(props) {
- *     super(props);
- *     this.state = {modalVisible: false};
+ *   state = {
+ *     modalVisible: false,
  *   }
  *
  *   setModalVisible(visible) {
@@ -87,6 +86,8 @@ class Modal extends React.Component {
      * - `slide` slides in from the bottom
      * - `fade` fades into view
      * - `none` appears without an animation
+     *
+     * Default is set to `none`.
      */
     animationType: PropTypes.oneOf(['none', 'slide', 'fade']),
     presentationType: PropTypes.oneOf(['window', 'sheet', 'popover']),
@@ -97,13 +98,17 @@ class Modal extends React.Component {
      */
     transparent: PropTypes.bool,
     /**
+     * The `hardwareAccelerated` prop controls whether to force hardware acceleration for the underlying window.
+     * @platform android
+     */
+    hardwareAccelerated: PropTypes.bool,
+    /**
      * The `visible` prop determines whether your modal is visible.
      */
     visible: PropTypes.bool,
     /**
-     * The `onRequestClose` prop allows passing a function that will be called once the modal has been dismissed.
-     *
-     * _On the Android platform, this is a required function._
+     * The `onRequestClose` callback is called when the user taps the hardware back button.
+     * @platform android
      */
     onRequestClose: Platform.OS === 'android' ? PropTypes.func.isRequired : PropTypes.func,
     /**
@@ -114,20 +119,36 @@ class Modal extends React.Component {
       PropTypes.bool,
       'Use the `animationType` prop instead.'
     ),
+    /**
+     * The `supportedOrientations` prop allows the modal to be rotated to any of the specified orientations.
+     * On iOS, the modal is still restricted by what's specified in your app's Info.plist's UISupportedInterfaceOrientations field.
+     * @platform ios
+     */
+    supportedOrientations: PropTypes.arrayOf(PropTypes.oneOf(['portrait', 'portrait-upside-down', 'landscape', 'landscape-left', 'landscape-right'])),
+    /**
+     * The `onOrientationChange` callback is called when the orientation changes while the modal is being displayed.
+     * The orientation provided is only 'portrait' or 'landscape'. This callback is also called on initial render, regardless of the current orientation.
+     * @platform ios
+     */
+    onOrientationChange: PropTypes.func,
   };
 
   static defaultProps = {
     visible: true,
+    hardwareAccelerated: false,
   };
 
-  render(): ?ReactElement<any> {
+  static contextTypes = {
+    rootTag: PropTypes.number,
+  };
+
+  render(): ?React.Element<any> {
     if (this.props.visible === false) {
       return null;
     }
 
     const containerStyles = {
       backgroundColor: this.props.transparent ? 'transparent' : 'white',
-      top: Platform.OS === 'android' && Platform.Version >= 19 ? UIManager.RCTModalHostView.Constants.StatusBarHeight : 0,
     };
 
     let animationType = this.props.animationType;
@@ -139,19 +160,28 @@ class Modal extends React.Component {
       }
     }
 
+    const innerChildren = __DEV__ ?
+      ( <AppContainer rootTag={this.context.rootTag}>
+          {this.props.children}
+        </AppContainer>) :
+      this.props.children;
+
     return (
       <RCTModalHostView
         {...this.props}
         animationType={animationType}
         presentationType={this.props.presentationType || 'window'}
         transparent={this.props.transparent}
+        hardwareAccelerated={this.props.hardwareAccelerated}
         onRequestClose={this.props.onRequestClose}
         onShow={this.props.onShow}
         style={styles.modal}
         onStartShouldSetResponder={this._shouldSetResponder}
+        supportedOrientations={this.props.supportedOrientations}
+        onOrientationChange={this.props.onOrientationChange}
         >
         <View style={[styles.container, containerStyles]}>
-          {this.props.children}
+          {innerChildren}
         </View>
       </RCTModalHostView>
     );

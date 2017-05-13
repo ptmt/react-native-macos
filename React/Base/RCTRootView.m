@@ -15,17 +15,23 @@
 
 #import "RCTAssert.h"
 #import "RCTBridge.h"
+#import "RCTBridge+Private.h"
 #import "RCTEventDispatcher.h"
 #import "RCTKeyCommands.h"
 #import "RCTLog.h"
 #import "RCTPerformanceLogger.h"
-#import "RCTSourceCode.h"
+#import "RCTProfile.h"
+#import "RCTRootContentView.h"
 #import "RCTTouchHandler.h"
 #import "RCTUIManager.h"
 #import "RCTUtils.h"
 #import "RCTView.h"
 #import "NSView+React.h"
-#import "RCTProfile.h"
+
+#if TARGET_OS_TV
+#import "RCTTVRemoteHandler.h"
+#import "RCTTVNavigationEventEmitter.h"
+#endif
 
 NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotification";
 
@@ -35,23 +41,14 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 
 @end
 
-@interface RCTRootContentView : RCTView <RCTInvalidating>
-
-@property (nonatomic, readonly) BOOL contentHasAppeared;
-@property (nonatomic, readonly, strong) RCTTouchHandler *touchHandler;
-
-- (instancetype)initWithFrame:(CGRect)frame
-                       bridge:(RCTBridge *)bridge
-                     reactTag:(NSNumber *)reactTag
-               sizeFlexiblity:(RCTRootViewSizeFlexibility)sizeFlexibility NS_DESIGNATED_INITIALIZER;
-@end
-
 @implementation RCTRootView
 {
   RCTBridge *_bridge;
   NSString *_moduleName;
   NSDictionary *_launchOptions;
   RCTRootContentView *_contentView;
+  BOOL _passThroughTouches;
+  CGSize _intrinsicContentSize;
 }
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge
@@ -63,15 +60,19 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
   RCTAssert(moduleName, @"A moduleName is required to create an RCTRootView");
 
   RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, @"-[RCTRootView init]", nil);
-
-  if ((self = [super initWithFrame:CGRectZero])) {
-
-    // TODO: Turn on layer backing just to avoid https://github.com/ptmt/react-native-macos/issues/47
-    // Maybe we could turn it off after the bug fixed in the future.
-    if (([self window].styleMask & NSFullSizeContentViewWindowMask) != NSFullSizeContentViewWindowMask
+  if (!bridge.isLoading) {
+    [bridge.performanceLogger markStartForTag:RCTPLTTI];
+  }
+    
+  // TODO: Turn on layer backing just to avoid https://github.com/ptmt/react-native-macos/issues/47
+  // Maybe we could turn it off after the bug fixed in the future.
+  if (([self window].styleMask & NSFullSizeContentViewWindowMask) != NSFullSizeContentViewWindowMask
         && [self window].contentView == self) {
-      [self setWantsLayer:YES];
-    }
+        [self setWantsLayer:YES];
+  }
+
+  if (self = [super initWithFrame:CGRectZero]) {
+    self.backgroundColor = [UIColor whiteColor];
 
     [self setNeedsLayout:NO];
 
@@ -97,14 +98,21 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
                                                  name:RCTContentDidAppearNotification
                                                object:self];
 
-    if (!_bridge.loading) {
-      [self bundleFinishedLoading:_bridge];
+#if TARGET_OS_TV
+    self.tvRemoteHandler = [RCTTVRemoteHandler new];
+    for (UIGestureRecognizer *gr in self.tvRemoteHandler.tvRemoteGestureRecognizers) {
+      [self addGestureRecognizer:gr];
     }
+#endif
 
     [self showLoadingView];
+
+    // Immediately schedule the application to be started.
+    // (Sometimes actual `_bridge` is already batched bridge here.)
+    [self bundleFinishedLoading:([_bridge batchedBridge] ?: _bridge)];
   }
 
-  RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"", nil);
+  RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"");
 
   return self;
 }
@@ -124,9 +132,64 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
+#if TARGET_OS_TV
+- (UIView *)preferredFocusedView
+{
+  if (self.reactPreferredFocusedView) {
+    return self.reactPreferredFocusedView;
+  }
+  return [super preferredFocusedView];
+}
+#endif
+
 - (void)setBackgroundColor:(NSColor *)backgroundColor
 {
   [super.layer setBackgroundColor:[backgroundColor CGColor]];
+}
+
+#pragma mark - passThroughTouches
+
+- (BOOL)passThroughTouches
+{
+  return _contentView.passThroughTouches;
+}
+
+- (void)setPassThroughTouches:(BOOL)passThroughTouches
+{
+  _passThroughTouches = passThroughTouches;
+  _contentView.passThroughTouches = passThroughTouches;
+}
+
+#pragma mark - Layout
+
+- (CGSize)sizeThatFits:(CGSize)size
+{
+  CGSize fitSize = _intrinsicContentSize;
+  CGSize currentSize = self.bounds.size;
+
+  // Following the current `size` and current `sizeFlexibility` policy.
+  fitSize = CGSizeMake(
+      _sizeFlexibility & RCTRootViewSizeFlexibilityWidth ? fitSize.width : currentSize.width,
+      _sizeFlexibility & RCTRootViewSizeFlexibilityHeight ? fitSize.height : currentSize.height
+    );
+
+  // Following the given size constraints.
+  fitSize = CGSizeMake(
+      MIN(size.width, fitSize.width),
+      MIN(size.height, fitSize.height)
+    );
+
+  return fitSize;
+}
+
+- (void)layoutSubviews
+{
+  [super layoutSubviews];
+  _contentView.frame = self.bounds;
+  _loadingView.center = (CGPoint){
+    CGRectGetMidX(self.bounds),
+    CGRectGetMidY(self.bounds)
+  };
 }
 
 - (NSViewController *)reactViewController
@@ -155,7 +218,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)showLoadingView
 {
   if (_loadingView && !_contentView.contentHasAppeared) {
-    NSLog(@"RCTRootView: showLoadingView");
     _loadingView.hidden = NO;
     [self addSubview:_loadingView];
   }
@@ -198,12 +260,18 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)javaScriptDidLoad:(NSNotification *)notification
 {
   RCTAssertMainQueue();
+
+  // Use the (batched) bridge that's sent in the notification payload, so the
+  // RCTRootContentView is scoped to the right bridge
   RCTBridge *bridge = notification.userInfo[@"bridge"];
-  [self bundleFinishedLoading:bridge];
+  if (bridge != _contentView.bridge) {
+    [self bundleFinishedLoading:bridge];
+  }
 }
 
 - (void)bundleFinishedLoading:(RCTBridge *)bridge
 {
+  RCTAssert(bridge != nil, @"Bridge cannot be nil");
   if (!bridge.valid) {
     return;
   }
@@ -216,9 +284,16 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   _contentView = [[RCTRootContentView alloc] initWithFrame:self.bounds
                                                     bridge:bridge
                                                   reactTag:self.reactTag
-                                            sizeFlexiblity:self.sizeFlexibility];
+                                            sizeFlexiblity:_sizeFlexibility];
   [self runApplication:bridge];
-  [self addSubview:_contentView];
+
+  _contentView.backgroundColor = self.backgroundColor;
+  _contentView.passThroughTouches = _passThroughTouches;
+  [self insertSubview:_contentView atIndex:0];
+
+  if (_sizeFlexibility == RCTRootViewSizeFlexibilityNone) {
+    self.intrinsicContentSize = self.bounds.size;
+  }
 }
 
 - (void)runApplication:(RCTBridge *)bridge
@@ -229,6 +304,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     @"initialProps": _appProperties ?: @{},
   };
 
+  RCTLogInfo(@"Running application %@ (%@)", moduleName, appParameters);
   [bridge enqueueJSCall:@"AppRegistry"
                  method:@"runApplication"
                    args:@[moduleName, appParameters]
@@ -237,20 +313,23 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)setSizeFlexibility:(RCTRootViewSizeFlexibility)sizeFlexibility
 {
+  if (_sizeFlexibility == sizeFlexibility) {
+    return;
+  }
+
   _sizeFlexibility = sizeFlexibility;
-  [self layout];
+  [self setNeedsLayout];
+  _contentView.sizeFlexibility = _sizeFlexibility;
 }
 
-- (void)layout
+- (NSView *)hitTest:(CGPoint)point withEvent:(NSEvent *)event
 {
-  [super layout];
-  _contentView.frame = self.bounds;
-  // TODO: set center coordinates
-  //_loadingView.c = CGRectGetMidX(self.bounds);
-//  (CGPoint){
-//    CGRectGetMidX(self.bounds),
-//    CGRectGetMidY(self.bounds)
-//  };
+  // The root view itself should never receive touches
+  NSView *hitView = [super hitTest:point withEvent:event];
+  if (self.passThroughTouches && hitView == self) {
+    return nil;
+  }
+  return hitView;
 }
 
 - (void)setAppProperties:(NSDictionary *)appProperties
@@ -268,15 +347,18 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
-- (void)setIntrinsicSize:(CGSize)intrinsicSize
+- (void)setIntrinsicContentSize:(CGSize)intrinsicContentSize
 {
-  BOOL oldSizeHasAZeroDimension = _intrinsicSize.height == 0 || _intrinsicSize.width == 0;
-  BOOL newSizeHasAZeroDimension = intrinsicSize.height == 0 || intrinsicSize.width == 0;
+  BOOL oldSizeHasAZeroDimension = _intrinsicContentSize.height == 0 || _intrinsicContentSize.width == 0;
+  BOOL newSizeHasAZeroDimension = intrinsicContentSize.height == 0 || intrinsicContentSize.width == 0;
   BOOL bothSizesHaveAZeroDimension = oldSizeHasAZeroDimension && newSizeHasAZeroDimension;
 
-  BOOL sizesAreEqual = CGSizeEqualToSize(_intrinsicSize, intrinsicSize);
+  BOOL sizesAreEqual = CGSizeEqualToSize(_intrinsicContentSize, intrinsicContentSize);
 
-  _intrinsicSize = intrinsicSize;
+  _intrinsicContentSize = intrinsicContentSize;
+
+  [self invalidateIntrinsicContentSize];
+  [self.superview setNeedsLayout];
 
   // Don't notify the delegate if the content remains invisible or its size has not changed
   if (bothSizesHaveAZeroDimension || sizesAreEqual) {
@@ -284,6 +366,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 
   [_delegate rootViewDidChangeIntrinsicSize:self];
+}
+
+- (CGSize)intrinsicContentSize
+{
+  return _intrinsicContentSize;
 }
 
 - (void)contentViewInvalidated
@@ -306,6 +393,16 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 @end
 
+@implementation RCTRootView (Deprecated)
+
+- (CGSize)intrinsicSize
+{
+  RCTLogWarn(@"Calling deprecated `[-RCTRootView intrinsicSize]`.");
+  return self.intrinsicContentSize;
+}
+
+@end
+
 @implementation RCTUIManager (RCTRootView)
 
 - (NSNumber *)allocateRootTag
@@ -313,104 +410,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   NSNumber *rootTag = objc_getAssociatedObject(self, _cmd) ?: @1;
   objc_setAssociatedObject(self, _cmd, @(rootTag.integerValue + 10), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
   return rootTag;
-}
-
-@end
-
-@implementation RCTRootContentView
-{
-  __weak RCTBridge *_bridge;
-  RCTTouchHandler *_touchHandler;
-  NSColor *_backgroundColor;
-  CFTimeInterval _lastResizingAt;
-}
-
-- (instancetype)initWithFrame:(CGRect)frame
-                       bridge:(RCTBridge *)bridge
-                     reactTag:(NSNumber *)reactTag
-               sizeFlexiblity:(RCTRootViewSizeFlexibility)sizeFlexibility
-{
-  if ((self = [super initWithFrame:frame])) {
-    _bridge = bridge;
-    _lastResizingAt = CACurrentMediaTime();
-    self.reactTag = reactTag;
-    _touchHandler = [[RCTTouchHandler alloc] initWithBridge:_bridge];
-    [self addGestureRecognizer:_touchHandler];
-    [_bridge.uiManager registerRootView:self withSizeFlexibility:sizeFlexibility];
-    self.layer.backgroundColor = NULL;
-  }
-  return self;
-}
-
-
-RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame:(CGRect)frame)
-RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
-
-- (void)insertReactSubview:(NSView *)subview atIndex:(NSInteger)atIndex
-{
-  [super insertReactSubview:subview atIndex:atIndex];
-  [_bridge.performanceLogger markStopForTag:RCTPLTTI];
-  dispatch_async(dispatch_get_main_queue(), ^{
-    if (!self->_contentHasAppeared) {
-      self->_contentHasAppeared = YES;
-      [[NSNotificationCenter defaultCenter] postNotificationName:RCTContentDidAppearNotification
-                                                          object:self.superview];
-    }
-  });
-}
-
-
-- (void)viewDidMoveToWindow {
-  NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:NSZeroRect
-                                                              options:NSTrackingActiveInActiveApp | NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved | NSTrackingInVisibleRect
-                                                                owner:self
-                                                             userInfo:nil];
-
-  [self addTrackingArea:trackingArea];
-}
-
-- (void)mouseMoved:(NSEvent *)theEvent
-{
-  [((RCTTouchHandler *)self.gestureRecognizers.firstObject) mouseMoved:theEvent];
-}
-
-- (void)viewDidEndLiveResize
-{
-  [super viewDidEndLiveResize];
-  [_bridge.uiManager setFrame:self.frame forView:self];
-}
-
-- (void)setFrame:(CGRect)frame
-{
-  super.frame = frame;
-  if (self.reactTag && _bridge.isValid) {
-    if (!self.inLiveResize || (self.inLiveResize && (CACurrentMediaTime() - _lastResizingAt) > 0.005)) {
-      [_bridge.uiManager setFrame:frame forView:self];
-      _lastResizingAt = CACurrentMediaTime();
-    }
-  }
-}
-
-- (void)setBackgroundColor:(NSColor *)backgroundColor
-{
-  _backgroundColor = backgroundColor;
-  if (self.reactTag && _bridge.isValid) {
-      [_bridge.uiManager setBackgroundColor:backgroundColor forView:self];
-  }
-}
-
-- (NSColor *)backgroundColor
-{
-  return _backgroundColor;
-}
-
-- (void)invalidate
-{
-    [(RCTRootView *)self.superview contentViewInvalidated];
-    [_bridge enqueueJSCall:@"AppRegistry"
-                    method:@"unmountApplicationComponentAtRootTag"
-                      args:@[self.reactTag]
-                completion:NULL];
 }
 
 @end

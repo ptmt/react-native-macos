@@ -12,11 +12,10 @@
 'use strict';
 
 var React = require('React');
-var ReactNative = require('react/lib/ReactNative');
-var ReactElement = require('react/lib/ReactElement');
-var ReactPropTypes = require('react/lib/ReactPropTypes');
+var PropTypes = require('prop-types');
+var ReactNative = require('ReactNative');
 var UIManager = require('UIManager');
-var View = require('View');
+var ViewPropTypes = require('ViewPropTypes');
 
 var dismissKeyboard = require('dismissKeyboard');
 var requireNativeComponent = require('requireNativeComponent');
@@ -26,9 +25,9 @@ var VIEWPAGER_REF = 'viewPager';
 type Event = Object;
 
 export type ViewPagerScrollState = $Enum<{
-  idle: string;
-  dragging: string;
-  settling: string;
+  idle: string,
+  dragging: string,
+  settling: string,
 }>;
 
 /**
@@ -81,12 +80,12 @@ class ViewPagerAndroid extends React.Component {
   };
 
   static propTypes = {
-    ...View.propTypes,
+    ...ViewPropTypes,
     /**
      * Index of initial page that should be selected. Use `setPage` method to
      * update the page, and `onPageSelected` to monitor page changes
      */
-    initialPage: ReactPropTypes.number,
+    initialPage: PropTypes.number,
 
     /**
      * Executed when transitioning between pages (ether because of animation for
@@ -97,7 +96,7 @@ class ViewPagerAndroid extends React.Component {
      *    Value x means that (1 - x) fraction of the page at "position" index is
      *    visible, and x fraction of the next page is visible.
      */
-    onPageScroll: ReactPropTypes.func,
+    onPageScroll: PropTypes.func,
 
     /**
      * Function called when the page scrolling state has changed.
@@ -107,7 +106,7 @@ class ViewPagerAndroid extends React.Component {
      * - settling, meaning that there was an interaction with the page scroller, and the
      *   page scroller is now finishing it's closing or opening animation
      */
-    onPageScrollStateChanged: ReactPropTypes.func,
+    onPageScrollStateChanged: PropTypes.func,
 
     /**
      * This callback will be called once ViewPager finish navigating to selected page
@@ -115,20 +114,20 @@ class ViewPagerAndroid extends React.Component {
      * callback will have following fields:
      *  - position - index of page that has been selected
      */
-    onPageSelected: ReactPropTypes.func,
+    onPageSelected: PropTypes.func,
 
     /**
      * Blank space to show between pages. This is only visible while scrolling, pages are still
      * edge-to-edge.
      */
-    pageMargin: ReactPropTypes.number,
+    pageMargin: PropTypes.number,
 
     /**
      * Determines whether the keyboard gets dismissed in response to a drag.
      *   - 'none' (the default), drags do not dismiss the keyboard.
      *   - 'on-drag', the keyboard is dismissed when a drag begins.
      */
-    keyboardDismissMode: ReactPropTypes.oneOf([
+    keyboardDismissMode: PropTypes.oneOf([
       'none', // default
       'on-drag',
     ]),
@@ -137,11 +136,11 @@ class ViewPagerAndroid extends React.Component {
     * When false, the content does not scroll.
     * The default value is true.
     */
-    scrollEnabled: ReactPropTypes.bool,
+    scrollEnabled: PropTypes.bool,
   };
 
   componentDidMount() {
-    if (this.props.initialPage) {
+    if (this.props.initialPage != null) {
       this.setPageWithoutAnimation(this.props.initialPage);
     }
   }
@@ -177,7 +176,7 @@ class ViewPagerAndroid extends React.Component {
           (child.type.displayName !== 'View')) {
         console.warn('Each ViewPager child must be a <View>. Was ' + child.type.displayName);
       }
-      return ReactElement.createElement(child.type, newProps);
+      return React.createElement(child.type, newProps);
     });
   };
 
