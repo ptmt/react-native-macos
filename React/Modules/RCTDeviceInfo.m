@@ -8,6 +8,7 @@
  */
 
 #import "RCTDeviceInfo.h"
+#import <AppKit/AppKit.h>
 
 #import "RCTAccessibilityManager.h"
 #import "RCTAssert.h"
@@ -15,9 +16,6 @@
 #import "RCTUtils.h"
 
 @implementation RCTDeviceInfo {
-#if !TARGET_OS_TV
-  UIInterfaceOrientation _currentInterfaceOrientation;
-#endif
 }
 
 @synthesize bridge = _bridge;
@@ -32,19 +30,6 @@ RCT_EXPORT_MODULE()
 - (void)setBridge:(RCTBridge *)bridge
 {
   _bridge = bridge;
-
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(didReceiveNewContentSizeMultiplier)
-                                               name:RCTAccessibilityManagerDidUpdateMultiplierNotification
-                                             object:_bridge.accessibilityManager];
-#if !TARGET_OS_TV
-  _currentInterfaceOrientation = [RCTSharedApplication() statusBarOrientation];
-
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(interfaceOrientationDidChange)
-                                               name:UIApplicationDidChangeStatusBarOrientationNotification
-                                             object:nil];
-#endif
 }
 
 static NSDictionary *RCTExportedDimensions(RCTBridge *bridge)
@@ -52,7 +37,7 @@ static NSDictionary *RCTExportedDimensions(RCTBridge *bridge)
   RCTAssertMainQueue();
 
   // Don't use RCTScreenSize since it the interface orientation doesn't apply to it
-  CGRect screenSize = [[UIScreen mainScreen] bounds];
+  CGRect screenSize = [[NSScreen mainScreen] frame];
   NSDictionary *dims = @{
                          @"width": @(screenSize.size.width),
                          @"height": @(screenSize.size.height),
@@ -89,28 +74,5 @@ static NSDictionary *RCTExportedDimensions(RCTBridge *bridge)
                                               body:RCTExportedDimensions(_bridge)];
 #pragma clang diagnostic pop
 }
-
-
-- (void)interfaceOrientationDidChange
-{
-#if !TARGET_OS_TV
-  UIInterfaceOrientation nextOrientation = [RCTSharedApplication() statusBarOrientation];
-
-  // Update when we go from portrait to landscape, or landscape to portrait
-  if ((UIInterfaceOrientationIsPortrait(_currentInterfaceOrientation) &&
-       !UIInterfaceOrientationIsPortrait(nextOrientation)) ||
-      (UIInterfaceOrientationIsLandscape(_currentInterfaceOrientation) &&
-       !UIInterfaceOrientationIsLandscape(nextOrientation))) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        [_bridge.eventDispatcher sendDeviceEventWithName:@"didUpdateDimensions"
-                                                    body:RCTExportedDimensions(_bridge)];
-#pragma clang diagnostic pop
-      }
-
-  _currentInterfaceOrientation = nextOrientation;
-#endif
-}
-
 
 @end

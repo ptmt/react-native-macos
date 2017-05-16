@@ -20,6 +20,7 @@
 #import <React/RCTJavaScriptLoader.h>
 #import <React/RCTLinkingManager.h>
 #import <React/RCTRootView.h>
+#import <React/RCTEventDispatcher.h>
 
 @interface AppDelegate() <RCTBridgeDelegate, NSSearchFieldDelegate>
 
@@ -80,7 +81,7 @@
 
 - (void)setDefaultURL
 {
-  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"Examples/UIExplorer/js/UIExplorerApp.ios"
+  _sourceURL = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"Examples/UIExplorer/js/UIExplorerApp.ios"
                                                         fallbackResource:nil];
 }
 

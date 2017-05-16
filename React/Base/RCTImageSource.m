@@ -49,7 +49,7 @@
 - (NSString *)description
 {
   return [NSString stringWithFormat:@"<RCTImageSource: %p URL=%@, size=%@, scale=%0.f>",
-          self, _request.URL, NSStringFromCGSize(_size), _scale];
+          self, _request.URL, NSStringFromSize(_size), _scale];
 }
 
 @end

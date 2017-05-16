@@ -13,11 +13,9 @@
 #import <React/RCTFont.h>
 #import <React/RCTShadowView.h>
 
-#import "RCTConvert+Text.h"
 #import "RCTShadowTextField.h"
 #import "RCTTextField.h"
 #import "RCTSecureTextField.h"
-#import "RCTFont.h"
 
 @implementation RCTConvert(RCTTextField)
 

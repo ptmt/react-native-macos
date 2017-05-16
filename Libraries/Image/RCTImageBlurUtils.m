@@ -9,7 +9,7 @@
 
 #import "RCTImageBlurUtils.h"
 #import "RCTImageUtils.h"
-#import "UIImageUtils.h"
+#import "React/UIImageUtils.h"
 
 NSImage *RCTBlurredImageWithRadius(NSImage *inputImage, CGFloat radius)
 {

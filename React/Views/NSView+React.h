@@ -28,7 +28,7 @@
  * Internally backed to `semanticContentAttribute` property.
  * Defaults to `LeftToRight` in case of ambiguity.
  */
-@property (nonatomic, assign) UIUserInterfaceLayoutDirection reactLayoutDirection;
+@property (nonatomic, assign) NSUserInterfaceLayoutDirection reactLayoutDirection;
 
 /**
  * z-index, used to override sibling order in didUpdateReactSubviews.

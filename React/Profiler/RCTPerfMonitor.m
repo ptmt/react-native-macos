@@ -25,6 +25,7 @@
 #import "RCTUIManager.h"
 #import "RCTBridge+Private.h"
 #import "RCTUtils.h"
+#import "RCTDisplayLink.h"
 
 #if __has_include("RCTDevMenu.h")
 #import "RCTDevMenu.h"
@@ -77,17 +78,15 @@ static vm_size_t RCTGetResidentMemorySize(void)
   return info.resident_size;
 }
 
-@interface RCTPerfMonitor : NSObject <RCTBridgeModule, RCTInvalidating, UITableViewDataSource, UITableViewDelegate>
+@interface RCTPerfMonitor : NSObject <RCTBridgeModule, RCTInvalidating, NSTableViewDataSource, NSTableViewDelegate>
 
-#if __has_include("RCTDevMenu.h")
 @property (nonatomic, strong, readonly) RCTDevMenuItem *devMenuItem;
-#endif
-@property (nonatomic, strong, readonly) UIPanGestureRecognizer *gestureRecognizer;
-@property (nonatomic, strong, readonly) UIView *container;
-@property (nonatomic, strong, readonly) UILabel *memory;
-@property (nonatomic, strong, readonly) UILabel *heap;
-@property (nonatomic, strong, readonly) UILabel *views;
-@property (nonatomic, strong, readonly) UITableView *metrics;
+@property (nonatomic, strong, readonly) NSView *container;
+@property (nonatomic, strong, readonly) NSTextField *memory;
+@property (nonatomic, strong, readonly) NSTextField *heap;
+@property (nonatomic, strong, readonly) NSTextField *views;
+@property (nonatomic, strong, readonly) NSTextField *layers;
+@property (nonatomic, strong, readonly) NSTableView *metrics;
 @property (nonatomic, strong, readonly) RCTFPSGraph *jsGraph;
 @property (nonatomic, strong, readonly) RCTFPSGraph *uiGraph;
 @property (nonatomic, strong, readonly) NSTextField *jsGraphLabel;
@@ -98,6 +97,7 @@ static vm_size_t RCTGetResidentMemorySize(void)
 @implementation RCTPerfMonitor {
 #if __has_include("RCTDevMenu.h")
   RCTDevMenuItem *_devMenuItem;
+#endif
   NSWindow *_window;
   NSView *_container;
   NSTextField *_memory;
@@ -335,9 +335,6 @@ RCT_EXPORT_MODULE()
 
   [self updateStats];
 
-  UIWindow *window = RCTSharedApplication().delegate.window;
-  [window addSubview:self.container];
-
   NSRect frame = NSMakeRect(100, 100, self.container.frame.size.width, self.container.frame.size.height + 30);
 
   _window = [[NSWindow alloc] initWithContentRect:frame
@@ -359,27 +356,17 @@ RCT_EXPORT_MODULE()
               userInfo:nil
               repeats:YES];
   [[NSRunLoop mainRunLoop] addTimer:_uiTimer forMode:NSRunLoopCommonModes];
-
-  id<RCTJavaScriptExecutor> executor = [_bridge valueForKey:@"javaScriptExecutor"];
-  if ([executor isKindOfClass:[RCTJSCExecutor class]]) {
-    self.container.frame = (CGRect) {
-      self.container.frame.origin, {
-        self.container.frame.size.width + 44,
-        self.container.frame.size.height
-      }
-    };
-    [self.container addSubview:self.jsGraph];
-    [self.container addSubview:self.jsGraphLabel];
-    [executor executeBlockOnJavaScriptQueue:^{
-      _jsTimer = [NSTimer
-                  timerWithTimeInterval:RCT_TIME_PER_FRAME
-                  target:self
-                  selector:@selector(threadUpdate:)
-                  userInfo:nil
-                  repeats:YES];
-      [[NSRunLoop mainRunLoop] addTimer:_jsTimer forMode:NSRunLoopCommonModes];
-    }];
-  }
+  
+  
+  [_bridge dispatchBlock:^{
+    _jsTimer = [NSTimer
+                timerWithTimeInterval:RCT_TIME_PER_FRAME
+                target:self
+                selector:@selector(threadUpdate:)
+                userInfo:nil
+                repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:_jsTimer forMode:NSRunLoopCommonModes];
+  } queue:RCTJSThread];
 }
 
 - (void)hide

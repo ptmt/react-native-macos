@@ -9,37 +9,37 @@
 
 #import "RCTPlatform.h"
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTUtils.h"
 
 @implementation RCTPlatform
 
-static NSString *interfaceIdiom(UIUserInterfaceIdiom idiom) {
-  switch(idiom) {
-    case UIUserInterfaceIdiomPhone:
-      return @"phone";
-    case UIUserInterfaceIdiomPad:
-      return @"pad";
-    case UIUserInterfaceIdiomTV:
-      return @"tv";
-    case UIUserInterfaceIdiomCarPlay:
-      return @"carplay";
-    default:
-      return @"unknown";
-  }
-}
+//static NSString *interfaceIdiom(UIUserInterfaceIdiom idiom) {
+//  switch(idiom) {
+//    case UIUserInterfaceIdiomPhone:
+//      return @"phone";
+//    case UIUserInterfaceIdiomPad:
+//      return @"pad";
+//    case UIUserInterfaceIdiomTV:
+//      return @"tv";
+//    case UIUserInterfaceIdiomCarPlay:
+//      return @"carplay";
+//    default:
+//      return @"unknown";
+//  }
+//}
 
 RCT_EXPORT_MODULE(PlatformConstants)
 
 - (NSDictionary<NSString *, id> *)constantsToExport
 {
-  UIDevice *device = [UIDevice currentDevice];
+
   return @{
     @"forceTouchAvailable": @(RCTForceTouchAvailable()),
-    @"osVersion": [device systemVersion],
-    @"systemName": [device systemName],
-    @"interfaceIdiom": interfaceIdiom([device userInterfaceIdiom]),
+    @"osVersion": [[NSProcessInfo processInfo] operatingSystemVersionString],
+    @"systemName": [[NSProcessInfo processInfo] operatingSystemVersionString],
+    @"interfaceIdiom": @"macos",
     @"isTesting": @(RCTRunningInTestEnvironment()),
   };
 }

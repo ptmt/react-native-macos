@@ -262,7 +262,7 @@ willPerformClientRedirectToURL:(NSURL *)URL
   }
 
   // JS Navigation handler
-  return !isJSNavigation;
+  return request;
 }
 - (void)webView:(__unused WebView *)sender didFailLoadWithError:(NSError *)error
        forFrame:(__unused WebFrame *)frame

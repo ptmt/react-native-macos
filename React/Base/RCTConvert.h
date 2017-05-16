@@ -67,7 +67,7 @@ typedef NSURL RCTFileURL;
 + (CGPoint)CGPoint:(id)json;
 + (CGSize)CGSize:(id)json;
 + (CGRect)CGRect:(id)json;
-+ (UIEdgeInsets)UIEdgeInsets:(id)json;
++ (NSEdgeInsets)NSEdgeInsets:(id)json;
 
 + (CGLineCap)CGLineCap:(id)json;
 + (CGLineJoin)CGLineJoin:(id)json;

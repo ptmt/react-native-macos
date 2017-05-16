@@ -27,8 +27,6 @@
 #import "RCTTVView.h"
 #endif
 
-@implementation RCTConvert(UIAccessibilityTraits)
-
 @implementation RCTViewManager
 
 @synthesize bridge = _bridge;
@@ -176,6 +174,7 @@ RCT_CUSTOM_VIEW_PROPERTY(pointerEvents, RCTPointerEvents, RCTView)
     view.pointerEvents = json ? [RCTConvert RCTPointerEvents:json] : defaultView.pointerEvents;
     return;
   }
+}
 
 
 RCT_CUSTOM_VIEW_PROPERTY(removeClippedSubviews, BOOL, RCTView)
@@ -265,7 +264,7 @@ RCT_EXPORT_SHADOW_PROPERTY(backgroundColor, NSColor)
 RCT_EXPORT_SHADOW_PROPERTY(top, YGValue)
 RCT_EXPORT_SHADOW_PROPERTY(right, YGValue)
 RCT_EXPORT_SHADOW_PROPERTY(bottom, YGValue)
-RCT_EXPORT_SHADOW_PROPERTY(left, YGValue);
+RCT_EXPORT_SHADOW_PROPERTY(left, YGValue)
 
 RCT_EXPORT_SHADOW_PROPERTY(width, YGValue)
 RCT_EXPORT_SHADOW_PROPERTY(height, YGValue)
@@ -319,3 +318,4 @@ RCT_EXPORT_SHADOW_PROPERTY(zIndex, NSInteger)
 RCT_EXPORT_SHADOW_PROPERTY(direction, YGDirection)
 
 @end
+

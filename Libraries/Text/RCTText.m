@@ -9,10 +9,11 @@
 
 #import "RCTText.h"
 
-#import <MobileCoreServices/UTCoreTypes.h>
+#import <QuartzCore/QuartzCore.h>
+// #import <MobileCoreServices/UTCoreTypes.h>
 
 #import <React/RCTUtils.h>
-#import <React/UIView+React.h>
+#import <React/NSView+React.h>
 
 #import "RCTShadowText.h"
 
@@ -96,18 +97,12 @@ static void collectNonTextDescendants(RCTText *view, NSMutableArray *nonTextDesc
 {
   NSTextStorage *_textStorage;
   CAShapeLayer *_highlightLayer;
-  UILongPressGestureRecognizer *_longPressGestureRecognizer;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if ((self = [super initWithFrame:frame])) {
     _textStorage = [NSTextStorage new];
-    self.isAccessibilityElement = YES;
-    self.accessibilityTraits |= UIAccessibilityTraitStaticText;
-
-    self.opaque = NO;
-    self.contentMode = UIViewContentModeRedraw;
   }
   return self;
 }
@@ -275,32 +270,11 @@ static void collectNonTextDescendants(RCTText *view, NSMutableArray *nonTextDesc
 
 - (void)enableContextMenu
 {
-  _longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-  [self addGestureRecognizer:_longPressGestureRecognizer];
+  
 }
 
 - (void)disableContextMenu
 {
-  [self removeGestureRecognizer:_longPressGestureRecognizer];
-  _longPressGestureRecognizer = nil;
-}
-
-- (void)handleLongPress:(UILongPressGestureRecognizer *)gesture
-{
-#if !TARGET_OS_TV
-  UIMenuController *menuController = [UIMenuController sharedMenuController];
-
-  if (menuController.isMenuVisible) {
-    return;
-  }
-
-  if (!self.isFirstResponder) {
-    [self becomeFirstResponder];
-  }
-
-  [menuController setTargetRect:self.bounds inView:self];
-  [menuController setMenuVisible:YES animated:YES];
-#endif
 }
 
 - (BOOL)canBecomeFirstResponder
@@ -308,35 +282,19 @@ static void collectNonTextDescendants(RCTText *view, NSMutableArray *nonTextDesc
   return _selectable;
 }
 
-- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
-{
-  if (_selectable && action == @selector(copy:)) {
-    return YES;
-  }
-  
-  return [self.nextResponder canPerformAction:action withSender:sender];
-}
+//- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
+//{
+//  if (_selectable && action == @selector(copy:)) {
+//    return YES;
+//  }
+//  
+//  return [self.nextResponder canPerformAction:action withSender:sender];
+//}
 
 - (void)copy:(id)sender
 {
 #if !TARGET_OS_TV
-  NSAttributedString *attributedString = _textStorage;
-
-  NSMutableDictionary *item = [NSMutableDictionary new];
-
-  NSData *rtf = [attributedString dataFromRange:NSMakeRange(0, attributedString.length)
-                             documentAttributes:@{NSDocumentTypeDocumentAttribute: NSRTFDTextDocumentType}
-                                          error:nil];
-
-  if (rtf) {
-    [item setObject:rtf forKey:(id)kUTTypeFlatRTFD];
-  }
-
-  [item setObject:attributedString.string forKey:(id)kUTTypeUTF8PlainText];
-
-  UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-  pasteboard.items = @[item];
-#endif
+  #endif
 }
 
 @end

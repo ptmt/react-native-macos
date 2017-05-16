@@ -342,7 +342,7 @@ static void RCTProcessMetaPropsBorder(const YGValue metaProps[META_PROP_COUNT], 
       _borderMetaProps[ii] = YGValueUndefined;
     }
 
-    _intrinsicContentSize = CGSizeMake(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric);
+    _intrinsicContentSize = CGSizeMake(NSViewNoIntrinsicMetric, NSViewNoIntrinsicMetric);
 
     _newView = YES;
     _propagationLifecycle = RCTUpdateLifecycleUninitialized;
@@ -483,10 +483,10 @@ static void RCTProcessMetaPropsBorder(const YGValue metaProps[META_PROP_COUNT], 
 
 // Layout Direction
 
-- (UIUserInterfaceLayoutDirection)effectiveLayoutDirection {
+- (NSUserInterfaceLayoutDirection)effectiveLayoutDirection {
   // Even if `YGNodeLayoutGetDirection` can return `YGDirectionInherit` here, it actually means
   // that Yoga will use LTR layout for the view (even if layout process is not finished yet).
-  return YGNodeLayoutGetDirection(_yogaNode) == YGDirectionRTL ? UIUserInterfaceLayoutDirectionRightToLeft : UIUserInterfaceLayoutDirectionLeftToRight;
+  return YGNodeLayoutGetDirection(_yogaNode) == YGDirectionRTL ? NSUserInterfaceLayoutDirectionRightToLeft : NSUserInterfaceLayoutDirectionLeftToRight;
 }
 
 // Margin
@@ -675,7 +675,7 @@ static inline YGSize RCTShadowViewMeasure(YGNodeRef node, float width, YGMeasure
 
   _intrinsicContentSize = intrinsicContentSize;
 
-  if (CGSizeEqualToSize(_intrinsicContentSize, CGSizeMake(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric))) {
+  if (CGSizeEqualToSize(_intrinsicContentSize, CGSizeMake(NSViewNoIntrinsicMetric, NSViewNoIntrinsicMetric))) {
     YGNodeSetMeasureFunc(_yogaNode, NULL);
   } else {
     YGNodeSetMeasureFunc(_yogaNode, RCTShadowViewMeasure);

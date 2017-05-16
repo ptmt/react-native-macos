@@ -15,11 +15,11 @@
 #import "RCTRootViewInternal.h"
 #import "RCTTouchHandler.h"
 #import "RCTUIManager.h"
-#import "UIView+React.h"
+#import "NSView+React.h"
 
 @implementation RCTRootContentView
 {
-  UIColor *_backgroundColor;
+  NSColor *_backgroundColor;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -42,15 +42,15 @@
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame:(CGRect)frame)
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
 
-- (void)layoutSubviews
+- (void)layout
 {
-  [super layoutSubviews];
+  [super layout];
   [self updateAvailableSize];
 }
 
-- (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)atIndex
+- (void)addSubview:(NSView *)subview
 {
-  [super insertReactSubview:subview atIndex:atIndex];
+  [super addSubview:subview];
   [_bridge.performanceLogger markStopForTag:RCTPLTTI];
   dispatch_async(dispatch_get_main_queue(), ^{
     if (!self->_contentHasAppeared) {
@@ -68,7 +68,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
   }
 
   _sizeFlexibility = sizeFlexibility;
-  [self setNeedsLayout];
+  [self setNeedsLayout: YES];
 }
 
 - (CGSize)availableSize
@@ -89,7 +89,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
   [_bridge.uiManager setAvailableSize:self.availableSize forRootView:self];
 }
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
+- (void)setBackgroundColor:(NSColor *)backgroundColor
 {
   _backgroundColor = backgroundColor;
   if (self.reactTag && _bridge.isValid) {
@@ -97,31 +97,32 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
   }
 }
 
-- (UIColor *)backgroundColor
+- (NSColor *)backgroundColor
 {
   return _backgroundColor;
 }
 
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+- (NSView *)hitTest:(CGPoint)point withEvent:(NSEvent *)event
 {
   // The root content view itself should never receive touches
-  UIView *hitView = [super hitTest:point withEvent:event];
-  if (_passThroughTouches && hitView == self) {
-    return nil;
-  }
-  return hitView;
+//  NSView *hitView = [super hitTest:point withEvent:event];
+//  if (_passThroughTouches && hitView == self) {
+//    return nil;
+//  }
+//  return hitView;
+  return nil;
 }
 
 - (void)invalidate
 {
-  if (self.userInteractionEnabled) {
-    self.userInteractionEnabled = NO;
+  //if (self.userInteractionEnabled) {
+    // self.userInteractionEnabled = NO;
     [(RCTRootView *)self.superview contentViewInvalidated];
     [_bridge enqueueJSCall:@"AppRegistry"
                     method:@"unmountApplicationComponentAtRootTag"
                       args:@[self.reactTag]
                 completion:NULL];
-  }
+  //}
 }
 
 @end

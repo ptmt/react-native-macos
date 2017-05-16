@@ -15,6 +15,7 @@
 
 #import <React/RCTLog.h>
 #import <React/RCTUtils.h>
+#import "React/UIImageUtils.h"
 
 static CGFloat RCTCeilValue(CGFloat value, CGFloat scale)
 {

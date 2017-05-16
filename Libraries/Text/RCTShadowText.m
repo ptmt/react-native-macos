@@ -37,7 +37,7 @@ CGFloat const RCTTextAutoSizeGranularity                   = 0.001f;
   CGFloat _cachedTextStorageWidthMode;
   NSAttributedString *_cachedAttributedString;
   CGFloat _effectiveLetterSpacing;
-  UIUserInterfaceLayoutDirection _cachedEffectiveLayoutDirection;
+  NSUserInterfaceLayoutDirection _cachedEffectiveLayoutDirection;
 }
 
 static YGSize RCTMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, float height, YGMeasureMode heightMode)
@@ -71,7 +71,7 @@ static YGSize RCTMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, f
     _fontSizeMultiplier = 1.0;
     _textAlign = NSTextAlignmentNatural;
     _writingDirection = NSWritingDirectionNatural;
-    _cachedEffectiveLayoutDirection = UIUserInterfaceLayoutDirectionLeftToRight;
+    _cachedEffectiveLayoutDirection = NSUserInterfaceLayoutDirectionLeftToRight;
 
     YGNodeSetMeasureFunc(self.yogaNode, RCTMeasure);
 
@@ -123,7 +123,7 @@ static YGSize RCTMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, f
   NSTextStorage *textStorage = [self buildTextStorageForWidth:width widthMode:YGMeasureModeExactly];
   CGRect textFrame = [self calculateTextFrame:textStorage];
   BOOL selectable = _selectable;
-  [applierBlocks addObject:^(NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+  [applierBlocks addObject:^(NSDictionary<NSNumber *, NSView *> *viewRegistry) {
     RCTText *view = (RCTText *)viewRegistry[self.reactTag];
     view.textFrame = textFrame;
     view.textStorage = textStorage;
@@ -359,9 +359,9 @@ static YGSize RCTMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, f
   [self _addAttribute:NSFontAttributeName withValue:font toAttributedString:attributedString];
   [self _addAttribute:NSKernAttributeName withValue:letterSpacing toAttributedString:attributedString];
   [self _addAttribute:RCTReactTagAttributeName withValue:self.reactTag toAttributedString:attributedString];
-  [self _setParagraphStyleOnAttributedString:attributedString
-                              fontLineHeight:font.lineHeight
-                      heightOfTallestSubview:heightOfTallestSubview];
+//  [self _setParagraphStyleOnAttributedString:attributedString
+//                              fontLineHeight:[NSLayoutManager defaultLineHeightForFont: font]
+//                      heightOfTallestSubview:heightOfTallestSubview];
 
   // create a non-mutable attributedString for use by the Text system which avoids copies down the line
   _cachedAttributedString = [[NSAttributedString alloc] initWithAttributedString:attributedString];
@@ -417,7 +417,7 @@ static YGSize RCTMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, f
   // Text alignment
   NSTextAlignment textAlign = _textAlign;
   if (textAlign == NSTextAlignmentRight || textAlign == NSTextAlignmentLeft) {
-    if (_cachedEffectiveLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
+    if (_cachedEffectiveLayoutDirection == NSUserInterfaceLayoutDirectionRightToLeft) {
       if (textAlign == NSTextAlignmentRight) {
         textAlign = NSTextAlignmentLeft;
       } else {
@@ -552,13 +552,14 @@ static YGSize RCTMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, f
   [textStorage enumerateAttribute:NSFontAttributeName
                            inRange:glyphRange
                            options:0
-                        usingBlock:^(UIFont *font, NSRange range, BOOL *stop)
+                        usingBlock:^(NSFont *font, NSRange range, BOOL *stop)
    {
      if (font) {
-       UIFont *originalFont = [self.attributedString attribute:NSFontAttributeName
+       NSFont *originalFont = [self.attributedString attribute:NSFontAttributeName
                                                        atIndex:range.location
                                                 effectiveRange:&range];
-       UIFont *newFont = [font fontWithSize:originalFont.pointSize * scale];
+  
+       NSFont *newFont = [NSFont fontWithName: originalFont.fontName size:originalFont.pointSize * scale];
        [textStorage removeAttribute:NSFontAttributeName range:range];
        [textStorage addAttribute:NSFontAttributeName value:newFont range:range];
      }
@@ -620,7 +621,7 @@ static YGSize RCTMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, f
   return requiredSize;
 }
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
+- (void)setBackgroundColor:(NSColor *)backgroundColor
 {
   super.backgroundColor = backgroundColor;
   [self dirtyText];

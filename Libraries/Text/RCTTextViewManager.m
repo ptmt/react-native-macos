@@ -14,7 +14,6 @@
 #import <React/RCTFont.h>
 #import <React/RCTShadowView.h>
 
-#import "RCTConvert+Text.h"
 #import "RCTShadowTextView.h"
 #import "RCTTextView.h"
 
@@ -50,7 +49,6 @@ RCT_EXPORT_VIEW_PROPERTY(placeholder, NSString)
 RCT_EXPORT_VIEW_PROPERTY(placeholderTextColor, NSColor)
 RCT_REMAP_VIEW_PROPERTY(returnKeyType, textView.returnKeyType, UIReturnKeyType)
 RCT_REMAP_VIEW_PROPERTY(secureTextEntry, textView.secureTextEntry, BOOL)
-RCT_REMAP_VIEW_PROPERTY(selectionColor, tintColor, NSColor)
 RCT_EXPORT_VIEW_PROPERTY(selectTextOnFocus, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(selection, RCTTextSelection)
 RCT_EXPORT_VIEW_PROPERTY(text, NSString)

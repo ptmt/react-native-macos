@@ -7,58 +7,59 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+#import <Cocoa/Cocoa.h>
 #import "RCTUITextView.h"
 
-#import <React/UIView+React.h>
+#import <React/NSView+React.h>
+
+CGRect UIEdgeInsetsSizeRect(CGRect rect, CGSize insets) {
+//  rect.origin.x    += insets.left;
+ //  rect.origin.y    += insets.top;
+  rect.size.width  -= (insets.width);
+  rect.size.height -= (insets.height);
+  return rect;
+}
+
 
 @implementation RCTUITextView
 {
-  UILabel *_placeholderView;
-  UITextView *_detachedTextView;
+  NSTextField *_placeholderView;
+  NSTextView *_detachedTextView;
 }
 
-static UIFont *defaultPlaceholderFont()
+static NSFont *defaultPlaceholderFont()
 {
-  return [UIFont systemFontOfSize:17];
+  return [NSFont systemFontOfSize:17];
 }
 
-static UIColor *defaultPlaceholderTextColor()
+static NSColor *defaultPlaceholderTextColor()
 {
   // Default placeholder color from UITextField.
-  return [UIColor colorWithRed:0 green:0 blue:0.0980392 alpha:0.22];
+  return [NSColor colorWithRed:0 green:0 blue:0.0980392 alpha:0.22];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if (self = [super initWithFrame:frame]) {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(textDidChange)
-                                                 name:UITextViewTextDidChangeNotification
-                                               object:self];
-
-    _placeholderView = [[UILabel alloc] initWithFrame:self.bounds];
-    _placeholderView.isAccessibilityElement = NO;
-    _placeholderView.numberOfLines = 0;
+    _placeholderView = [[NSTextField alloc] initWithFrame:self.bounds];
+//    _placeholderView.isAccessibilityElement = NO;
+//    _placeholderView.numberOfLines = 0;
     [self addSubview:_placeholderView];
   }
 
   return self;
 }
 
-- (void)dealloc
-{
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
 
 #pragma mark - Properties
 
 - (void)setPlaceholderText:(NSString *)placeholderText
 {
   _placeholderText = placeholderText;
-  _placeholderView.text = _placeholderText;
+  _placeholderView.stringValue = _placeholderText;
 }
 
-- (void)setPlaceholderTextColor:(UIColor *)placeholderTextColor
+- (void)setPlaceholderTextColor:(NSColor *)placeholderTextColor
 {
   _placeholderTextColor = placeholderTextColor;
   _placeholderView.textColor = _placeholderTextColor ?: defaultPlaceholderTextColor();
@@ -72,27 +73,28 @@ static UIColor *defaultPlaceholderTextColor()
 
 #pragma mark - Overrides
 
-- (void)setFont:(UIFont *)font
+- (void)setFont:(NSFont *)font
 {
-  [super setFont:font];
+  // [super setFont:font];
+  [[super textStorage] setFont:font];
   _placeholderView.font = font ?: defaultPlaceholderFont();
 }
 
 - (void)setTextAlignment:(NSTextAlignment)textAlignment
 {
-  [super setTextAlignment:textAlignment];
-  _placeholderView.textAlignment = textAlignment;
+  // [super setTextAlignment:textAlignment];
+  // _placeholderView.textAlignment = textAlignment;
 }
 
 - (void)setText:(NSString *)text
 {
-  [super setText:text];
+  [self setString:text];
   [self textDidChange];
 }
 
 - (void)setAttributedText:(NSAttributedString *)attributedText
 {
-  [super setAttributedText:attributedText];
+  [self.textStorage setAttributedString:attributedText];
   [self textDidChange];
 }
 
@@ -106,16 +108,16 @@ static UIColor *defaultPlaceholderTextColor()
 {
   // Turning off scroll animation.
   // This fixes the problem also known as "flaky scrolling".
-  [super setContentOffset:contentOffset animated:NO];
+  // [super setContentOffset:contentOffset animated:NO];
 }
 
 #pragma mark - Layout
 
-- (void)layoutSubviews
+- (void)layout
 {
-  [super layoutSubviews];
+  [super layout];
 
-  CGRect textFrame = UIEdgeInsetsInsetRect(self.bounds, self.textContainerInset);
+  CGRect textFrame = UIEdgeInsetsSizeRect(self.bounds, self.textContainerInset);
   CGFloat placeholderHeight = [_placeholderView sizeThatFits:textFrame.size].height;
   textFrame.size.height = MIN(placeholderHeight, textFrame.size.height);
   _placeholderView.frame = textFrame;
@@ -123,34 +125,15 @@ static UIColor *defaultPlaceholderTextColor()
 
 - (CGSize)sizeThatFits:(CGSize)size
 {
-  // UITextView on iOS 8 has a bug that automatically scrolls to the top
-  // when calling `sizeThatFits:`. Use a copy so that self is not screwed up.
-  static BOOL useCustomImplementation = NO;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    useCustomImplementation = ![[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){9,0,0}];
-  });
-
-  if (!useCustomImplementation) {
-    return [super sizeThatFits:size];
-  }
-
-  if (!_detachedTextView) {
-    _detachedTextView = [UITextView new];
-  }
-
-  _detachedTextView.attributedText = self.attributedText;
-  _detachedTextView.font = self.font;
-  _detachedTextView.textContainerInset = self.textContainerInset;
-
-  return [_detachedTextView sizeThatFits:size];
+  NSRect rect = [super.layoutManager usedRectForTextContainer:super.textContainer];
+  return CGSizeMake(MIN(rect.size.width, size.width), rect.size.height);
 }
 
 #pragma mark - Placeholder
 
 - (void)invalidatePlaceholderVisibility
 {
-  BOOL isVisible = _placeholderText.length != 0 && self.text.length == 0;
+  BOOL isVisible = _placeholderText.length != 0 && self.string.length == 0;
   _placeholderView.hidden = !isVisible;
 }
 

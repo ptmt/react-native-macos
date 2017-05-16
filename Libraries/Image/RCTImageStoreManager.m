@@ -20,7 +20,7 @@
 
 #import "RCTImageUtils.h"
 
-#import "UIImageUtils.h"
+#import "React/UIImageUtils.h"
 
 static NSString *const RCTImageStoreURLScheme = @"rct-image-store";
 

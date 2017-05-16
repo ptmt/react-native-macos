@@ -14,7 +14,7 @@
 #import <React/RCTDefines.h>
 #import <React/RCTEventDispatcher.h>
 #import <React/RCTLog.h>
-#import <React/UIView+React.h>
+#import <React/NSView+React.h>
 
 @class RCTBridge;
 @class RCTShadowView;

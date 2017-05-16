@@ -63,7 +63,6 @@ RCT_EXPORT_MODULE();
     [_resizableRootView setSizeFlexibility:RCTRootViewSizeFlexibilityHeight];
 
     _currentSizeTextView = [NSTextView new];
-#ifndef TARGET_OS_TV
     _currentSizeTextView.editable = NO;
     [_currentSizeTextView setString:@"Resizable view has not been resized yet"];
     _currentSizeTextView.textColor = [NSColor blackColor];

@@ -34,12 +34,11 @@
 		59F60E921E661BDD0081153B /* RCTShadowTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 59F60E8E1E661BDD0081153B /* RCTShadowTextField.m */; };
 		59F60E931E661BDD0081153B /* RCTShadowTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59F60E901E661BDD0081153B /* RCTShadowTextView.m */; };
 		59F60E941E661BDD0081153B /* RCTShadowTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59F60E901E661BDD0081153B /* RCTShadowTextView.m */; };
-		AF3225F91DE5574F00D3E7E7 /* RCTConvert+Text.m in Sources */ = {isa = PBXBuildFile; fileRef = AF3225F81DE5574F00D3E7E7 /* RCTConvert+Text.m */; };
-		AF3225FA1DE5574F00D3E7E7 /* RCTConvert+Text.m in Sources */ = {isa = PBXBuildFile; fileRef = AF3225F81DE5574F00D3E7E7 /* RCTConvert+Text.m */; };
+		D44BE2881EC9F0EA007E8CF4 /* RCTSecureTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D44BE2871EC9F0EA007E8CF4 /* RCTSecureTextField.m */; };
+		D44BE2891EC9F4B3007E8CF4 /* RCTSecureTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D44BE2871EC9F0EA007E8CF4 /* RCTSecureTextField.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		03EB62841BE7A5C300103EB0 /* RCTSecureTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTSecureTextField.h; sourceTree = "<group>"; };
 		03EB62851BE7A5C300103EB0 /* RCTSecureTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTSecureTextField.m; sourceTree = "<group>"; };
 		131B6ABC1AF0CD0600FFC3E0 /* RCTTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTTextView.h; sourceTree = "<group>"; };
 		131B6ABD1AF0CD0600FFC3E0 /* RCTTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTTextView.m; sourceTree = "<group>"; };
@@ -69,8 +68,8 @@
 		59F60E8E1E661BDD0081153B /* RCTShadowTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTShadowTextField.m; sourceTree = "<group>"; };
 		59F60E8F1E661BDD0081153B /* RCTShadowTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTShadowTextView.h; sourceTree = "<group>"; };
 		59F60E901E661BDD0081153B /* RCTShadowTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTShadowTextView.m; sourceTree = "<group>"; };
-		AF3225F71DE5574F00D3E7E7 /* RCTConvert+Text.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+Text.h"; sourceTree = "<group>"; };
-		AF3225F81DE5574F00D3E7E7 /* RCTConvert+Text.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+Text.m"; sourceTree = "<group>"; };
+		D44BE2861EC9F0EA007E8CF4 /* RCTSecureTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTSecureTextField.h; sourceTree = "<group>"; };
+		D44BE2871EC9F0EA007E8CF4 /* RCTSecureTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTSecureTextField.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -78,10 +77,10 @@
 			isa = PBXGroup;
 			children = (
 				58B5119C1A9E6C1200147676 /* Products */,
-				AF3225F71DE5574F00D3E7E7 /* RCTConvert+Text.h */,
-				AF3225F81DE5574F00D3E7E7 /* RCTConvert+Text.m */,
 				58B511C61A9E6C5C00147676 /* RCTRawTextManager.h */,
 				58B511C71A9E6C5C00147676 /* RCTRawTextManager.m */,
+				D44BE2861EC9F0EA007E8CF4 /* RCTSecureTextField.h */,
+				D44BE2871EC9F0EA007E8CF4 /* RCTSecureTextField.m */,
 				58B511C81A9E6C5C00147676 /* RCTShadowRawText.h */,
 				58B511C91A9E6C5C00147676 /* RCTShadowRawText.m */,
 				58B511CA1A9E6C5C00147676 /* RCTShadowText.h */,
@@ -198,11 +197,11 @@
 				2D3B5F381D9B106F00451313 /* RCTTextManager.m in Sources */,
 				2D3B5F391D9B106F00451313 /* RCTTextField.m in Sources */,
 				2D3B5F361D9B106F00451313 /* RCTShadowText.m in Sources */,
+				D44BE2891EC9F4B3007E8CF4 /* RCTSecureTextField.m in Sources */,
 				2D3B5F3B1D9B106F00451313 /* RCTTextView.m in Sources */,
 				2D3B5F3A1D9B106F00451313 /* RCTTextFieldManager.m in Sources */,
 				2D3B5F341D9B103100451313 /* RCTRawTextManager.m in Sources */,
 				59F60E921E661BDD0081153B /* RCTShadowTextField.m in Sources */,
-				AF3225FA1DE5574F00D3E7E7 /* RCTConvert+Text.m in Sources */,
 				59B125CA1E6E4E15004E2A67 /* RCTUITextView.m in Sources */,
 				2D3B5F3C1D9B106F00451313 /* RCTTextViewManager.m in Sources */,
 				59F60E941E661BDD0081153B /* RCTShadowTextView.m in Sources */,
@@ -223,8 +222,8 @@
 				1362F1001B4D51F400E06D8C /* RCTTextField.m in Sources */,
 				58B512161A9E6EFF00147676 /* RCTText.m in Sources */,
 				1362F1011B4D51F400E06D8C /* RCTTextFieldManager.m in Sources */,
+				D44BE2881EC9F0EA007E8CF4 /* RCTSecureTextField.m in Sources */,
 				59F60E911E661BDD0081153B /* RCTShadowTextField.m in Sources */,
-				AF3225F91DE5574F00D3E7E7 /* RCTConvert+Text.m in Sources */,
 				59B125C91E6E4E15004E2A67 /* RCTUITextView.m in Sources */,
 				131B6AC11AF0CD0600FFC3E0 /* RCTTextViewManager.m in Sources */,
 				59F60E931E661BDD0081153B /* RCTShadowTextView.m in Sources */,
@@ -309,7 +308,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT =  macosx;
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				WARNING_CFLAGS = (
 					"-Werror",
@@ -364,6 +363,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_STATIC_ANALYZER_MODE = deep;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -374,6 +374,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_STATIC_ANALYZER_MODE = deep;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

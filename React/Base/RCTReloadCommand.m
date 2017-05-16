@@ -18,9 +18,9 @@ void RCTRegisterReloadCommandListener(id<RCTReloadListener> listener)
   dispatch_once(&onceToken, ^{
     listeners = [NSHashTable weakObjectsHashTable];
     [[RCTKeyCommands sharedInstance] registerKeyCommandWithInput:@"r"
-                                                   modifierFlags:UIKeyModifierCommand
+                                                   modifierFlags:NSEventModifierFlagCommand
                                                           action:
-     ^(__unused UIKeyCommand *command) {
+     ^(__unused NSEvent *command) {
        NSArray<id<RCTReloadListener>> *copiedListeners;
        @synchronized (listeners) { // avoid mutation-while-enumerating
          copiedListeners = [listeners allObjects];

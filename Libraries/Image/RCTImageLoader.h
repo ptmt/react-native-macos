@@ -10,23 +10,15 @@
 #import <AppKit/AppKit.h>
 #import <QuartzCore/CAAnimation.h>
 
-<<<<<<< HEAD
-#import "RCTBridge.h"
-#import "RCTURLRequestHandler.h"
-#import "UIImageUtils.h"
-#import "RCTResizeMode.h"
-
-typedef void (^RCTImageLoaderProgressBlock)(int64_t progress, int64_t total);
-typedef void (^RCTImageLoaderCompletionBlock)(NSError *error, NSImage *image);
-=======
 #import <React/RCTBridge.h>
 #import <React/RCTResizeMode.h>
 #import <React/RCTURLRequestHandler.h>
+#import "React/UIImageUtils.h"
 
 typedef void (^RCTImageLoaderProgressBlock)(int64_t progress, int64_t total);
-typedef void (^RCTImageLoaderPartialLoadBlock)(UIImage *image);
-typedef void (^RCTImageLoaderCompletionBlock)(NSError *error, UIImage *image);
->>>>>>> 1dd7bc151571f9d92a7bac30ee36d79be86ac506
+typedef void (^RCTImageLoaderPartialLoadBlock)(NSImage *image);
+typedef void (^RCTImageLoaderCompletionBlock)(NSError *error, NSImage *image);
+
 typedef dispatch_block_t RCTImageLoaderCancellationBlock;
 
 /**

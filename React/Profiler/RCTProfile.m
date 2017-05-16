@@ -393,20 +393,7 @@ void RCTProfileUnhookModules(RCTBridge *bridge)
                  encoding:NSUTF8StringEncoding
                     error:nil];
 #if !TARGET_OS_TV
-      UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL fileURLWithPath:outFile]]
-                                                                                           applicationActivities:nil];
-      activityViewController.completionWithItemsHandler = ^(__unused UIActivityType activityType,
-                                                            __unused BOOL completed,
-                                                            __unused NSArray *items,
-                                                            __unused NSError *error) {
-        RCTProfileControlsWindow.hidden = NO;
-      };
-      RCTProfileControlsWindow.hidden = YES;
-      dispatch_async(dispatch_get_main_queue(), ^{
-        [[[[RCTSharedApplication() delegate] window] rootViewController] presentViewController:activityViewController
-                                                                                                 animated:YES
-                                                                                               completion:nil];
-      });
+      NSLog(@"TODO: open file: %@", outFile);
 #endif
     });
   } else {
@@ -765,16 +752,8 @@ void RCTProfileSendResult(RCTBridge *bridge, NSString *route, NSData *data)
 
        if (message.length) {
 #if !TARGET_OS_TV
-         dispatch_async(dispatch_get_main_queue(), ^{
-            UIAlertController *alertController = [UIAlertController
-                alertControllerWithTitle:@"Profile"
-                message:message
-                preferredStyle:UIAlertControllerStyleAlert];
-            [alertController addAction:[UIAlertAction actionWithTitle:@"OK"
-                                                      style:UIAlertActionStyleCancel
-                                                      handler:nil]];
-            [RCTPresentedViewController() presentViewController:alertController animated:YES completion:nil];
-         });
+         NSAlert *view = RCTAlertView(@"Profile", message, nil, nil, nil);
+         [view runModal];
 #endif
        }
      }

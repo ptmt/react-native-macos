@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-
+#import <AppKit/AppKit.h>
 #import "RCTAlertManager.h"
 
 #import "RCTAssert.h"
@@ -24,10 +24,10 @@ RCT_ENUM_CONVERTER(RCTAlertViewStyle, (@{
 }), RCTAlertViewStyleDefault, integerValue)
 
 RCT_ENUM_CONVERTER(NSAlertStyle, (@{
-  @"default": @(NSWarningAlertStyle),
-  @"information": @(NSInformationalAlertStyle),
-  @"critical": @(NSCriticalAlertStyle)
-}), NSWarningAlertStyle, integerValue)
+  @"default": @(NSAlertStyleWarning),
+  @"information": @(NSAlertStyleInformational),
+  @"critical": @(NSAlertStyleCritical)
+}), NSAlertStyleWarning, integerValue)
 
 @end
 
@@ -72,7 +72,7 @@ RCT_EXPORT_METHOD(alertWithArgs:(NSDictionary *)args
 {
   NSString *title = args[@"title"];
   NSString *message = args[@"message"];
-  //NSString *type = args[@"type"];
+  RCTAlertViewStyle type = [RCTConvert RCTAlertViewStyle:args[@"type"]];
   NSArray *buttons = args[@"buttons"];
 
   if (!title && !message) {
@@ -82,21 +82,24 @@ RCT_EXPORT_METHOD(alertWithArgs:(NSDictionary *)args
     RCTLogError(@"Must have at least one button.");
     return;
   }
+  
+  if (!title) {
+    title = message;
+  }
 
   if (buttons.count == 0) {
     if (type == RCTAlertViewStyleDefault) {
       buttons = @[@{@"0": RCTUIKitLocalizedString(@"OK")}];
-      cancelButtonKey = @"0";
     } else {
       buttons = @[
         @{@"0": RCTUIKitLocalizedString(@"OK")},
         @{@"1": RCTUIKitLocalizedString(@"Cancel")},
       ];
-      cancelButtonKey = @"1";
     }
   }
 
   NSAlert *alertView = RCTAlertView(title, message, self, nil, nil);
+  alertView.alertStyle = [RCTConvert NSAlertStyle:args[@"style"]];
   NSMutableArray *buttonKeys = [[NSMutableArray alloc] initWithCapacity:buttons.count];
 
   NSInteger index = 0;
@@ -118,7 +121,9 @@ RCT_EXPORT_METHOD(alertWithArgs:(NSDictionary *)args
   NSInteger buttonPosition = [alertView runModal];
   NSString *buttonKey = [buttonKeys objectAtIndex: buttonPosition - NSAlertFirstButtonReturn];
   
-  callback(@[buttonKey]);
+  if (buttonKey && callback) {
+    callback(@[buttonKey]);
+  }
 }
 
 @end

@@ -98,31 +98,31 @@ static BOOL RCTFindScrollViewAndRefreshContentInsetInView(NSView *view)
 //  [super viewWillAppear:animated];
 
   // TODO: find a way to make this less-tightly coupled to navigation controller
-  if ([self.parentViewController isKindOfClass:[UINavigationController class]])
-  {
-    [self.navigationController
-     setNavigationBarHidden:_navItem.navigationBarHidden
-     animated:animated];
-
-    UINavigationBar *bar = self.navigationController.navigationBar;
-    bar.barTintColor = _navItem.barTintColor;
-    bar.tintColor = _navItem.tintColor;
-    bar.translucent = _navItem.translucent;
-    bar.titleTextAttributes = _navItem.titleTextColor ? @{
-      NSForegroundColorAttributeName: _navItem.titleTextColor
-    } : nil;
-
-    RCTFindNavBarShadowViewInView(bar).hidden = _navItem.shadowHidden;
-
-    UINavigationItem *item = self.navigationItem;
-    item.title = _navItem.title;
-    item.titleView = _navItem.titleImageView;
-#if !TARGET_OS_TV
-    item.backBarButtonItem = _navItem.backButtonItem;
-#endif //TARGET_OS_TV
-    item.leftBarButtonItem = _navItem.leftButtonItem;
-    item.rightBarButtonItem = _navItem.rightButtonItem;
-  }
+//  if ([self.parentViewController isKindOfClass:[NSNavigationController class]])
+//  {
+//    [self.navigationController
+//     setNavigationBarHidden:_navItem.navigationBarHidden
+//     animated:animated];
+//
+//    UINavigationBar *bar = self.navigationController.navigationBar;
+//    bar.barTintColor = _navItem.barTintColor;
+//    bar.tintColor = _navItem.tintColor;
+//    bar.translucent = _navItem.translucent;
+//    bar.titleTextAttributes = _navItem.titleTextColor ? @{
+//      NSForegroundColorAttributeName: _navItem.titleTextColor
+//    } : nil;
+//
+//    RCTFindNavBarShadowViewInView(bar).hidden = _navItem.shadowHidden;
+//
+//    UINavigationItem *item = self.navigationItem;
+//    item.title = _navItem.title;
+//    item.titleView = _navItem.titleImageView;
+//#if !TARGET_OS_TV
+//    item.backBarButtonItem = _navItem.backButtonItem;
+//#endif //TARGET_OS_TV
+//    item.leftBarButtonItem = _navItem.leftButtonItem;
+//    item.rightBarButtonItem = _navItem.rightButtonItem;
+//  }
 }
 
 - (void)loadView

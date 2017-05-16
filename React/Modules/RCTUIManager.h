@@ -75,7 +75,7 @@ RCT_EXTERN NSString *const RCTUIManagerRootViewKey;
 /**
  * Register a root view with the RCTUIManager.
  */
-- (void)registerRootView:(UIView *)rootView;
+- (void)registerRootView:(NSView *)rootView;
 
 /**
  * Gets the view name associated with a reactTag.
@@ -94,13 +94,13 @@ RCT_EXTERN NSString *const RCTUIManagerRootViewKey;
  * this value does not affect root node size style properties.
  * Can be considered as something similar to `setSize:forView:` but applicable only for root view.
  */
-- (void)setAvailableSize:(CGSize)availableSize forRootView:(UIView *)rootView;
+- (void)setAvailableSize:(CGSize)availableSize forRootView:(NSView *)rootView;
 
 /**
  * Set the size of a view. This might be in response to a screen rotation
  * or some other layout event outside of the React-managed view hierarchy.
  */
-- (void)setSize:(CGSize)size forView:(UIView *)view;
+- (void)setSize:(CGSize)size forView:(NSView *)view;
 
 /**
  * Set the natural size of a view, which is used when no explicit size is set.
@@ -157,7 +157,7 @@ RCT_EXTERN NSString *const RCTUIManagerRootViewKey;
  * @param completion the completion block that will hand over the rootView, if any.
  *
  */
-- (void)rootViewForReactTag:(NSNumber *)reactTag withCompletion:(void (^)(UIView *view))completion;
+- (void)rootViewForReactTag:(NSNumber *)reactTag withCompletion:(void (^)(NSView *view))completion;
 
 /**
  * The view that is currently first responder, according to the JS context.
@@ -190,7 +190,7 @@ RCT_EXTERN NSString *const RCTUIManagerRootViewKey;
  * Use `setSize:forView:` or `setIntrinsicContentSize:forView:` instead.
  * Only frames with `origin` equals {0, 0} are supported.
  */
-- (void)setFrame:(CGRect)frame forView:(UIView *)view
+- (void)setFrame:(CGRect)frame forView:(NSView *)view
 __deprecated_msg("Use `setSize:forView:` or `setIntrinsicContentSize:forView:` instead.");
 
 
@@ -198,7 +198,7 @@ __deprecated_msg("Use `setSize:forView:` or `setIntrinsicContentSize:forView:` i
  * This method is deprecated and will be removed in next releases.
  * Use `registerRootView:` instead. There is no need to specify `sizeFlexibility` anymore.
  */
-- (void)registerRootView:(UIView *)rootView withSizeFlexibility:(RCTRootViewSizeFlexibility)sizeFlexibility
+- (void)registerRootView:(NSView *)rootView withSizeFlexibility:(RCTRootViewSizeFlexibility)sizeFlexibility
 __deprecated_msg("Use `registerRootView:` instead.");
 
 @end

@@ -72,7 +72,7 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
   }
 
   if (self = [super initWithFrame:CGRectZero]) {
-    self.backgroundColor = [UIColor whiteColor];
+    self.backgroundColor = [NSColor whiteColor];
 
     [self setNeedsLayout:NO];
 
@@ -182,14 +182,15 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return fitSize;
 }
 
-- (void)layoutSubviews
+- (void)layout
 {
-  [super layoutSubviews];
+  [super layout];
   _contentView.frame = self.bounds;
-  _loadingView.center = (CGPoint){
-    CGRectGetMidX(self.bounds),
-    CGRectGetMidY(self.bounds)
-  };
+  [_loadingView setFrameOrigin:NSMakePoint(
+                                      (NSWidth([_contentView bounds]) - NSWidth([_contentView frame])) / 2,
+                                      (NSHeight([_contentView bounds]) - NSHeight([_contentView frame])) / 2
+                                      )];
+  [_loadingView setAutoresizingMask:NSViewMinXMargin | NSViewMaxXMargin | NSViewMinYMargin | NSViewMaxYMargin];
 }
 
 - (NSViewController *)reactViewController
@@ -287,9 +288,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
                                             sizeFlexiblity:_sizeFlexibility];
   [self runApplication:bridge];
 
-  _contentView.backgroundColor = self.backgroundColor;
+  _contentView.layer.backgroundColor = self.layer.backgroundColor;
   _contentView.passThroughTouches = _passThroughTouches;
-  [self insertSubview:_contentView atIndex:0];
+  [self addSubview:_contentView];
 
   if (_sizeFlexibility == RCTRootViewSizeFlexibilityNone) {
     self.intrinsicContentSize = self.bounds.size;
@@ -318,18 +319,19 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 
   _sizeFlexibility = sizeFlexibility;
-  [self setNeedsLayout];
+  [self setNeedsLayout:YES];
   _contentView.sizeFlexibility = _sizeFlexibility;
 }
 
 - (NSView *)hitTest:(CGPoint)point withEvent:(NSEvent *)event
 {
   // The root view itself should never receive touches
-  NSView *hitView = [super hitTest:point withEvent:event];
-  if (self.passThroughTouches && hitView == self) {
-    return nil;
-  }
-  return hitView;
+//  NSView *hitView = [super hitTest:point withEvent:event];
+//  if (self.passThroughTouches && hitView == self) {
+//    return nil;
+//  }
+//  return hitView;
+  return nil;
 }
 
 - (void)setAppProperties:(NSDictionary *)appProperties
@@ -358,7 +360,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   _intrinsicContentSize = intrinsicContentSize;
 
   [self invalidateIntrinsicContentSize];
-  [self.superview setNeedsLayout];
+  [self.superview setNeedsLayout: YES];
 
   // Don't notify the delegate if the content remains invisible or its size has not changed
   if (bothSizesHaveAZeroDimension || sizesAreEqual) {

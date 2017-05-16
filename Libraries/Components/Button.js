@@ -23,6 +23,13 @@ const View = require('View');
 
 const invariant = require('fbjs/lib/invariant');
 
+const requireNativeComponent = require('requireNativeComponent');
+const NativeModules = require('NativeModules');
+
+const RCTButton = requireNativeComponent('RCTButton', Button, {
+  nativeOnly: {},
+});
+
 /**
  * A basic button component that should render nicely on any platform. Supports
  * a minimal level of customization.
@@ -49,7 +56,6 @@ const invariant = require('fbjs/lib/invariant');
  */
 
 class Button extends React.Component {
-
   props: {
     title: string,
     onPress: () => any,
@@ -84,6 +90,63 @@ class Button extends React.Component {
      * Used to locate this view in end-to-end tests.
      */
     testID: PropTypes.string,
+    /**
+     * macOS Specific
+     */
+    type: PropTypes.oneOf([
+      'momentaryLight',
+      'push',
+      'switch',
+      'toggle',
+      'radio',
+      'onOff',
+      'accelerator',
+    ]),
+    /*
+     * https://developer.apple.com/library/mac/documentation/UserExperience/Conceptual/OSXHIGuidelines/SystemProvided.html
+     */
+    systemImage: PropTypes.string,
+    alternateTitle: PropTypes.string,
+    image: PropTypes.oneOfType([
+      PropTypes.shape({
+        uri: PropTypes.string,
+      }),
+      // Opaque type returned by require('./image.jpg')
+      PropTypes.number,
+    ]),
+    alternateImage: PropTypes.oneOfType([
+      PropTypes.shape({
+        uri: PropTypes.string,
+      }),
+      // Opaque type returned by require('./image.jpg')
+      PropTypes.number,
+    ]),
+    bezelStyle: PropTypes.oneOf([
+      'rounded',
+      'regularSquare',
+      'thickSquare',
+      'thickerSquare',
+      'disclosure',
+      'shadowlessSquare',
+      'circular',
+      'texturedSquare',
+      'helpButton',
+      'smallSquare',
+      'texturedRounded',
+      'roundRect',
+      'recessed',
+      'roundedDisclosure',
+      'inline',
+    ]),
+    toolTip: PropTypes.string,
+    /**
+     * Invoked on mouse click
+     *
+     *   {nativeEvent: { state }}.
+     */
+    onClick: PropTypes.func,
+    allowsMixedState: PropTypes.bool,
+    state: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
   };
 
   render() {
@@ -97,11 +160,13 @@ class Button extends React.Component {
     } = this.props;
     const buttonStyles = [styles.button];
     const textStyles = [styles.text];
-    const Touchable = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity;
+    const Touchable = Platform.OS === 'android'
+      ? TouchableNativeFeedback
+      : TouchableOpacity;
     if (color && Platform.OS === 'ios') {
-      textStyles.push({color: color});
+      textStyles.push({ color: color });
     } else if (color) {
-      buttonStyles.push({backgroundColor: color});
+      buttonStyles.push({ backgroundColor: color });
     }
     if (disabled) {
       buttonStyles.push(styles.buttonDisabled);
@@ -109,12 +174,19 @@ class Button extends React.Component {
     }
     invariant(
       typeof title === 'string',
-      'The title prop of a Button must be a string',
+      'The title prop of a Button must be a string'
     );
-    const formattedTitle = Platform.OS === 'android' ? title.toUpperCase() : title;
+    const formattedTitle = Platform.OS === 'android'
+      ? title.toUpperCase()
+      : title;
     const accessibilityTraits = ['button'];
     if (disabled) {
       accessibilityTraits.push('disabled');
+    }
+    if (Platform.OS === 'macos') {
+      return (
+        <RCTButton {...this.props} style={[styles.button, this.props.style]} />
+      );
     }
     return (
       <Touchable
@@ -147,6 +219,10 @@ const styles = StyleSheet.create({
       backgroundColor: defaultBlue,
       borderRadius: 2,
     },
+    macos: {
+      height: NativeModules.ButtonManager.ComponentHeight,
+      width: NativeModules.ButtonManager.ComponentWidth,
+    },
   }),
   text: Platform.select({
     ios: {
@@ -167,7 +243,7 @@ const styles = StyleSheet.create({
     android: {
       elevation: 0,
       backgroundColor: '#dfdfdf',
-    }
+    },
   }),
   textDisabled: Platform.select({
     ios: {
@@ -175,7 +251,7 @@ const styles = StyleSheet.create({
     },
     android: {
       color: '#a1a1a1',
-    }
+    },
   }),
 });
 

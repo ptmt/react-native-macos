@@ -105,14 +105,6 @@ static NSViewAnimationOptions NSViewAnimationOptionsFromRCTAnimationType(RCTAnim
 #endif
 }
 
-+ (void)keyboardWillChangeFrame:(NSNotification *)notification
-{
-#if !TARGET_OS_TV
-  NSDictionary *userInfo = notification.userInfo;
-  _currentKeyboardAnimationCurve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
-#endif
-}
-
 - (instancetype)initWithDuration:(NSTimeInterval)duration dictionary:(NSDictionary *)config
 {
   if (!config) {
@@ -383,7 +375,7 @@ dispatch_queue_t RCTGetUIManagerQueue(void)
   return _viewRegistry[reactTag];
 }
 
-- (void)setAvailableSize:(CGSize)availableSize forRootView:(UIView *)rootView
+- (void)setAvailableSize:(CGSize)availableSize forRootView:(NSView *)rootView
 {
   RCTAssertMainQueue();
   NSNumber *reactTag = rootView.reactTag;
@@ -401,7 +393,7 @@ dispatch_queue_t RCTGetUIManagerQueue(void)
   });
 }
 
-- (void)setSize:(CGSize)size forView:(UIView *)view
+- (void)setSize:(CGSize)size forView:(NSView *)view
 {
   RCTAssertMainQueue();
 
@@ -520,7 +512,7 @@ dispatch_queue_t RCTGetUIManagerQueue(void)
 
   typedef struct {
     CGRect frame;
-    UIUserInterfaceLayoutDirection layoutDirection;
+    NSUserInterfaceLayoutDirection layoutDirection;
     BOOL isNew;
     BOOL parentIsNew;
     BOOL isHidden;
@@ -604,7 +596,7 @@ dispatch_queue_t RCTGetUIManagerQueue(void)
       CGRect frame = frameData.frame;
 
       BOOL isHidden = frameData.isHidden;
-      UIUserInterfaceLayoutDirection layoutDirection = frameData.layoutDirection;
+      NSUserInterfaceLayoutDirection layoutDirection = frameData.layoutDirection;
       BOOL isNew = frameData.isNew;
       RCTAnimation *updateAnimation = isNew ? nil : layoutAnimation.updateAnimation;
       BOOL shouldAnimateCreation = isNew && !frameData.parentIsNew;
@@ -1058,22 +1050,22 @@ RCT_EXPORT_METHOD(updateView:(nonnull NSNumber *)reactTag
 {
   RCTAssertMainQueue();
   RCTComponentData *componentData = _componentDataByName[viewName];
-  UIView *view = _viewRegistry[reactTag];
+  NSView *view = _viewRegistry[reactTag];
   [componentData setProps:props forView:view];
 }
 
 RCT_EXPORT_METHOD(focus:(nonnull NSNumber *)reactTag)
 {
-  [self addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
-    UIView *newResponder = viewRegistry[reactTag];
+  [self addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, NSView *> *viewRegistry) {
+    NSView *newResponder = viewRegistry[reactTag];
     [newResponder reactFocus];
   }];
 }
 
 RCT_EXPORT_METHOD(blur:(nonnull NSNumber *)reactTag)
 {
-  [self addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry){
-    UIView *currentResponder = viewRegistry[reactTag];
+  [self addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, NSView *> *viewRegistry){
+    NSView *currentResponder = viewRegistry[reactTag];
     [currentResponder reactBlur];
   }];
 }
@@ -1550,7 +1542,7 @@ RCT_EXPORT_METHOD(configureNextLayoutAnimation:(NSDictionary *)config
   }];
 }
 
-- (void)rootViewForReactTag:(NSNumber *)reactTag withCompletion:(void (^)(UIView *view))completion
+- (void)rootViewForReactTag:(NSNumber *)reactTag withCompletion:(void (^)(NSView *view))completion
 {
   RCTAssertMainQueue();
   RCTAssert(completion != nil, @"Attempted to resolve rootView for tag %@ without a completion block", reactTag);
@@ -1563,7 +1555,7 @@ RCT_EXPORT_METHOD(configureNextLayoutAnimation:(NSDictionary *)config
   dispatch_async(RCTGetUIManagerQueue(), ^{
     NSNumber *rootTag = [self _rootTagForReactTag:reactTag];
     dispatch_async(dispatch_get_main_queue(), ^{
-      UIView *rootView = nil;
+      NSView *rootView = nil;
       if (rootTag != nil) {
         rootView = [self viewForReactTag:rootTag];
       }
@@ -1598,7 +1590,7 @@ RCT_EXPORT_METHOD(configureNextLayoutAnimation:(NSDictionary *)config
   return rootTag;
 }
 
-static UIView *_jsResponder;
+static NSView *_jsResponder;
 
 + (NSView *)JSResponder
 {
@@ -1609,13 +1601,13 @@ static UIView *_jsResponder;
 
 @implementation RCTUIManager (Deprecated)
 
-- (void)registerRootView:(UIView *)rootView withSizeFlexibility:(__unused RCTRootViewSizeFlexibility)sizeFlexibility
+- (void)registerRootView:(NSView *)rootView withSizeFlexibility:(__unused RCTRootViewSizeFlexibility)sizeFlexibility
 {
   RCTLogWarn(@"Calling of `[-RCTUIManager registerRootView:withSizeFlexibility:]` which is deprecated.");
   [self registerRootView:rootView];
 }
 
-- (void)setFrame:(CGRect)frame forView:(UIView *)view
+- (void)setFrame:(CGRect)frame forView:(NSView *)view
 {
   RCTLogWarn(@"Calling of `[-RCTUIManager setFrame:forView:]` which is deprecated.");
   [self setSize:frame.size forView:view];

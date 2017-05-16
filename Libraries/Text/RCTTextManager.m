@@ -14,12 +14,11 @@
 #import <React/RCTAssert.h>
 #import <React/RCTConvert.h>
 #import <React/RCTLog.h>
-#import <React/UIView+React.h>
+#import <React/NSView+React.h>
 
 #import "RCTShadowRawText.h"
 #import "RCTShadowText.h"
 #import "RCTText.h"
-#import "NSView+React.h"
 #import "RCTTextView.h"
 
 

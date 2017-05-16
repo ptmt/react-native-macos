@@ -13,25 +13,7 @@
 #import "RCTLog.h"
 #import "RCTUtils.h"
 
-#if !TARGET_OS_TV
-@implementation RCTConvert (UIStatusBar)
-
-RCT_ENUM_CONVERTER(UIStatusBarStyle, (@{
-  @"default": @(UIStatusBarStyleDefault),
-  @"light-content": @(UIStatusBarStyleLightContent),
-  @"dark-content": @(UIStatusBarStyleDefault),
-}), UIStatusBarStyleDefault, integerValue);
-
-RCT_ENUM_CONVERTER(UIStatusBarAnimation, (@{
-  @"none": @(UIStatusBarAnimationNone),
-  @"fade": @(UIStatusBarAnimationFade),
-  @"slide": @(UIStatusBarAnimationSlide),
-}), UIStatusBarAnimationNone, integerValue);
-
-@end
-#endif
-
-@implementation RCTStatusBarManager
+#@implementation RCTStatusBarManager
 
 static BOOL RCTViewControllerBasedStatusBarAppearance()
 {

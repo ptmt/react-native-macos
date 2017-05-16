@@ -19,7 +19,7 @@
 #import "RCTImageStoreManager.h"
 #import "RCTImageUtils.h"
 
-#import "UIImageUtils.h"
+#import "React/UIImageUtils.h"
 
 @implementation RCTImageEditingManager
 

@@ -14,13 +14,6 @@
 
 #import <mutex>
 
-#if !defined(__IPHONE_8_2) || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_8_2
-
-// These constants are defined in iPhone SDK 8.2, but the app cannot run on
-// iOS < 8.2 unless we redefine them here. If you target iOS 8.2 or above
-// as a base target, the standard constants will be used instead.
-// These constants can only be removed when React Native drops iOS8 support.
-
 #define NSFontWeightUltraLight -0.8
 #define NSFontWeightThin -0.6
 #define NSFontWeightLight -0.4
@@ -30,8 +23,6 @@
 #define NSFontWeightBold 0.4
 #define NSFontWeightHeavy 0.56
 #define NSFontWeightBlack 0.62
-
-#endif
 
 typedef CGFloat RCTFontWeight;
 static RCTFontWeight weightOfFont(NSFont *font)
@@ -163,24 +154,24 @@ typedef NSDictionary RCTFontVariantDescriptor;
   dispatch_once(&onceToken, ^{
     mapping = @{
       @"small-caps": @{
-          UIFontFeatureTypeIdentifierKey: @(kLowerCaseType),
-          UIFontFeatureSelectorIdentifierKey: @(kLowerCaseSmallCapsSelector),
+          NSFontFeatureTypeIdentifierKey: @(kLowerCaseType),
+          NSFontFeatureSelectorIdentifierKey: @(kLowerCaseSmallCapsSelector),
           },
       @"oldstyle-nums": @{
-          UIFontFeatureTypeIdentifierKey: @(kNumberCaseType),
-          UIFontFeatureSelectorIdentifierKey: @(kLowerCaseNumbersSelector),
+          NSFontFeatureTypeIdentifierKey: @(kNumberCaseType),
+          NSFontFeatureSelectorIdentifierKey: @(kLowerCaseNumbersSelector),
           },
       @"lining-nums": @{
-          UIFontFeatureTypeIdentifierKey: @(kNumberCaseType),
-          UIFontFeatureSelectorIdentifierKey: @(kUpperCaseNumbersSelector),
+          NSFontFeatureTypeIdentifierKey: @(kNumberCaseType),
+          NSFontFeatureSelectorIdentifierKey: @(kUpperCaseNumbersSelector),
           },
       @"tabular-nums": @{
-          UIFontFeatureTypeIdentifierKey: @(kNumberSpacingType),
-          UIFontFeatureSelectorIdentifierKey: @(kMonospacedNumbersSelector),
+          NSFontFeatureTypeIdentifierKey: @(kNumberSpacingType),
+          NSFontFeatureSelectorIdentifierKey: @(kMonospacedNumbersSelector),
           },
       @"proportional-nums": @{
-          UIFontFeatureTypeIdentifierKey: @(kNumberSpacingType),
-          UIFontFeatureSelectorIdentifierKey: @(kProportionalNumbersSelector),
+          NSFontFeatureTypeIdentifierKey: @(kNumberSpacingType),
+          NSFontFeatureSelectorIdentifierKey: @(kProportionalNumbersSelector),
           },
       };
   });
@@ -265,8 +256,9 @@ RCT_ARRAY_CONVERTER(RCTFontVariantDescriptor)
 
   // Gracefully handle being given a font name rather than font family, for
   // example: "Helvetica Light Oblique" rather than just "Helvetica".
-  if (!didFindFont && [UIFont fontNamesForFamilyName:familyName].count == 0) {
-    font = [UIFont fontWithName:familyName size:fontSize];
+  if (!didFindFont &&
+      [[NSFontManager sharedFontManager] availableMembersOfFontFamily:familyName].count == 0) {
+    font = [NSFont fontWithName:familyName size:fontSize];
     if (font) {
       // It's actually a font name, not a font family name,
       // but we'll do what was meant, not what was said.
@@ -305,19 +297,20 @@ RCT_ARRAY_CONVERTER(RCTFontVariantDescriptor)
   // If we still don't have a match at least return the first font in the fontFamily
   // This is to support built-in font Zapfino and other custom single font families like Impact
   if (!font) {
-    NSArray *names = [UIFont fontNamesForFamilyName:familyName];
+    NSArray *names = [[NSFontManager sharedFontManager] availableMembersOfFontFamily:familyName];
     if (names.count > 0) {
-      font = [UIFont fontWithName:names[0] size:fontSize];
+      font = [NSFont fontWithName:names[0] size:fontSize];
     }
   }
 
   // Apply font variants to font object
   if (variant) {
     NSArray *fontFeatures = [RCTConvert RCTFontVariantDescriptorArray:variant];
-    UIFontDescriptor *fontDescriptor = [font.fontDescriptor fontDescriptorByAddingAttributes:@{
-      UIFontDescriptorFeatureSettingsAttribute: fontFeatures
+    NSFontDescriptor *fontDescriptor = [font.fontDescriptor
+                                        fontDescriptorByAddingAttributes:@{
+      NSFontFeatureSettingsAttribute: fontFeatures
     }];
-    font = [UIFont fontWithDescriptor:fontDescriptor size:fontSize];
+    font = [NSFont fontWithDescriptor:fontDescriptor size:fontSize];
   }
 
   return font;

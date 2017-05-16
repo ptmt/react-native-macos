@@ -47,7 +47,7 @@
  * This is inherited from UIView+React, but we override it here
  * to improve perfomance and make subclassing/overriding possible/easier.
  */
-@property (nonatomic, assign) UIUserInterfaceLayoutDirection reactLayoutDirection;
+@property (nonatomic, assign) NSUserInterfaceLayoutDirection reactLayoutDirection;
 
 /**
  * z-index, used to override sibling order in didUpdateReactSubviews. This is

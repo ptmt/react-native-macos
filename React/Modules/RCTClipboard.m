@@ -9,6 +9,7 @@
 
 #import "RCTClipboard.h"
 #import <AppKit/AppKit.h>
+#import <React/RCTUtils.h>
 
 @implementation RCTClipboard
 

@@ -7,21 +7,26 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 /*
  * Just regular UITextView... but much better!
  */
-@interface RCTUITextView : UITextView
+
+@interface RCTUITextView : NSTextView
 
 - (instancetype)initWithFrame:(CGRect)frame textContainer:(nullable NSTextContainer *)textContainer NS_UNAVAILABLE;
 - (instancetype)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 
-@property (nonatomic, assign, readonly) BOOL textWasPasted;
+- (void)setText:(NSString *)text;
+- (void)setAttributedText:(NSAttributedString *)attributedText;
+
+@property (nonatomic, strong) NSAttributedString *placeholderAttributedString;
+@property (nonatomic, assign) BOOL textWasPasted;
 @property (nonatomic, copy, nullable) NSString *placeholderText;
-@property (nonatomic, assign, nullable) UIColor *placeholderTextColor;
+@property (nonatomic, assign, nullable) NSColor *placeholderTextColor;
 
 @end
 

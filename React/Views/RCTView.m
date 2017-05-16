@@ -85,7 +85,7 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
 {
   BOOL isFirstIteration = YES;
   NSMutableString *str = [NSMutableString stringWithString:@""];
-  for (UIView *subview in view.subviews) {
+  for (NSView *subview in view.subviews) {
     if (isFirstIteration) {
       isFirstIteration = NO;
     } else {
@@ -132,16 +132,9 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
 
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
-- (void)setReactLayoutDirection:(UIUserInterfaceLayoutDirection)layoutDirection
+- (void)setReactLayoutDirection:(NSUserInterfaceLayoutDirection)layoutDirection
 {
   _reactLayoutDirection = layoutDirection;
-
-  if ([self respondsToSelector:@selector(setSemanticContentAttribute:)]) {
-    self.semanticContentAttribute =
-      layoutDirection == UIUserInterfaceLayoutDirectionLeftToRight ?
-        UISemanticContentAttributeForceLeftToRight :
-        UISemanticContentAttributeForceRightToLeft;
-  }
 }
 
 - (NSString *)accessibilityLabel

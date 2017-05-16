@@ -270,7 +270,7 @@ CGFloat RCTScreenScale()
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     RCTUnsafeExecuteOnMainQueueSync(^{
-      scale = [UIScreen mainScreen].scale;
+      scale = [NSScreen mainScreen].backingScaleFactor;
     });
   });
 
@@ -287,7 +287,7 @@ CGSize RCTScreenSize()
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     RCTUnsafeExecuteOnMainQueueSync(^{
-      size = [UIScreen mainScreen].bounds.size;
+      size = [NSScreen mainScreen].frame.size;
     });
   });
 
@@ -480,13 +480,12 @@ NSViewController *__nullable RCTPresentedViewController(void)
   if (RCTRunningInAppExtension()) {
     return nil;
   }
+  NSViewController *controller = RCTKeyWindow().contentViewController;
 
-  UIViewController *controller = RCTKeyWindow().rootViewController;
-  UIViewController *presentedController = controller.presentedViewController;
-  while (presentedController && ![presentedController isBeingDismissed]) {
-    controller = presentedController;
-    presentedController = controller.presentedViewController;
-  }
+//  while (presentedController && ![presentedController isBeingDismissed]) {
+//    controller = presentedController;
+//    presentedController = controller.presentedViewController;
+//  }
 
   return controller;
 }
@@ -640,7 +639,7 @@ static NSBundle *bundleForPath(NSString *key)
   return bundleCache[key];
 }
 
-UIImage *__nullable RCTImageFromLocalAssetURL(NSURL *imageURL)
+NSImage *__nullable RCTImageFromLocalAssetURL(NSURL *imageURL)
 {
   if (!RCTIsLocalAssetURL(imageURL)) {
     return nil;
@@ -657,11 +656,11 @@ UIImage *__nullable RCTImageFromLocalAssetURL(NSURL *imageURL)
     imageName = [imageName substringFromIndex:(bundlePath.length + 1)];
   }
 
-  UIImage *image = nil;
+  NSImage *image = nil;
   if (bundle) {
-    image = [UIImage imageNamed:imageName inBundle:bundle compatibleWithTraitCollection:nil];
+    image = [bundle imageForResource:imageName];
   } else {
-    image = [UIImage imageNamed:imageName];
+    image = [NSImage imageNamed:imageName];
   }
 
   if (!image && !bundle) {
@@ -672,7 +671,7 @@ UIImage *__nullable RCTImageFromLocalAssetURL(NSURL *imageURL)
                                                                                              error:nil];
     for (NSURL *frameworkURL in possibleFrameworks) {
       bundle = [NSBundle bundleWithURL:frameworkURL];
-      image = [UIImage imageNamed:imageName inBundle:bundle compatibleWithTraitCollection:nil];
+      image = [bundle imageForResource:imageName];
       if (image) {
         RCTLogWarn(@"Image %@ not found in mainBundle, but found in %@", imageName, bundle);
         break;
@@ -847,4 +846,27 @@ NSURL *__nullable RCTURLByReplacingQueryParam(NSURL *__nullable URL, NSString *p
   }
   components.queryItems = queryItems;
   return components.URL;
+}
+
+NSAlert *__nullable RCTAlertView(NSString *title,
+                                 NSString *__nullable message,
+                                 id __nullable delegate,
+                                 NSString *__nullable cancelButtonTitle,
+                                 NSArray<NSString *> *__nullable otherButtonTitles)
+{
+  if (RCTRunningInAppExtension()) {
+    RCTLogError(@"RCTAlertView is unavailable when running in an app extension");
+    return nil;
+  }
+  NSAlert *alertView = [[NSAlert alloc] init];
+  alertView.messageText = title;
+  alertView.informativeText = message;
+  alertView.delegate = delegate;
+  if (cancelButtonTitle != nil) {
+    [alertView addButtonWithTitle:cancelButtonTitle];
+  }
+  for (NSString *buttonTitle in otherButtonTitles) {
+    [alertView addButtonWithTitle:buttonTitle];
+  }
+  return alertView;
 }

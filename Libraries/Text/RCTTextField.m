@@ -12,38 +12,10 @@
 #import <React/RCTConvert.h>
 #import <React/RCTEventDispatcher.h>
 #import <React/RCTUtils.h>
-#import <React/UIView+React.h>
+#import <React/NSView+React.h>
 
 #import "RCTTextSelection.h"
 
-@interface RCTTextField()
-
-- (BOOL)shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string;
-- (BOOL)keyboardInputShouldDelete;
-- (BOOL)textFieldShouldEndEditing;
-
-@end
-
-@interface RCTTextFieldDelegateProxy: NSObject <UITextFieldDelegate>
-@end
-
-@implementation RCTTextFieldDelegateProxy
-
-- (BOOL)textField:(RCTTextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
-  return [textField shouldChangeCharactersInRange:range replacementString:string];
-}
-
-- (BOOL)keyboardInputShouldDelete:(RCTTextField *)textField
-{
-  return [textField keyboardInputShouldDelete];
-}
-
-- (BOOL)textFieldShouldEndEditing:(RCTTextField *)textField {
-  return [textField textFieldShouldEndEditing];
-}
-
-@end
 
 @implementation RCTTextField
 {
@@ -51,10 +23,9 @@
   NSInteger _nativeEventCount;
   NSString * _placeholderString;
   BOOL _submitted;
-  UITextRange *_previousSelectionRange;
+  NSRange _previousSelectionRange;
   BOOL _textWasPasted;
   NSString *_finalText;
-  RCTTextFieldDelegateProxy *_delegateProxy;
 }
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
@@ -67,17 +38,8 @@
     self.bezeled = YES;
 
     _eventDispatcher = eventDispatcher;
-    [self addTarget:self action:@selector(textFieldDidChange) forControlEvents:UIControlEventEditingChanged];
-    [self addTarget:self action:@selector(textFieldBeginEditing) forControlEvents:UIControlEventEditingDidBegin];
-    [self addTarget:self action:@selector(textFieldEndEditing) forControlEvents:UIControlEventEditingDidEnd];
-    [self addTarget:self action:@selector(textFieldSubmitEditing) forControlEvents:UIControlEventEditingDidEndOnExit];
-    [self addObserver:self forKeyPath:@"selectedTextRange" options:0 context:nil];
-    _blurOnSubmit = YES;
 
-    // We cannot use `self.delegate = self;` here because `UITextField` implements some of these delegate methods itself,
-    // so if we implement this delegate on self, we will override some of its behaviours.
-    _delegateProxy = [RCTTextFieldDelegateProxy new];
-    self.delegate = _delegateProxy;
+    [self addObserver:self forKeyPath:@"selectedTextRange" options:0 context:nil];
   }
   return self;
 }
@@ -113,18 +75,18 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     return;
   }
 
-  UITextRange *currentSelection = self.selectedTextRange;
-  UITextPosition *start = [self positionFromPosition:self.beginningOfDocument offset:selection.start];
-  UITextPosition *end = [self positionFromPosition:self.beginningOfDocument offset:selection.end];
-  UITextRange *selectedTextRange = [self textRangeFromPosition:start toPosition:end];
-
-  NSInteger eventLag = _nativeEventCount - _mostRecentEventCount;
-  if (eventLag == 0 && ![currentSelection isEqual:selectedTextRange]) {
-    _previousSelectionRange = selectedTextRange;
-    self.selectedTextRange = selectedTextRange;
-  } else if (eventLag > RCTTextUpdateLagWarningThreshold) {
-    RCTLogWarn(@"Native TextInput(%@) is %zd events ahead of JS - try to make your JS faster.", self.text, eventLag);
-  }
+//  UITextRange *currentSelection = self.selectedTextRange;
+//  UITextPosition *start = [self positionFromPosition:self.beginningOfDocument offset:selection.start];
+//  UITextPosition *end = [self positionFromPosition:self.beginningOfDocument offset:selection.end];
+//  UITextRange *selectedTextRange = [self textRangeFromPosition:start toPosition:end];
+//
+//  NSInteger eventLag = _nativeEventCount - _mostRecentEventCount;
+//  if (eventLag == 0 && ![currentSelection isEqual:selectedTextRange]) {
+//    _previousSelectionRange = selectedTextRange;
+//    self.selectedTextRange = selectedTextRange;
+//  } else if (eventLag > RCTTextUpdateLagWarningThreshold) {
+//    RCTLogWarn(@"Native TextInput(%@) is %zd events ahead of JS - try to make your JS faster.", self.text, eventLag);
+//  }
 }
 
 - (void)setText:(NSString *)text
@@ -174,17 +136,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
-- (void)textDidChange:(NSNotification *)aNotification
-{
-  CGRect rect = [super textRectForBounds:bounds];
-  return UIEdgeInsetsInsetRect(rect, _contentInset);
-}
-
-- (CGRect)editingRectForBounds:(CGRect)bounds
-{
-  return [self textRectForBounds:bounds];
-}
-
 - (void)textFieldDidChange
 {
   _nativeEventCount++;
@@ -201,7 +152,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)textDidEndEditing:(NSNotification *)aNotification
 {
-  if (![_finalText isEqualToString:self.text]) {
+  if (![_finalText isEqualToString:self.stringValue]) {
     _finalText = nil;
     // iOS does't send event `UIControlEventEditingChanged` if the change was happened because of autocorrection
     // which was triggered by loosing focus. We assume that if `text` was changed in the middle of loosing focus process,
@@ -222,7 +173,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeSubmit
                                  reactTag:self.reactTag
                                      text:[self stringValue]
-                                      key:key
+                                      key:nil
                                eventCount:_nativeEventCount];
 }
 

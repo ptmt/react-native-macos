@@ -331,18 +331,6 @@ RCT_ENUM_CONVERTER(UIViewContentMode, (@{
   @"contain": @(UIViewContentModeScaleAspectFit),
   @"stretch": @(UIViewContentModeScaleToFill),
 }), UIViewContentModeScaleAspectFill, integerValue)
-//
-//RCT_ENUM_CONVERTER(UIBarStyle, (@{
-//  @"default": @(UIBarStyleDefault),
-//  @"black": @(UIBarStyleBlack),
-//}), UIBarStyleDefault, integerValue)
-
-#if !TARGET_OS_TV
-RCT_ENUM_CONVERTER(UIBarStyle, (@{
-  @"default": @(UIBarStyleDefault),
-  @"black": @(UIBarStyleBlack),
-}), UIBarStyleDefault, integerValue)
-#endif
 
 // TODO: normalise the use of w/width so we can do away with the alias values (#6566645)
 static void RCTConvertCGStructValue(const char *type, NSArray *fields, NSDictionary *aliases, CGFloat *result, id json)
@@ -422,7 +410,7 @@ RCT_CGSTRUCT_CONVERTER(CGAffineTransform, (@[
   @"a", @"b", @"c", @"d", @"tx", @"ty"
 ]), nil)
 
-+ (UNSolor *)NSColor:(id)json
++ (NSColor *)NSColor:(id)json
 {
   if (!json) {
     return nil;
@@ -706,7 +694,7 @@ RCT_ENUM_CONVERTER(RCTAnimationType, (@{
       if (filePath.pathExtension.length == 0) {
         filePath = [filePath stringByAppendingPathExtension:@"png"];
       }
-      image = [UIImage imageWithContentsOfFile:filePath];
+      image = [[NSImage alloc] initWithContentsOfFile:filePath];
       if (!image) {
         RCTLogConvertError(json, @"an image. File not found.");
       }
@@ -735,7 +723,7 @@ RCT_ENUM_CONVERTER(RCTAnimationType, (@{
 
   if (!CGSizeEqualToSize(imageSource.size, CGSizeZero) &&
       !CGSizeEqualToSize(imageSource.size, image.size)) {
-    RCTLogError(@"Image source size %f x %f does not match loaded image size %f x %f", URL.path.lastPathComponent, imageSource.size.height, image.size.width, image.size.height);
+    RCTLogError(@"Image source size %@ x %f does not match loaded image size %f x %f", URL.path.lastPathComponent, imageSource.size.height, image.size.width, image.size.height);
   }
 
   return image;
