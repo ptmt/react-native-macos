@@ -127,7 +127,7 @@ typedef NSArray NSDictionaryArray __deprecated_msg("Use NSArray<NSDictionary *>"
 typedef NSArray NSURLArray __deprecated_msg("Use NSArray<NSURL *>");
 typedef NSArray RCTFileURLArray __deprecated_msg("Use NSArray<RCTFileURL *>");
 typedef NSArray NSNumberArray __deprecated_msg("Use NSArray<NSNumber *>");
-typedef NSArray UIColorArray __deprecated_msg("Use NSArray<UIColor *>");
+typedef NSArray NSColorArray __deprecated_msg("Use NSArray<NSColor *>");
 
 /**
  * Synchronous image loading is generally a bad idea for performance reasons.

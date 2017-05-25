@@ -48,8 +48,6 @@ node_modules
 *.log
 .nvm
 
-rn-cli.config.js
-
 # OS X
 .DS_Store
 

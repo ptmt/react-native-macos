@@ -42,7 +42,7 @@ static NSDictionary *RCTExportedDimensions(RCTBridge *bridge)
                          @"width": @(screenSize.size.width),
                          @"height": @(screenSize.size.height),
                          @"scale": @(RCTScreenScale()),
-                         @"fontScale": @(bridge.accessibilityManager.multiplier)
+                         @"fontScale": @(1) // TODO: fix accessibility bridge.accessibilityManager.multiplier)
                          };
   return @{
            @"window": dims,

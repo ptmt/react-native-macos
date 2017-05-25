@@ -12,9 +12,9 @@
 'use strict';
 
 var Image = require('Image');
-var NativeMethodsMixin = require('react/lib/NativeMethodsMixin');
+var NativeMethodsMixin = require('NativeMethodsMixin');
 var NativeModules = require('NativeModules');
-var PropTypes = require('react/lib/ReactPropTypes');
+var PropTypes = require('prop-types');
 var React = require('React');
 var StyleSheet = require('StyleSheet');
 
@@ -65,12 +65,12 @@ var ProgressViewIOS = React.createClass({
         style={[styles.progressView, this.props.style]}
       />
     );
-  }
+  },
 });
 
 var styles = StyleSheet.create({
   progressView: {
-    height: NativeModules.ProgressViewManager.ComponentHeight
+    height: NativeModules.ProgressViewManager.ComponentHeight,
   },
 });
 

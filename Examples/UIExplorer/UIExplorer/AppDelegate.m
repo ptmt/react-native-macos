@@ -34,7 +34,7 @@
   if(self = [super init]) {
 
     // -- Init Window
-    NSRect contentSize = NSMakeRect(200, 500, 1000, 500); // TODO: should not be hardcoded
+    NSRect contentSize = NSMakeRect(200, 500, 1000, 500); 
 
     self.window = [[NSWindow alloc] initWithContentRect:contentSize
                                               styleMask:NSTitledWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask | NSFullSizeContentViewWindowMask
@@ -81,9 +81,16 @@
 
 - (void)setDefaultURL
 {
-  _sourceURL = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"Examples/UIExplorer/js/UIExplorerApp.ios"
+  _sourceURL = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"Examples/UIExplorer/js/UIExplorerApp.macos"
                                                         fallbackResource:nil];
 }
+
+- (void)resetBridgeToDefault
+{
+  [self setDefaultURL];
+  [_bridge reload];
+}
+
 
 - (NSURL *)sourceURLForBridge:(__unused RCTBridge *)bridge
 {

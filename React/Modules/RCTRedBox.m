@@ -119,10 +119,11 @@
     [copyButton setTarget:self];
     [copyButton setAction:@selector(copyStack)];
 
-    CGFloat buttonWidth = self.frame.size.width / 3;
-    dismissButton.frame = CGRectMake(0, self.frame.size.height - buttonHeight + 1, buttonWidth, buttonHeight);
-    reloadButton.frame = CGRectMake(buttonWidth, self.frame.size.height - buttonHeight + 1, buttonWidth, buttonHeight);
-    copyButton.frame = CGRectMake(buttonWidth*2, self.frame.size.height - buttonHeight + 1, buttonWidth, buttonHeight);
+    CGFloat buttonWidthWithMargin = self.frame.size.width / 3;
+    CGFloat buttonWidth = buttonWidthWithMargin - 20;
+    dismissButton.frame = CGRectMake(10, self.frame.size.height - buttonHeight - 10, buttonWidth, buttonHeight);
+    reloadButton.frame = CGRectMake(self.frame.size.width / 3 + 10, self.frame.size.height - buttonHeight - 10, buttonWidth, buttonHeight);
+    copyButton.frame = CGRectMake(2 * self.frame.size.width / 3 + 10, self.frame.size.height - buttonHeight - 10, buttonWidth, buttonHeight);
     [rootView addSubview:dismissButton];
     [rootView addSubview:reloadButton];
     [rootView addSubview:copyButton];
@@ -165,13 +166,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     _lastErrorMessage = [message substringToIndex:MIN((NSUInteger)10000, message.length)];
     NSMutableArray *result = [NSMutableArray arrayWithCapacity:stack.count];
     [stack enumerateObjectsUsingBlock:^(RCTJSStackFrame* stackFrame, __unused NSUInteger idx, __unused BOOL *stop) {
-      NSString *lineInfo = [NSString stringWithFormat:@"%@:%zd",
-                            [stackFrame.file lastPathComponent],
-                            stackFrame.lineNumber];
-      if (stackFrame.column != 0) {
-        lineInfo = [lineInfo stringByAppendingFormat:@":%zd", stackFrame.column];
-      }
-
+      NSString *lineInfo = [self formatFrameSource:stackFrame];
+      
       NSString *methodName = [@"\t in " stringByAppendingString:stackFrame.methodName];
 
       [result addObject:[methodName stringByAppendingFormat:@"(at %@)", lineInfo]];

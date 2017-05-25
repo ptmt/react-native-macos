@@ -6,9 +6,15 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule Keyboard
+ * @providesModule TVEventHandler
  * @flow
  */
 'use strict';
 
-module.exports = require('UnimplementedView');
+function TVEventHandler() {}
+
+TVEventHandler.prototype.enable = function(component: ?any, callback: Function) {};
+
+TVEventHandler.prototype.disable = function() {};
+
+module.exports = TVEventHandler;

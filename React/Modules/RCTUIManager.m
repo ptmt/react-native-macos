@@ -217,8 +217,8 @@ RCT_EXPORT_MODULE()
   // Report the event across the bridge.
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-  [_bridge.eventDispatcher sendDeviceEventWithName:@"didUpdateContentSizeMultiplier"
-                                              body:@([_bridge.accessibilityManager multiplier])];
+//  [_bridge.eventDispatcher sendDeviceEventWithName:@"didUpdateContentSizeMultiplier"
+//                                              body:@([_bridge.accessibilityManager multiplier])];
 #pragma clang diagnostic pop
 
   dispatch_async(RCTGetUIManagerQueue(), ^{

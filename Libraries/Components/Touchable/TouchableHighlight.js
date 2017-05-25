@@ -14,7 +14,7 @@
 // Note (avik): add @flow when Flow supports spread properties in propTypes
 
 var ColorPropType = require('ColorPropType');
-var NativeMethodsMixin = require('react/lib/NativeMethodsMixin');
+var NativeMethodsMixin = require('NativeMethodsMixin');
 var React = require('React');
 const PropTypes = require('prop-types');
 var ReactNativeViewAttributes = require('ReactNativeViewAttributes');
@@ -37,7 +37,7 @@ var DEFAULT_PROPS = {
   underlayColor: 'black',
 };
 
-var PRESS_RETENTION_OFFSET = {top: 20, left: 20, right: 20, bottom: 30};
+var PRESS_RETENTION_OFFSET = { top: 20, left: 20, right: 20, bottom: 30 };
 
 /**
  * A wrapper for making views respond properly to touches.
@@ -108,7 +108,6 @@ var TouchableHighlight = React.createClass({
      * @platform ios
      */
     tvParallaxProperties: PropTypes.object,
-
   },
 
   mixins: [NativeMethodsMixin, TimerMixin, Touchable.Mixin],
@@ -121,24 +120,22 @@ var TouchableHighlight = React.createClass({
       activeProps: {
         style: {
           opacity: props.activeOpacity,
-        }
+        },
       },
       activeUnderlayProps: {
         style: {
           backgroundColor: props.underlayColor,
-        }
+        },
       },
-      underlayStyle: [
-        INACTIVE_UNDERLAY_PROPS.style,
-        props.style,
-      ],
-      hasTVPreferredFocus: props.hasTVPreferredFocus
+      underlayStyle: [INACTIVE_UNDERLAY_PROPS.style, props.style],
+      hasTVPreferredFocus: props.hasTVPreferredFocus,
     };
   },
 
   getInitialState: function() {
     return merge(
-      this.touchableGetInitialState(), this._computeSyntheticState(this.props)
+      this.touchableGetInitialState(),
+      this._computeSyntheticState(this.props)
     );
   },
 
@@ -153,16 +150,18 @@ var TouchableHighlight = React.createClass({
 
   componentWillReceiveProps: function(nextProps) {
     ensurePositiveDelayProps(nextProps);
-    if (nextProps.activeOpacity !== this.props.activeOpacity ||
-        nextProps.underlayColor !== this.props.underlayColor ||
-        nextProps.style !== this.props.style) {
+    if (
+      nextProps.activeOpacity !== this.props.activeOpacity ||
+      nextProps.underlayColor !== this.props.underlayColor ||
+      nextProps.style !== this.props.style
+    ) {
       this.setState(this._computeSyntheticState(nextProps));
     }
   },
 
   viewConfig: {
     uiViewClassName: 'RCTView',
-    validAttributes: ReactNativeViewAttributes.RCTView
+    validAttributes: ReactNativeViewAttributes.RCTView,
   },
 
   /**
@@ -186,8 +185,10 @@ var TouchableHighlight = React.createClass({
   touchableHandlePress: function(e: Event) {
     this.clearTimeout(this._hideTimeout);
     this._showUnderlay();
-    this._hideTimeout = this.setTimeout(this._hideUnderlay,
-      this.props.delayPressOut || 100);
+    this._hideTimeout = this.setTimeout(
+      this._hideUnderlay,
+      this.props.delayPressOut || 100
+    );
     this.props.onPress && this.props.onPress(e);
   },
 
@@ -239,12 +240,10 @@ var TouchableHighlight = React.createClass({
   },
 
   _hasPressHandler: function() {
-    return !!(
-      this.props.onPress ||
+    return !!(this.props.onPress ||
       this.props.onPressIn ||
       this.props.onPressOut ||
-      this.props.onLongPress
-    );
+      this.props.onLongPress);
   },
 
   render: function() {
@@ -262,32 +261,34 @@ var TouchableHighlight = React.createClass({
         tvParallaxProperties={this.props.tvParallaxProperties}
         hasTVPreferredFocus={this.state.hasTVPreferredFocus}
         onStartShouldSetResponder={this.touchableHandleStartShouldSetResponder}
-        onResponderTerminationRequest={this.touchableHandleResponderTerminationRequest}
+        onResponderTerminationRequest={
+          this.touchableHandleResponderTerminationRequest
+        }
         onResponderGrant={this.touchableHandleResponderGrant}
         onResponderMove={this.touchableHandleResponderMove}
         onResponderRelease={this.touchableHandleResponderRelease}
         onResponderTerminate={this.touchableHandleResponderTerminate}
         nativeID={this.props.nativeID}
         testID={this.props.testID}>
-        {React.cloneElement(
-          React.Children.only(this.props.children),
-          {
-            ref: CHILD_REF,
-          }
-        )}
-        {Touchable.renderDebugView({color: 'green', hitSlop: this.props.hitSlop})}
+        {React.cloneElement(React.Children.only(this.props.children), {
+          ref: CHILD_REF,
+        })}
+        {Touchable.renderDebugView({
+          color: 'green',
+          hitSlop: this.props.hitSlop,
+        })}
       </View>
     );
-  }
+  },
 });
 
-var CHILD_REF = keyOf({childRef: null});
-var UNDERLAY_REF = keyOf({underlayRef: null});
+var CHILD_REF = keyOf({ childRef: null });
+var UNDERLAY_REF = keyOf({ underlayRef: null });
 var INACTIVE_CHILD_PROPS = {
-  style: StyleSheet.create({x: {opacity: 1.0}}).x,
+  style: StyleSheet.create({ x: { opacity: 1.0 } }).x,
 };
 var INACTIVE_UNDERLAY_PROPS = {
-  style: StyleSheet.create({x: {backgroundColor: 'transparent'}}).x,
+  style: StyleSheet.create({ x: { backgroundColor: 'transparent' } }).x,
 };
 
 module.exports = TouchableHighlight;

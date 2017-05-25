@@ -12,9 +12,9 @@
  */
 'use strict';
 
-const NativeMethodsMixin = require('react/lib/NativeMethodsMixin');
+const NativeMethodsMixin = require('NativeMethodsMixin');
 var React = require('React');
-var ReactChildren = require('react/lib/ReactChildren');
+var PropTypes = require('prop-types');
 var RCTPickerIOSConsts = require('NativeModules').UIManager.RCTPicker.Constants;
 var StyleSheet = require('StyleSheet');
 var View = require('View');
@@ -27,8 +27,8 @@ var PickerIOS = React.createClass({
   mixins: [NativeMethodsMixin],
 
   propTypes: {
-    onValueChange: React.PropTypes.func,
-    selectedValue: React.PropTypes.any, // string or integer basically
+    onValueChange: PropTypes.func,
+    selectedValue: PropTypes.any, // string or integer basically
   },
 
   getInitialState: function() {
@@ -43,13 +43,13 @@ var PickerIOS = React.createClass({
   _stateFromProps: function(props) {
     var selectedIndex = 0;
     var items = [];
-    ReactChildren.forEach(props.children, function (child, index) {
+    React.Children.forEach(props.children, function(child, index) {
       if (child.props.value === props.selectedValue) {
         selectedIndex = index;
       }
-      items.push({value: child.props.value, label: child.props.label});
+      items.push({ value: child.props.value, label: child.props.label });
     });
-    return {selectedIndex, items};
+    return { selectedIndex, items };
   },
 
   render: function() {
@@ -82,7 +82,7 @@ var PickerIOS = React.createClass({
     // truth, not the native component.
     if (this.state.selectedIndex !== event.nativeEvent.newIndex) {
       this.refs[PICKER].setNativeProps({
-        selectedIndex: this.state.selectedIndex
+        selectedIndex: this.state.selectedIndex,
       });
     }
   },

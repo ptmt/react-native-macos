@@ -74,11 +74,7 @@ module.exports = {
    *
    * @platform android
    */
-  accessibilityLiveRegion: PropTypes.oneOf([
-    'none',
-    'polite',
-    'assertive',
-  ]),
+  accessibilityLiveRegion: PropTypes.oneOf(['none', 'polite', 'assertive']),
 
   /**
    * Controls how view is important for accessibility which is if it
@@ -334,12 +330,7 @@ module.exports = {
    * > implement it as a `className` anyways. Using `style` or not is an
    * > implementation detail of the platform.
    */
-  pointerEvents: PropTypes.oneOf([
-    'box-none',
-    'none',
-    'box-only',
-    'auto',
-  ]),
+  pointerEvents: PropTypes.oneOf(['box-none', 'none', 'box-only', 'auto']),
   style: stylePropType,
 
   /**
@@ -416,4 +407,26 @@ module.exports = {
    * @platform android
    */
   needsOffscreenAlphaCompositing: PropTypes.bool,
+  /**
+   * Enables Dran'n'Drop Support for certain types of PboardType
+   * @platform macos
+   */
+  draggedTypes: PropTypes.arrayOf(
+    PropTypes.oneOf(['NSFilenamesPboardType', 'NSColorPboardType'])
+  ),
+  /**
+   * Desktop specific events
+   * @platform macos
+   */
+  onMouseEnter: PropTypes.func,
+  onMouseLeave: PropTypes.func,
+  onDragEnter: PropTypes.func,
+  onDragLeave: PropTypes.func,
+  onDrop: PropTypes.func,
+  /**
+   * Mapped to toolTip property of NSView. Used to show extra information when
+   * mouse hovering.
+   * @platform macos
+   */
+  toolTip: PropTypes.string,
 };
