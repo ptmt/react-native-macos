@@ -126,7 +126,7 @@ static NSURL *serverRootWithHost(NSString *host)
   } else {
     NSString *path = [NSString stringWithFormat:@"/%@.bundle", bundleRoot];
     // When we support only iOS 8 and above, use queryItems for a better API.
-    NSString *query = [NSString stringWithFormat:@"platform=ios&dev=%@&minify=%@",
+    NSString *query = [NSString stringWithFormat:@"platform=macos&dev=%@&minify=%@",
                        [self enableDev] ? @"true" : @"false",
                        [self enableMinification] ? @"true": @"false"];
     return [[self class] resourceURLForResourcePath:path packagerHost:packagerServerHost query:query];

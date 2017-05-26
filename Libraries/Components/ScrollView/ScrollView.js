@@ -109,6 +109,21 @@ const ScrollView = React.createClass({
     bouncesZoom: PropTypes.bool,
 
     /**
+     * When true, the scroll view bounces horizontally when it reaches the end
+     * even if the content is smaller than the scroll view itself. The default
+     * value is true when `horizontal={true}` and false otherwise.
+     * @platform ios
+     */
+    alwaysBounceHorizontal: PropTypes.bool,
+    /**
+     * When true, the scroll view bounces vertically when it reaches the end
+     * even if the content is smaller than the scroll view itself. The default
+     * value is false when `horizontal={true}` and true otherwise.
+     * @platform ios
+     */
+    alwaysBounceVertical: PropTypes.bool,
+
+    /**
      * When true, the scroll view automatically centers the content when the
      * content is smaller than the scroll view bounds; when the content is
      * larger than the scroll view, this property has no effect. The default
@@ -414,15 +429,6 @@ const ScrollView = React.createClass({
   },
 
   /**
-   * Deprecated. Use `RefreshControl` instead.
-   */
-  endRefreshing: function() {
-    RCTScrollViewManager.endRefreshing(
-      ReactNative.findNodeHandle(this)
-    );
-  },
-
-  /**
    * Returns a reference to the underlying scroll responder, which supports
    * operations like `scrollTo`. All ScrollView-like components should
    * implement this method so that they can be composed while providing access
@@ -593,6 +599,9 @@ const ScrollView = React.createClass({
         ScrollViewClass = AndroidScrollView;
       }
       ScrollContentContainerViewClass = View;
+    } else if (Platform.OS === 'macos') {
+      ScrollViewClass = RCTScrollView;
+      ScrollContentContainerViewClass = View;
     }
 
     invariant(
@@ -664,10 +673,19 @@ const ScrollView = React.createClass({
         {children}
       </ScrollContentContainerViewClass>;
 
+    const alwaysBounceHorizontal =
+      this.props.alwaysBounceHorizontal !== undefined ?
+        this.props.alwaysBounceHorizontal :
+        this.props.horizontal;
+
+    const alwaysBounceVertical =
+      this.props.alwaysBounceVertical !== undefined ?
+        this.props.alwaysBounceVertical :
+        !this.props.horizontal;
+
+    const baseStyle = this.props.horizontal ? styles.baseHorizontal : styles.baseVertical;
     const props = {
       ...this.props,
-      alwaysBounceHorizontal,
-      alwaysBounceVertical,
       style: ([baseStyle, this.props.style]: ?Array<any>),
       // Override the onContentSizeChange from props, since this event can
       // bubble up from TextInputs
@@ -680,8 +698,8 @@ const ScrollView = React.createClass({
       onResponderTerminate: this.scrollResponderHandleTerminate,
       onResponderTerminationRequest: this.scrollResponderHandleTerminationRequest,
       onScroll: this._handleScroll,
-      onScrollBeginDrag: this.scrollResponderHandleScrollBeginDrag,
-      onScrollEndDrag: this.scrollResponderHandleScrollEndDrag,
+      // onScrollBeginDrag: this.scrollResponderHandleScrollBeginDrag,
+      // onScrollEndDrag: this.scrollResponderHandleScrollEndDrag,
       onScrollShouldSetResponder: this.scrollResponderHandleScrollShouldSetResponder,
       onStartShouldSetResponder: this.scrollResponderHandleStartShouldSetResponder,
       onStartShouldSetResponderCapture: this.scrollResponderHandleStartShouldSetResponderCapture,
@@ -793,6 +811,13 @@ if (Platform.OS === 'android') {
     nativeOnlyProps,
   );
   RCTScrollContentView = requireNativeComponent('RCTScrollContentView', View);
+} else if (Platform.OS === 'macos') {
+  RCTScrollView = requireNativeComponent(
+    'RCTNativeScrollView',
+    (ScrollView: ReactClass<any>),
+    {
+    },
+  );
 }
 
 module.exports = ScrollView;
