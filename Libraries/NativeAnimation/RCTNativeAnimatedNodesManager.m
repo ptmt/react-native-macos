@@ -10,6 +10,7 @@
 #import "RCTNativeAnimatedNodesManager.h"
 
 #import <React/RCTConvert.h>
+#import <React/RCTDisplayLink.h>
 
 #import "RCTAdditionAnimatedNode.h"
 #import "RCTAnimatedNode.h"
@@ -36,7 +37,7 @@
   // there will be only one driver per mapping so all code code should be optimized around that.
   NSMutableDictionary<NSString *, NSMutableArray<RCTEventAnimation *> *> *_eventDrivers;
   NSMutableSet<id<RCTAnimationDriver>> *_activeAnimations;
-  CADisplayLink *_displayLink;
+  NSTimer *_displayLink;
 }
 
 - (instancetype)initWithUIManager:(nonnull RCTUIManager *)uiManager
@@ -344,8 +345,14 @@
 - (void)startAnimationLoopIfNeeded
 {
   if (!_displayLink && _activeAnimations.count > 0) {
-    _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(stepAnimations:)];
-    [_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+      _displayLink = [NSTimer
+                     timerWithTimeInterval:RCT_TIME_PER_FRAME
+                     target:self
+                     selector:@selector(stepAnimations:)
+                     userInfo:nil
+                     repeats:YES];
+      
+    [[NSRunLoop mainRunLoop] addTimer:_displayLink forMode:NSRunLoopCommonModes];
   }
 }
 
@@ -364,9 +371,9 @@
   }
 }
 
-- (void)stepAnimations:(CADisplayLink *)displaylink
+- (void)stepAnimations:(NSTimer *)timer
 {
-  NSTimeInterval time = displaylink.timestamp;
+  NSTimeInterval time = timer.timeInterval;
   for (id<RCTAnimationDriver> animationDriver in _activeAnimations) {
     [animationDriver stepAnimationWithTime:time];
   }

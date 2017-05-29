@@ -23,11 +23,9 @@
  */
 'use strict';
 
-<<<<<<< HEAD
 const React = require('React');
 const ReactNative = require('react-native');
-=======
->>>>>>> 1dd7bc151571f9d92a7bac30ee36d79be86ac506
+
 // $FlowFixMe : This is a platform-forked component, and flow seems to only run on iOS?
 const UIExplorerList = require('./UIExplorerList');
 

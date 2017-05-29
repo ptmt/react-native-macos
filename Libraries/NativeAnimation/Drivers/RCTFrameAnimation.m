@@ -9,7 +9,7 @@
 
 #import "RCTFrameAnimation.h"
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import <React/RCTConvert.h>
 #import <React/RCTDefines.h>

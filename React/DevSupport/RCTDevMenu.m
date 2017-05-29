@@ -23,7 +23,6 @@ static NSString *const RCTShowDevMenuNotification = @"RCTShowDevMenuNotification
 @interface RCTDevMenuItem ()
 
 @property (nonatomic, copy, readonly) NSString *key;
-@property (nonatomic, copy, readonly) NSString *selectedTitle;
 @property (nonatomic, copy) id value;
 @property (nonatomic, copy) NSString *hotKey;
 
@@ -38,26 +37,45 @@ static NSString *const RCTShowDevMenuNotification = @"RCTShowDevMenuNotification
 }
 
 - (instancetype)initWithTitleBlock:(RCTDevMenuItemTitleBlock)titleBlock
+                           hotkey:(NSString *)hotkey
                            handler:(dispatch_block_t)handler
 {
   if ((self = [super init])) {
     _titleBlock = [titleBlock copy];
     _handler = [handler copy];
+    [self setAction:@selector(callHandler)];
+    [self setTarget:self];
+    [self setKeyEquivalent:hotkey];
   }
   return self;
 }
 
 RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
-+ (instancetype)buttonItemWithTitleBlock:(NSString *(^)(void))titleBlock handler:(dispatch_block_t)handler
++ (instancetype)buttonItemWithTitleBlock:(NSString *(^)(void))titleBlock
+                                  hotkey:(NSString *)hotkey
+                                 handler:(dispatch_block_t)handler
 {
-  return [[self alloc] initWithTitleBlock:titleBlock handler:handler];
+  return [[self alloc] initWithTitleBlock:titleBlock hotkey:hotkey handler:handler];
+}
+
++ (instancetype)buttonItemWithTitleBlock:(NSString *(^)(void))titleBlock
+                                 handler:(dispatch_block_t)handler
+{
+  return [[self alloc] initWithTitleBlock:titleBlock hotkey:@"" handler:handler];
+}
+
++ (instancetype)buttonItemWithTitle:(NSString *)title
+                             hotkey:(NSString *)hotkey
+                            handler:(dispatch_block_t)handler
+{
+  return [[self alloc] initWithTitleBlock:^NSString *{ return title; } hotkey:hotkey handler:handler];
 }
 
 + (instancetype)buttonItemWithTitle:(NSString *)title
                             handler:(dispatch_block_t)handler
 {
-  return [[self alloc] initWithTitleBlock:^NSString *{ return title; } handler:handler];
+  return [[self alloc] initWithTitleBlock:^NSString *{ return title; } hotkey:@"" handler:handler];
 }
 
 - (void)callHandler
@@ -154,9 +172,15 @@ RCT_EXPORT_MODULE()
   }
 }
 
+- (BOOL)isActionSheetShown
+{
+  return YES;
+}
+
 - (void)toggle
 {
-  NSLog(@"showing menu is not implemented");
+  // TODO: add invalidating/hiding
+  [self show];
 }
 
 - (void)addItem:(NSString *)title handler:(void(^)(void))handler
@@ -177,7 +201,7 @@ RCT_EXPORT_MODULE()
   __weak RCTBridge *bridge = _bridge;
   __weak RCTDevSettings *devSettings = _bridge.devSettings;
 
-  [items addObject:[RCTDevMenuItem buttonItemWithTitle:@"Reload" handler:^{
+  [items addObject:[RCTDevMenuItem buttonItemWithTitle:@"Reload"  hotkey:@"r" handler:^{
     [bridge reload];
   }]];
 
@@ -193,8 +217,11 @@ RCT_EXPORT_MODULE()
   } else {
     [items addObject:[RCTDevMenuItem buttonItemWithTitleBlock:^NSString *{
       return devSettings.isDebuggingRemotely ? @"Stop Remote JS Debugging" : @"Debug JS Remotely";
-    } handler:^{
+    }
+                                                       hotkey:@"R"
+                                                      handler:^{
       devSettings.isDebuggingRemotely = !devSettings.isDebuggingRemotely;
+      [self show];
     }]];
   }
 
@@ -203,11 +230,13 @@ RCT_EXPORT_MODULE()
       return devSettings.isLiveReloadEnabled ? @"Disable Live Reload" : @"Enable Live Reload";
     } handler:^{
       devSettings.isLiveReloadEnabled = !devSettings.isLiveReloadEnabled;
+      [self show];
     }]];
     [items addObject:[RCTDevMenuItem buttonItemWithTitleBlock:^NSString *{
       return devSettings.isProfilingEnabled ? @"Stop Systrace" : @"Start Systrace";
     } handler:^{
       devSettings.isProfilingEnabled = !devSettings.isProfilingEnabled;
+      [self show];
     }]];
   }
 
@@ -216,6 +245,7 @@ RCT_EXPORT_MODULE()
       return devSettings.isHotLoadingEnabled ? @"Disable Hot Reloading" : @"Enable Hot Reloading";
     } handler:^{
       devSettings.isHotLoadingEnabled = !devSettings.isHotLoadingEnabled;
+      [self show];
     }]];
   }
 
@@ -224,6 +254,7 @@ RCT_EXPORT_MODULE()
     // duplicated in RCTJSCExecutor
     [items addObject:[RCTDevMenuItem buttonItemWithTitle:@"Start / Stop JS Sampling Profiler" handler:^{
       [devSettings toggleJSCSamplingProfiler];
+      [self show];
     }]];
   }
 
@@ -231,6 +262,7 @@ RCT_EXPORT_MODULE()
     return (devSettings.isElementInspectorShown) ? @"Hide Inspector" : @"Show Inspector";
   } handler:^{
     [devSettings toggleElementInspector];
+    [self show];
   }]];
 
   [items addObjectsFromArray:_extraMenuItems];
@@ -259,9 +291,7 @@ RCT_EXPORT_METHOD(show)
   if (!_bridge || RCTRunningInAppExtension()) {
     return;
   }
-
-  NSString *title = [NSString stringWithFormat:@"React Native: Development (%@)", [_bridge class]];
-
+  
   NSArray<RCTDevMenuItem *> *items = [self _menuItemsToPresent];
   NSMenu *developerMenu = [self getDeveloperMenu];
   [developerMenu removeAllItems];

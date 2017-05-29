@@ -90,6 +90,10 @@ typedef NSString *(^RCTDevMenuItemTitleBlock)(void);
  * action.
  */
 + (instancetype)buttonItemWithTitle:(NSString *)title
+                             hotkey:(NSString *)hotkey
+                            handler:(dispatch_block_t)handler;
+
++ (instancetype)buttonItemWithTitle:(NSString *)title
                             handler:(dispatch_block_t)handler;
 
 /**
@@ -97,6 +101,10 @@ typedef NSString *(^RCTDevMenuItemTitleBlock)(void);
  * action. getTitleForPresentation is called each time the item is about to be
  * presented, and should return the item's title.
  */
++ (instancetype)buttonItemWithTitleBlock:(RCTDevMenuItemTitleBlock)titleBlock
+                                  hotkey:(NSString *)hotkey
+                                 handler:(dispatch_block_t)handler;
+
 + (instancetype)buttonItemWithTitleBlock:(RCTDevMenuItemTitleBlock)titleBlock
                                  handler:(dispatch_block_t)handler;
 

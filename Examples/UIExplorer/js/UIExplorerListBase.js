@@ -17,13 +17,7 @@
 
 var React = require('React');
 var ReactNative = require('react-native');
-var {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  View,
-} = ReactNative;
+var { StyleSheet, Text, TouchableOpacity, ScrollView, View } = ReactNative;
 var createExamplePage = require('./createExamplePage');
 var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 
@@ -33,18 +27,22 @@ var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 // });
 
 class ListView extends React.Component {
-    render() {
-      var componentRows = this.props.dataSource.components.map((c, i) => this.props.renderRow(c, i));
-      var apiRows = this.props.dataSource.apis.map((c, i) => this.props.renderRow(c, i));
-      return (
-        <ScrollView showsVerticalScrollIndicator={true}>
-          {this.props.renderSectionHeader(null, 'Components')}
-          {componentRows}
-          {this.props.renderSectionHeader(null, 'APIs')}
-          {apiRows}
-        </ScrollView>
-      );
-    }
+  render() {
+    var componentRows = this.props.dataSource.components.map((c, i) =>
+      this.props.renderRow(c, i)
+    );
+    var apiRows = this.props.dataSource.apis.map((c, i) =>
+      this.props.renderRow(c, i)
+    );
+    return (
+      <ScrollView showsVerticalScrollIndicator={true}>
+        {this.props.renderSectionHeader(null, 'Components')}
+        {componentRows}
+        {this.props.renderSectionHeader(null, 'APIs')}
+        {apiRows}
+      </ScrollView>
+    );
+  }
 }
 
 class UIExplorerListBase extends React.Component {
@@ -65,9 +63,8 @@ class UIExplorerListBase extends React.Component {
   }
 
   componentDidMount(): void {
-    RCTDeviceEventEmitter.addListener(
-      'onSearchExample',
-      (e) => this.search(e.query)
+    RCTDeviceEventEmitter.addListener('onSearchExample', e =>
+      this.search(e.query)
     );
     this.search(this.state.searchText);
   }
@@ -98,19 +95,22 @@ class UIExplorerListBase extends React.Component {
   }
 
   renderRow(example: any, i: number) {
-    var selected = this.state.selected === example.title ? styles.selectedRow : {};
+    var selected = this.state.selected === example.title
+      ? styles.selectedRow
+      : {};
     return (
-      <TouchableOpacity activeOpacity={0.8}
+      <TouchableOpacity
+        activeOpacity={0.8}
         onPress={() => this.onPressRow(example)}
         key={i}
         style={[styles.row, selected]}>
 
-          <Text style={styles.rowTitleText}>
-            {example.title}
-          </Text>
-          <Text style={styles.rowDetailText}>
-            {example.description}
-          </Text>
+        <Text style={styles.rowTitleText}>
+          {example.title}
+        </Text>
+        <Text style={styles.rowDetailText}>
+          {example.description}
+        </Text>
 
       </TouchableOpacity>
     );
@@ -120,7 +120,7 @@ class UIExplorerListBase extends React.Component {
     this.props.search && this.props.search(text);
 
     var regex = new RegExp(String(text), 'i');
-    var filter = (component) => regex.test(component.title);
+    var filter = component => regex.test(component.title);
 
     this.setState({
       // dataSource: ds.cloneWithRowsAndSections({
@@ -136,14 +136,12 @@ class UIExplorerListBase extends React.Component {
   }
 
   onPressRow(example: any): void {
-    this.setState({selected: example.title});
+    this.setState({ selected: example.title });
     this.props.onPressRow && this.props.onPressRow(example);
   }
 
   static makeRenderable(example: any): ReactClass<any> {
-    return example.examples ?
-      createExamplePage(null, example) :
-      example;
+    return example.examples ? createExamplePage(null, example) : example;
   }
 }
 
@@ -151,18 +149,16 @@ var styles = StyleSheet.create({
   listContainer: {
     flex: 1,
   },
-  list: {
-  },
+  list: {},
   sectionHeader: {
     paddingHorizontal: 7,
     paddingTop: 7,
     fontWeight: '600',
-    fontSize: 10,
+    fontSize: 11,
     color: '#777',
-    letterSpacing: -0.2
+    letterSpacing: -0.2,
   },
-  group: {
-  },
+  group: {},
   row: {
     justifyContent: 'center',
     paddingHorizontal: 15,
@@ -182,11 +178,11 @@ var styles = StyleSheet.create({
     color: '#888',
   },
   selectedRow: {
-    backgroundColor: '#ddd'
+    backgroundColor: '#ddd',
   },
   hoveredRow: {
-    backgroundColor: '#ddd'
-  }
+    backgroundColor: '#ddd',
+  },
 });
 
 module.exports = UIExplorerListBase;

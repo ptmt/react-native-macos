@@ -19,7 +19,7 @@
 
 - (void)updateAnimations;
 
-- (void)stepAnimations:(nonnull CADisplayLink *)displaylink;
+- (void)stepAnimations:(nonnull NSTimer *)sender;
 
 // graph
 
