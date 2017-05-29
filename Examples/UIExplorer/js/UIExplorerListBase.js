@@ -103,6 +103,7 @@ class UIExplorerListBase extends React.Component {
         activeOpacity={0.8}
         onPress={() => this.onPressRow(example)}
         key={i}
+        onClick={() => console.log('onClick')}
         style={[styles.row, selected]}>
 
         <Text style={styles.rowTitleText}>
@@ -111,7 +112,6 @@ class UIExplorerListBase extends React.Component {
         <Text style={styles.rowDetailText}>
           {example.description}
         </Text>
-
       </TouchableOpacity>
     );
   }
@@ -123,10 +123,6 @@ class UIExplorerListBase extends React.Component {
     var filter = component => regex.test(component.title);
 
     this.setState({
-      // dataSource: ds.cloneWithRowsAndSections({
-      //   components: this.props.components.filter(filter),
-      //   apis: this.props.apis.filter(filter),
-      // }),
       dataSource: {
         components: this.props.components.filter(filter),
         apis: this.props.apis.filter(filter),

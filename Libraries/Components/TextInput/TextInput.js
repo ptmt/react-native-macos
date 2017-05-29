@@ -570,7 +570,7 @@ const TextInput = React.createClass({
     if (Platform.OS === 'ios') {
       return this._renderIOS();
     } else if (Platform.OS === 'macos') {
-      return this._renderMacOS();
+      return this._renderIOS();
     } else if (Platform.OS === 'android') {
       return this._renderAndroid();
     }
@@ -654,7 +654,6 @@ const TextInput = React.createClass({
           onSelectionChange={this._onSelectionChange}
           onTextInput={this._onTextInput}
           onSelectionChangeShouldSetResponder={emptyFunction.thatReturnsTrue}
-          placeholderTextColor={processColor(props.placeholderTextColor)}
           text={this._getText()}
           dataDetectorTypes={this.props.dataDetectorTypes}
           onScroll={this._onScroll}

@@ -252,7 +252,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithTarget:(id)target action:(SEL)action
   if (!canBeCoalesced) {
     _coalescingKey++;
   }
-
   [_eventDispatcher sendEvent:event];
 }
 
@@ -282,7 +281,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithTarget:(id)target action:(SEL)action
 //  return NO;
 //}
 
-- (void)handleGesture:(__unused NSGestureRecognizer *)gestureRecognizer
+- (void)handleGesture
 {
   // If gesture just recognized, send all touches to JS as if they just began.
   if (self.state == NSGestureRecognizerStateBegan) {
@@ -314,6 +313,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithTarget:(id)target action:(SEL)action
   } else if (self.state == NSGestureRecognizerStateBegan) {
     self.state = NSGestureRecognizerStateChanged;
   }
+  [self handleGesture];
 }
 
 - (void)mouseDragged:(NSEvent *)event
@@ -334,7 +334,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithTarget:(id)target action:(SEL)action
   if (reactTag == nil) {
     return;
   }
-  if (_currentMouseOverTag != reactTag && _currentMouseOverTag > 0) {
+  if (_currentMouseOverTag != reactTag && _currentMouseOverTag.intValue > 0) {
     [_bridge enqueueJSCall:@"RCTEventEmitter.receiveEvent"
                       args:@[_currentMouseOverTag, @"topMouseLeave"]];
     [_bridge enqueueJSCall:@"RCTEventEmitter.receiveEvent"

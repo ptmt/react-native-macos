@@ -142,6 +142,23 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 }
 #endif
 
+- (void)viewDidMoveToWindow
+{
+  [super viewDidMoveToWindow];
+  NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:NSZeroRect
+                                                              options:NSTrackingActiveInActiveApp | NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved | NSTrackingInVisibleRect
+                                                                owner:self
+                                                             userInfo:nil];
+  
+  [self addTrackingArea:trackingArea];
+}
+
+- (void)mouseMoved:(NSEvent *)theEvent
+{
+  [[_contentView touchHandler] mouseMoved:theEvent];
+  // [((RCTTouchHandler *)self.gestureRecognizers.firstObject) mouseMoved:theEvent];
+}
+
 - (void)setBackgroundColor:(NSColor *)backgroundColor
 {
   [super.layer setBackgroundColor:[backgroundColor CGColor]];
