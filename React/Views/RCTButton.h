@@ -13,6 +13,6 @@
 
 @interface RCTButton : NSButton
 
-@property (nonatomic, copy) RCTBubblingEventBlock onClick;
+@property (nonatomic, copy) RCTBubblingEventBlock onPress;
 
 @end

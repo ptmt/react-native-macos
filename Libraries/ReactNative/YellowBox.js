@@ -438,7 +438,8 @@ var styles = StyleSheet.create({
   inspector: {
     backgroundColor: backgroundColor(0.95),
     height: '100%',
-    paddingTop: 5,
+    paddingTop: 50,
+    padding: 20,
     elevation:elevation
   },
   inspectorButtons: {
