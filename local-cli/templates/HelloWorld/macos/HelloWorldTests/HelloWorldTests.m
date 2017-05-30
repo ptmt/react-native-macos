@@ -7,14 +7,14 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 #import <XCTest/XCTest.h>
 
 #import <React/RCTLog.h>
 #import <React/RCTRootView.h>
 
 #define TIMEOUT_SECONDS 600
-#define TEXT_TO_LOOK_FOR @"Welcome to React Native!"
+#define TEXT_TO_LOOK_FOR @"Welcome to React Native macOS!"
 
 @interface HelloWorldTests : XCTestCase
 
@@ -22,12 +22,12 @@
 
 @implementation HelloWorldTests
 
-- (BOOL)findSubviewInView:(UIView *)view matching:(BOOL(^)(UIView *view))test
+- (BOOL)findSubviewInView:(NSView *)view matching:(BOOL(^)(NSView *view))test
 {
   if (test(view)) {
     return YES;
   }
-  for (UIView *subview in [view subviews]) {
+  for (NSView *subview in [view subviews]) {
     if ([self findSubviewInView:subview matching:test]) {
       return YES;
     }
@@ -37,7 +37,7 @@
 
 - (void)testRendersWelcomeScreen
 {
-  UIViewController *vc = [[[RCTSharedApplication() delegate] window] rootViewController];
+  NSViewController *vc = [[[RCTSharedApplication() delegate] window] rootViewController];
   NSDate *date = [NSDate dateWithTimeIntervalSinceNow:TIMEOUT_SECONDS];
   BOOL foundElement = NO;
 

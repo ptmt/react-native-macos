@@ -44,7 +44,7 @@ let exitCode;
 
 try {
   // install CLI
-  cd('react-native-cli');
+  cd('react-native-macos-cli');
   exec('npm pack');
   const CLI_PACKAGE = path.join(ROOT, 'react-native-macos-cli', 'react-native-macos-cli-*.tgz');
   cd('..');
@@ -68,7 +68,7 @@ try {
   }
 
   if (exec('npm pack').code) {
-    echo('Failed to pack react-native');
+    echo('Failed to pack react-native-macos');
     exitCode = 1;
     throw Error(exitCode);
   }
