@@ -29,7 +29,7 @@
 //
 
 #import "UIImage+Compare.h"
-#import "UIImageUtils.h"
+#import "React/UIImageUtils.h"
 
 @implementation NSImage (Compare)
 

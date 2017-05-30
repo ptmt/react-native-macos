@@ -190,20 +190,20 @@
 - (void)testVariant
 {
   {
-    UIFont *expected = [UIFont monospacedDigitSystemFontOfSize:14 weight:UIFontWeightRegular];
-    UIFont *result = [RCTConvert UIFont:@{@"fontVariant": @[@"tabular-nums"]}];
+    NSFont *expected = [NSFont monospacedDigitSystemFontOfSize:14 weight:NSFontWeightRegular];
+    NSFont *result = [RCTConvert NSFont:@{@"fontVariant": @[@"tabular-nums"]}];
     RCTAssertEqualFonts(expected, result);
   }
   {
-    UIFont *monospaceFont = [UIFont monospacedDigitSystemFontOfSize:14 weight:UIFontWeightRegular];
-    UIFontDescriptor *fontDescriptor = [monospaceFont.fontDescriptor fontDescriptorByAddingAttributes:@{
-      UIFontDescriptorFeatureSettingsAttribute: @[@{
-        UIFontFeatureTypeIdentifierKey: @(kLowerCaseType),
-        UIFontFeatureSelectorIdentifierKey: @(kLowerCaseSmallCapsSelector),
+    NSFont *monospaceFont = [NSFont monospacedDigitSystemFontOfSize:14 weight:NSFontWeightRegular];
+    NSFontDescriptor *fontDescriptor = [monospaceFont.fontDescriptor fontDescriptorByAddingAttributes:@{
+      NSFontFeatureSettingsAttribute: @[@{
+        NSFontFeatureTypeIdentifierKey: @(kLowerCaseType),
+        NSFontFeatureSelectorIdentifierKey: @(kLowerCaseSmallCapsSelector),
       }]
     }];
-    UIFont *expected = [UIFont fontWithDescriptor:fontDescriptor size:14];
-    UIFont *result = [RCTConvert UIFont:@{@"fontVariant": @[@"tabular-nums", @"small-caps"]}];
+    NSFont *expected = [NSFont fontWithDescriptor:fontDescriptor size:14];
+    NSFont *result = [RCTConvert NSFont:@{@"fontVariant": @[@"tabular-nums", @"small-caps"]}];
     RCTAssertEqualFonts(expected, result);
   }
 }

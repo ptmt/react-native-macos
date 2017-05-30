@@ -16,7 +16,7 @@
 #import <objc/runtime.h>
 
 #import <AppKit/AppKit.h>
-#import "UIImageUtils.h"
+#import "React/UIImageUtils.h"
 
 NSString *const FBSnapshotTestControllerErrorDomain = @"FBSnapshotTestControllerErrorDomain";
 
