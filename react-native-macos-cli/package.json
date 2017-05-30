@@ -1,5 +1,5 @@
 {
-  "name": "react-native-cli",
+  "name": "react-native-macos-cli",
   "version": "2.0.1",
   "license": "BSD-3-Clause",
   "description": "The React Native macOS CLI tools",

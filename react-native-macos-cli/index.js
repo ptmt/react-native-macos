@@ -255,7 +255,7 @@ function createProject(name, options) {
 }
 
 function getInstallPackage(rnPackage) {
-  var packageToInstall = 'react-native';
+  var packageToInstall = 'react-native-macos';
   var isValidSemver = semver.valid(rnPackage);
   if (isValidSemver) {
     packageToInstall += '@' + isValidSemver;
