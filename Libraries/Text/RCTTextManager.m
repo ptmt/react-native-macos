@@ -10,7 +10,7 @@
 #import "RCTTextManager.h"
 
 #import <yoga/Yoga.h>
-#import <React/RCTAccessibilityManager.h>
+// #import <React/RCTAccessibilityManager.h>
 #import <React/RCTAssert.h>
 #import <React/RCTConvert.h>
 #import <React/RCTLog.h>
