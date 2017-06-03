@@ -7,12 +7,28 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "AppDelegate.h"
 
 int main(int argc, char * argv[]) {
   @autoreleasepool {
-    return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
+    NSApplication * application = [NSApplication sharedApplication];
+    NSMenu *mainMenu = [[NSMenu alloc] initWithTitle:@"Application"];
+    [NSApp setMainMenu:mainMenu];
+    AppDelegate * appDelegate = [[AppDelegate alloc] init];
+    [application setDelegate:appDelegate];
+    if (argc > 1) {
+      NSMutableArray *argvArray = [[NSMutableArray alloc] init];
+      for (int i = 1; i < argc; i++) {
+        [argvArray addObject:[[NSString alloc] initWithUTF8String:argv[i]]];
+      }
+      [appDelegate setArgv:argvArray];
+    } else {
+      [appDelegate setArgv:[[NSArray alloc] init]];
+    }
+
+    [application run];
+    return EXIT_SUCCESS;
   }
 }

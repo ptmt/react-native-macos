@@ -9,8 +9,12 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class RCTBridge;
+
 @interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate>
 
 @property (nonatomic, strong) NSWindow *window;
+@property (strong, nonatomic) NSArray<NSString *> *argv;
+@property (nonatomic, readonly) RCTBridge *bridge;
 
 @end
