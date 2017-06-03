@@ -9,7 +9,8 @@
 
 #import "RCTShadowText.h"
 
-#import <React/RCTAccessibilityManager.h>
+// TODO: (critical) Fix accessibility
+// #import <React/RCTAccessibilityManager.h>
 #import <React/RCTBridge.h>
 #import <React/RCTConvert.h>
 #import <React/RCTFont.h>
@@ -558,7 +559,7 @@ static YGSize RCTMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, f
        NSFont *originalFont = [self.attributedString attribute:NSFontAttributeName
                                                        atIndex:range.location
                                                 effectiveRange:&range];
-  
+
        NSFont *newFont = [NSFont fontWithName: originalFont.fontName size:originalFont.pointSize * scale];
        [textStorage removeAttribute:NSFontAttributeName range:range];
        [textStorage addAttribute:NSFontAttributeName value:newFont range:range];

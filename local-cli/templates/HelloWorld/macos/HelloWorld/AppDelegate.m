@@ -50,11 +50,10 @@
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"HelloWorld"
                                                initialProperties:nil
-                                                   launchOptions:launchOptions];
+                                                   launchOptions:@{@"argv": [self argv]}];
   // try NSVisualEffectMaterialDark or NSVisualEffectMaterialMediumLight
   rootView.material = NSVisualEffectMaterialAppearanceBased;
   [self.window setContentView:rootView];
-  return YES;
 }
 
 - (void)setUpApplicationMenu

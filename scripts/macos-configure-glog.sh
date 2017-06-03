@@ -1,11 +1,28 @@
 #!/bin/bash
 set -e
 
-# Fix name conflicts with macOS
-cat << EOF >> folly/prepend.h
+# Only set when not running in an Xcode context
+# if [ -z "$ACTION" ] || [ -z "$BUILD_DIR" ]; then
+#   echo "not in xcode"
+#   export CC="$(xcrun -find -sdk iphoneos cc) -arch armv7 -isysroot $(xcrun -sdk iphoneos --show-sdk-path)"
+# fi
+
+./configure
+
+# Fix build for tvOS
+cat << EOF >> src/config.h
+
+/* Add in so we have Apple Target Conditionals */
 #ifdef __APPLE__
+#include <TargetConditionals.h>
+#include <Availability.h>
 #undef check
 #endif
-EOF
 
-echo "$(cat folly/prepend.h)\n$(cat folly/dynamic.h)" > folly/dynamic.h
+/* Special configuration for AppleTVOS */
+#if TARGET_OS_TV
+#undef HAVE_SYSCALL_H
+#undef HAVE_SYS_SYSCALL_H
+#undef OS_MACOSX
+#endif
+EOF

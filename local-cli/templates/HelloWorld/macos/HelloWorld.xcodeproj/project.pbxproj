@@ -866,7 +866,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HelloWorld.app/HelloWorld";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HelloWorld.app/Contents/MacOS/HelloWorld";
 			};
 			name = Debug;
 		};
@@ -884,7 +884,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HelloWorld.app/HelloWorld";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HelloWorld.app/Contents/MacOS/HelloWorld";
 			};
 			name = Release;
 		};
