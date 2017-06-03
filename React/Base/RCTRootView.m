@@ -63,7 +63,7 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
   if (!bridge.isLoading) {
     [bridge.performanceLogger markStartForTag:RCTPLTTI];
   }
-    
+
   // TODO: Turn on layer backing just to avoid https://github.com/ptmt/react-native-macos/issues/47
   // Maybe we could turn it off after the bug fixed in the future.
   if (([self window].styleMask & NSFullSizeContentViewWindowMask) != NSFullSizeContentViewWindowMask
@@ -149,7 +149,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
                                                               options:NSTrackingActiveInActiveApp | NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved | NSTrackingInVisibleRect
                                                                 owner:self
                                                              userInfo:nil];
-  
+
   [self addTrackingArea:trackingArea];
 }
 
@@ -203,11 +203,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 {
   [super layout];
   _contentView.frame = self.bounds;
-  [_loadingView setFrameOrigin:NSMakePoint(
-                                      (NSWidth([_contentView bounds]) - NSWidth([_contentView frame])) / 2,
-                                      (NSHeight([_contentView bounds]) - NSHeight([_contentView frame])) / 2
-                                      )];
-  [_loadingView setAutoresizingMask:NSViewMinXMargin | NSViewMaxXMargin | NSViewMinYMargin | NSViewMaxYMargin];
 }
 
 - (NSViewController *)reactViewController

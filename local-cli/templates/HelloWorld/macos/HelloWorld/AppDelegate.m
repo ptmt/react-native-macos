@@ -19,22 +19,22 @@
 {
   if(self = [super init]) {
     NSRect contentSize = NSMakeRect(200, 500, 1000, 500); // initial size of main NSWindow
-    
+
     self.window = [[NSWindow alloc] initWithContentRect:contentSize
                                               styleMask:NSTitledWindowMask | NSResizableWindowMask | NSFullSizeContentViewWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask
                                                 backing:NSBackingStoreBuffered
                                                   defer:NO];
     NSWindowController *windowController = [[NSWindowController alloc] initWithWindow:self.window];
-    
+
     [[self window] setTitleVisibility:NSWindowTitleHidden];
     [[self window] setTitlebarAppearsTransparent:YES];
     [[self window] setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameAqua]];
-    
+
     [windowController setShouldCascadeWindows:NO];
     [windowController setWindowFrameAutosaveName:@"HelloWorld"];
-    
+
     [windowController showWindow:self.window];
-    
+
     [self setUpApplicationMenu];
   }
   return self;
@@ -51,7 +51,8 @@
                                                       moduleName:@"HelloWorld"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
-
+  // try NSVisualEffectMaterialDark or NSVisualEffectMaterialMediumLight
+  rootView.material = NSVisualEffectMaterialAppearanceBased;
   [self.window setContentView:rootView];
   return YES;
 }

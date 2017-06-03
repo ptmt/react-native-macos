@@ -138,9 +138,6 @@ static void collectNonTextDescendants(RCTText *view, NSMutableArray *nonTextDesc
 
 - (void)reactSetFrame:(CGRect)frame
 {
-  if (self.inLiveResize && !self.respondsToLiveResizing) {
-    return;
-  }
   [super reactSetFrame:frame];
 }
 
@@ -270,7 +267,7 @@ static void collectNonTextDescendants(RCTText *view, NSMutableArray *nonTextDesc
 
 - (void)enableContextMenu
 {
-  
+
 }
 
 - (void)disableContextMenu
@@ -287,7 +284,7 @@ static void collectNonTextDescendants(RCTText *view, NSMutableArray *nonTextDesc
 //  if (_selectable && action == @selector(copy:)) {
 //    return YES;
 //  }
-//  
+//
 //  return [self.nextResponder canPerformAction:action withSender:sender];
 //}
 

@@ -69,7 +69,7 @@ class Button extends React.Component {
     /**
      * Text to display inside the button
      */
-    title: PropTypes.string.isRequired,
+    title: PropTypes.string,
     /**
      * Text to display for blindness accessibility features
      */
@@ -85,7 +85,7 @@ class Button extends React.Component {
     /**
      * Handler to be called when the user taps the button
      */
-    onPress: PropTypes.func.isRequired,
+    onPress: PropTypes.func,
     /**
      * Used to locate this view in end-to-end tests.
      */
@@ -172,10 +172,12 @@ class Button extends React.Component {
       buttonStyles.push(styles.buttonDisabled);
       textStyles.push(styles.textDisabled);
     }
-    invariant(
-      typeof title === 'string',
-      'The title prop of a Button must be a string'
-    );
+    if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      invariant(
+        typeof title === 'string',
+        'The title prop of a Button must be a string'
+      );
+    }
     const formattedTitle = Platform.OS === 'android'
       ? title.toUpperCase()
       : title;
