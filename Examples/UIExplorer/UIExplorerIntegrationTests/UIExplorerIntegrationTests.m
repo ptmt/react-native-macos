@@ -12,6 +12,7 @@
 
 #import <RCTTest/RCTTestRunner.h>
 
+
 #define RCT_TEST(name)                  \
 - (void)test##name                      \
 {                                       \
@@ -37,10 +38,8 @@
 
 - (void)setUp
 {
-  NSOperatingSystemVersion version = [NSProcessInfo processInfo].operatingSystemVersion;
-  RCTAssert((version.majorVersion == 10 && version.minorVersion >= 10), @"Tests should be run on OSX 10.10+, found %zd.%zd.%zd", version.majorVersion, version.minorVersion, version.patchVersion);
   _runner = RCTInitRunnerForApp(@"IntegrationTests/IntegrationTestsApp", nil);
-
+  _runner.recordMode = NO;
 }
 
 #pragma mark - Test harness

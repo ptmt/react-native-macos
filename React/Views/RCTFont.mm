@@ -94,13 +94,14 @@ static NSFont *cachedSystemFont(CGFloat size, RCTFontWeight weight)
       if (weight >= NSFontWeightBold) {
         font = [NSFont boldSystemFontOfSize:size];
       } else if (weight >= NSFontWeightMedium) {
-        font = [NSFont fontWithName:@"HelveticaNeue-Medium" size:size];
+        font = [NSFont systemFontOfSize:size weight:NSFontWeightMedium];
       } else if (weight <= NSFontWeightLight) {
-        font = [NSFont fontWithName:@"HelveticaNeue-Light" size:size];
+        font = [NSFont systemFontOfSize:size weight:NSFontWeightLight];
       } else {
         font = [NSFont systemFontOfSize:size];
       }
     }
+    
 
     {
       std::lock_guard<std::mutex> lock(fontCacheMutex);
@@ -280,20 +281,23 @@ RCT_ARRAY_CONVERTER(RCTFontVariantDescriptor)
   }
 
   // Get the closest font that matches the given weight for the fontFamily
-  CGFloat closestWeight = INFINITY;
-  for (NSArray *fontFamily in [[NSFontManager sharedFontManager] availableMembersOfFontFamily:familyName]) {
-    NSString *name = fontFamily[0];
-    NSFont *match = [NSFont fontWithName:name size:fontSize];
-    if (isItalic == isItalicFont(match) &&
-        isCondensed == isCondensedFont(match)) {
-      CGFloat testWeight = weightOfFont(match);
-      if (ABS(testWeight - fontWeight) < ABS(closestWeight - fontWeight)) {
-        font = match;
-        closestWeight = testWeight;
+  if (!font) {
+    CGFloat closestWeight = INFINITY;
+    for (NSArray *fontFamily in [[NSFontManager sharedFontManager] availableMembersOfFontFamily:familyName]) {
+      NSString *name = fontFamily[0];
+      NSFont *match = [NSFont fontWithName:name size:fontSize];
+      if (isItalic == isItalicFont(match) &&
+          isCondensed == isCondensedFont(match)) {
+        CGFloat testWeight = weightOfFont(match);
+        if (ABS(testWeight - fontWeight) < ABS(closestWeight - fontWeight)) {
+          font = match;
+          closestWeight = testWeight;
+        }
       }
     }
-  }
 
+  }
+ 
   // If we still don't have a match at least return the first font in the fontFamily
   // This is to support built-in font Zapfino and other custom single font families like Impact
   if (!font) {

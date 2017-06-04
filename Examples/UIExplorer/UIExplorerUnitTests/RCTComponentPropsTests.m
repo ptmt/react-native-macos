@@ -161,7 +161,7 @@ RCT_CUSTOM_VIEW_PROPERTY(customProp, NSString, RCTPropsTestView)
     [uiManager updateView:@2 viewName:@"RCTView" props:resetProps];
     [uiManager addUIBlock:^(__unused RCTUIManager *_uiManager, __unused NSDictionary<NSNumber *,NSView *> *viewRegistry) {
       view = (RCTView *)viewRegistry[@2];
-      XCTAssert(view.layer); //TODO: move setBackgroundColor to NSView
+      XCTAssertNil(view.layer); //TODO: move setBackgroundColor to NSView
     }];
     [uiManager setNeedsLayout];
   });

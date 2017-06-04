@@ -29,9 +29,6 @@
 - (void)setUp
 {
   _runner = RCTInitRunnerForApp(@"Examples/UIExplorer/js/UIExplorerApp.ios", nil);
-  if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 10) {
-    _runner.testSuffix = @"-iOS10";
-  }
   _runner.recordMode = NO;
 }
 

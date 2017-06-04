@@ -14,8 +14,7 @@ ROOT=$(dirname "$SCRIPTS")
 cd "$ROOT"
 
 SCHEME="UIExplorer"
-SDK="$SDK_TO_TEST" # Set by TravisCI.
-SDK=
+SDK="macosx10.12"
 DESTINATION="platform=OS X,arch=x86_64"
 
 # If there is a "test" argument, pass it to the test script.

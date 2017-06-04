@@ -19,11 +19,11 @@
 #import <React/RCTBridge.h>
 #import <React/RCTDevMenu.h>
 
-typedef void(^RCTDevMenuAlertActionHandler)(UIAlertAction *action);
+// typedef void(^RCTDevMenuAlertActionHandler)(UIAlertAction *action);
 
 @interface RCTDevMenu ()
 
-- (RCTDevMenuAlertActionHandler)alertActionHandlerForDevItem:(RCTDevMenuItem *)item;
+// - (RCTDevMenuAlertActionHandler)alertActionHandlerForDevItem:(RCTDevMenuItem *)item;
 
 @end
 
@@ -53,20 +53,6 @@ typedef void(^RCTDevMenuAlertActionHandler)(UIAlertAction *action);
   XCTAssertFalse([_bridge.devMenu isActionSheetShown]);
   [_bridge.devMenu show];
   XCTAssertTrue([_bridge.devMenu isActionSheetShown]);
-}
-
-- (void)testClosingActionSheetAfterAction
-{
-  for (RCTDevMenuItem *item in _bridge.devMenu.presentedItems) {
-    RCTDevMenuAlertActionHandler handler = [_bridge.devMenu alertActionHandlerForDevItem:item];
-    XCTAssertTrue([_bridge.devMenu isActionSheetShown]);
-
-    handler(nil);
-    XCTAssertFalse([_bridge.devMenu isActionSheetShown]);
-
-    [_bridge.devMenu show];
-    XCTAssertTrue([_bridge.devMenu isActionSheetShown]);
-  }
 }
 
 @end

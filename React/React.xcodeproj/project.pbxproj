@@ -573,7 +573,6 @@
 		3D80DA1F1DF820620028D040 /* RCTPushNotificationManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D1FA08D1DE4F4EE00E03CC6 /* RCTPushNotificationManager.h */; };
 		3D80DA201DF820620028D040 /* RCTAssert.h in Headers */ = {isa = PBXBuildFile; fileRef = 83CBBA4A1A601E3B00E9B192 /* RCTAssert.h */; };
 		3D80DA211DF820620028D040 /* RCTBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 83CBBA5E1A601EAA00E9B192 /* RCTBridge.h */; };
-		3D80DA221DF820620028D040 /* RCTBridge+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 14A43DB81C1F849600794BC8 /* RCTBridge+Private.h */; };
 		3D80DA231DF820620028D040 /* RCTBridgeDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1482F9E61B55B927000ADFF3 /* RCTBridgeDelegate.h */; };
 		3D80DA241DF820620028D040 /* RCTBridgeMethod.h in Headers */ = {isa = PBXBuildFile; fileRef = 13AFBCA11C07287B00BBAEAA /* RCTBridgeMethod.h */; };
 		3D80DA251DF820620028D040 /* RCTBridgeModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 830213F31A654E0800B993E6 /* RCTBridgeModule.h */; };
@@ -908,6 +907,8 @@
 		D465D6A91EC73B88008FBA05 /* RCTCursorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D465D6A71EC73B88008FBA05 /* RCTCursorManager.m */; };
 		D465D6AC1EC73B91008FBA05 /* RCTMenuManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D465D6AA1EC73B91008FBA05 /* RCTMenuManager.h */; };
 		D465D6AD1EC73B91008FBA05 /* RCTMenuManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D465D6AB1EC73B91008FBA05 /* RCTMenuManager.m */; };
+		D4946EA41EE425C9005FD93C /* RCTBridge+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 14A43DB81C1F849600794BC8 /* RCTBridge+Private.h */; };
+		D4946EA51EE42601005FD93C /* RCTBridge+Private.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 14A43DB81C1F849600794BC8 /* RCTBridge+Private.h */; };
 		D4EED0441ECB11AB00916991 /* UIImageUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = D4EED0421ECB11AB00916991 /* UIImageUtils.h */; };
 		D4EED0451ECB11AB00916991 /* UIImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EED0431ECB11AB00916991 /* UIImageUtils.m */; };
 		D4EED0461ECB11C200916991 /* UIImageUtils.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = D4EED0421ECB11AB00916991 /* UIImageUtils.h */; };
@@ -1176,6 +1177,7 @@
 			dstPath = include/React;
 			dstSubfolderSpec = 16;
 			files = (
+				D4946EA51EE42601005FD93C /* RCTBridge+Private.h in Copy Headers */,
 				D4EED0461ECB11C200916991 /* UIImageUtils.h in Copy Headers */,
 				D44BE28A1EC9F646007E8CF4 /* NSView+React.h in Copy Headers */,
 				3D7BFD311EA8E41F008DFB7A /* RCTPackagerClient.h in Copy Headers */,
@@ -2635,6 +2637,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4946EA41EE425C9005FD93C /* RCTBridge+Private.h in Headers */,
 				3D80DA191DF820620028D040 /* RCTImageLoader.h in Headers */,
 				13134C941E296B2A00B9F3CB /* RCTObjcExecutor.h in Headers */,
 				3D80DA1A1DF820620028D040 /* RCTImageStoreManager.h in Headers */,
@@ -2649,7 +2652,6 @@
 				3D80DA201DF820620028D040 /* RCTAssert.h in Headers */,
 				3D80DA211DF820620028D040 /* RCTBridge.h in Headers */,
 				13F880381E296D2800C3C7A1 /* JSCWrapper.h in Headers */,
-				3D80DA221DF820620028D040 /* RCTBridge+Private.h in Headers */,
 				3D7BFD211EA8E351008DFB7A /* RCTReloadPackagerMethod.h in Headers */,
 				3D80DA231DF820620028D040 /* RCTBridgeDelegate.h in Headers */,
 				3D80DA241DF820620028D040 /* RCTBridgeMethod.h in Headers */,

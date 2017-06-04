@@ -132,8 +132,6 @@ static ControlBlock reactContentSizeUpdateBlock(RCTRootViewSizeFlexibility sizeF
 
 - (void)setUp
 {
-  NSOperatingSystemVersion version = [NSProcessInfo processInfo].operatingSystemVersion;
-  RCTAssert((version.majorVersion == 10 && version.minorVersion >= 10) || version.majorVersion >= 3, @"Tests should be run on OX 10.10.x+, found %zd.%zd.%zd", version.majorVersion, version.minorVersion, version.patchVersion);
   _runner = RCTInitRunnerForApp(@"IntegrationTests/RCTRootViewIntegrationTestApp", nil);
 }
 

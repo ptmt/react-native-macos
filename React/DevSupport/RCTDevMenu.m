@@ -102,6 +102,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 @implementation RCTDevMenu
 {
   NSMutableArray<RCTDevMenuItem *> *_extraMenuItems;
+  BOOL isShown;
 }
 
 @synthesize bridge = _bridge;
@@ -119,6 +120,7 @@ RCT_EXPORT_MODULE()
 - (instancetype)init
 {
   if ((self = [super init])) {
+    isShown = NO;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(showOnShake)
                                                  name:RCTShowDevMenuNotification
@@ -174,7 +176,7 @@ RCT_EXPORT_MODULE()
 
 - (BOOL)isActionSheetShown
 {
-  return YES;
+  return isShown;
 }
 
 - (void)toggle
@@ -291,6 +293,8 @@ RCT_EXPORT_METHOD(show)
   if (!_bridge || RCTRunningInAppExtension()) {
     return;
   }
+  
+  isShown = YES;
   
   NSArray<RCTDevMenuItem *> *items = [self _menuItemsToPresent];
   NSMenu *developerMenu = [self getDeveloperMenu];

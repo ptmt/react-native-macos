@@ -109,6 +109,7 @@
 		D44BE26A1EC741E4007E8CF4 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D44BE2511EC741D7007E8CF4 /* libRCTLinking.a */; };
 		D44BE27D1EC775F6007E8CF4 /* libcxxreact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D05748C1DE6008900184BB4 /* libcxxreact.a */; };
 		D48573601EDC4D07005C4623 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D48BABFB1ED8712100616092 /* libRCTAnimation.a */; };
+		D4946EA61EE42870005FD93C /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D48BABFB1ED8712100616092 /* libRCTAnimation.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -430,6 +431,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4946EA61EE42870005FD93C /* libRCTAnimation.a in Frameworks */,
 				14D6D7211B2222EF001FB087 /* libRCTImage.a in Frameworks */,
 				14D6D7221B2222EF001FB087 /* libRCTNetwork.a in Frameworks */,
 				14D6D7251B2222EF001FB087 /* libRCTTest.a in Frameworks */,
@@ -1467,7 +1469,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/UIExplorerUnitTests",
+					"$(PROJECT_DIR)/UIExplorerUnitTests",
 				);
 				INFOPLIST_FILE = UIExplorerUnitTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1486,7 +1488,7 @@
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/UIExplorerUnitTests",
+					"$(PROJECT_DIR)/UIExplorerUnitTests",
 				);
 				INFOPLIST_FILE = UIExplorerUnitTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;

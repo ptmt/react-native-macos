@@ -12,17 +12,10 @@
 'use strict';
 
 var requestAnimationFrame = require('fbjs/lib/requestAnimationFrame');
-<<<<<<< HEAD
-var React = require('React');
-=======
 var React = require('react');
 var PropTypes = require('prop-types');
->>>>>>> 1dd7bc151571f9d92a7bac30ee36d79be86ac506
 var ReactNative = require('react-native');
-var {
-  Text,
-  View,
-} = ReactNative;
+var { Text, View } = ReactNative;
 var { TestModule } = ReactNative.NativeModules;
 
 class IntegrationTestHarnessTest extends React.Component {
@@ -57,14 +50,14 @@ class IntegrationTestHarnessTest extends React.Component {
     } else if (!TestModule.markTestCompleted) {
       throw new Error('RCTTestModule.markTestCompleted not defined.');
     }
-    this.setState({done: true}, () => {
+    this.setState({ done: true }, () => {
       TestModule.markTestCompleted();
     });
   };
 
   render() {
     return (
-      <View style={{backgroundColor: 'white', padding: 40}}>
+      <View style={{ backgroundColor: 'white', padding: 40 }}>
         <Text>
           {this.constructor.displayName + ': '}
           {this.state.done ? 'Done' : 'Testing...'}

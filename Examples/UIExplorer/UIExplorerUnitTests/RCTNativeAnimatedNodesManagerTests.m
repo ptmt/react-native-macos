@@ -22,7 +22,7 @@
 
 static const NSTimeInterval FRAME_LENGTH = 1.0 / 60.0;
 
-@interface RCTFakeDisplayLink : CADisplayLink
+@interface RCTFakeDisplayLink : NSTimer
 
 @end
 
@@ -41,6 +41,12 @@ static const NSTimeInterval FRAME_LENGTH = 1.0 / 60.0;
 }
 
 - (NSTimeInterval)timestamp
+{
+  _timestamp += FRAME_LENGTH;
+  return _timestamp;
+}
+
+- (NSTimeInterval)timeInterval
 {
   _timestamp += FRAME_LENGTH;
   return _timestamp;
