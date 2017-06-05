@@ -281,7 +281,7 @@ RCT_ARRAY_CONVERTER(RCTFontVariantDescriptor)
   }
 
   // Get the closest font that matches the given weight for the fontFamily
-  if (!font) {
+  if (![familyName isEqual:defaultFontFamily]) {
     CGFloat closestWeight = INFINITY;
     for (NSArray *fontFamily in [[NSFontManager sharedFontManager] availableMembersOfFontFamily:familyName]) {
       NSString *name = fontFamily[0];
