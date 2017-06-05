@@ -11,21 +11,37 @@
  */
 'use strict';
 
-var Platform = require('Platform');
 var React = require('React');
-var PropTypes = require('prop-types');
+const PropTypes = require('prop-types');
 var StyleSheet = require('StyleSheet');
-var { TestModule, UIManager } = require('NativeModules');
+var { TestModule } = require('NativeModules');
+var UIManager = require('UIManager');
 var View = require('View');
+
+const ViewPropTypes = require('ViewPropTypes');
 
 var requireNativeComponent = require('requireNativeComponent');
 
-var SnapshotViewIOS = React.createClass({
-  onDefaultAction: function(event: Object) {
-    TestModule.verifySnapshot(TestModule.markTestPassed);
-  },
+class SnapshotViewIOS extends React.Component {
+  props: {
+    onSnapshotReady?: Function,
+    testIdentifier?: string,
+  };
 
-  render: function() {
+  // $FlowFixMe(>=0.41.0)
+  static propTypes = {
+    ...ViewPropTypes,
+    // A callback when the Snapshot view is ready to be compared
+    onSnapshotReady: PropTypes.func,
+    // A name to identify the individual instance to the SnapshotView
+    testIdentifier: PropTypes.string,
+  };
+
+  onDefaultAction = (event: Object) => {
+    TestModule.verifySnapshot(TestModule.markTestPassed);
+  };
+
+  render() {
     var testIdentifier = this.props.testIdentifier || 'test';
     var onSnapshotReady = this.props.onSnapshotReady || this.onDefaultAction;
     return (
@@ -36,15 +52,8 @@ var SnapshotViewIOS = React.createClass({
         testIdentifier={testIdentifier}
       />
     );
-  },
-
-  propTypes: {
-    // A callback when the Snapshot view is ready to be compared
-    onSnapshotReady: PropTypes.func,
-    // A name to identify the individual instance to the SnapshotView
-    testIdentifier: PropTypes.string,
-  },
-});
+  }
+}
 
 var style = StyleSheet.create({
   snapshot: {

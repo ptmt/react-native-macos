@@ -59,7 +59,7 @@ function listTemplatesAndExit(newProjectName, options) {
 function createProjectFromTemplate(destPath, newProjectName, template, yarnVersion) {
   // Expand the basic 'HelloWorld' template
   copyProjectTemplateAndReplace(
-    path.resolve('node_modules', 'react-native', 'local-cli', 'templates', 'HelloWorld'),
+    path.resolve('node_modules', 'react-native-macos', 'local-cli', 'templates', 'HelloWorld'),
     destPath,
     newProjectName
   );
@@ -93,7 +93,7 @@ function createProjectFromTemplate(destPath, newProjectName, template, yarnVersi
 // publish them to npm and install from there.)
 function createFromBuiltInTemplate(templateName, destPath, newProjectName, yarnVersion) {
   const templatePath = path.resolve(
-    'node_modules', 'react-native', 'local-cli', 'templates', templateName
+    'node_modules', 'react-native-macos', 'local-cli', 'templates', templateName
   );
   copyProjectTemplateAndReplace(
     templatePath,

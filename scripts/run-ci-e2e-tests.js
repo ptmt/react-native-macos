@@ -30,13 +30,13 @@ const SCRIPTS = __dirname;
 const ROOT = path.normalize(path.join(__dirname, '..'));
 const tryExecNTimes = require('./try-n-times');
 
-const TEMP = exec('mktemp -d /tmp/react-native-XXXXXXXX').stdout.trim();
+const TEMP = exec('mktemp -d /tmp/react-native-macos-XXXXXXXX').stdout.trim();
 // To make sure we actually installed the local version
 // of react-native, we will create a temp file inside the template
 // and check that it exists after `react-native init
 const MARKER_IOS = exec(`mktemp ${ROOT}/local-cli/templates/HelloWorld/ios/HelloWorld/XXXXXXXX`).stdout.trim();
 const MARKER_ANDROID = exec(`mktemp ${ROOT}/local-cli/templates/HelloWorld/android/XXXXXXXX`).stdout.trim();
-const MARKER_MACOS = exec(`mktemp ${ROOT}/local-cli/templates/HelloWorld/macos/XXXXXXXX`).stdout.trim();
+const MARKER_MACOS = exec(`mktemp ${ROOT}/local-cli/templates/HelloWorld/macos/HelloWorld/XXXXXXXX`).stdout.trim();
 const numberOfRetries = argv.retries || 1;
 let SERVER_PID;
 let APPIUM_PID;
@@ -222,7 +222,7 @@ try {
         if (argv.tvos) {
           return exec('xcodebuild -destination "platform=tvOS Simulator,name=Apple TV 1080p,OS=10.0" -scheme EndToEndTest-tvOS -sdk appletvsimulator test | xcpretty && exit ${PIPESTATUS[0]}').code;
         } else {
-          return exec('xcodebuild -destination "platform=iOS Simulator,name=iPhone 5s,OS=10.0" -scheme EndToEndTest -sdk iphonesimulator test | xcpretty && exit ${PIPESTATUS[0]}').code;
+          return exec('xcodebuild -destination "platform=OS X,arch=x86_64" -scheme EndToEndTest -sdk macosx10.12 test | xcpretty && exit ${PIPESTATUS[0]}').code;
         }
       },
       numberOfRetries)) {
@@ -256,8 +256,8 @@ try {
 
 } finally {
   cd(ROOT);
-  rm(MARKER_IOS);
-  rm(MARKER_ANDROID);
+  // rm(MARKER_IOS);
+  // rm(MARKER_ANDROID);
   rm(MARKER_MACOS);
 
   if (SERVER_PID) {

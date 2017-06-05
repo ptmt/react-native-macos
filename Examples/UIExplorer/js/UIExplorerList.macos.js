@@ -15,18 +15,13 @@
  */
 'use strict';
 
-var React = require('react');
-var ReactNative = require('react-native');
-var {
-  AppRegistry,
-  Settings,
-  SnapshotViewIOS,
-  StyleSheet,
-} = ReactNative;
+const React = require('react');
+const ReactNative = require('react-native');
+const { AppRegistry, Settings, SnapshotViewIOS, StyleSheet } = ReactNative;
 
-var UIExplorerListBase = require('./UIExplorerListBase');
+const UIExplorerListBase = require('./UIExplorerListBase');
 
-var COMPONENTS = [
+export const Components = [
   require('./ActivityIndicatorExample'),
   require('./ButtonExample'),
   require('./DatePickerIOSExample'),
@@ -61,7 +56,7 @@ var APIS = [
   require('./XHRExample.macos'),
   require('./DragnDropExample.macos'),
   require('./MenuExample.macos'),
-  require('./PanResponderExample')
+  require('./PanResponderExample'),
 ];
 
 type Props = {
@@ -75,7 +70,7 @@ class UIExplorerList extends React.Component {
   render() {
     return (
       <UIExplorerListBase
-        components={COMPONENTS}
+        components={Components}
         apis={APIS}
         searchText={Settings.get('searchText')}
         renderAdditionalView={this.renderAdditionalView.bind(this)}
@@ -90,7 +85,7 @@ class UIExplorerList extends React.Component {
   }
 
   search(text: mixed) {
-    Settings.set({searchText: text});
+    Settings.set({ searchText: text });
   }
 
   onPressRow(example: any) {
@@ -100,7 +95,7 @@ class UIExplorerList extends React.Component {
 
   // Register suitable examples for snapshot tests
   static registerComponents() {
-    COMPONENTS.concat(APIS).forEach((Example) => {
+    COMPONENTS.concat(APIS).forEach(Example => {
       if (Example.displayName) {
         var Snapshotter = React.createClass({
           render: function() {

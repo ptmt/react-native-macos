@@ -14,19 +14,25 @@ var path = require('path');
 function printRunInstructions(projectDir, projectName) {
   const absoluteProjectDir = path.resolve(projectDir);
   // iOS
-  const xcodeProjectPath = path.resolve(projectDir, 'ios', projectName) + '.xcodeproj';
+  const xcodeProjectPath = path.resolve(projectDir, 'macos', projectName) + '.xcodeproj';
   const relativeXcodeProjectPath = path.relative(process.cwd(), xcodeProjectPath);
-  console.log(chalk.white.bold('To run your app on iOS:'));
+  // console.log(chalk.white.bold('To run your app on iOS:'));
+  // console.log('   cd ' + absoluteProjectDir);
+  // console.log('   react-native run-ios');
+  // console.log('   - or -');
+  // console.log('   Open ' + relativeXcodeProjectPath + ' in Xcode');
+  // console.log('   Hit the Run button');
+  // // Android
+  // console.log(chalk.white.bold('To run your app on Android:'));
+  // console.log('   cd ' + absoluteProjectDir);
+  // console.log('   Have an Android emulator running (quickest way to get started), or a device connected');
+  // console.log('   react-native run-android');
+  // macOS
+  console.log(chalk.white.bold('To run your app on macOS:'));
   console.log('   cd ' + absoluteProjectDir);
-  console.log('   react-native run-ios');
-  console.log('   - or -');
+  console.log('   react-native-macos run-macos');
   console.log('   Open ' + relativeXcodeProjectPath + ' in Xcode');
   console.log('   Hit the Run button');
-  // Android
-  console.log(chalk.white.bold('To run your app on Android:'));
-  console.log('   cd ' + absoluteProjectDir);
-  console.log('   Have an Android emulator running (quickest way to get started), or a device connected');
-  console.log('   react-native run-android');
 }
 
 module.exports = printRunInstructions;

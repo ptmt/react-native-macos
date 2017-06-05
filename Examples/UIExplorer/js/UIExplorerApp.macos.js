@@ -22,6 +22,7 @@ var UIExplorerList = require('./UIExplorerList.macos');
 
 var {
   AppRegistry,
+  SnapshotViewIOS,
   StyleSheet,
   View,
   Text,
@@ -36,19 +37,25 @@ class UIExplorerApp extends React.Component {
     super();
     this.state = {
       component: Welcome, //UIExplorerListBase.makeRenderable(BorderExample)
-      layout: defaultLayout
+      layout: defaultLayout,
     };
   }
 
   render() {
     var Component = this.state.component;
     return (
-      <View style={styles.container} onLayout={(e) => this.setState({layout: e.nativeEvent.layout})}>
-        <View style={[styles.leftPanel, {width: 300}]}>
-          <UIExplorerList openExample={(component) => this.setState({component})}/>
+      <View
+        style={styles.container}
+        onLayout={e => this.setState({ layout: e.nativeEvent.layout })}>
+        <View style={[styles.leftPanel, { width: 300 }]}>
+          <UIExplorerList
+            openExample={component => this.setState({ component })}
+          />
         </View>
-        <View style={[styles.rightPanel, {width: this.state.layout.width - 300}]}  respondsToLiveResizing>
-            {this.state.component && <Component />}
+        <View
+          style={[styles.rightPanel, { width: this.state.layout.width - 300 }]}
+          respondsToLiveResizing>
+          {this.state.component && <Component />}
         </View>
       </View>
     );
@@ -59,7 +66,9 @@ class Welcome extends React.Component {
   render() {
     return (
       <View style={styles.welcomeWrapper}>
-        <Text style={styles.welcomeText}>Choose an example on the left side</Text>
+        <Text style={styles.welcomeText}>
+          Choose an example on the left side
+        </Text>
       </View>
     );
   }
@@ -78,7 +87,7 @@ var styles = StyleSheet.create({
   },
   rightPanel: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   welcomeWrapper: {
     flex: 1,
@@ -88,9 +97,15 @@ var styles = StyleSheet.create({
   welcomeText: {
     color: '#999',
     fontSize: 20,
-  }
+  },
 });
 
 AppRegistry.registerComponent('UIExplorerApp', () => UIExplorerApp);
+AppRegistry.registerComponent('SetPropertiesExampleApp', () =>
+  require('./SetPropertiesExampleApp')
+);
+AppRegistry.registerComponent('RootViewSizeFlexibilityExampleApp', () =>
+  require('./RootViewSizeFlexibilityExampleApp')
+);
 
 module.exports = UIExplorerApp;
