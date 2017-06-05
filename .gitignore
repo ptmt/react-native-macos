@@ -50,7 +50,7 @@ node_modules
 
 # OS X
 .DS_Store
-.tgz
+*.tgz
 
 # Test generated files
 /ReactAndroid/src/androidTest/assets/AndroidTestBundle.js

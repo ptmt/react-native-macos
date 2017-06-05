@@ -94,6 +94,7 @@
     "init.sh",
     "scripts/macos-configure-glog.sh",
     "scripts/macos-install-third-party.sh",
+    "scripts/macos-configure-folly.sh",
     "jest-preset.json",
     "jest",
     "lib",
