@@ -37,7 +37,7 @@ trap cleanup EXIT
 
 if [ "$1" = "test" ]; then
 
-# Start the packager 
+# Start the packager
 open "./packager/launchPackager.command" || echo "Can't start packager automatically"
 # Start the WebSocket test server
 open "./IntegrationTests/launchWebSocketServer.command" || echo "Can't start web socket server automatically"
@@ -60,6 +60,7 @@ rm temp.bundle
 xcodebuild \
   -project "Examples/UIExplorer/UIExplorer.xcodeproj" \
   -scheme $SCHEME \
+  -configuration Debug \
   -sdk $SDK \
   -destination "$DESTINATION" \
   build test
@@ -72,8 +73,9 @@ else
 # been resolved.
 xcodebuild \
   -project "Examples/UIExplorer/UIExplorer.xcodeproj" \
+  -configuration Debug \
   -scheme $SCHEME \
   -sdk $SDK \
-  build 
+  build
 
 fi

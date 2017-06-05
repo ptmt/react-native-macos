@@ -7,7 +7,7 @@ Build macOS desktop applications using React Native.
 
 ```jsx
 <View>
-  <Button onClick={() => alert('clicked')} />
+  <Button onClick={() => alert('clicked!')} />
 </View>
 ```
 
@@ -22,15 +22,7 @@ $ react-native-macos init MyProject
 $ cd MyProject
 $ react-native-macos run-macos
 ```
-
-Please use these community resources for getting help. We use the GitHub issues for tracking bugs and feature requests and have limited bandwidth to address them.
-
-- Ask a question on [StackOverflow](https://stackoverflow.com/) and tag it with `react-native`
-- Chat with us on [Reactiflux](https://discord.gg/0ZcbPKXt5bWJVmUY) in #react-native
-- Articulate your feature request or upvote existing ones on [Canny](https://react-native.canny.io/feature-requests)
-- Start a thread on the [React Discussion Board](https://discuss.reactjs.org/)
-- Join #reactnative on IRC: chat.freenode.net
-- If it turns out that you may have found a bug, please [open an issue](#opening-issues)
+If you want to add macOS target to the existing iOS/Android/Windows project, make the steps above, merge this new folder into your current React Native project, then put [rn-cli.config.js](https://gist.github.com/ptmt/b1473dead098cf53d667e355aedf2a7b) in the root. 
 
 ## Documentation
 Since React Native macOS is just a fork, you can follow [the same instructions on the React Native Documentation](http://facebook.github.io/react-native/docs/getting-started.html#content).
@@ -39,7 +31,13 @@ Since React Native macOS is just a fork, you can follow [the same instructions o
 React Native macOS is a fork of React Native for iOS. The project is still a fairly new so proceed at your own risk.
 
 ## Community Help
-Feel free to ask anything on `#react-native-platforms` channel on Reactiflux if you happen to run into problems (mentioning @ptmt).
+
+Please use these community resources for getting help. We use the GitHub issues for tracking bugs and feature requests and have limited bandwidth to address them.
+
+- Ask a question on [StackOverflow](https://stackoverflow.com/) and tag it with `react-native-macos`
+- Chat with us on [Reactiflux](https://discord.gg/0ZcbPKXt5bWJVmUY) in ``#react-native-platforms` (mentioning @ptmt)
+- DM me on twitter (@ptmt)
+
 
 ## Examples
 ### UIExplorer
