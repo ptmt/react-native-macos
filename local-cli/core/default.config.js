@@ -15,6 +15,7 @@ const flatten = require('lodash').flatten;
 const android = require('./android');
 const findAssets = require('./findAssets');
 const ios = require('./ios');
+const macos = require('./macos');
 const windows = require('./windows');
 const wrapCommands = require('./wrapCommands');
 const findPlugins = require('./findPlugins');
@@ -77,6 +78,7 @@ const config = {
     const rnpm = getRNPMConfig(folder);
 
     return Object.assign({}, rnpm, {
+      macos: macos.dependencyConfig(folder, rnpm.ios || {}),
       ios: ios.projectConfig(folder, rnpm.ios || {}),
       android: android.projectConfig(folder, rnpm.android || {}),
       windows: windows.projectConfig(folder, rnpm.windows || {}),
@@ -90,6 +92,7 @@ const config = {
     );
 
     return Object.assign({}, rnpm, {
+      macos: macos.dependencyConfig(folder, rnpm.ios || {}),
       ios: ios.dependencyConfig(folder, rnpm.ios || {}),
       android: android.dependencyConfig(folder, rnpm.android || {}),
       windows: windows.dependencyConfig(folder, rnpm.windows || {}),
