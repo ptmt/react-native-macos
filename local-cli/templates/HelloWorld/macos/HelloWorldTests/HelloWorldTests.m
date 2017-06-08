@@ -13,7 +13,7 @@
 #import <React/RCTLog.h>
 #import <React/RCTRootView.h>
 
-#define TIMEOUT_SECONDS 600
+#define TIMEOUT_SECONDS 6
 #define TEXT_TO_LOOK_FOR @"Welcome to React Native macOS!"
 
 @interface HelloWorldTests : XCTestCase

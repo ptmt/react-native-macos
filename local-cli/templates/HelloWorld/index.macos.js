@@ -5,7 +5,8 @@
  */
 
 import React, { Component } from 'react';
-import { AppRegistry, StyleSheet, Text, View } from 'react-native';
+
+import { AppRegistry, StyleSheet, Text, View } from 'react-native-macos';
 
 export default class HelloWorld extends Component {
   render() {
