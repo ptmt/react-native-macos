@@ -32,7 +32,7 @@ var {
   Text,
   TouchableHighlight,
   TouchableOpacity,
-  Platform,
+  TouchableNativeFeedback,
   View,
 } = ReactNative;
 

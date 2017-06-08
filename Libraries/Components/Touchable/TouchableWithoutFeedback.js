@@ -98,6 +98,8 @@ const TouchableWithoutFeedback = React.createClass({
      * views.
      */
     hitSlop: EdgeInsetsPropType,
+    onMouseEnter: PropTypes.func,
+    onMouseLeave: PropTypes.func,
   },
 
   getInitialState: function() {

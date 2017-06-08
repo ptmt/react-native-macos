@@ -33,7 +33,7 @@ var {
   TouchableWithoutFeedback,
   TouchableOpacity,
   View,
-  WebView
+  WebView,
 } = ReactNative;
 
 var HEADER = '#3b5998';
@@ -56,7 +56,7 @@ class WebViewExample extends React.Component {
 
   inputText = '';
 
-  handleTextInputChange = (event) => {
+  handleTextInputChange = event => {
     var url = event.nativeEvent.text;
     if (!/^[a-zA-Z-_]+:/.test(url)) {
       url = 'http://' + url;
@@ -72,14 +72,22 @@ class WebViewExample extends React.Component {
         <View style={[styles.addressBarRow]}>
           <TouchableOpacity
             onPress={this.goBack}
-            style={this.state.backButtonEnabled ? styles.navButton : styles.disabledButton}>
+            style={
+              this.state.backButtonEnabled
+                ? styles.navButton
+                : styles.disabledButton
+            }>
             <Text>
-               {'<'}
+              {'<'}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this.goForward}
-            style={this.state.forwardButtonEnabled ? styles.navButton : styles.disabledButton}>
+            style={
+              this.state.forwardButtonEnabled
+                ? styles.navButton
+                : styles.disabledButton
+            }>
             <Text>
               {'>'}
             </Text>
@@ -96,7 +104,7 @@ class WebViewExample extends React.Component {
           <TouchableOpacity onPress={this.pressGoButton}>
             <View style={styles.goButton}>
               <Text>
-                 Go!
+                Go!
               </Text>
             </View>
           </TouchableOpacity>
@@ -105,7 +113,7 @@ class WebViewExample extends React.Component {
           ref={WEBVIEW_REF}
           automaticallyAdjustContentInsets={false}
           style={styles.webView}
-          source={{uri: this.state.url}}
+          source={{ uri: this.state.url }}
           javaScriptEnabled={true}
           domStorageEnabled={true}
           decelerationRate="normal"
@@ -133,24 +141,24 @@ class WebViewExample extends React.Component {
     this.refs[WEBVIEW_REF].reload();
   };
 
-  onShouldStartLoadWithRequest = (event) => {
+  onShouldStartLoadWithRequest = event => {
     // Implement any custom loading logic here, don't forget to return!
-    console.log('onShouldStartLoadWithRequest')
+    console.log('onShouldStartLoadWithRequest');
     return true;
   };
 
-  onNavigationStateChange = (navState) => {
+  onNavigationStateChange = navState => {
     this.setState({
       backButtonEnabled: navState.canGoBack,
       forwardButtonEnabled: navState.canGoForward,
       url: navState.url,
       status: navState.title,
       loading: navState.loading,
-      scalesPageToFit: true
+      scalesPageToFit: true,
     });
   };
 
-  onSubmitEditing = (event) => {
+  onSubmitEditing = event => {
     this.pressGoButton();
   };
 
@@ -199,21 +207,19 @@ class ScaledWebView extends React.Component {
             backgroundColor: BGWASH,
             height: 200,
           }}
-          source={{uri: 'https://facebook.github.io/react/'}}
+          source={{ uri: 'https://facebook.github.io/react/' }}
           scalesPageToFit={this.state.scalingEnabled}
         />
         <View style={styles.buttons}>
-        { this.state.scalingEnabled ?
-          <Button
-            text="Scaling:ON"
-            enabled={true}
-            onPress={() => this.setState({scalingEnabled: false})}
-          /> :
-          <Button
-            text="Scaling:OFF"
-            enabled={true}
-            onPress={() => this.setState({scalingEnabled: true})}
-          /> }
+          {this.state.scalingEnabled
+            ? <Button
+                title="Scaling:ON"
+                onPress={() => this.setState({ scalingEnabled: false })}
+              />
+            : <Button
+                title="Scaling:OFF"
+                onPress={() => this.setState({ scalingEnabled: true })}
+              />}
         </View>
       </View>
     );
@@ -221,39 +227,47 @@ class ScaledWebView extends React.Component {
 }
 
 class MessagingTest extends React.Component {
-  webview = null
+  webview = null;
 
   state = {
     messagesReceivedFromWebView: 0,
     message: '',
-  }
+  };
 
-  onMessage = e => this.setState({
-    messagesReceivedFromWebView: this.state.messagesReceivedFromWebView + 1,
-    message: e.nativeEvent.data,
-  })
+  onMessage = e =>
+    this.setState({
+      messagesReceivedFromWebView: this.state.messagesReceivedFromWebView + 1,
+      message: e.nativeEvent.data,
+    });
 
   postMessage = () => {
     if (this.webview) {
       this.webview.postMessage('"Hello" from React Native!');
     }
-  }
+  };
 
   render(): ReactElement<any> {
-    const {messagesReceivedFromWebView, message} = this.state;
+    const { messagesReceivedFromWebView, message } = this.state;
 
     return (
       <View style={[styles.container, { height: 200 }]}>
         <View style={styles.container}>
-          <Text>Messages received from web view: {messagesReceivedFromWebView}</Text>
+          <Text>
+            Messages received from web view: {messagesReceivedFromWebView}
+          </Text>
           <Text>{message || '(No message)'}</Text>
           <View style={styles.buttons}>
-            <Button text="Send Message to Web View" enabled onPress={this.postMessage} />
+            <Button
+              title="Send Message to Web View"
+              onPress={this.postMessage}
+            />
           </View>
         </View>
         <View style={styles.container}>
           <WebView
-            ref={webview => { this.webview = webview; }}
+            ref={webview => {
+              this.webview = webview;
+            }}
             style={{
               backgroundColor: BGWASH,
               height: 100,
@@ -270,31 +284,32 @@ class MessagingTest extends React.Component {
 class InjectJS extends React.Component {
   webview = null;
   injectJS = () => {
-    const script = 'document.write("Injected JS ")';  // eslint-disable-line quotes
+    const script = 'document.write("Injected JS ")'; // eslint-disable-line quotes
     if (this.webview) {
       this.webview.injectJavaScript(script);
     }
-  }
+  };
   render() {
     return (
       <View>
         <WebView
-          ref={webview => { this.webview = webview; }}
+          ref={webview => {
+            this.webview = webview;
+          }}
           style={{
             backgroundColor: BGWASH,
             height: 300,
           }}
-          source={{uri: 'https://www.facebook.com'}}
+          source={{ uri: 'https://www.facebook.com' }}
           scalesPageToFit={true}
         />
         <View style={styles.buttons}>
-          <Button text="Inject JS" enabled onPress={this.injectJS} />
+          <Button title="Inject JS" onPress={this.injectJS} />
         </View>
-    </View>
+      </View>
     );
   }
 }
-
 
 var styles = StyleSheet.create({
   container: {
@@ -415,11 +430,15 @@ exports.description = 'Base component to display web content';
 exports.examples = [
   {
     title: 'Simple Browser',
-    render(): React.Element<any> { return <WebViewExample />; }
+    render(): React.Element<any> {
+      return <WebViewExample />;
+    },
   },
   {
     title: 'Scale Page to Fit',
-    render(): React.Element<any> { return <ScaledWebView/>; }
+    render(): React.Element<any> {
+      return <ScaledWebView />;
+    },
   },
   {
     title: 'Bundled HTML',
@@ -434,7 +453,7 @@ exports.examples = [
           scalesPageToFit={true}
         />
       );
-    }
+    },
   },
   {
     title: 'Static HTML',
@@ -445,11 +464,11 @@ exports.examples = [
             backgroundColor: BGWASH,
             height: 100,
           }}
-          source={{html: HTML}}
+          source={{ html: HTML }}
           scalesPageToFit={true}
         />
       );
-    }
+    },
   },
   {
     title: 'POST Test',
@@ -463,19 +482,23 @@ exports.examples = [
           source={{
             uri: 'http://www.posttestserver.com/post.php',
             method: 'POST',
-            body: 'foo=bar&bar=foo'
+            body: 'foo=bar&bar=foo',
           }}
           scalesPageToFit={false}
         />
       );
-    }
+    },
   },
   {
     title: 'Messaging Test',
-    render(): ReactElement<any> { return <MessagingTest />; }
+    render(): ReactElement<any> {
+      return <MessagingTest />;
+    },
   },
   {
     title: 'Inject JavaScript',
-    render(): React.Element<any> { return <InjectJS />; }
+    render(): React.Element<any> {
+      return <InjectJS />;
+    },
   },
 ];

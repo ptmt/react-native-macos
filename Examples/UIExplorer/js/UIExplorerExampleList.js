@@ -36,7 +36,7 @@ const View = require('View');
 
 import type {
   UIExplorerExample,
-} from './UIExplorerList.ios';
+} from './UIExplorerList.macos';
 import type {
   PassProps,
 } from './UIExplorerStatePersister';

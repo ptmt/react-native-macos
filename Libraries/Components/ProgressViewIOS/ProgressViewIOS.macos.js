@@ -56,6 +56,7 @@ var ProgressViewIOS = React.createClass({
      * A stretchable image to display behind the progress bar.
      */
     trackImage: Image.propTypes.source,
+    style: PropTypes.any,
   },
 
   render: function() {

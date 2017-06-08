@@ -32,7 +32,7 @@ const ReactNative = {
   get NavigatorIOS() { return require('NavigatorIOS'); },
   get Picker() { return require('Picker'); },
   get PickerIOS() { return require('PickerIOS'); },
-
+  get ProgressBarAndroid() { return require('ProgressBarAndroid'); },
   get ProgressViewIOS() { return require('ProgressViewIOS'); },
   get ScrollView() { return require('ScrollView'); },
   get SectionList() { return require('SectionList'); },
@@ -95,6 +95,7 @@ const ReactNative = {
   get TimePickerAndroid() { return require('TimePickerAndroid'); },
   get TVEventHandler() { return require('TVEventHandler'); },
   get UIManager() { return require('UIManager'); },
+  get Vibration() { return require('Vibration'); },
 
   // Plugins
   get DeviceEventEmitter() { return require('RCTDeviceEventEmitter'); },

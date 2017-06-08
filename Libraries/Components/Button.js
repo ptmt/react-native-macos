@@ -26,10 +26,6 @@ const invariant = require('fbjs/lib/invariant');
 const requireNativeComponent = require('requireNativeComponent');
 const NativeModules = require('NativeModules');
 
-const RCTButton = requireNativeComponent('RCTButton', Button, {
-  nativeOnly: {},
-});
-
 /**
  * A basic button component that should render nicely on any platform. Supports
  * a minimal level of customization.
@@ -56,15 +52,6 @@ const RCTButton = requireNativeComponent('RCTButton', Button, {
  */
 
 class Button extends React.Component {
-  props: {
-    title: string,
-    onPress: () => any,
-    color?: ?string,
-    accessibilityLabel?: ?string,
-    disabled?: ?boolean,
-    testID?: ?string,
-  };
-
   static propTypes = {
     /**
      * Text to display inside the button
@@ -139,14 +126,9 @@ class Button extends React.Component {
       'inline',
     ]),
     toolTip: PropTypes.string,
-    /**
-     * Invoked on mouse click
-     *
-     *   {nativeEvent: { state }}.
-     */
-    onClick: PropTypes.func,
     allowsMixedState: PropTypes.bool,
     state: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
+    style: PropTypes.any,
   };
 
   render() {
@@ -212,6 +194,11 @@ if (Platform.OS === 'ios') {
   // Measured default tintColor from iOS 10
   defaultBlue = '#0C42FD';
 }
+
+const RCTButton = requireNativeComponent('RCTButton', Button, {
+  nativeOnly: {},
+});
+
 
 const styles = StyleSheet.create({
   button: Platform.select({

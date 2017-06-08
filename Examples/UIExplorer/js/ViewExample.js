@@ -51,6 +51,8 @@ class ViewBorderStyleExample extends React.Component {
     showBorder: true
   };
 
+  t: number;
+
   render() {
     return (
       <TouchableWithoutFeedback onPress={this._handlePress}>
@@ -134,6 +136,8 @@ class BackgroundUpdatesExample extends React.Component {
   state = {
     backgroundColorIndex: 0
   };
+
+  t: number;
 
   componentWillMount() {
     const changeColor = () => {

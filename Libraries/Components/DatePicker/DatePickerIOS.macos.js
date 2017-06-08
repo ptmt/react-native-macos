@@ -99,6 +99,7 @@ const DatePickerIOS = React.createClass({
      * instance, to show times in Pacific Standard Time, pass -7 * 60.
      */
     timeZoneOffsetInMinutes: PropTypes.number,
+    innerStyle: PropTypes.any,
   },
 
   getDefaultProps: function(): DefaultProps {

@@ -63,7 +63,7 @@ type Props = {
   openExample: Function,
 };
 
-class UIExplorerList extends React.Component {
+export class UIExplorerList extends React.Component {
   props: Props;
   state: any;
 
@@ -95,7 +95,7 @@ class UIExplorerList extends React.Component {
 
   // Register suitable examples for snapshot tests
   static registerComponents() {
-    COMPONENTS.concat(APIS).forEach(Example => {
+    Components.concat(APIS).forEach((Example: any) => {
       if (Example.displayName) {
         var Snapshotter = React.createClass({
           render: function() {
@@ -113,10 +113,10 @@ class UIExplorerList extends React.Component {
   }
 }
 
+export type UIExplorerExample = any;
+
 var styles = StyleSheet.create({
   searchTextInput: {
     height: 20,
   },
 });
-
-module.exports = UIExplorerList;

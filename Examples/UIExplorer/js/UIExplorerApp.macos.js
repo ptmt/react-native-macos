@@ -16,20 +16,20 @@
  */
 'use strict';
 
-var React = require('React');
-var ReactNative = require('react-native');
-var UIExplorerList = require('./UIExplorerList.macos');
+import React from 'React';
+import ReactNative from 'react-native';
+import { UIExplorerList } from './UIExplorerList.macos';
 
-var {
+const {
   AppRegistry,
-  SnapshotViewIOS,
+  // SnapshotViewIOS,
   StyleSheet,
   View,
   Text,
   Dimensions,
 } = ReactNative;
 
-var defaultLayout = Dimensions.get('window');
+const defaultLayout = Dimensions.get('window');
 
 class UIExplorerApp extends React.Component {
   state: any;
