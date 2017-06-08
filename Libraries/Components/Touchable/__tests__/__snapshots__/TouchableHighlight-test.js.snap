@@ -11,6 +11,8 @@ exports[`TouchableHighlight renders correctly 1`] = `
   isTVSelectable={true}
   nativeID={undefined}
   onLayout={undefined}
+  onMouseEnter={undefined}
+  onMouseLeave={undefined}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
@@ -33,6 +35,7 @@ exports[`TouchableHighlight renders correctly 1`] = `
     allowFontScaling={true}
     disabled={false}
     ellipsizeMode="tail"
+    testRole="AXText"
   >
     Touchable
   </Text>

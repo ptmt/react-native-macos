@@ -3,7 +3,7 @@
     "defaultPlatform": "macos",
     "platforms": ["android", "ios", "native", "macos"],
     "providesModuleNodeModules": [
-      "react-native"
+      "react-native-macos"
     ]
   },
   "moduleNameMapper": {
@@ -11,14 +11,14 @@
     "^React$": "<rootDir>/node_modules/react"
   },
   "modulePathIgnorePatterns": [
-    "<rootDir>/node_modules/react-native/Libraries/react-native/",
-    "<rootDir>/node_modules/react-native/packager/"
+    "<rootDir>/node_modules/react-native-macos/Libraries/react-native/",
+    "<rootDir>/node_modules/react-native-macos/packager/"
   ],
   "transformIgnorePatterns": [
     "node_modules/(?!(jest-)?react-native|react-clone-referenced-element)"
   ],
   "setupFiles": [
-    "<rootDir>/node_modules/react-native/jest/setup.js"
+    "<rootDir>/node_modules/react-native-macos/jest/setup.js"
   ],
   "testEnvironment": "node"
 }

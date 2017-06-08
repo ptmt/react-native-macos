@@ -111,7 +111,7 @@ function addJestToPackageJson(destinationRoot) {
 
   packageJSON.scripts.test = 'jest';
   packageJSON.jest = {
-    preset: 'react-native'
+    preset: 'react-native-macos'
   };
   fs.writeFileSync(packageJSONPath, JSON.stringify(packageJSON, null, '\t'));
 }

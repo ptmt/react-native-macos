@@ -182,7 +182,7 @@ describe('Bundler', function() {
   });
 
   it('allows overriding the platforms array', () => {
-    expect(bundler._opts.platforms).toEqual(['ios', 'android', 'windows', 'web']);
+    expect(bundler._opts.platforms).toEqual(['ios', 'android', 'windows', 'web', 'macos']);
     const b = new Bundler({
       ...commonOptions,
       projectRoots,
