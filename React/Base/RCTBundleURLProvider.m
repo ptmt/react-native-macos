@@ -92,6 +92,12 @@ static NSURL *serverRootWithHost(NSString *host)
   if ([self isPackagerRunning:host]) {
     return host;
   }
+  // second, attempt
+  // wait for it
+  [NSThread sleepForTimeInterval:3];
+  if ([self isPackagerRunning:host]) {
+    return host;
+  }
   return nil;
 }
 #endif
