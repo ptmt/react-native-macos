@@ -16,8 +16,8 @@ const defaultConfig = require('./default.config');
 const minimist = require('minimist');
 const path = require('path');
 
-import type {CommandT} from '../commands';
-import type {ConfigT} from '../util/Config';
+import type { CommandT } from '../commands';
+import type { ConfigT } from '../util/Config';
 
 export type RNConfig = {
   ...ConfigT,
@@ -43,8 +43,12 @@ function getCliConfig(): RNConfig {
   const config = cliArgs.config != null
     ? Config.loadFile(path.resolve(__dirname, cliArgs.config))
     : Config.findOptional(__dirname);
-
-  return {...defaultConfig, ...config};
+  return {
+    ...defaultConfig,
+    ...config,
+    getProjectRoots: () =>
+      defaultConfig.getProjectRoots().concat(config.getProjectRoots()),
+  };
 }
 
 module.exports = getCliConfig();

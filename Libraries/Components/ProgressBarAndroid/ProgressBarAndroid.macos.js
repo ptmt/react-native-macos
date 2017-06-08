@@ -10,12 +10,40 @@
  */
 'use strict';
 
-var warning = require('warning');
+'use strict';
 
-var ProgressBarAndroid = {
-  vibrate: function() {
-    warning('ProgressBarAndroid is not supported on this platform!');
+var React = require('React');
+var StyleSheet = require('StyleSheet');
+var Text = require('Text');
+var View = require('View');
+
+class DummyProgressViewIOS extends React.Component {
+  render() {
+    return (
+      <View style={[styles.dummy, this.props.style]}>
+        <Text style={styles.text}>
+          ProgressViewIOS is not supported on this platform!
+        </Text>
+      </View>
+    );
   }
-};
+}
 
-module.exports = ProgressBarAndroid;
+var styles = StyleSheet.create({
+  dummy: {
+    width: 120,
+    height: 20,
+    backgroundColor: '#ffbcbc',
+    borderWidth: 1,
+    borderColor: 'red',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  text: {
+    color: '#333333',
+    margin: 5,
+    fontSize: 10,
+  }
+});
+
+module.exports = DummyProgressViewIOS;
