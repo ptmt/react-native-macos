@@ -18,7 +18,7 @@ install:
 script:
   - if [[ "$TEST_TYPE" = objc-macos ]]; then travis_retry travis_wait ./scripts/objc-test-macos.sh test; fi
   - if [[ "$TEST_TYPE" = e2e-objc ]]; then node ./scripts/run-ci-e2e-tests.js --macos --js --retries 3; fi
-  - if [[ ( "$TEST_TYPE" = podspecs ) && ( "$TRAVIS_PULL_REQUEST" = "false" ) ]]; then gem install cocoapods && ./scripts/process-podspecs.sh; fi
+  # - if [[ ( "$TEST_TYPE" = podspecs ) && ( "$TRAVIS_PULL_REQUEST" = "false" ) ]]; then gem install cocoapods && ./scripts/process-podspecs.sh; fi
 
 
 matrix:
