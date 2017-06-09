@@ -29,7 +29,7 @@
 //
 
 #import "UIImage+Diff.h"
-#import "UIImageUtils.h"
+#import "React/UIImageUtils.h"
 
 @implementation NSImage (Diff)
 

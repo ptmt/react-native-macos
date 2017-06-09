@@ -128,13 +128,7 @@ static NSCache *RCTGetCache()
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     cache = [NSCache new];
-    cache.totalCostLimit = 2 * 1024 * 1024; // 2MB
-
-    // Clear cache in the event of a memory warning
-    // TODO: Add replacement for memory warnings
-//    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidReceiveMemoryWarningNotification object:nil queue:nil usingBlock:^(__unused NSNotification *note) {
-//      [cache removeAllObjects];
-//    }];
+    cache.totalCostLimit = 20 * 1024 * 1024; // 20MB
   });
   return cache;
 }
@@ -213,6 +207,10 @@ RCT_EXPORT_MODULE()
 - (NSDictionary *)_ensureSetup
 {
   RCTAssertThread(RCTGetMethodQueue(), @"Must be executed on storage thread");
+
+#if TARGET_OS_TV
+  RCTLogWarn(@"Persistent storage is not supported on tvOS, your data may be removed at any point.");
+#endif
 
   NSError *error = nil;
   if (!RCTHasCreatedStorageDirectory) {

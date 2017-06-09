@@ -14,8 +14,8 @@
 
 #import <XCTest/XCTest.h>
 
-#import "RCTUIManager.h"
-#import "NSView+React.h"
+#import <React/RCTUIManager.h>
+#import <React/NSView+React.h>
 
 @interface RCTUIManager (Testing)
 

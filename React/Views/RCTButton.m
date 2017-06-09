@@ -26,8 +26,8 @@
 
 -(void)onPressHandler:(__unused NSEvent *)theEvent
 {
-  if (_onClick) {
-    _onClick(@{@"state": @(self.state)});
+  if (_onPress) {
+    _onPress(@{@"state": @(self.state)});
   }
 }
 

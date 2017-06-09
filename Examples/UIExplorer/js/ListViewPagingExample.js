@@ -18,7 +18,7 @@
  * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * @provides ListViewPagingExample
+ * @providesModule ListViewPagingExample
  * @flow
  */
 'use strict';
@@ -142,7 +142,7 @@ class ListViewPagingExample extends React.Component {
     };
   }
 
-  renderRow = (rowData: string, sectionID: string, rowID: string): ReactElement<any> => {
+  renderRow = (rowData: string, sectionID: string, rowID: string): React.Element<any> => {
     return (<Thumb text={rowData}/>);
   };
 
@@ -195,6 +195,7 @@ class ListViewPagingExample extends React.Component {
         initialListSize={10}
         pageSize={4}
         scrollRenderAheadDistance={500}
+        stickySectionHeadersEnabled
       />
     );
   }

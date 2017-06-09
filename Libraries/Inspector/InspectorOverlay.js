@@ -14,15 +14,14 @@
 var Dimensions = require('Dimensions');
 var InspectorUtils = require('InspectorUtils');
 var React = require('React');
+var PropTypes = require('prop-types');
 var StyleSheet = require('StyleSheet');
 var UIManager = require('UIManager');
 var View = require('View');
 var ElementBox = require('ElementBox');
 
-var PropTypes = React.PropTypes;
-
 type EventLike = {
-  nativeEvent: Object;
+  nativeEvent: Object,
 };
 
 class InspectorOverlay extends React.Component {

@@ -18,19 +18,12 @@ module.exports = [
     default: 'ios',
   }, {
     command: '--transformer [string]',
-    description: 'Specify a custom transformer to be used (absolute path)',
-    default: require.resolve('../../packager/transformer'),
+    description: 'Specify a custom transformer to be used',
   }, {
     command: '--dev [boolean]',
     description: 'If false, warnings are disabled and the bundle is minified',
     parse: (val) => val === 'false' ? false : true,
     default: true,
-  }, {
-    command: '--prepack',
-    description: 'When passed, the output bundle will use the Prepack format.',
-  }, {
-    command: '--bridge-config [string]',
-    description: 'File name of a a JSON export of __fbBatchedBridgeConfig. Used by Prepack. Ex. ./bridgeconfig.json',
   }, {
     command: '--bundle-output <string>',
     description: 'File name where to store the resulting bundle, ex. /tmp/groups.bundle',
@@ -42,6 +35,13 @@ module.exports = [
     command: '--sourcemap-output [string]',
     description: 'File name where to store the sourcemap file for resulting bundle, ex. /tmp/groups.map',
   }, {
+    command: '--sourcemap-sources-root [string]',
+    description: 'Path to make sourcemap\'s sources entries relative to, ex. /root/dir',
+  }, {
+    command: '--sourcemap-use-absolute-path',
+    description: 'Report SourceMapURL using its full path',
+    default: false,
+  }, {
     command: '--assets-dest [string]',
     description: 'Directory name where to store assets referenced in the bundle',
   }, {
@@ -51,6 +51,10 @@ module.exports = [
   }, {
     command: '--reset-cache',
     description: 'Removes cached files',
+    default: false,
+  }, {
+    command: '--read-global-cache',
+    description: 'Try to fetch transformed JS code from the global cache, if configured.',
     default: false,
   },
 ];

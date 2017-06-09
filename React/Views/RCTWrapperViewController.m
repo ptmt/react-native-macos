@@ -97,8 +97,8 @@ static BOOL RCTFindScrollViewAndRefreshContentInsetInView(NSView *view)
 {
 //  [super viewWillAppear:animated];
 
-//  // TODO: find a way to make this less-tightly coupled to navigation controller
-//  if ([self.parentViewController isKindOfClass:[UINavigationController class]])
+  // TODO: find a way to make this less-tightly coupled to navigation controller
+//  if ([self.parentViewController isKindOfClass:[NSNavigationController class]])
 //  {
 //    [self.navigationController
 //     setNavigationBarHidden:_navItem.navigationBarHidden
@@ -116,7 +116,10 @@ static BOOL RCTFindScrollViewAndRefreshContentInsetInView(NSView *view)
 //
 //    UINavigationItem *item = self.navigationItem;
 //    item.title = _navItem.title;
+//    item.titleView = _navItem.titleImageView;
+//#if !TARGET_OS_TV
 //    item.backBarButtonItem = _navItem.backButtonItem;
+//#endif //TARGET_OS_TV
 //    item.leftBarButtonItem = _navItem.leftButtonItem;
 //    item.rightBarButtonItem = _navItem.rightButtonItem;
 //  }

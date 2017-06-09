@@ -14,8 +14,8 @@
 
 #import <XCTest/XCTest.h>
 
-#import "RCTShadowView.h"
-#import "RCTRootShadowView.h"
+#import <React/RCTRootShadowView.h>
+#import <React/RCTShadowView.h>
 
 
 @interface RCTShadowViewTests : XCTestCase
@@ -28,11 +28,10 @@
 {
   [super setUp];
 
-  self.parentView = [self _shadowViewWithConfig:^(CSSNodeRef node) {
-    CSSNodeStyleSetFlexDirection(node, CSSFlexDirectionColumn);
-    CSSNodeStyleSetWidth(node, 440);
-    CSSNodeStyleSetHeight(node, 440);
-  }];
+  self.parentView = [RCTRootShadowView new];
+  YGNodeStyleSetFlexDirection(self.parentView.yogaNode, YGFlexDirectionColumn);
+  YGNodeStyleSetWidth(self.parentView.yogaNode, 440);
+  YGNodeStyleSetHeight(self.parentView.yogaNode, 440);
   self.parentView.reactTag = @1; // must be valid rootView tag
 }
 
@@ -50,43 +49,43 @@
 //
 - (void)testApplyingLayoutRecursivelyToShadowView
 {
-  RCTShadowView *leftView = [self _shadowViewWithConfig:^(CSSNodeRef node) {
-    CSSNodeStyleSetFlex(node, 1);
+  RCTShadowView *leftView = [self _shadowViewWithConfig:^(YGNodeRef node) {
+    YGNodeStyleSetFlex(node, 1);
   }];
 
-  RCTShadowView *centerView = [self _shadowViewWithConfig:^(CSSNodeRef node) {
-    CSSNodeStyleSetFlex(node, 2);
-    CSSNodeStyleSetMarginLeft(node, 10);
-    CSSNodeStyleSetMarginRight(node, 10);
+  RCTShadowView *centerView = [self _shadowViewWithConfig:^(YGNodeRef node) {
+    YGNodeStyleSetFlex(node, 2);
+    YGNodeStyleSetMargin(node, YGEdgeLeft, 10);
+    YGNodeStyleSetMargin(node, YGEdgeRight, 10);
   }];
 
-  RCTShadowView *rightView = [self _shadowViewWithConfig:^(CSSNodeRef node) {
-    CSSNodeStyleSetFlex(node, 1);
+  RCTShadowView *rightView = [self _shadowViewWithConfig:^(YGNodeRef node) {
+    YGNodeStyleSetFlex(node, 1);
   }];
 
-  RCTShadowView *mainView = [self _shadowViewWithConfig:^(CSSNodeRef node) {
-    CSSNodeStyleSetFlexDirection(node, CSSFlexDirectionRow);
-    CSSNodeStyleSetFlex(node, 2);
-    CSSNodeStyleSetMarginTop(node, 10);
-    CSSNodeStyleSetMarginBottom(node, 10);
+  RCTShadowView *mainView = [self _shadowViewWithConfig:^(YGNodeRef node) {
+    YGNodeStyleSetFlexDirection(node, YGFlexDirectionRow);
+    YGNodeStyleSetFlex(node, 2);
+    YGNodeStyleSetMargin(node, YGEdgeTop, 10);
+    YGNodeStyleSetMargin(node, YGEdgeBottom, 10);
   }];
 
   [mainView insertReactSubview:leftView atIndex:0];
   [mainView insertReactSubview:centerView atIndex:1];
   [mainView insertReactSubview:rightView atIndex:2];
 
-  RCTShadowView *headerView = [self _shadowViewWithConfig:^(CSSNodeRef node) {
-    CSSNodeStyleSetFlex(node, 1);
+  RCTShadowView *headerView = [self _shadowViewWithConfig:^(YGNodeRef node) {
+    YGNodeStyleSetFlex(node, 1);
   }];
 
-  RCTShadowView *footerView = [self _shadowViewWithConfig:^(CSSNodeRef node) {
-    CSSNodeStyleSetFlex(node, 1);
+  RCTShadowView *footerView = [self _shadowViewWithConfig:^(YGNodeRef node) {
+    YGNodeStyleSetFlex(node, 1);
   }];
 
-  CSSNodeStyleSetPaddingLeft(self.parentView.cssNode, 10);
-  CSSNodeStyleSetPaddingTop(self.parentView.cssNode, 10);
-  CSSNodeStyleSetPaddingRight(self.parentView.cssNode, 10);
-  CSSNodeStyleSetPaddingBottom(self.parentView.cssNode, 10);
+  YGNodeStyleSetPadding(self.parentView.yogaNode, YGEdgeLeft, 10);
+  YGNodeStyleSetPadding(self.parentView.yogaNode, YGEdgeTop, 10);
+  YGNodeStyleSetPadding(self.parentView.yogaNode, YGEdgeRight, 10);
+  YGNodeStyleSetPadding(self.parentView.yogaNode, YGEdgeBottom, 10);
 
   [self.parentView insertReactSubview:headerView atIndex:0];
   [self.parentView insertReactSubview:mainView atIndex:1];
@@ -108,33 +107,34 @@
 
 - (void)testAncestorCheck
 {
-  RCTShadowView *centerView = [self _shadowViewWithConfig:^(CSSNodeRef node) {
-    CSSNodeStyleSetFlex(node, 1);
+  RCTShadowView *centerView = [self _shadowViewWithConfig:^(YGNodeRef node) {
+    YGNodeStyleSetFlex(node, 1);
   }];
-  
-  RCTShadowView *mainView = [self _shadowViewWithConfig:^(CSSNodeRef node) {
-    CSSNodeStyleSetFlex(node, 1);
+
+  RCTShadowView *mainView = [self _shadowViewWithConfig:^(YGNodeRef node) {
+    YGNodeStyleSetFlex(node, 1);
   }];
-  
+
   [mainView insertReactSubview:centerView atIndex:0];
 
-  RCTShadowView *footerView = [self _shadowViewWithConfig:^(CSSNodeRef node) {
-    CSSNodeStyleSetFlex(node, 1);
+  RCTShadowView *footerView = [self _shadowViewWithConfig:^(YGNodeRef node) {
+    YGNodeStyleSetFlex(node, 1);
   }];
-  
+
   [self.parentView insertReactSubview:mainView atIndex:0];
   [self.parentView insertReactSubview:footerView atIndex:1];
-  
+
   XCTAssertTrue([centerView viewIsDescendantOf:mainView]);
   XCTAssertFalse([footerView viewIsDescendantOf:mainView]);
 }
 
 - (void)testAssignsSuggestedWidthDimension
 {
-  [self _withShadowViewWithStyle:^(CSSNodeRef node) {
-                                   CSSNodeStyleSetPositionLeft(node, 0);
-                                   CSSNodeStyleSetPositionTop(node, 0);
-                                   CSSNodeStyleSetHeight(node, 10);
+  [self _withShadowViewWithStyle:^(YGNodeRef node) {
+                                   YGNodeStyleSetPositionType(node, YGPositionTypeAbsolute);
+                                   YGNodeStyleSetPosition(node, YGEdgeLeft, 0);
+                                   YGNodeStyleSetPosition(node, YGEdgeTop, 0);
+                                   YGNodeStyleSetHeight(node, 10);
                                  }
             assertRelativeLayout:CGRectMake(0, 0, 3, 10)
         withIntrinsicContentSize:CGSizeMake(3, NSViewNoInstrinsicMetric)];
@@ -142,10 +142,11 @@
 
 - (void)testAssignsSuggestedHeightDimension
 {
-  [self _withShadowViewWithStyle:^(CSSNodeRef node) {
-                                   CSSNodeStyleSetPositionLeft(node, 0);
-                                   CSSNodeStyleSetPositionTop(node, 0);
-                                   CSSNodeStyleSetWidth(node, 10);
+  [self _withShadowViewWithStyle:^(YGNodeRef node) {
+                                   YGNodeStyleSetPositionType(node, YGPositionTypeAbsolute);
+                                   YGNodeStyleSetPosition(node, YGEdgeLeft, 0);
+                                   YGNodeStyleSetPosition(node, YGEdgeTop, 0);
+                                   YGNodeStyleSetWidth(node, 10);
                                  }
             assertRelativeLayout:CGRectMake(0, 0, 10, 4)
         withIntrinsicContentSize:CGSizeMake(NSViewNoInstrinsicMetric, 4)];
@@ -153,11 +154,12 @@
 
 - (void)testDoesNotOverrideDimensionStyleWithSuggestedDimensions
 {
-  [self _withShadowViewWithStyle:^(CSSNodeRef node) {
-                                   CSSNodeStyleSetPositionLeft(node, 0);
-                                   CSSNodeStyleSetPositionTop(node, 0);
-                                   CSSNodeStyleSetWidth(node, 10);
-                                   CSSNodeStyleSetHeight(node, 10);
+  [self _withShadowViewWithStyle:^(YGNodeRef node) {
+                                   YGNodeStyleSetPositionType(node, YGPositionTypeAbsolute);
+                                   YGNodeStyleSetPosition(node, YGEdgeLeft, 0);
+                                   YGNodeStyleSetPosition(node, YGEdgeTop, 0);
+                                   YGNodeStyleSetWidth(node, 10);
+                                   YGNodeStyleSetHeight(node, 10);
                                  }
           assertRelativeLayout:CGRectMake(0, 0, 10, 10)
       withIntrinsicContentSize:CGSizeMake(3, 4)];
@@ -165,16 +167,16 @@
 
 - (void)testDoesNotAssignSuggestedDimensionsWhenStyledWithFlexAttribute
 {
-  float parentWidth = CSSNodeStyleGetWidth(self.parentView.cssNode);
-  float parentHeight = CSSNodeStyleGetHeight(self.parentView.cssNode);
-  [self _withShadowViewWithStyle:^(CSSNodeRef node) {
-                                   CSSNodeStyleSetFlex(node, 1);
+  float parentWidth = YGNodeStyleGetWidth(self.parentView.yogaNode).value;
+  float parentHeight = YGNodeStyleGetHeight(self.parentView.yogaNode).value;
+  [self _withShadowViewWithStyle:^(YGNodeRef node) {
+                                   YGNodeStyleSetFlex(node, 1);
                                  }
             assertRelativeLayout:CGRectMake(0, 0, parentWidth, parentHeight)
         withIntrinsicContentSize:CGSizeMake(3, 4)];
 }
 
-- (void)_withShadowViewWithStyle:(void(^)(CSSNodeRef node))configBlock
+- (void)_withShadowViewWithStyle:(void(^)(YGNodeRef node))configBlock
             assertRelativeLayout:(CGRect)expectedRect
         withIntrinsicContentSize:(CGSize)contentSize
 {
@@ -187,11 +189,12 @@
                 @"Layouts are different");
 }
 
-- (RCTRootShadowView *)_shadowViewWithConfig:(void(^)(CSSNodeRef node))configBlock
+- (RCTShadowView *)_shadowViewWithConfig:(void(^)(YGNodeRef node))configBlock
 {
-  RCTRootShadowView *shadowView = [RCTRootShadowView new];
-  configBlock(shadowView.cssNode);
+  RCTShadowView *shadowView = [RCTShadowView new];
+  configBlock(shadowView.yogaNode);
   return shadowView;
 }
+
 
 @end

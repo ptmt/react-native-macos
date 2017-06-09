@@ -10,27 +10,19 @@
  */
 'use strict';
 
-const commander = require('commander');
+const config = require('./core');
 
-const Config = require('./util/Config');
-const childProcess = require('child_process');
-const Promise = require('promise');
-const chalk = require('chalk');
-const path = require('path');
-const fs = require('fs');
-const gracefulFs = require('graceful-fs');
-
-const init = require('./init/init');
-const commands = require('./commands');
 const assertRequiredOptions = require('./util/assertRequiredOptions');
+const chalk = require('chalk');
+const childProcess = require('child_process');
+const commander = require('commander');
+const commands = require('./commands');
+const init = require('./init/init');
+const path = require('path');
 const pkg = require('../package.json');
-const defaultConfig = require('./default.config');
 
-import type { Command } from './commands';
-
-// graceful-fs helps on getting an error when we run out of file
-// descriptors. When that happens it will enqueue the operation and retry it.
-gracefulFs.gracefulify(fs);
+import type {CommandT} from './commands';
+import type {RNConfig} from './core';
 
 commander.version(pkg.version);
 
@@ -51,11 +43,19 @@ function printHelpInformation() {
     cmdName = cmdName + '|' + this._alias;
   }
 
+  const sourceInformation = this.pkg
+    ? [
+      `  ${chalk.bold('Source:')} ${this.pkg.name}@${this.pkg.version}`,
+      '',
+    ]
+    : [];
+
   let output = [
     '',
     chalk.bold(chalk.cyan((`  react-native ${cmdName} ${this.usage()}`))),
     `  ${this._description}`,
     '',
+    ...sourceInformation,
     `  ${chalk.bold('Options:')}`,
     '',
     this.optionHelp().replace(/^/gm, '    '),
@@ -91,7 +91,7 @@ function printUnknownCommand(cmdName) {
   ].join('\n'));
 }
 
-const addCommand = (command: Command, config: Config) => {
+const addCommand = (command: CommandT, cfg: RNConfig) => {
   const options = command.options || [];
 
   const cmd = commander
@@ -106,25 +106,29 @@ const addCommand = (command: Command, config: Config) => {
       Promise.resolve()
         .then(() => {
           assertRequiredOptions(options, passedOptions);
-          return command.func(argv, config, passedOptions);
+          return command.func(argv, cfg, passedOptions);
         })
         .catch(handleError);
     });
 
     cmd.helpInformation = printHelpInformation.bind(cmd);
     cmd.examples = command.examples;
+    cmd.pkg = command.pkg;
 
   options
     .forEach(opt => cmd.option(
       opt.command,
       opt.description,
       opt.parse || defaultOptParser,
-      typeof opt.default === 'function' ? opt.default(config) : opt.default,
+      typeof opt.default === 'function' ? opt.default(cfg) : opt.default,
     ));
+
+  // Placeholder option for --config, which is parsed before any other option,
+  // but needs to be here to avoid "unknown option" errors when specified
+  cmd.option('--config [string]', 'Path to the CLI configuration file');
 };
 
 function run() {
-  const config = Config.get(__dirname, defaultConfig);
   const setupEnvScript = /^win/.test(process.platform)
     ? 'setup_env.bat'
     : 'setup_env.sh';

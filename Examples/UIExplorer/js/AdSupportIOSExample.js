@@ -19,6 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * @flow
+ * @providesModule AdSupportIOSExample
  */
 'use strict';
 
@@ -38,7 +39,7 @@ exports.description = 'Example of using the ad support API.';
 exports.examples = [
   {
     title: 'Ad Support IOS',
-    render: function(): ReactElement<any> {
+    render: function(): React.Element<any> {
       return <AdSupportIOSExample />;
     },
   }

@@ -15,16 +15,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import android.util.LongSparseArray;
-import android.view.Choreographer;
 
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.common.MapBuilder;
-import com.facebook.react.uimanager.ReactChoreographer;
+import com.facebook.react.modules.core.ChoreographerCompat;
+import com.facebook.react.modules.core.ReactChoreographer;
 import com.facebook.systrace.Systrace;
 
 /**
@@ -92,19 +93,20 @@ public class EventDispatcher implements LifecycleEventListener {
   private final Map<String, Short> mEventNameToEventId = MapBuilder.newHashMap();
   private final DispatchEventsRunnable mDispatchEventsRunnable = new DispatchEventsRunnable();
   private final ArrayList<Event> mEventStaging = new ArrayList<>();
+  private final ArrayList<EventDispatcherListener> mListeners = new ArrayList<>();
+  private final ScheduleDispatchFrameCallback mCurrentFrameCallback =
+    new ScheduleDispatchFrameCallback();
+  private final AtomicInteger mHasDispatchScheduledCount = new AtomicInteger();
 
   private Event[] mEventsToDispatch = new Event[16];
   private int mEventsToDispatchSize = 0;
-  private @Nullable RCTEventEmitter mRCTEventEmitter;
-  private final ScheduleDispatchFrameCallback mCurrentFrameCallback;
+  private volatile @Nullable RCTEventEmitter mRCTEventEmitter;
   private short mNextEventTypeId = 0;
   private volatile boolean mHasDispatchScheduled = false;
-  private volatile int mHasDispatchScheduledCount = 0;
 
   public EventDispatcher(ReactApplicationContext reactContext) {
     mReactContext = reactContext;
     mReactContext.addLifecycleEventListener(this);
-    mCurrentFrameCallback = new ScheduleDispatchFrameCallback();
   }
 
   /**
@@ -112,6 +114,11 @@ public class EventDispatcher implements LifecycleEventListener {
    */
   public void dispatchEvent(Event event) {
     Assertions.assertCondition(event.isInitialized(), "Dispatched event hasn't been initialized");
+
+    for (EventDispatcherListener listener : mListeners) {
+      listener.onEventDispatch(event);
+    }
+
     synchronized (mEventsStagingLock) {
       mEventStaging.add(event);
       Systrace.startAsyncFlow(
@@ -131,13 +138,26 @@ public class EventDispatcher implements LifecycleEventListener {
     }
   }
 
+  /**
+   * Add a listener to this EventDispatcher.
+   */
+  public void addListener(EventDispatcherListener listener) {
+    mListeners.add(listener);
+  }
+
+  /**
+   * Remove a listener from this EventDispatcher.
+   */
+  public void removeListener(EventDispatcherListener listener) {
+    mListeners.remove(listener);
+  }
+
   @Override
   public void onHostResume() {
-    UiThreadUtil.assertOnUiThread();
     if (mRCTEventEmitter == null) {
       mRCTEventEmitter = mReactContext.getJSModule(RCTEventEmitter.class);
     }
-    mCurrentFrameCallback.maybePost();
+    mCurrentFrameCallback.maybePostFromNonUI();
   }
 
   @Override
@@ -151,7 +171,12 @@ public class EventDispatcher implements LifecycleEventListener {
   }
 
   public void onCatalystInstanceDestroyed() {
-    stopFrameCallback();
+    UiThreadUtil.runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        stopFrameCallback();
+      }
+    });
   }
 
   private void stopFrameCallback() {
@@ -231,7 +256,7 @@ public class EventDispatcher implements LifecycleEventListener {
         (((long) coalescingKey) & 0xffff) << 48;
   }
 
-  private class ScheduleDispatchFrameCallback implements Choreographer.FrameCallback {
+  private class ScheduleDispatchFrameCallback extends ChoreographerCompat.FrameCallback {
     private volatile boolean mIsPosted = false;
     private boolean mShouldStop = false;
 
@@ -254,7 +279,7 @@ public class EventDispatcher implements LifecycleEventListener {
           Systrace.startAsyncFlow(
               Systrace.TRACE_TAG_REACT_JAVA_BRIDGE,
               "ScheduleDispatchFrameCallback",
-              mHasDispatchScheduledCount);
+              mHasDispatchScheduledCount.get());
           mReactContext.runOnJSQueueThread(mDispatchEventsRunnable);
         }
       } finally {
@@ -306,9 +331,8 @@ public class EventDispatcher implements LifecycleEventListener {
         Systrace.endAsyncFlow(
             Systrace.TRACE_TAG_REACT_JAVA_BRIDGE,
             "ScheduleDispatchFrameCallback",
-            mHasDispatchScheduledCount);
+            mHasDispatchScheduledCount.getAndIncrement());
         mHasDispatchScheduled = false;
-        mHasDispatchScheduledCount++;
         Assertions.assertNotNull(mRCTEventEmitter);
         synchronized (mEventsToDispatchLock) {
           // We avoid allocating an array and iterator, and "sorting" if we don't need to.

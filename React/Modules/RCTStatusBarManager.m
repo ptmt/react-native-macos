@@ -13,22 +13,7 @@
 #import "RCTLog.h"
 #import "RCTUtils.h"
 
-@implementation RCTConvert (UIStatusBar)
-
-RCT_ENUM_CONVERTER(UIStatusBarStyle, (@{
-  @"default": @(UIStatusBarStyleDefault),
-  @"light-content": @(UIStatusBarStyleLightContent),
-}), UIStatusBarStyleDefault, integerValue);
-
-RCT_ENUM_CONVERTER(UIStatusBarAnimation, (@{
-  @"none": @(UIStatusBarAnimationNone),
-  @"fade": @(UIStatusBarAnimationFade),
-  @"slide": @(UIStatusBarAnimationSlide),
-}), UIStatusBarAnimationNone, integerValue);
-
-@end
-
-@implementation RCTStatusBarManager
+#@implementation RCTStatusBarManager
 
 static BOOL RCTViewControllerBasedStatusBarAppearance()
 {
@@ -49,6 +34,8 @@ RCT_EXPORT_MODULE()
   return @[@"statusBarFrameDidChange",
            @"statusBarFrameWillChange"];
 }
+
+#if !TARGET_OS_TV
 
 - (void)startObserving
 {
@@ -94,7 +81,7 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_METHOD(getHeight:(RCTResponseSenderBlock)callback)
 {
   callback(@[@{
-    @"height": @([UIApplication sharedApplication].statusBarFrame.size.height),
+    @"height": @(RCTSharedApplication().statusBarFrame.size.height),
   }]);
 }
 
@@ -126,5 +113,7 @@ RCT_EXPORT_METHOD(setNetworkActivityIndicatorVisible:(BOOL)visible)
 {
   RCTSharedApplication().networkActivityIndicatorVisible = visible;
 }
+
+#endif //TARGET_OS_TV
 
 @end

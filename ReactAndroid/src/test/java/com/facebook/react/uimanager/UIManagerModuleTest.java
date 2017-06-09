@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import android.graphics.Color;
-import android.view.Choreographer;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -22,28 +21,30 @@ import android.widget.TextView;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.animation.Animation;
 import com.facebook.react.animation.AnimationPropertyUpdater;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.CatalystInstance;
 import com.facebook.react.bridge.JavaOnlyArray;
 import com.facebook.react.bridge.JavaOnlyMap;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactTestHelper;
+import com.facebook.react.modules.core.ChoreographerCompat;
+import com.facebook.react.modules.core.ReactChoreographer;
 import com.facebook.react.views.text.ReactRawTextManager;
 import com.facebook.react.views.text.ReactTextShadowNode;
 import com.facebook.react.views.text.ReactTextViewManager;
 import com.facebook.react.views.view.ReactViewGroup;
 import com.facebook.react.views.view.ReactViewManager;
-import com.facebook.react.bridge.ReactTestHelper;
 
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.runner.RunWith;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
@@ -70,7 +71,7 @@ public class UIManagerModuleTest {
 
   private ReactApplicationContext mReactContext;
   private CatalystInstance mCatalystInstanceMock;
-  private ArrayList<Choreographer.FrameCallback> mPendingChoreographerCallbacks;
+  private ArrayList<ChoreographerCompat.FrameCallback> mPendingFrameCallbacks;
 
   @Before
   public void setUp() {
@@ -91,17 +92,17 @@ public class UIManagerModuleTest {
     });
     PowerMockito.when(ReactChoreographer.getInstance()).thenReturn(choreographerMock);
 
-    mPendingChoreographerCallbacks = new ArrayList<>();
+    mPendingFrameCallbacks = new ArrayList<>();
     doAnswer(new Answer() {
       @Override
       public Object answer(InvocationOnMock invocation) throws Throwable {
-        mPendingChoreographerCallbacks
-            .add((Choreographer.FrameCallback) invocation.getArguments()[1]);
+        mPendingFrameCallbacks
+            .add((ChoreographerCompat.FrameCallback) invocation.getArguments()[1]);
         return null;
       }
     }).when(choreographerMock).postFrameCallback(
         any(ReactChoreographer.CallbackType.class),
-        any(Choreographer.FrameCallback.class));
+        any(ChoreographerCompat.FrameCallback.class));
 
     mCatalystInstanceMock = ReactTestHelper.createMockCatalystInstance();
     mReactContext = new ReactApplicationContext(RuntimeEnvironment.application);
@@ -110,7 +111,6 @@ public class UIManagerModuleTest {
     UIManagerModule uiManagerModuleMock = mock(UIManagerModule.class);
     when(mCatalystInstanceMock.getNativeModule(UIManagerModule.class))
         .thenReturn(uiManagerModuleMock);
-
   }
 
   @Test
@@ -140,7 +140,7 @@ public class UIManagerModuleTest {
         JavaOnlyMap.of(ReactTextShadowNode.PROP_TEXT, "New text"));
 
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
 
     assertThat(textView.getText().toString()).isEqualTo("New text");
   }
@@ -183,7 +183,7 @@ public class UIManagerModuleTest {
         null);
 
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
 
     assertThat(rootView.getChildCount()).isEqualTo(1);
 
@@ -214,7 +214,7 @@ public class UIManagerModuleTest {
         null);
 
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
 
     assertChildrenAreExactly(
         hierarchy.nativeRootView,
@@ -241,7 +241,7 @@ public class UIManagerModuleTest {
         JavaOnlyArray.of(0, 3));
 
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
 
     assertChildrenAreExactly(
         hierarchy.nativeRootView,
@@ -267,7 +267,7 @@ public class UIManagerModuleTest {
         JavaOnlyArray.of(1));
 
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
 
     assertChildrenAreExactly(
         hierarchy.nativeRootView,
@@ -290,7 +290,7 @@ public class UIManagerModuleTest {
         JavaOnlyArray.of(3));
 
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
   }
 
   @Test(expected = IllegalViewOperationException.class)
@@ -307,7 +307,7 @@ public class UIManagerModuleTest {
         JavaOnlyArray.of(3, 3));
 
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
   }
 
   @Test
@@ -336,7 +336,7 @@ public class UIManagerModuleTest {
         null);
 
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
 
     assertThat(hierarchy.nativeRootView.getChildCount()).isEqualTo(5);
     assertThat(hierarchy.nativeRootView.getChildAt(0)).isEqualTo(expectedViewAt0);
@@ -364,7 +364,7 @@ public class UIManagerModuleTest {
         null);
 
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
 
     assertChildrenAreExactly(
         hierarchy.nativeRootView,
@@ -393,7 +393,7 @@ public class UIManagerModuleTest {
         JavaOnlyArray.of(1));
 
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
 
     assertChildrenAreExactly(
         hierarchy.nativeRootView,
@@ -425,7 +425,7 @@ public class UIManagerModuleTest {
         null);
 
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
 
     View newView = hierarchy.nativeRootView.getChildAt(4);
     assertThat(newView.getLeft()).isEqualTo(10);
@@ -473,7 +473,7 @@ public class UIManagerModuleTest {
         JavaOnlyArray.of(4));
 
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
 
     assertThat(hierarchy.nativeRootView.getChildCount()).isEqualTo(4);
   }
@@ -519,7 +519,7 @@ public class UIManagerModuleTest {
         ReactViewManager.REACT_CLASS,
         JavaOnlyMap.of("left", 10.0, "top", 20.0, "width", 30.0, "height", 40.0));
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
     assertThat(view0.getLeft()).isGreaterThan(2);
 
     // verify that the layout doesn't get updated when we update style property not affecting the
@@ -530,7 +530,7 @@ public class UIManagerModuleTest {
         ReactViewManager.REACT_CLASS,
         JavaOnlyMap.of("backgroundColor", Color.RED));
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
     assertThat(view0.getLeft()).isEqualTo(1);
   }
 
@@ -566,7 +566,7 @@ public class UIManagerModuleTest {
     uiManagerModule.removeAnimation(hierarchy.rootView, 1000);
 
     uiManagerModule.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
 
     verify(callbackMock, times(1)).invoke(false);
     verify(mockAnimation).run();
@@ -592,7 +592,7 @@ public class UIManagerModuleTest {
     uiManager.replaceExistingNonRootView(hierarchy.view2, newViewTag);
 
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
 
     assertThat(hierarchy.nativeRootView.getChildCount()).isEqualTo(4);
     assertThat(hierarchy.nativeRootView.getChildAt(2)).isInstanceOf(ReactViewGroup.class);
@@ -641,18 +641,18 @@ public class UIManagerModuleTest {
     addChild(uiManager, containerTag, containerTag + 3, 1);
 
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
 
     assertThat(rootView.getChildCount()).isEqualTo(2);
-    assertThat(((ViewGroup)rootView.getChildAt(0)).getChildCount()).isEqualTo(2);
+    assertThat(((ViewGroup) rootView.getChildAt(0)).getChildCount()).isEqualTo(2);
 
     uiManager.removeSubviewsFromContainerWithID(containerTag);
 
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
 
     assertThat(rootView.getChildCount()).isEqualTo(2);
-    assertThat(((ViewGroup)rootView.getChildAt(0)).getChildCount()).isEqualTo(0);
+    assertThat(((ViewGroup) rootView.getChildAt(0)).getChildCount()).isEqualTo(0);
   }
 
   /**
@@ -694,7 +694,7 @@ public class UIManagerModuleTest {
         null);
 
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
 
     return rootView;
   }
@@ -745,7 +745,7 @@ public class UIManagerModuleTest {
     addChild(uiManager, hierarchy.viewWithChildren1, hierarchy.childView1, 1);
 
     uiManager.onBatchComplete();
-    executePendingChoreographerCallbacks();
+    executePendingFrameCallbacks();
 
     return hierarchy;
   }
@@ -804,11 +804,11 @@ public class UIManagerModuleTest {
     }
   }
 
-  private void executePendingChoreographerCallbacks() {
-    ArrayList<Choreographer.FrameCallback> callbacks =
-        new ArrayList<>(mPendingChoreographerCallbacks);
-    mPendingChoreographerCallbacks.clear();
-    for (Choreographer.FrameCallback frameCallback : callbacks) {
+  private void executePendingFrameCallbacks() {
+    ArrayList<ChoreographerCompat.FrameCallback> callbacks =
+        new ArrayList<>(mPendingFrameCallbacks);
+    mPendingFrameCallbacks.clear();
+    for (ChoreographerCompat.FrameCallback frameCallback : callbacks) {
       frameCallback.doFrame(0);
     }
   }
@@ -821,7 +821,8 @@ public class UIManagerModuleTest {
     UIManagerModule uiManagerModule =  new UIManagerModule(
         mReactContext,
         viewManagers,
-        new UIImplementation(mReactContext, viewManagers));
+        new UIImplementationProvider(),
+        false);
     uiManagerModule.onHostResume();
     return uiManagerModule;
   }

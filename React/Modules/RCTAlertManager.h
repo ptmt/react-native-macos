@@ -7,10 +7,16 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <AppKit/AppKit.h>
+#import <React/RCTBridgeModule.h>
+#import <React/RCTInvalidating.h>
 
-#import "RCTBridgeModule.h"
-#import "RCTInvalidating.h"
+typedef NS_ENUM(NSInteger, RCTAlertViewStyle) {
+  RCTAlertViewStyleDefault = 0,
+  RCTAlertViewStyleSecureTextInput,
+  RCTAlertViewStylePlainTextInput,
+  RCTAlertViewStyleLoginAndPasswordInput
+};
+
 
 @interface RCTAlertManager : NSObject <RCTBridgeModule, RCTInvalidating>
 

@@ -9,7 +9,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "RCTConvert.h"
+#import <React/RCTConvert.h>
 
 @interface RCTFont : NSObject
 
@@ -23,6 +23,7 @@
                   size:(NSNumber *)size
                 weight:(NSString *)weight
                  style:(NSString *)style
+               variant:(NSArray<NSString *> *)variant
        scaleMultiplier:(CGFloat)scaleMultiplier;
 
 + (NSFont *)updateFont:(NSFont *)font withFamily:(NSString *)family;

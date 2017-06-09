@@ -19,9 +19,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * @flow
+ * @providesModule TextExample
  */
 'use strict';
 
+const Platform = require('Platform');
 var React = require('react');
 var ReactNative = require('react-native');
 var {
@@ -29,6 +31,7 @@ var {
   StyleSheet,
   Text,
   View,
+  LayoutAnimation,
 } = ReactNative;
 
 class Entity extends React.Component {
@@ -81,6 +84,86 @@ class AttributeToggler extends React.Component {
   }
 }
 
+var AdjustingFontSize = React.createClass({
+  getInitialState: function() {
+    return {dynamicText:'', shouldRender: true,};
+  },
+  reset: function() {
+    LayoutAnimation.easeInEaseOut();
+    this.setState({
+      shouldRender: false,
+    });
+    setTimeout(()=>{
+      LayoutAnimation.easeInEaseOut();
+      this.setState({
+        dynamicText: '',
+        shouldRender: true,
+      });
+    }, 300);
+  },
+  addText: function() {
+    this.setState({
+      dynamicText: this.state.dynamicText + (Math.floor((Math.random() * 10) % 2) ? ' foo' : ' bar'),
+    });
+  },
+  removeText: function() {
+    this.setState({
+      dynamicText: this.state.dynamicText.slice(0, this.state.dynamicText.length - 4),
+    });
+  },
+  render: function() {
+
+    if (!this.state.shouldRender) {
+      return (<View/>);
+    }
+    return (
+      <View>
+        <Text lineBreakMode="tail" numberOfLines={1} style={{fontSize: 36, marginVertical:6}}>
+          Truncated text is baaaaad.
+        </Text>
+        <Text numberOfLines={1} adjustsFontSizeToFit={true} style={{fontSize: 40, marginVertical:6}}>
+          Shrinking to fit available space is much better!
+        </Text>
+
+        <Text adjustsFontSizeToFit={true} numberOfLines={1} style={{fontSize:30, marginVertical:6}}>
+        {'Add text to me to watch me shrink!' + ' ' + this.state.dynamicText}
+        </Text>
+
+        <Text adjustsFontSizeToFit={true} numberOfLines={4} style={{fontSize:20, marginVertical:6}}>
+        {'Multiline text component shrinking is supported, watch as this reeeeaaaally loooooong teeeeeeext grooooows and then shriiiinks as you add text to me! ioahsdia soady auydoa aoisyd aosdy ' + ' ' + this.state.dynamicText}
+        </Text>
+
+        <Text adjustsFontSizeToFit={true} numberOfLines={1} style={{marginVertical:6}}>
+          <Text style={{fontSize:14}}>
+            {'Differently sized nested elements will shrink together. '}
+          </Text>
+          <Text style={{fontSize:20}}>
+            {'LARGE TEXT! ' + this.state.dynamicText}
+          </Text>
+        </Text>
+
+        <View style={{flexDirection:'row', justifyContent:'space-around', marginTop: 5, marginVertical:6}}>
+          <Text
+            style={{backgroundColor: '#ffaaaa'}}
+            onPress={this.reset}>
+            Reset
+          </Text>
+          <Text
+            style={{backgroundColor: '#aaaaff'}}
+            onPress={this.removeText}>
+            Remove Text
+          </Text>
+          <Text
+            style={{backgroundColor: '#aaffaa'}}
+            onPress={this.addText}>
+            Add Text
+          </Text>
+        </View>
+      </View>
+    );
+  }
+});
+
 exports.title = '<Text>';
 exports.description = 'Base component for rendering styled text.';
 exports.displayName = 'TextExample';
@@ -109,10 +192,10 @@ exports.examples = [
   render: function() {
     return (
       <View>
-        <Text style={{fontFamily: 'Cochin'}}>
+        <Text style={{fontFamily: (Platform.isTVOS ? 'Times' : 'Cochin')}}>
           Cochin
         </Text>
-        <Text style={{fontFamily: 'Cochin', fontWeight: 'bold'}}>
+        <Text style={{fontFamily: (Platform.isTVOS ? 'Times' : 'Cochin'), fontWeight: 'bold'}}>
           Cochin bold
         </Text>
         <Text style={{fontFamily: 'Helvetica'}}>
@@ -121,10 +204,10 @@ exports.examples = [
         <Text style={{fontFamily: 'Helvetica', fontWeight: 'bold'}}>
           Helvetica bold
         </Text>
-        <Text style={{fontFamily: 'Verdana'}}>
+        <Text style={{fontFamily: (Platform.isTVOS ? 'Courier' : 'Verdana')}}>
           Verdana
         </Text>
-        <Text style={{fontFamily: 'Verdana', fontWeight: 'bold'}}>
+        <Text style={{fontFamily: (Platform.isTVOS ? 'Courier' : 'Verdana'), fontWeight: 'bold'}}>
           Verdana bold
         </Text>
       </View>
@@ -191,6 +274,17 @@ exports.examples = [
         </Text>
         <Text style={{fontStyle: 'italic'}}>
           Italic text
+        </Text>
+      </View>
+    );
+  },
+}, {
+  title: 'Selectable',
+  render: function() {
+    return (
+      <View>
+        <Text selectable={true}>
+          This text is <Text style={{fontWeight: 'bold'}}>selectable</Text> if you click-and-hold.
         </Text>
       </View>
     );
@@ -352,7 +446,7 @@ exports.examples = [
   },
 }, {
   title: 'Toggling Attributes',
-  render: function(): ReactElement<any> {
+  render: function(): React.Element<any> {
     return <AttributeToggler />;
   },
 }, {
@@ -465,12 +559,36 @@ exports.examples = [
       </View>
     );
   },
-}];
-
-var styles = StyleSheet.create({
-  backgroundColorText: {
-    margin: 5,
-    marginBottom: 0,
-    backgroundColor: 'rgba(100, 100, 100, 0.3)'
+}, {
+  title: 'Font variants',
+  render: function() {
+    return (
+      <View>
+        <Text style={{fontVariant: ['small-caps']}}>
+          Small Caps{'\n'}
+        </Text>
+        <Text style={{fontFamily: (Platform.isTVOS ? 'Times' : 'Hoefler Text'), fontVariant: ['oldstyle-nums']}}>
+          Old Style nums 0123456789{'\n'}
+        </Text>
+        <Text style={{fontFamily: (Platform.isTVOS ? 'Times' : 'Hoefler Text'), fontVariant: ['lining-nums']}}>
+          Lining nums 0123456789{'\n'}
+        </Text>
+        <Text style={{fontVariant: ['tabular-nums']}}>
+          Tabular nums{'\n'}
+          1111{'\n'}
+          2222{'\n'}
+        </Text>
+        <Text style={{fontVariant: ['proportional-nums']}}>
+          Proportional nums{'\n'}
+          1111{'\n'}
+          2222{'\n'}
+        </Text>
+      </View>
+    );
   },
-});
+}, {
+  title: 'Dynamic Font Size Adjustment',
+  render: function(): React.Element<any> {
+    return <AdjustingFontSize />;
+  },
+}];

@@ -17,6 +17,7 @@
  * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
  * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * @providesModule TimePickerAndroidExample
  */
 'use strict';
 
@@ -66,7 +67,7 @@ class TimePickerAndroidExample extends React.Component {
       <UIExplorerPage title="TimePickerAndroid">
         <UIExplorerBlock title="Simple time picker">
           <TouchableWithoutFeedback
-            onPress={this.showPicker.bind(this, 'simple')}>
+            onPress={this.showPicker.bind(this, 'simple', {})}>
             <Text style={styles.text}>{this.state.simpleText}</Text>
           </TouchableWithoutFeedback>
         </UIExplorerBlock>

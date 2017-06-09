@@ -19,6 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * @flow
+ * @providesModule ImageEditingExample
  */
 'use strict';
 
@@ -28,13 +29,11 @@ var {
   CameraRoll,
   Image,
   ImageEditor,
-  NativeModules,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
   TouchableHighlight,
-  UIManager,
   View,
 } = ReactNative;
 

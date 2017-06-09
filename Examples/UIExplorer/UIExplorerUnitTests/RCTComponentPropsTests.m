@@ -14,21 +14,10 @@
 
 #import <XCTest/XCTest.h>
 
-#import "RCTUIManager.h"
-#import "RCTViewManager.h"
-#import "RCTView.h"
-
-#define RUN_RUNLOOP_WHILE(CONDITION) \
-{ \
-  NSDate *timeout = [NSDate dateWithTimeIntervalSinceNow:5]; \
-  while ((CONDITION)) { \
-    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]]; \
-    if ([timeout timeIntervalSinceNow] <= 0) { \
-      XCTFail(@"Runloop timed out before condition was met"); \
-      break; \
-    } \
-  } \
-}
+#import <RCTTest/RCTTestRunner.h>
+#import <React/RCTUIManager.h>
+#import <React/RCTView.h>
+#import <React/RCTViewManager.h>
 
 @interface RCTUIManager ()
 
@@ -96,9 +85,10 @@ RCT_CUSTOM_VIEW_PROPERTY(customProp, NSString, RCTPropsTestView)
   [super setUp];
 
   NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-  _bridge = [[RCTBridge alloc] initWithBundleURL:[bundle URLForResource:@"TestBundle" withExtension:@"js"]
+  _bridge = [[RCTBridge alloc] initWithBundleURL:[bundle URLForResource:@"UIExplorerUnitTestsBundle" withExtension:@"js"]
                                   moduleProvider:nil
                                    launchOptions:nil];
+  RCT_RUN_RUNLOOP_WHILE(_bridge.isLoading);
 }
 
 - (void)testSetProps
@@ -122,7 +112,7 @@ RCT_CUSTOM_VIEW_PROPERTY(customProp, NSString, RCTPropsTestView)
     [uiManager setNeedsLayout];
   });
 
-  RUN_RUNLOOP_WHILE(view == nil);
+  RCT_RUN_RUNLOOP_WHILE(view == nil);
 }
 
 - (void)testResetProps
@@ -152,7 +142,7 @@ RCT_CUSTOM_VIEW_PROPERTY(customProp, NSString, RCTPropsTestView)
     [uiManager setNeedsLayout];
   });
 
-  RUN_RUNLOOP_WHILE(view == nil);
+  RCT_RUN_RUNLOOP_WHILE(view == nil);
 }
 
 - (void)testResetBackgroundColor
@@ -171,12 +161,12 @@ RCT_CUSTOM_VIEW_PROPERTY(customProp, NSString, RCTPropsTestView)
     [uiManager updateView:@2 viewName:@"RCTView" props:resetProps];
     [uiManager addUIBlock:^(__unused RCTUIManager *_uiManager, __unused NSDictionary<NSNumber *,NSView *> *viewRegistry) {
       view = (RCTView *)viewRegistry[@2];
-      XCTAssert(view.layer); //TODO: move setBackgroundColor to NSView
+      XCTAssertNil(view.layer); //TODO: move setBackgroundColor to NSView
     }];
     [uiManager setNeedsLayout];
   });
 
-  RUN_RUNLOOP_WHILE(view == nil);
+  RCT_RUN_RUNLOOP_WHILE(view == nil);
 }
 
 @end

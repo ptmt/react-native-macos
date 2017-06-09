@@ -16,7 +16,7 @@ var StyleSheet = require('StyleSheet');
 var Text = require('Text');
 var View = require('View');
 
-class DummyDatePickerIOS extends React.Component {
+class TouchableNativeFeedback extends React.Component {
   render() {
     return (
       <View style={[styles.container, this.props.style]}>
@@ -43,4 +43,4 @@ var styles = StyleSheet.create({
   }
 });
 
-module.exports = DummyDatePickerIOS;
+module.exports = TouchableNativeFeedback;

@@ -1,7 +1,7 @@
 {
   "name": "react-native-macos-cli",
-  "version": "1.0.0",
-  "license" : "BSD-3-Clause",
+  "version": "2.0.1",
+  "license": "BSD-3-Clause",
   "description": "The React Native macOS CLI tools",
   "main": "index.js",
   "engines": {

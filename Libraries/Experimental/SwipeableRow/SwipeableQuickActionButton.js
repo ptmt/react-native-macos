@@ -1,22 +1,10 @@
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
+ * Copyright (c) 2015-present, Facebook, Inc.
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
- *
- * The examples provided by Facebook are for non-commercial testing and
- * evaluation purposes only.
- *
- * Facebook reserves all rights not expressly granted.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
- * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
- * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  *
  *
  * @providesModule SwipeableQuickActionButton
  * @flow
@@ -25,11 +13,14 @@
 
 const Image = require('Image');
 const React = require('React');
+const PropTypes = require('prop-types');
 const Text = require('Text');
 const TouchableHighlight = require('TouchableHighlight');
 const View = require('View');
 
-const {PropTypes} = React;
+const ViewPropTypes = require('ViewPropTypes');
+
+import type {ImageSource} from 'ImageSource';
 
 /**
  * Standard set of quick action buttons that can, if the user chooses, be used
@@ -39,13 +30,13 @@ const {PropTypes} = React;
 class SwipeableQuickActionButton extends React.Component {
   props: {
     accessibilityLabel?: string,
-    imageSource: $FlowFixMe,
-    imageStyle?: $FlowFixMe,
+    imageSource: ImageSource | number,
+    imageStyle?: ?View.propTypes.style,
     onPress?: Function,
-    style?: $FlowFixMe,
+    style?: ?View.propTypes.style,
     testID?: string,
-    text?: string,
-    textStyle?: $FlowFixMe,
+    text?: ?(string | Object | Array<string | Object>),
+    textStyle?: ?View.propTypes.style,
   };
 
   static propTypes = {
@@ -53,13 +44,13 @@ class SwipeableQuickActionButton extends React.Component {
     imageSource: Image.propTypes.source.isRequired,
     imageStyle: Image.propTypes.style,
     onPress: PropTypes.func,
-    style: View.propTypes.style,
+    style: ViewPropTypes.style,
     testID: PropTypes.string,
     text: PropTypes.string,
     textStyle: Text.propTypes.style,
   };
 
-  render(): ?ReactElement<any> {
+  render(): ?React.Element<any> {
     if (!this.props.imageSource && !this.props.text) {
       return null;
     }

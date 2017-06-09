@@ -9,11 +9,13 @@
 
 package com.facebook.react.bridge;
 
+import javax.annotation.Nullable;
+
 import java.util.Collection;
 
+import com.facebook.proguard.annotations.DoNotStrip;
 import com.facebook.react.bridge.queue.ReactQueueConfiguration;
 import com.facebook.react.common.annotations.VisibleForTesting;
-import com.facebook.proguard.annotations.DoNotStrip;
 
 /**
  * A higher level API on top of the asynchronous JSC bridge. This provides an
@@ -21,15 +23,24 @@ import com.facebook.proguard.annotations.DoNotStrip;
  * Java APIs be invokable from JavaScript as well.
  */
 @DoNotStrip
-public interface CatalystInstance extends MemoryPressureListener {
+public interface CatalystInstance
+    extends MemoryPressureListener, JSInstance {
   void runJSBundle();
+
+  /**
+   * Return the source URL of the JS Bundle that was run, or {@code null} if no JS
+   * bundle has been run yet.
+   */
+  @Nullable String getSourceURL();
+
   // This is called from java code, so it won't be stripped anyway, but proguard will rename it,
   // which this prevents.
-  @DoNotStrip
-  void invokeCallback(ExecutorToken executorToken, final int callbackID, final NativeArray arguments);
+  @Override @DoNotStrip
+  void invokeCallback(
+      int callbackID,
+      NativeArray arguments);
   @DoNotStrip
   void callFunction(
-      ExecutorToken executorToken,
       String module,
       String method,
       NativeArray arguments);
@@ -50,7 +61,6 @@ public interface CatalystInstance extends MemoryPressureListener {
   ReactQueueConfiguration getReactQueueConfiguration();
 
   <T extends JavaScriptModule> T getJSModule(Class<T> jsInterface);
-  <T extends JavaScriptModule> T getJSModule(ExecutorToken executorToken, Class<T> jsInterface);
   <T extends NativeModule> boolean hasNativeModule(Class<T> nativeModuleInterface);
   <T extends NativeModule> T getNativeModule(Class<T> nativeModuleInterface);
   Collection<NativeModule> getNativeModules();
@@ -75,4 +85,9 @@ public interface CatalystInstance extends MemoryPressureListener {
 
   @VisibleForTesting
   void setGlobalVariable(String propName, String jsonValue);
+
+  /**
+   * Get the C pointer (as a long) to the JavaScriptCore context associated with this instance.
+   */
+  long getJavaScriptContext();
 }

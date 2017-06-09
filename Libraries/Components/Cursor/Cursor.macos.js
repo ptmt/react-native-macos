@@ -27,18 +27,18 @@ type CursorType = $Enum<{
   resizeDown: string,
   resizeUpDown: string,
   crosshair: string,
-  disappearingItem: string,
+  disappearing: string,
   operationNotAllowed: string,
   dragLink: string,
   dragCopy: string,
   contextualMenu: string,
-  IBeamForVerticalLayout: string
+  IBeamForVerticalLayout: string,
 }>;
 
 const cursorTypeMap = {
   arrow: 'arrowCursor',
   IBeam: 'IBeamCursor',
-  pointing: 'pointingHandCursor',
+  pointingHand: 'pointingHandCursor',
   closedHand: 'closedHandCursor',
   openHand: 'openHandCursor',
   resizeLeft: 'resizeLeftCursor',
@@ -53,7 +53,7 @@ const cursorTypeMap = {
   dragLink: 'dragLinkCursor',
   dragCopy: 'dragCopyCursor',
   contextualMenu: 'contextualMenuCursor',
-  IBeamForVerticalLayout: 'IBeamCursorForVerticalLayout'
+  IBeamForVerticalLayout: 'IBeamCursorForVerticalLayout',
 };
 
 /**

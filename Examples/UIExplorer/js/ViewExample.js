@@ -19,11 +19,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * @flow
+ * @providesModule ViewExample
  */
 'use strict';
 
-var Platform = require('Platform');
-var React = require('React');
+var React = require('react');
 var ReactNative = require('react-native');
 var {
   StyleSheet,
@@ -50,6 +50,8 @@ class ViewBorderStyleExample extends React.Component {
   state = {
     showBorder: true
   };
+
+  t: number;
 
   render() {
     return (
@@ -134,6 +136,8 @@ class BackgroundUpdatesExample extends React.Component {
   state = {
     backgroundColorIndex: 0
   };
+
+  t: number;
 
   componentWillMount() {
     const changeColor = () => {

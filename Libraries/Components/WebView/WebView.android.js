@@ -13,19 +13,17 @@
 var EdgeInsetsPropType = require('EdgeInsetsPropType');
 var ActivityIndicator = require('ActivityIndicator');
 var React = require('React');
-var ReactNative = require('react/lib/ReactNative');
-var ReactNativeViewAttributes = require('ReactNativeViewAttributes');
+var PropTypes = require('prop-types');
+var ReactNative = require('ReactNative');
 var StyleSheet = require('StyleSheet');
 var UIManager = require('UIManager');
 var View = require('View');
+var ViewPropTypes = require('ViewPropTypes');
 
 var deprecatedPropType = require('deprecatedPropType');
 var keyMirror = require('fbjs/lib/keyMirror');
-var merge = require('merge');
 var requireNativeComponent = require('requireNativeComponent');
 var resolveAssetSource = require('resolveAssetSource');
-
-var PropTypes = React.PropTypes;
 
 var RCT_WEBVIEW_REF = 'webview';
 
@@ -48,7 +46,7 @@ var defaultRenderLoading = () => (
  */
 class WebView extends React.Component {
   static propTypes = {
-    ...View.propTypes,
+    ...ViewPropTypes,
     renderError: PropTypes.func,
     renderLoading: PropTypes.func,
     onLoad: PropTypes.func,
@@ -58,8 +56,10 @@ class WebView extends React.Component {
     automaticallyAdjustContentInsets: PropTypes.bool,
     contentInset: EdgeInsetsPropType,
     onNavigationStateChange: PropTypes.func,
+    onMessage: PropTypes.func,
+    onContentSizeChange: PropTypes.func,
     startInLoadingState: PropTypes.bool, // force WebView to show loadingView on first load
-    style: View.propTypes.style,
+    style: ViewPropTypes.style,
 
     html: deprecatedPropType(
       PropTypes.string,
@@ -152,11 +152,48 @@ class WebView extends React.Component {
      * start playing. The default value is `false`.
      */
     mediaPlaybackRequiresUserAction: PropTypes.bool,
+
+    /**
+     * Boolean that sets whether JavaScript running in the context of a file
+     * scheme URL should be allowed to access content from any origin.
+     * Including accessing content from other file scheme URLs
+     * @platform android
+     */
+    allowUniversalAccessFromFileURLs: PropTypes.bool,
+
+    /**
+     * Function that accepts a string that will be passed to the WebView and
+     * executed immediately as JavaScript.
+     */
+    injectJavaScript: PropTypes.func,
+
+    /**
+     * Specifies the mixed content mode. i.e WebView will allow a secure origin to load content from any other origin.
+     *
+     * Possible values for `mixedContentMode` are:
+     *
+     * - `'never'` (default) - WebView will not allow a secure origin to load content from an insecure origin.
+     * - `'always'` - WebView will allow a secure origin to load content from any other origin, even if that origin is insecure.
+     * - `'compatibility'` -  WebView will attempt to be compatible with the approach of a modern web browser with regard to mixed content.
+     * @platform android
+     */
+    mixedContentMode: PropTypes.oneOf([
+      'never',
+      'always',
+      'compatibility'
+    ]),
+
+    /**
+     * Used on Android only, controls whether form autocomplete data should be saved
+     * @platform android
+     */
+    saveFormDataDisabled: PropTypes.bool,
   };
 
   static defaultProps = {
     javaScriptEnabled : true,
     scalesPageToFit: true,
+    saveFormDataDisabled: false
   };
 
   state = {
@@ -217,13 +254,19 @@ class WebView extends React.Component {
         userAgent={this.props.userAgent}
         javaScriptEnabled={this.props.javaScriptEnabled}
         domStorageEnabled={this.props.domStorageEnabled}
+        messagingEnabled={typeof this.props.onMessage === 'function'}
+        onMessage={this.onMessage}
         contentInset={this.props.contentInset}
         automaticallyAdjustContentInsets={this.props.automaticallyAdjustContentInsets}
+        onContentSizeChange={this.props.onContentSizeChange}
         onLoadingStart={this.onLoadingStart}
         onLoadingFinish={this.onLoadingFinish}
         onLoadingError={this.onLoadingError}
         testID={this.props.testID}
         mediaPlaybackRequiresUserAction={this.props.mediaPlaybackRequiresUserAction}
+        allowUniversalAccessFromFileURLs={this.props.allowUniversalAccessFromFileURLs}
+        mixedContentMode={this.props.mixedContentMode}
+        saveFormDataDisabled={this.props.saveFormDataDisabled}
       />;
 
     return (
@@ -266,6 +309,28 @@ class WebView extends React.Component {
     );
   };
 
+  postMessage = (data) => {
+    UIManager.dispatchViewManagerCommand(
+      this.getWebViewHandle(),
+      UIManager.RCTWebView.Commands.postMessage,
+      [String(data)]
+    );
+  };
+
+  /**
+  * Injects a javascript string into the referenced WebView. Deliberately does not
+  * return a response because using eval() to return a response breaks this method
+  * on pages with a Content Security Policy that disallows eval(). If you need that
+  * functionality, look into postMessage/onMessage.
+  */
+  injectJavaScript = (data) => {
+    UIManager.dispatchViewManagerCommand(
+      this.getWebViewHandle(),
+      UIManager.RCTWebView.Commands.injectJavaScript,
+      [data]
+    );
+  };
+
   /**
    * We return an event with a bunch of fields including:
    *  url, title, loading, canGoBack, canGoForward
@@ -291,7 +356,7 @@ class WebView extends React.Component {
     var {onError, onLoadEnd} = this.props;
     onError && onError(event);
     onLoadEnd && onLoadEnd(event);
-    console.error('Encountered an error loading page', event.nativeEvent);
+    console.warn('Encountered an error loading page', event.nativeEvent);
 
     this.setState({
       lastErrorEvent: event.nativeEvent,
@@ -308,9 +373,18 @@ class WebView extends React.Component {
     });
     this.updateNavigationState(event);
   };
+
+  onMessage = (event: Event) => {
+    var {onMessage} = this.props;
+    onMessage && onMessage(event);
+  }
 }
 
-var RCTWebView = requireNativeComponent('RCTWebView', WebView);
+var RCTWebView = requireNativeComponent('RCTWebView', WebView, {
+  nativeOnly: {
+    messagingEnabled: PropTypes.bool,
+  },
+});
 
 var styles = StyleSheet.create({
   container: {

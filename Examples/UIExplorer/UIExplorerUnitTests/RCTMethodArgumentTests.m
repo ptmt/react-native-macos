@@ -15,7 +15,7 @@
 #import <AppKit/AppKit.h>
 #import <XCTest/XCTest.h>
 
-#import "RCTModuleMethod.h"
+#import <React/RCTModuleMethod.h>
 
 @interface RCTMethodArgumentTests : XCTestCase
 

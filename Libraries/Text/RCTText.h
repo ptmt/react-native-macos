@@ -15,6 +15,8 @@ CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets);
 
 @property (nonatomic, assign) NSEdgeInsets contentInset;
 @property (nonatomic, strong) NSTextStorage *textStorage;
+@property (nonatomic, assign) CGRect textFrame;
+@property (nonatomic, assign) BOOL selectable;
 
 @property (nonatomic, assign) BOOL respondsToLiveResizing;
 @end

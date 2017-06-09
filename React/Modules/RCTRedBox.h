@@ -9,9 +9,9 @@
 
 #import <AppKit/AppKit.h>
 
-#import "RCTBridge.h"
-#import "RCTBridgeModule.h"
-#import "RCTErrorCustomizer.h"
+#import <React/RCTBridge.h>
+#import <React/RCTBridgeModule.h>
+#import <React/RCTErrorCustomizer.h>
 
 @interface RCTRedBox : NSObject <RCTBridgeModule>
 

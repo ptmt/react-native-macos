@@ -11,15 +11,15 @@
 
 #import <AppKit/AppKit.h>
 
-#import "RCTConvert.h"
-#import "RCTLog.h"
-#import "RCTUtils.h"
+#import <React/RCTConvert.h>
+#import <React/RCTLog.h>
+#import <React/RCTUtils.h>
+
+#import "RCTImageLoader.h"
+#import "RCTImageStoreManager.h"
 #import "RCTImageUtils.h"
 
-#import "RCTImageStoreManager.h"
-#import "RCTImageLoader.h"
-
-#import "UIImageUtils.h"
+#import "React/UIImageUtils.h"
 
 @implementation RCTImageEditingManager
 

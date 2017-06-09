@@ -7,6 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @flow
+ * @providesModule PromiseTest
  */
 'use strict';
 
@@ -28,9 +29,7 @@ class PromiseTest extends React.Component {
       this.testShouldSucceedAsync(),
       this.testShouldThrowAsync(),
     ]).then(() => TestModule.markTestPassed(
-      // $FlowFixMe found when converting React.createClass to ES6
       this.shouldResolve && this.shouldReject &&
-      // $FlowFixMe found when converting React.createClass to ES6
       this.shouldSucceedAsync && this.shouldThrowAsync
     ));
   }
@@ -67,7 +66,7 @@ class PromiseTest extends React.Component {
     }
   };
 
-  render(): ReactElement<any> {
+  render(): React.Element<any> {
     return <View />;
   }
 }

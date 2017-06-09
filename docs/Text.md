@@ -83,7 +83,7 @@ The `<Text>` element is special relative to layout: everything inside is no long
 
 ## Limited Style Inheritance
 
-On the web, the usual way to set a font family and size for the entire document is to write:
+On the web, the usual way to set a font family and size for the entire document is to take advantage of inherited CSS properties like so:
 
 ```css
 /* CSS, *not* React Native */
@@ -94,7 +94,7 @@ html {
 }
 ```
 
-When the browser is trying to render a text node, it's going to go all the way up to the root element of the tree and find an element with a `font-size` attribute. An unexpected property of this system is that **any** node can have `font-size` attribute, including a `<div>`. This was designed for convenience, even though not really semantically correct.
+All elements in the document will inherit this font unless they or one of their parents specifies a new rule.
 
 In React Native, we are more strict about it: **you must wrap all the text nodes inside of a `<Text>` component**; you cannot have a text node directly under a `<View>`.
 
@@ -120,6 +120,22 @@ You also lose the ability to set up a default font for an entire subtree. The re
   <MyAppHeaderText>Text styled as a header</MyAppHeaderText>
 </View>
 ```
+
+Assuming that `MyAppText` is a component that simply renders out its children into a `Text` component with styling, then `MyAppHeaderText` can be defined as follows:
+
+```javascript
+class MyAppHeaderText extends Component {
+  render() {
+    <MyAppText>
+      <Text style={{fontSize: 20}}>
+        {this.props.children}
+      </Text>
+    </MyAppText>
+  }
+}
+```
+
+Composing `MyAppText` in this way ensures that we get the styles from a top-level component, but leaves us the ability to add / override them in specific use cases.
 
 React Native still has the concept of style inheritance, but limited to text subtrees. In this case, the second part will be both bold and red.
 

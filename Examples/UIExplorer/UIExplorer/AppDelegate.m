@@ -15,11 +15,12 @@
 #import "AppDelegate.h"
 #import <Cocoa/Cocoa.h>
 
-#import "RCTBridge.h"
-#import "RCTBundleURLProvider.h"
-#import "RCTJavaScriptLoader.h"
-#import "RCTRootView.h"
-#import "RCTEventDispatcher.h"
+#import <React/RCTBridge.h>
+#import <React/RCTBundleURLProvider.h>
+#import <React/RCTJavaScriptLoader.h>
+#import <React/RCTLinkingManager.h>
+#import <React/RCTRootView.h>
+#import <React/RCTEventDispatcher.h>
 
 @interface AppDelegate() <RCTBridgeDelegate, NSSearchFieldDelegate>
 
@@ -33,7 +34,7 @@
   if(self = [super init]) {
 
     // -- Init Window
-    NSRect contentSize = NSMakeRect(200, 500, 1000, 500); // TODO: should not be hardcoded
+    NSRect contentSize = NSMakeRect(200, 500, 1000, 500); 
 
     self.window = [[NSWindow alloc] initWithContentRect:contentSize
                                               styleMask:NSTitledWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask | NSFullSizeContentViewWindowMask
@@ -80,11 +81,8 @@
 
 - (void)setDefaultURL
 {
-  _sourceURL = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"Examples/UIExplorer/js/UIExplorerApp.macos" fallbackResource:nil];
-
-  if (!getenv("CI_USE_PACKAGER")) {
-    _sourceURL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
-  }
+  _sourceURL = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"Examples/UIExplorer/js/UIExplorerApp.macos"
+                                                        fallbackResource:nil];
 }
 
 - (void)resetBridgeToDefault
@@ -93,15 +91,18 @@
   [_bridge reload];
 }
 
+
 - (NSURL *)sourceURLForBridge:(__unused RCTBridge *)bridge
 {
   return _sourceURL;
 }
 
 - (void)loadSourceForBridge:(RCTBridge *)bridge
-                  withBlock:(RCTSourceLoadBlock)loadCallback
+                 onProgress:(RCTSourceLoadProgressBlock)onProgress
+                 onComplete:(RCTSourceLoadBlock)loadCallback
 {
   [RCTJavaScriptLoader loadBundleAtURL:[self sourceURLForBridge:bridge]
+                            onProgress:onProgress
                             onComplete:loadCallback];
 }
 

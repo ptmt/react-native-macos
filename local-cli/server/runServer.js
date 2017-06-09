@@ -8,29 +8,36 @@
  */
 'use strict';
 
+const InspectorProxy = require('./util/inspectorProxy.js');
+const ReactPackager = require('../../packager/react-packager');
+
 const attachHMRServer = require('./util/attachHMRServer');
 const connect = require('connect');
+const copyToClipBoardMiddleware = require('./middleware/copyToClipBoardMiddleware');
 const cpuProfilerMiddleware = require('./middleware/cpuProfilerMiddleware');
+const defaultAssetExts = require('../../packager/defaults').assetExts;
+const defaultSourceExts = require('../../packager/defaults').sourceExts;
+const defaultPlatforms = require('../../packager/defaults').platforms;
+const defaultProvidesModuleNodeModules = require('../../packager/defaults').providesModuleNodeModules;
 const getDevToolsMiddleware = require('./middleware/getDevToolsMiddleware');
 const http = require('http');
-const jscProfilerMiddleware = require('./middleware/jscProfilerMiddleware');
+const indexPageMiddleware = require('./middleware/indexPage');
 const loadRawBodyMiddleware = require('./middleware/loadRawBodyMiddleware');
 const messageSocket = require('./util/messageSocket.js');
 const openStackFrameInEditorMiddleware = require('./middleware/openStackFrameInEditorMiddleware');
-const copyToClipBoardMiddleware = require('./middleware/copyToClipBoardMiddleware');
 const path = require('path');
-const ReactPackager = require('../../packager/react-packager');
 const statusPageMiddleware = require('./middleware/statusPageMiddleware.js');
-const indexPageMiddleware = require('./middleware/indexPage');
 const systraceProfileMiddleware = require('./middleware/systraceProfileMiddleware.js');
-const heapCaptureMiddleware = require('./middleware/heapCaptureMiddleware.js');
+const unless = require('./middleware/unless');
 const webSocketProxy = require('./util/webSocketProxy.js');
-const defaultAssetExts = require('../../packager/defaultAssetExts');
 
-function runServer(args, config, readyCallback) {
+function runServer(args, config, startedCallback, readyCallback) {
   var wsProxy = null;
   var ms = null;
   const packagerServer = getPackagerServer(args, config);
+  startedCallback(packagerServer._reporter);
+
+  const inspectorProxy = new InspectorProxy();
   const app = connect()
     .use(loadRawBodyMiddleware)
     .use(connect.compress())
@@ -40,10 +47,9 @@ function runServer(args, config, readyCallback) {
     .use(copyToClipBoardMiddleware)
     .use(statusPageMiddleware)
     .use(systraceProfileMiddleware)
-    .use(heapCaptureMiddleware)
     .use(cpuProfilerMiddleware)
-    .use(jscProfilerMiddleware)
     .use(indexPageMiddleware)
+    .use(unless('/inspector', inspectorProxy.processRequest.bind(inspectorProxy)))
     .use(packagerServer.processRequest.bind(packagerServer));
 
   args.projectRoots.forEach(root => app.use(connect.static(root)));
@@ -63,8 +69,8 @@ function runServer(args, config, readyCallback) {
 
       wsProxy = webSocketProxy.attachToServer(serverInstance, '/debugger-proxy');
       ms = messageSocket.attachToServer(serverInstance, '/message');
-      webSocketProxy.attachToServer(serverInstance, '/devtools');
-      readyCallback();
+      inspectorProxy.attachToServer(serverInstance, '/inspector');
+      readyCallback(packagerServer._reporter);
     }
   );
   // Disable any kind of automatic timeout behavior for incoming
@@ -79,18 +85,42 @@ function getPackagerServer(args, config) {
     typeof config.getTransformModulePath === 'function' ? config.getTransformModulePath() :
     undefined;
 
+  const providesModuleNodeModules =
+    args.providesModuleNodeModules || defaultProvidesModuleNodeModules;
+
+  let LogReporter;
+  if (args.customLogReporterPath) {
+    try {
+      // First we let require resolve it, so we can require packages in node_modules
+      // as expected. eg: require('my-package/reporter');
+      LogReporter = require(args.customLogReporterPath);
+    } catch (e) {
+      // If that doesn't work, then we next try relative to the cwd, eg:
+      // require('./reporter');
+      LogReporter = require(path.resolve(args.customLogReporterPath));
+    }
+  } else {
+    LogReporter = require('../../packager/src/lib/TerminalReporter');
+  }
+
   return ReactPackager.createServer({
-    nonPersistent: args.nonPersistent,
-    projectRoots: args.projectRoots,
+    assetExts: defaultAssetExts.concat(args.assetExts),
     blacklistRE: config.getBlacklistRE(),
     cacheVersion: '3',
-    getTransformOptionsModulePath: config.getTransformOptionsModulePath,
-    transformModulePath: transformModulePath,
     extraNodeModules: config.extraNodeModules,
-    assetRoots: args.assetRoots,
-    assetExts: defaultAssetExts.concat(args.assetExts),
+    getTransformOptions: config.getTransformOptions,
+    hasteImpl: config.hasteImpl,
+    platforms: defaultPlatforms.concat(args.platforms),
+    postProcessModules: config.postProcessModules,
+    postMinifyProcess: config.postMinifyProcess,
+    projectRoots: args.projectRoots,
+    providesModuleNodeModules: providesModuleNodeModules,
+    reporter: new LogReporter(),
     resetCache: args.resetCache,
+    sourceExts: defaultSourceExts.concat(args.sourceExts),
+    transformModulePath: transformModulePath,
     verbose: args.verbose,
+    watch: !args.nonPersistent,
   });
 }
 

@@ -11,6 +11,7 @@
 
 #import "RCTBridge.h"
 #import "RCTScrollView.h"
+#import "RCTShadowView.h"
 #import "RCTUIManager.h"
 
 @interface RCTNativeScrollView (Private)
@@ -29,9 +30,42 @@ RCT_EXPORT_MODULE()
 }
 
 RCT_EXPORT_VIEW_PROPERTY(autoScrollToBottom, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(alwaysBounceHorizontal, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(alwaysBounceVertical, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(bounces, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(bouncesZoom, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(canCancelContentTouches, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(centerContent, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(automaticallyAdjustContentInsets, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(decelerationRate, CGFloat)
+RCT_EXPORT_VIEW_PROPERTY(directionalLockEnabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(indicatorStyle, UIScrollViewIndicatorStyle)
+
+RCT_EXPORT_VIEW_PROPERTY(maximumZoomScale, CGFloat)
+RCT_EXPORT_VIEW_PROPERTY(minimumZoomScale, CGFloat)
+RCT_EXPORT_VIEW_PROPERTY(scrollEnabled, BOOL)
+
 RCT_EXPORT_VIEW_PROPERTY(showsHorizontalScrollIndicator, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(showsVerticalScrollIndicator, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(scrollEventThrottle, NSTimeInterval)
+RCT_EXPORT_VIEW_PROPERTY(zoomScale, CGFloat)
+RCT_EXPORT_VIEW_PROPERTY(contentInset, UIEdgeInsets)
+RCT_EXPORT_VIEW_PROPERTY(scrollIndicatorInsets, UIEdgeInsets)
+RCT_EXPORT_VIEW_PROPERTY(snapToInterval, int)
+RCT_EXPORT_VIEW_PROPERTY(snapToAlignment, NSString)
+RCT_REMAP_VIEW_PROPERTY(contentOffset, scrollView.contentOffset, CGPoint)
+// RCT_EXPORT_VIEW_PROPERTY(onScrollBeginDrag, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onScroll, RCTDirectEventBlock)
+
+// overflow is used both in css-layout as well as by react-native. In css-layout
+// we always want to treat overflow as scroll but depending on what the overflow
+// is set to from js we want to clip drawing or not. This piece of code ensures
+// that css-layout is always treating the contents of a scroll container as
+// overflow: 'scroll'.
+RCT_CUSTOM_SHADOW_PROPERTY(overflow, YGOverflow, RCTShadowView) {
+#pragma unused (json)
+  view.overflow = YGOverflowScroll;
+}
 
 RCT_EXPORT_METHOD(getContentSize:(nonnull NSNumber *)reactTag
                   callback:(RCTResponseSenderBlock)callback)
@@ -80,14 +114,14 @@ RCT_EXPORT_METHOD(scrollTo:(nonnull NSNumber *)reactTag
   [self.bridge.uiManager addUIBlock:
    ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, RCTNativeScrollView *> *viewRegistry){
      RCTNativeScrollView *view = viewRegistry[reactTag];
-
-     if ([view conformsToProtocol:@protocol(RCTScrollableProtocol)]) {
-       [(id<RCTScrollableProtocol>)view scrollToOffset:(CGPoint){x, y} animated:animated];
-     } else {
-       RCTLogError(@"tried to scrollTo: on non-RCTScrollableProtocol view %@ "
-                   "with tag #%@", view, reactTag);
-     }
+       if ([view conformsToProtocol:@protocol(RCTScrollableProtocol)]) {
+           [(id<RCTScrollableProtocol>)view scrollToOffset:(CGPoint){x, y} animated:animated];
+       } else {
+           RCTLogError(@"tried to scrollTo: on non-RCTScrollableProtocol view %@ "
+                       "with tag #%@", view, reactTag);
+       }
    }];
 }
+
 
 @end

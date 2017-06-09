@@ -61,18 +61,18 @@ RCT_EXPORT_MODULE()
   if ((self = [super init])) {
 
     // TODO: can this be moved out of the startup path?
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didReceiveNewContentSizeCategory:)
-                                                 name:UIContentSizeCategoryDidChangeNotification
-                                               object:[UIApplication sharedApplication]];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didReceiveNewVoiceOverStatus:)
-                                                 name:UIAccessibilityVoiceOverStatusChanged
-                                               object:nil];
-
-    self.contentSizeCategory = [UIApplication sharedApplication].preferredContentSizeCategory;
-    _isVoiceOverEnabled = UIAccessibilityIsVoiceOverRunning();
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(didReceiveNewContentSizeCategory:)
+//                                                 name:UIContentSizeCategoryDidChangeNotification
+//                                               object:RCTSharedApplication()];
+//
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(didReceiveNewVoiceOverStatus:)
+//                                                 name:UIAccessibilityVoiceOverStatusChanged
+//                                               object:nil];
+//
+//    self.contentSizeCategory = RCTSharedApplication().preferredContentSizeCategory;
+  //   _isVoiceOverEnabled = UIAccessibilityIsVoiceOverRunning();
   }
   return self;
 }
@@ -84,7 +84,7 @@ RCT_EXPORT_MODULE()
 
 - (void)didReceiveNewContentSizeCategory:(NSNotification *)note
 {
-  self.contentSizeCategory = note.userInfo[UIContentSizeCategoryNewValueKey];
+  // self.contentSizeCategory = note.userInfo[UIContentSizeCategoryNewValueKey];
 }
 
 - (void)didReceiveNewVoiceOverStatus:(__unused NSNotification *)notification
@@ -156,8 +156,8 @@ RCT_EXPORT_METHOD(setAccessibilityContentSizeMultipliers:(NSDictionary *)JSMulti
   NSMutableDictionary<NSString *, NSNumber *> *multipliers = [NSMutableDictionary new];
   for (NSString *__nonnull JSCategory in JSMultipliers) {
     NSNumber *m = [RCTConvert NSNumber:JSMultipliers[JSCategory]];
-    NSString *UIKitCategory = [[self class] UIKitCategoryFromJSCategory:JSCategory];
-    multipliers[UIKitCategory] = m;
+//    NSString *UIKitCategory = [[self class] UIKitCategoryFromJSCategory:JSCategory];
+//    multipliers[UIKitCategory] = m;
   }
   self.multipliers = multipliers;
 }

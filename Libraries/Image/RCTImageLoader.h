@@ -10,13 +10,15 @@
 #import <AppKit/AppKit.h>
 #import <QuartzCore/CAAnimation.h>
 
-#import "RCTBridge.h"
-#import "RCTURLRequestHandler.h"
-#import "UIImageUtils.h"
-#import "RCTResizeMode.h"
+#import <React/RCTBridge.h>
+#import <React/RCTResizeMode.h>
+#import <React/RCTURLRequestHandler.h>
+#import "React/UIImageUtils.h"
 
 typedef void (^RCTImageLoaderProgressBlock)(int64_t progress, int64_t total);
+typedef void (^RCTImageLoaderPartialLoadBlock)(NSImage *image);
 typedef void (^RCTImageLoaderCompletionBlock)(NSError *error, NSImage *image);
+
 typedef dispatch_block_t RCTImageLoaderCancellationBlock;
 
 /**
@@ -84,6 +86,9 @@ typedef dispatch_block_t RCTImageLoaderCancellationBlock;
  * select the optimal dimensions for the loaded image. The `clipped` option
  * controls whether the image will be clipped to fit the specified size exactly,
  * or if the original aspect ratio should be retained.
+ * `partialLoadBlock` is meant for custom image loaders that do not ship with the core RN library.
+ * It is meant to be called repeatedly while loading the image as higher quality versions are decoded,
+ * for instance with progressive JPEGs.
  */
 - (RCTImageLoaderCancellationBlock)loadImageWithURLRequest:(NSURLRequest *)imageURLRequest
                                                       size:(CGSize)size
@@ -91,6 +96,7 @@ typedef dispatch_block_t RCTImageLoaderCancellationBlock;
                                                    clipped:(BOOL)clipped
                                                 resizeMode:(RCTResizeMode)resizeMode
                                              progressBlock:(RCTImageLoaderProgressBlock)progressBlock
+                                          partialLoadBlock:(RCTImageLoaderPartialLoadBlock)partialLoadBlock
                                            completionBlock:(RCTImageLoaderCompletionBlock)completionBlock;
 
 /**
@@ -150,6 +156,7 @@ typedef dispatch_block_t RCTImageLoaderCancellationBlock;
                                              scale:(CGFloat)scale
                                         resizeMode:(RCTResizeMode)resizeMode
                                    progressHandler:(RCTImageLoaderProgressBlock)progressHandler
+                                partialLoadHandler:(RCTImageLoaderPartialLoadBlock)partialLoadHandler
                                  completionHandler:(RCTImageLoaderCompletionBlock)completionHandler;
 
 @optional

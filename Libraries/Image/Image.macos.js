@@ -15,10 +15,10 @@ const EdgeInsetsPropType = require('EdgeInsetsPropType');
 const ImageResizeMode = require('ImageResizeMode');
 const ImageSourcePropType = require('ImageSourcePropType');
 const ImageStylePropTypes = require('ImageStylePropTypes');
-const NativeMethodsMixin = require('react/lib/NativeMethodsMixin');
+const NativeMethodsMixin = require('NativeMethodsMixin');
 const NativeModules = require('NativeModules');
-const PropTypes = require('react/lib/ReactPropTypes');
 const React = require('React');
+const PropTypes = require('prop-types');
 const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const StyleSheet = require('StyleSheet');
 const StyleSheetPropType = require('StyleSheetPropType');
@@ -34,8 +34,8 @@ const ImageViewManager = NativeModules.ImageViewManager;
  * including network images, static resources, temporary local images, and
  * images from local disk, such as the camera roll.
  *
- * This example shows both fetching and displaying an image from local storage as well as on from
- * network.
+ * This example shows both fetching and displaying an image from local
+ * storage as well as one from network.
  *
  * ```ReactNativeWebPlayer
  * import React, { Component } from 'react';
@@ -65,7 +65,7 @@ const ImageViewManager = NativeModules.ImageViewManager;
  *
  * ```ReactNativeWebPlayer
  * import React, { Component } from 'react';
- * import { AppRegistry, View, Image, StyleSheet} from 'react-native';
+ * import { AppRegistry, View, Image, StyleSheet } from 'react-native';
  *
  * const styles = StyleSheet.create({
  *   stretch: {
@@ -103,17 +103,17 @@ const ImageViewManager = NativeModules.ImageViewManager;
  * ```
  * dependencies {
  *   // If your app supports Android versions before Ice Cream Sandwich (API level 14)
- *   compile 'com.facebook.fresco:animated-base-support:0.11.0'
+ *   compile 'com.facebook.fresco:animated-base-support:1.0.1'
  *
  *   // For animated GIF support
- *   compile 'com.facebook.fresco:animated-gif:0.11.0'
+ *   compile 'com.facebook.fresco:animated-gif:1.0.1'
  *
  *   // For WebP support, including animated WebP
- *   compile 'com.facebook.fresco:animated-webp:0.11.0'
- *   compile 'com.facebook.fresco:webpsupport:0.11.0'
+ *   compile 'com.facebook.fresco:animated-webp:1.0.1'
+ *   compile 'com.facebook.fresco:webpsupport:1.0.1'
  *
  *   // For WebP support, without animations
- *   compile 'com.facebook.fresco:webpsupport:0.11.0'
+ *   compile 'com.facebook.fresco:webpsupport:1.0.1'
  * }
  * ```
  *
@@ -125,6 +125,7 @@ const ImageViewManager = NativeModules.ImageViewManager;
  * ```
  *
  */
+// $FlowFixMe(>=0.41.0)
 const Image = React.createClass({
   propTypes: {
     /**
@@ -139,7 +140,8 @@ const Image = React.createClass({
      * This prop can also contain several remote URLs, specified together with
      * their width and height and potentially with scale/other URI arguments.
      * The native side will then choose the best `uri` to display based on the
-     * measured size of the image container.
+     * measured size of the image container. A `cache` property can be added to
+     * control how networked request interacts with the local cache.
      */
     source: ImageSourcePropType,
     /**
@@ -176,7 +178,7 @@ const Image = React.createClass({
      * the image.
      * @platform ios
      */
-    accessibilityLabel: PropTypes.string,
+    accessibilityLabel: PropTypes.node,
     /**
     * blurRadius: the blur radius of the blur filter added to the image
     * @platform ios
@@ -192,6 +194,26 @@ const Image = React.createClass({
      * @platform ios
      */
     capInsets: EdgeInsetsPropType,
+    /**
+     * The mechanism that should be used to resize the image when the image's dimensions
+     * differ from the image view's dimensions. Defaults to `auto`.
+     *
+     * - `auto`: Use heuristics to pick between `resize` and `scale`.
+     *
+     * - `resize`: A software operation which changes the encoded image in memory before it
+     * gets decoded. This should be used instead of `scale` when the image is much larger
+     * than the view.
+     *
+     * - `scale`: The image gets drawn downscaled or upscaled. Compared to `resize`, `scale` is
+     * faster (usually hardware accelerated) and produces higher quality images. This
+     * should be used if the image is smaller than the view. It should also be used if the
+     * image is slightly bigger than the view.
+     *
+     * More details about `resize` and `scale` can be found at http://frescolib.org/docs/resizing-rotating.html.
+     *
+     * @platform android
+     */
+    resizeMethod: PropTypes.oneOf(['auto', 'resize', 'scale']),
     /**
      * Determines how to resize the image when the frame doesn't match the raw
      * image dimensions.
@@ -234,9 +256,15 @@ const Image = React.createClass({
     onProgress: PropTypes.func,
     /**
      * Invoked on load error with `{nativeEvent: {error}}`.
-     * @platform ios
      */
     onError: PropTypes.func,
+    /**
+     * Invoked when a partial load of the image is complete. The definition of
+     * what constitutes a "partial load" is loader specific though this is meant
+     * for progressive JPEG loads.
+     * @platform ios
+     */
+    onPartialLoad: PropTypes.func,
     /**
      * Invoked when load completes successfully.
      */
@@ -260,8 +288,10 @@ const Image = React.createClass({
      * does not fully load/download the image data. A proper, supported way to
      * preload images will be provided as a separate API.
      *
+     * Does not work for static image resources.
+     *
      * @param uri The location of the image.
-     * @param success The function that will be called if the image was sucessfully found and width
+     * @param success The function that will be called if the image was successfully found and width
      * and height retrieved.
      * @param failure The function that will be called if there was an error, such as failing to
      * to retrieve the image.
@@ -273,7 +303,7 @@ const Image = React.createClass({
     getSize: function(
       uri: string,
       success: (width: number, height: number) => void,
-      failure: (error: any) => void,
+      failure?: (error: any) => void,
     ) {
       ImageViewManager.getSize(uri, success, failure || function() {
         console.warn('Failed to get size for image: ' + uri);
@@ -290,6 +320,12 @@ const Image = React.createClass({
     prefetch(url: string) {
       return ImageViewManager.prefetchImage(url);
     },
+    /**
+     * Resolves an asset reference into an object which has the properties `uri`, `width`,
+     * and `height`. The input may either be a number (opaque type returned by
+     * require('./foo.png')) or an `ImageSource` like { uri: '<http location || file path>' }
+     */
+    resolveAssetSource: resolveAssetSource,
   },
 
   mixins: [NativeMethodsMixin],

@@ -8,8 +8,8 @@
  */
 
 #import "RCTClipboard.h"
-#import "RCTUtils.h"
 #import <AppKit/AppKit.h>
+#import <React/RCTUtils.h>
 
 @implementation RCTClipboard
 

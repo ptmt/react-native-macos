@@ -1,5 +1,5 @@
 # React Native macOS (ex react-native-desktop)
-Build macOS desktop applications using React Native and Cocoa.
+Build macOS desktop applications using React Native.
 
 [![Build Status](https://travis-ci.org/ptmt/react-native-macos.svg)](https://travis-ci.org/ptmt/react-native-macos)
 [![npm version](https://badge.fury.io/js/react-native-macos.svg)](https://badge.fury.io/js/react-native-macos)
@@ -7,12 +7,12 @@ Build macOS desktop applications using React Native and Cocoa.
 
 ```jsx
 <View>
-  <Button onClick={() => alert('clicked')} />
+  <Button onClick={() => alert('clicked!')} />
 </View>
 ```
 
 ## Getting Started
-Node 4.x+, OS X 10.10+ required.
+Node 4.x+, OS X 10.11+ required.
 
 *Previous React Native experience is highly recommended*.
 
@@ -20,17 +20,24 @@ Node 4.x+, OS X 10.10+ required.
 $ npm install react-native-macos-cli -g
 $ react-native-macos init MyProject
 $ cd MyProject
-$ open macos/MyProject.xcodeproj
+$ react-native-macos run-macos
 ```
+If you want to add macOS target to the existing iOS/Android/Windows project, make the steps above, merge this new folder into your current React Native project, then put [rn-cli.config.js](https://gist.github.com/ptmt/b1473dead098cf53d667e355aedf2a7b) in the root. 
 
 ## Documentation
 Since React Native macOS is just a fork, you can follow [the same instructions on the React Native Documentation](http://facebook.github.io/react-native/docs/getting-started.html#content).
 
 ## Disclaimer
-React Native macOS is a fork of React Native for iOS. The library is still fairly new so proceed at your own risk. There has been no successful story for any React Native macOS application yet, so it's not proven by production use.
+React Native macOS is a fork of React Native for iOS. The project is still a fairly new so proceed at your own risk.
 
 ## Community Help
-Feel free to ask anything on `#react-native-platforms` channel on Reactiflux if you happen to run into problems.
+
+Please use these community resources for getting help. We use the GitHub issues for tracking bugs and feature requests and have limited bandwidth to address them.
+
+- Ask a question on [StackOverflow](https://stackoverflow.com/) and tag it with `react-native-macos`
+- Chat with us on [Reactiflux](https://discord.gg/0ZcbPKXt5bWJVmUY) in ``#react-native-platforms` (mentioning @ptmt)
+- DM me on twitter (@ptmt)
+
 
 ## Examples
 ### UIExplorer
@@ -44,7 +51,7 @@ UIExplorer includes a set of component examples that illustrate their functional
 
 <img width="986" alt="screenshot 2015-10-24 16 40 36" src="https://cloud.githubusercontent.com/assets/1004115/14185895/7c133eb0-f784-11e5-8e3c-ca36aa351a26.png">
 
-## Video Demo
-Running a simple Chat app in React Native macOS.
 
-[![Youtube play](https://cloud.githubusercontent.com/assets/1004115/11685246/75db9d6a-9e99-11e5-8378-1d5cea6053c0.png)](https://www.youtube.com/watch?v=m1-LNKIuqtI)
+## License
+
+See license for React is [BSD licensed](./LICENSE). Facebook also provide an additional [patent grant](./PATENTS).

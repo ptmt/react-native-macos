@@ -9,7 +9,7 @@
 
 #import <AppKit/AppKit.h>
 
-#import "RCTComponent.h"
+#import <React/RCTComponent.h>
 
 @interface RCTNavItem : NSView
 
@@ -17,9 +17,11 @@
 @property (nonatomic, strong) NSImage *titleImage;
 @property (nonatomic, strong) NSImage *leftButtonIcon;
 @property (nonatomic, copy) NSString *leftButtonTitle;
-@property (nonatomic, strong) NSImage *rightButtonIcon;
+@property (nonatomic, assign) UIBarButtonSystemItem leftButtonSystemIcon;
+@property (nonatomic, strong) UIImage *rightButtonIcon;
 @property (nonatomic, copy) NSString *rightButtonTitle;
-@property (nonatomic, strong) NSImage *backButtonIcon;
+@property (nonatomic, assign) UIBarButtonSystemItem rightButtonSystemIcon;
+@property (nonatomic, strong) UIImage *backButtonIcon;
 @property (nonatomic, copy) NSString *backButtonTitle;
 @property (nonatomic, assign) BOOL navigationBarHidden;
 @property (nonatomic, assign) BOOL shadowHidden;

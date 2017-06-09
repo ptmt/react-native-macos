@@ -9,7 +9,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-#import "NSView+React.h"
+#import "React/NSView+React.h"
 
 /**
  * ART nodes are implemented as empty UIViews but this is just an implementation detail to fit

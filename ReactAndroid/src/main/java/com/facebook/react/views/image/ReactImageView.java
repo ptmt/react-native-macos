@@ -28,10 +28,12 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.widget.Toast;
 
 import com.facebook.common.util.UriUtil;
-import com.facebook.csslayout.CSSConstants;
-import com.facebook.csslayout.FloatUtil;
+import com.facebook.react.common.build.ReactBuildConfig;
+import com.facebook.yoga.YogaConstants;
 import com.facebook.drawee.controller.AbstractDraweeControllerBuilder;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
@@ -44,6 +46,7 @@ import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.GenericDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.image.ImageInfo;
+import com.facebook.imagepipeline.postprocessors.IterativeBoxBlurPostProcessor;
 import com.facebook.imagepipeline.request.BasePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
@@ -51,6 +54,8 @@ import com.facebook.imagepipeline.request.Postprocessor;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.uimanager.FloatUtil;
+import com.facebook.react.modules.fresco.ReactNetworkImageRequest;
 import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.events.EventDispatcher;
@@ -82,18 +87,18 @@ public class ReactImageView extends GenericDraweeView {
    */
   private static final Matrix sMatrix = new Matrix();
   private static final Matrix sInverse = new Matrix();
+  private ImageResizeMethod mResizeMethod = ImageResizeMethod.AUTO;
 
   private class RoundedCornerPostprocessor extends BasePostprocessor {
 
     void getRadii(Bitmap source, float[] computedCornerRadii, float[] mappedRadii) {
-        ScalingUtils.getTransform(
+      mScaleType.getTransform(
             sMatrix,
             new Rect(0, 0, source.getWidth(), source.getHeight()),
             source.getWidth(),
             source.getHeight(),
             0.0f,
-            0.0f,
-            mScaleType);
+            0.0f);
         sMatrix.invert(sInverse);
 
         mappedRadii[0] = sInverse.mapRadius(computedCornerRadii[0]);
@@ -149,17 +154,19 @@ public class ReactImageView extends GenericDraweeView {
   private int mBorderColor;
   private int mOverlayColor;
   private float mBorderWidth;
-  private float mBorderRadius = CSSConstants.UNDEFINED;
+  private float mBorderRadius = YogaConstants.UNDEFINED;
   private @Nullable float[] mBorderCornerRadii;
   private ScalingUtils.ScaleType mScaleType;
   private boolean mIsDirty;
   private final AbstractDraweeControllerBuilder mDraweeControllerBuilder;
   private final RoundedCornerPostprocessor mRoundedCornerPostprocessor;
+  private @Nullable IterativeBoxBlurPostProcessor mIterativeBoxBlurPostProcessor;
   private @Nullable ControllerListener mControllerListener;
   private @Nullable ControllerListener mControllerForTesting;
   private final @Nullable Object mCallerContext;
   private int mFadeDurationMs = -1;
   private boolean mProgressiveRenderingEnabled;
+  private ReadableMap mHeaders;
 
   // We can't specify rounding in XML, so have to do so here
   private static GenericDraweeHierarchy buildHierarchy(Context context) {
@@ -201,7 +208,8 @@ public class ReactImageView extends GenericDraweeView {
             @Nullable Animatable animatable) {
           if (imageInfo != null) {
             mEventDispatcher.dispatchEvent(
-              new ImageLoadEvent(getId(), ImageLoadEvent.ON_LOAD));
+              new ImageLoadEvent(getId(), ImageLoadEvent.ON_LOAD,
+                mImageSource.getSource(), imageInfo.getWidth(), imageInfo.getHeight()));
             mEventDispatcher.dispatchEvent(
               new ImageLoadEvent(getId(), ImageLoadEvent.ON_LOAD_END));
           }
@@ -217,6 +225,16 @@ public class ReactImageView extends GenericDraweeView {
       };
     }
 
+    mIsDirty = true;
+  }
+
+  public void setBlurRadius(float blurRadius) {
+    if (blurRadius == 0) {
+      mIterativeBoxBlurPostProcessor = null;
+    } else {
+      mIterativeBoxBlurPostProcessor =
+        new IterativeBoxBlurPostProcessor((int) PixelUtil.toPixelFromDIP(blurRadius));
+    }
     mIsDirty = true;
   }
 
@@ -245,7 +263,7 @@ public class ReactImageView extends GenericDraweeView {
   public void setBorderRadius(float borderRadius, int position) {
     if (mBorderCornerRadii == null) {
       mBorderCornerRadii = new float[4];
-      Arrays.fill(mBorderCornerRadii, CSSConstants.UNDEFINED);
+      Arrays.fill(mBorderCornerRadii, YogaConstants.UNDEFINED);
     }
 
     if (!FloatUtil.floatsEqual(mBorderCornerRadii[position], borderRadius)) {
@@ -259,20 +277,36 @@ public class ReactImageView extends GenericDraweeView {
     mIsDirty = true;
   }
 
+  public void setResizeMethod(ImageResizeMethod resizeMethod) {
+    mResizeMethod = resizeMethod;
+    mIsDirty = true;
+  }
+
   public void setSource(@Nullable ReadableArray sources) {
     mSources.clear();
     if (sources != null && sources.size() != 0) {
       // Optimize for the case where we have just one uri, case in which we don't need the sizes
       if (sources.size() == 1) {
-        mSources.add(new ImageSource(getContext(), sources.getMap(0).getString("uri")));
+        ReadableMap source = sources.getMap(0);
+        String uri = source.getString("uri");
+        ImageSource imageSource = new ImageSource(getContext(), uri);
+        mSources.add(imageSource);
+        if (Uri.EMPTY.equals(imageSource.getUri())) {
+          warnImageSource(uri);
+        }
       } else {
         for (int idx = 0; idx < sources.size(); idx++) {
           ReadableMap source = sources.getMap(idx);
-          mSources.add(new ImageSource(
-            getContext(),
-            source.getString("uri"),
-            source.getDouble("width"),
-            source.getDouble("height")));
+          String uri = source.getString("uri");
+          ImageSource imageSource = new ImageSource(
+              getContext(),
+              uri,
+              source.getDouble("width"),
+              source.getDouble("height"));
+          mSources.add(imageSource);
+          if (Uri.EMPTY.equals(imageSource.getUri())) {
+            warnImageSource(uri);
+          }
         }
       }
     }
@@ -297,12 +331,16 @@ public class ReactImageView extends GenericDraweeView {
   }
 
   private void cornerRadii(float[] computedCorners) {
-    float defaultBorderRadius = !CSSConstants.isUndefined(mBorderRadius) ? mBorderRadius : 0;
+    float defaultBorderRadius = !YogaConstants.isUndefined(mBorderRadius) ? mBorderRadius : 0;
 
-    computedCorners[0] = mBorderCornerRadii != null && !CSSConstants.isUndefined(mBorderCornerRadii[0]) ? mBorderCornerRadii[0] : defaultBorderRadius;
-    computedCorners[1] = mBorderCornerRadii != null && !CSSConstants.isUndefined(mBorderCornerRadii[1]) ? mBorderCornerRadii[1] : defaultBorderRadius;
-    computedCorners[2] = mBorderCornerRadii != null && !CSSConstants.isUndefined(mBorderCornerRadii[2]) ? mBorderCornerRadii[2] : defaultBorderRadius;
-    computedCorners[3] = mBorderCornerRadii != null && !CSSConstants.isUndefined(mBorderCornerRadii[3]) ? mBorderCornerRadii[3] : defaultBorderRadius;
+    computedCorners[0] = mBorderCornerRadii != null && !YogaConstants.isUndefined(mBorderCornerRadii[0]) ? mBorderCornerRadii[0] : defaultBorderRadius;
+    computedCorners[1] = mBorderCornerRadii != null && !YogaConstants.isUndefined(mBorderCornerRadii[1]) ? mBorderCornerRadii[1] : defaultBorderRadius;
+    computedCorners[2] = mBorderCornerRadii != null && !YogaConstants.isUndefined(mBorderCornerRadii[2]) ? mBorderCornerRadii[2] : defaultBorderRadius;
+    computedCorners[3] = mBorderCornerRadii != null && !YogaConstants.isUndefined(mBorderCornerRadii[3]) ? mBorderCornerRadii[3] : defaultBorderRadius;
+  }
+
+  public void setHeaders(ReadableMap headers) {
+    mHeaders = headers;
   }
 
   public void maybeUpdateView() {
@@ -360,16 +398,23 @@ public class ReactImageView extends GenericDraweeView {
             ? mFadeDurationMs
             : mImageSource.isResource() ? 0 : REMOTE_IMAGE_FADE_DURATION_MS);
 
-    Postprocessor postprocessor = usePostprocessorScaling ? mRoundedCornerPostprocessor : null;
+    // TODO: t13601664 Support multiple PostProcessors
+    Postprocessor postprocessor = null;
+    if (usePostprocessorScaling) {
+      postprocessor = mRoundedCornerPostprocessor;
+    } else if (mIterativeBoxBlurPostProcessor != null) {
+      postprocessor = mIterativeBoxBlurPostProcessor;
+    }
 
     ResizeOptions resizeOptions = doResize ? new ResizeOptions(getWidth(), getHeight()) : null;
 
-    ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(mImageSource.getUri())
+    ImageRequestBuilder imageRequestBuilder = ImageRequestBuilder.newBuilderWithSource(mImageSource.getUri())
         .setPostprocessor(postprocessor)
         .setResizeOptions(resizeOptions)
         .setAutoRotateEnabled(true)
-        .setProgressiveRenderingEnabled(mProgressiveRenderingEnabled)
-        .build();
+        .setProgressiveRenderingEnabled(mProgressiveRenderingEnabled);
+
+    ImageRequest imageRequest = ReactNetworkImageRequest.fromBuilderWithHeaders(imageRequestBuilder, mHeaders);
 
     // This builder is reused
     mDraweeControllerBuilder.reset();
@@ -404,6 +449,10 @@ public class ReactImageView extends GenericDraweeView {
 
     setController(mDraweeControllerBuilder.build());
     mIsDirty = false;
+
+    // Reset again so the DraweeControllerBuilder clears all it's references. Otherwise, this causes
+    // a memory leak.
+    mDraweeControllerBuilder.reset();
   }
 
   // VisibleForTesting
@@ -450,12 +499,27 @@ public class ReactImageView extends GenericDraweeView {
     mImageSource = mSources.get(0);
   }
 
-  private static boolean shouldResize(ImageSource imageSource) {
+  private boolean shouldResize(ImageSource imageSource) {
     // Resizing is inferior to scaling. See http://frescolib.org/docs/resizing-rotating.html#_
     // We resize here only for images likely to be from the device's camera, where the app developer
     // has no control over the original size
-    return
-      UriUtil.isLocalContentUri(imageSource.getUri()) ||
-      UriUtil.isLocalFileUri(imageSource.getUri());
+    if (mResizeMethod == ImageResizeMethod.AUTO) {
+      return
+        UriUtil.isLocalContentUri(imageSource.getUri()) ||
+        UriUtil.isLocalFileUri(imageSource.getUri());
+    } else if (mResizeMethod == ImageResizeMethod.RESIZE) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  private void warnImageSource(String uri) {
+    if (ReactBuildConfig.DEBUG) {
+      Toast.makeText(
+        getContext(),
+        "Warning: Image source \"" + uri + "\" doesn't exist",
+        Toast.LENGTH_SHORT).show();
+    }
   }
 }

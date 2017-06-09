@@ -8,15 +8,11 @@
  */
 
 #import "RCTFont.h"
+#import "RCTLog.h"
+
+#import <CoreText/CoreText.h>
 
 #import <mutex>
-
-#if !defined(__IPHONE_8_2) || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_8_2
-
-// These constants are defined in iPhone SDK 8.2, but the app cannot run on
-// iOS < 8.2 unless we redefine them here. If you target iOS 8.2 or above
-// as a base target, the standard constants will be used instead.
-// These constants can only be removed when React Native drops iOS8 support.
 
 #define NSFontWeightUltraLight -0.8
 #define NSFontWeightThin -0.6
@@ -27,8 +23,6 @@
 #define NSFontWeightBold 0.4
 #define NSFontWeightHeavy 0.56
 #define NSFontWeightBlack 0.62
-
-#endif
 
 typedef CGFloat RCTFontWeight;
 static RCTFontWeight weightOfFont(NSFont *font)
@@ -100,13 +94,14 @@ static NSFont *cachedSystemFont(CGFloat size, RCTFontWeight weight)
       if (weight >= NSFontWeightBold) {
         font = [NSFont boldSystemFontOfSize:size];
       } else if (weight >= NSFontWeightMedium) {
-        font = [NSFont fontWithName:@"HelveticaNeue-Medium" size:size];
+        font = [NSFont systemFontOfSize:size weight:NSFontWeightMedium];
       } else if (weight <= NSFontWeightLight) {
-        font = [NSFont fontWithName:@"HelveticaNeue-Light" size:size];
+        font = [NSFont systemFontOfSize:size weight:NSFontWeightLight];
       } else {
         font = [NSFont systemFontOfSize:size];
       }
     }
+    
 
     {
       std::lock_guard<std::mutex> lock(fontCacheMutex);
@@ -127,6 +122,7 @@ static NSFont *cachedSystemFont(CGFloat size, RCTFontWeight weight)
                         size:[RCTConvert NSNumber:json[@"fontSize"]]
                       weight:[RCTConvert NSString:json[@"fontWeight"]]
                        style:[RCTConvert NSString:json[@"fontStyle"]]
+                     variant:[RCTConvert NSStringArray:json[@"fontVariant"]]
              scaleMultiplier:1];
 }
 
@@ -151,6 +147,45 @@ RCT_ENUM_CONVERTER(RCTFontStyle, (@{
                                     @"oblique": @YES,
                                     }), NO, boolValue)
 
+typedef NSDictionary RCTFontVariantDescriptor;
++ (RCTFontVariantDescriptor *)RCTFontVariantDescriptor:(id)json
+{
+  static NSDictionary *mapping;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    mapping = @{
+      @"small-caps": @{
+          NSFontFeatureTypeIdentifierKey: @(kLowerCaseType),
+          NSFontFeatureSelectorIdentifierKey: @(kLowerCaseSmallCapsSelector),
+          },
+      @"oldstyle-nums": @{
+          NSFontFeatureTypeIdentifierKey: @(kNumberCaseType),
+          NSFontFeatureSelectorIdentifierKey: @(kLowerCaseNumbersSelector),
+          },
+      @"lining-nums": @{
+          NSFontFeatureTypeIdentifierKey: @(kNumberCaseType),
+          NSFontFeatureSelectorIdentifierKey: @(kUpperCaseNumbersSelector),
+          },
+      @"tabular-nums": @{
+          NSFontFeatureTypeIdentifierKey: @(kNumberSpacingType),
+          NSFontFeatureSelectorIdentifierKey: @(kMonospacedNumbersSelector),
+          },
+      @"proportional-nums": @{
+          NSFontFeatureTypeIdentifierKey: @(kNumberSpacingType),
+          NSFontFeatureSelectorIdentifierKey: @(kProportionalNumbersSelector),
+          },
+      };
+  });
+  RCTFontVariantDescriptor *value = mapping[json];
+  if (RCT_DEBUG && !value && [json description].length > 0) {
+    RCTLogError(@"Invalid RCTFontVariantDescriptor '%@'. should be one of: %@", json,
+                [[mapping allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]);
+  }
+  return value;
+}
+
+RCT_ARRAY_CONVERTER(RCTFontVariantDescriptor)
+
 @end
 
 @implementation RCTFont
@@ -160,6 +195,7 @@ RCT_ENUM_CONVERTER(RCTFontStyle, (@{
                   size:(NSNumber *)size
                 weight:(NSString *)weight
                  style:(NSString *)style
+               variant:(NSArray<RCTFontVariantDescriptor *> *)variant
        scaleMultiplier:(CGFloat)scaleMultiplier
 {
   // Defaults
@@ -195,11 +231,15 @@ RCT_ENUM_CONVERTER(RCTFontStyle, (@{
   isItalic = style ? [RCTConvert RCTFontStyle:style] : isItalic;
   fontWeight = weight ? [RCTConvert RCTFontWeight:weight] : fontWeight;
 
+  BOOL didFindFont = NO;
+
   // Handle system font as special case. This ensures that we preserve
   // the specific metrics of the standard system font as closely as possible.
   if ([familyName isEqual:defaultFontFamily] || [familyName isEqualToString:@"System"]) {
     font = cachedSystemFont(fontSize, fontWeight);
     if (font) {
+      didFindFont = YES;
+
       if (isItalic || isCondensed) {
         NSFontDescriptor *fontDescriptor = [font fontDescriptor];
         NSFontSymbolicTraits symbolicTraits = fontDescriptor.symbolicTraits;
@@ -212,13 +252,13 @@ RCT_ENUM_CONVERTER(RCTFontStyle, (@{
         fontDescriptor = [fontDescriptor fontDescriptorWithSymbolicTraits:symbolicTraits];
         font = [NSFont fontWithDescriptor:fontDescriptor size:fontSize];
       }
-      return font;
     }
   }
 
   // Gracefully handle being given a font name rather than font family, for
   // example: "Helvetica Light Oblique" rather than just "Helvetica".
-  if ([[NSFontManager sharedFontManager] availableMembersOfFontFamily:familyName].count == 0) {
+  if (!didFindFont &&
+      [[NSFontManager sharedFontManager] availableMembersOfFontFamily:familyName].count == 0) {
     font = [NSFont fontWithName:familyName size:fontSize];
     if (font) {
       // It's actually a font name, not a font family name,
@@ -241,42 +281,63 @@ RCT_ENUM_CONVERTER(RCTFontStyle, (@{
   }
 
   // Get the closest font that matches the given weight for the fontFamily
-  NSFont *bestMatch = font;
-  CGFloat closestWeight = INFINITY;
-  for (NSArray *fontFamily in [[NSFontManager sharedFontManager] availableMembersOfFontFamily:familyName]) {
-    NSString *name = fontFamily[0];
-    NSFont *match = [NSFont fontWithName:name size:fontSize];
-    if (isItalic == isItalicFont(match) &&
-        isCondensed == isCondensedFont(match)) {
-      CGFloat testWeight = weightOfFont(match);
-      if (ABS(testWeight - fontWeight) < ABS(closestWeight - fontWeight)) {
-        bestMatch = match;
-        closestWeight = testWeight;
+  if (![familyName isEqual:defaultFontFamily]) {
+    CGFloat closestWeight = INFINITY;
+    for (NSArray *fontFamily in [[NSFontManager sharedFontManager] availableMembersOfFontFamily:familyName]) {
+      NSString *name = fontFamily[0];
+      NSFont *match = [NSFont fontWithName:name size:fontSize];
+      if (isItalic == isItalicFont(match) &&
+          isCondensed == isCondensedFont(match)) {
+        CGFloat testWeight = weightOfFont(match);
+        if (ABS(testWeight - fontWeight) < ABS(closestWeight - fontWeight)) {
+          font = match;
+          closestWeight = testWeight;
+        }
       }
+    }
+
+  }
+ 
+  // If we still don't have a match at least return the first font in the fontFamily
+  // This is to support built-in font Zapfino and other custom single font families like Impact
+  if (!font) {
+    NSArray *names = [[NSFontManager sharedFontManager] availableMembersOfFontFamily:familyName];
+    if (names.count > 0) {
+      font = [NSFont fontWithName:names[0] size:fontSize];
     }
   }
 
-  return bestMatch;
+  // Apply font variants to font object
+  if (variant) {
+    NSArray *fontFeatures = [RCTConvert RCTFontVariantDescriptorArray:variant];
+    NSFontDescriptor *fontDescriptor = [font.fontDescriptor
+                                        fontDescriptorByAddingAttributes:@{
+      NSFontFeatureSettingsAttribute: fontFeatures
+    }];
+    font = [NSFont fontWithDescriptor:fontDescriptor size:fontSize];
+  }
+
+  return font;
 }
 
 + (NSFont *)updateFont:(NSFont *)font withFamily:(NSString *)family
 {
-  return [self updateFont:font withFamily:family size:nil weight:nil style:nil scaleMultiplier:1];
+  return [self updateFont:font withFamily:family size:nil weight:nil style:nil variant:nil scaleMultiplier:1];
 }
 
 + (NSFont *)updateFont:(NSFont *)font withSize:(NSNumber *)size
 {
-  return [self updateFont:font withFamily:nil size:size weight:nil style:nil scaleMultiplier:1];
+  return [self updateFont:font withFamily:nil size:size weight:nil style:nil variant:nil scaleMultiplier:1];
 }
 
 + (NSFont *)updateFont:(NSFont *)font withWeight:(NSString *)weight
 {
-  return [self updateFont:font withFamily:nil size:nil weight:weight style:nil scaleMultiplier:1];
+  return [self updateFont:font withFamily:nil size:nil weight:weight style:nil variant:nil scaleMultiplier:1];
 }
 
 + (NSFont *)updateFont:(NSFont *)font withStyle:(NSString *)style
 {
-  return [self updateFont:font withFamily:nil size:nil weight:nil style:style scaleMultiplier:1];
+  return [self updateFont:font withFamily:nil size:nil weight:nil style:style variant:nil scaleMultiplier:1];
 }
 
 @end

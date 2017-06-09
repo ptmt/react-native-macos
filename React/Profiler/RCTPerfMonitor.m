@@ -16,17 +16,21 @@
 #import <mach/mach.h>
 
 #import "RCTBridge.h"
-#import "RCTDevMenu.h"
+#import "RCTDevSettings.h"
 #import "RCTFPSGraph.h"
 #import "RCTInvalidating.h"
 #import "RCTJavaScriptExecutor.h"
-#import "RCTJSCExecutor.h"
 #import "RCTPerformanceLogger.h"
 #import "RCTRootView.h"
 #import "RCTUIManager.h"
+#import "RCTBridge+Private.h"
+#import "RCTUtils.h"
 #import "RCTDisplayLink.h"
 
-static NSString *const RCTPerfMonitorKey = @"RCTPerfMonitorKey";
+#if __has_include("RCTDevMenu.h")
+#import "RCTDevMenu.h"
+#endif
+
 static NSString *const RCTPerfMonitorCellIdentifier = @"RCTPerfMonitorCellIdentifier";
 
 static CGFloat const RCTPerfMonitorBarHeight = 50;
@@ -74,8 +78,6 @@ static vm_size_t RCTGetResidentMemorySize(void)
   return info.resident_size;
 }
 
-@class RCTDevMenuItem;
-
 @interface RCTPerfMonitor : NSObject <RCTBridgeModule, RCTInvalidating, NSTableViewDataSource, NSTableViewDelegate>
 
 @property (nonatomic, strong, readonly) RCTDevMenuItem *devMenuItem;
@@ -93,7 +95,9 @@ static vm_size_t RCTGetResidentMemorySize(void)
 @end
 
 @implementation RCTPerfMonitor {
+#if __has_include("RCTDevMenu.h")
   RCTDevMenuItem *_devMenuItem;
+#endif
   NSWindow *_window;
   NSView *_container;
   NSTextField *_memory;
@@ -143,7 +147,9 @@ RCT_EXPORT_MODULE()
 {
   _bridge = bridge;
 
+#if __has_include("RCTDevMenu.h")
   [_bridge.devMenu addItem:self.devMenuItem];
+#endif
 }
 
 - (void)invalidate
@@ -151,31 +157,31 @@ RCT_EXPORT_MODULE()
   [self hide];
 }
 
+#if __has_include("RCTDevMenu.h")
 - (RCTDevMenuItem *)devMenuItem
 {
   if (!_devMenuItem) {
     __weak __typeof__(self) weakSelf = self;
+    __weak RCTDevSettings *devSettings = self.bridge.devSettings;
     _devMenuItem =
-      [RCTDevMenuItem toggleItemWithKey:RCTPerfMonitorKey
-                                  title:@"Show Perf Monitor"
-                          selectedTitle:@"Hide Perf Monitor"
-                                 hotkey:@"M"
-                                handler:
-                                ^(BOOL selected) {
-                                  // TODO: fix the storing value in NSUserSettings
-//                                  [_bridge.devMenu updateSetting:RCTPerfMonitorKey value:@(selected)];
-
-                                  if (selected) {
-                                    [weakSelf show];
-                                  } else {
-                                    [weakSelf hide];
-                                    //;
-                                  }
-                                }];
+    [RCTDevMenuItem buttonItemWithTitleBlock:^NSString *{
+      return (devSettings.isPerfMonitorShown) ?
+        @"Hide Perf Monitor" :
+        @"Show Perf Monitor";
+    } handler:^{
+      if (devSettings.isPerfMonitorShown) {
+        [weakSelf hide];
+        devSettings.isPerfMonitorShown = NO;
+      } else {
+        [weakSelf show];
+        devSettings.isPerfMonitorShown = YES;
+      }
+    }];
   }
 
   return _devMenuItem;
 }
+#endif
 
 - (NSView *)container
 {
@@ -329,7 +335,6 @@ RCT_EXPORT_MODULE()
 
   [self updateStats];
 
-
   NSRect frame = NSMakeRect(100, 100, self.container.frame.size.width, self.container.frame.size.height + 30);
 
   _window = [[NSWindow alloc] initWithContentRect:frame
@@ -351,27 +356,17 @@ RCT_EXPORT_MODULE()
               userInfo:nil
               repeats:YES];
   [[NSRunLoop mainRunLoop] addTimer:_uiTimer forMode:NSRunLoopCommonModes];
-
-  id<RCTJavaScriptExecutor> executor = [_bridge valueForKey:@"javaScriptExecutor"];
-  if ([executor isKindOfClass:[RCTJSCExecutor class]]) {
-    self.container.frame = (CGRect) {
-      self.container.frame.origin, {
-        self.container.frame.size.width + 44,
-        self.container.frame.size.height
-      }
-    };
-    [self.container addSubview:self.jsGraph];
-    [self.container addSubview:self.jsGraphLabel];
-    [executor executeBlockOnJavaScriptQueue:^{
-      _jsTimer = [NSTimer
-                  timerWithTimeInterval:RCT_TIME_PER_FRAME
-                  target:self
-                  selector:@selector(threadUpdate:)
-                  userInfo:nil
-                  repeats:YES];
-      [[NSRunLoop mainRunLoop] addTimer:_jsTimer forMode:NSRunLoopCommonModes];
-    }];
-  }
+  
+  
+  [_bridge dispatchBlock:^{
+    _jsTimer = [NSTimer
+                timerWithTimeInterval:RCT_TIME_PER_FRAME
+                target:self
+                selector:@selector(threadUpdate:)
+                userInfo:nil
+                repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:_jsTimer forMode:NSRunLoopCommonModes];
+  } queue:RCTJSThread];
 }
 
 - (void)hide
@@ -452,7 +447,7 @@ RCT_EXPORT_MODULE()
   static NSRegularExpression *GCRegex;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    NSString *pattern = @"\\[GC: (Eden|Full)Collection, (?:Skipped copying|Did copy), ([\\d\\.]+) (\\wb), ([\\d.]+) (\\ws)\\]";
+    NSString *pattern = @"\\[GC: [\\d\\.]+ \\wb => (Eden|Full)Collection, (?:Skipped copying|Did copy), ([\\d\\.]+) \\wb, [\\d.]+ \\ws\\]";
     GCRegex = [NSRegularExpression regularExpressionWithPattern:pattern
                                                         options:0
                                                           error:nil];
@@ -517,10 +512,12 @@ RCT_EXPORT_MODULE()
 
 - (void)tap
 {
+  [self loadPerformanceLoggerData];
   if (CGRectIsEmpty(_storedMonitorFrame)) {
     _storedMonitorFrame = CGRectMake(0, 20, self.container.window.frame.size.width, RCTPerfMonitorExpandHeight);
     [self.container addSubview:self.metrics];
-    [self loadPerformanceLoggerData];
+  } else {
+    [_metrics reloadData];
   }
 
   // [NSView animateWithDuration:.25 animations:^{

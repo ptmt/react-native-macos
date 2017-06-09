@@ -19,6 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * @flow
+ * @providesModule LayoutAnimationExample
  */
 'use strict';
 
@@ -161,12 +162,12 @@ exports.title = 'Layout Animation';
 exports.description = 'Layout animation';
 exports.examples = [{
   title: 'Add and remove views',
-  render(): ReactElement<any> {
+  render(): React.Element<any> {
     return <AddRemoveExample />;
   },
 }, {
   title: 'Cross fade views',
-  render(): ReactElement<any> {
+  render(): React.Element<any> {
     return <CrossFadeExample />;
   },
 }];

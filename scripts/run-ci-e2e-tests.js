@@ -12,9 +12,10 @@
 /**
  * This script tests that React Native end to end installation/bootstrap works for different platforms
  * Available arguments:
- * --ios - to test only ios application end to end
- * --android - to test only android application end to end
- * --js - to test that JS in the application is compilable
+ * --ios - 'react-native init' and check iOS app doesn't redbox
+ * --tvos - 'react-native init' and check tvOS app doesn't redbox
+ * --android - 'react-native init' and check Android app doesn't redbox
+ * --js - 'react-native init' and only check the packager returns a bundle
  * --skip-cli-install - to skip react-native-cli global installation (for local debugging)
  * --retries [num] - how many times to retry possible flaky commands: npm install and running tests, default 1
  */
@@ -29,12 +30,13 @@ const SCRIPTS = __dirname;
 const ROOT = path.normalize(path.join(__dirname, '..'));
 const tryExecNTimes = require('./try-n-times');
 
-const TEMP = exec('mktemp -d /tmp/react-native-XXXXXXXX').stdout.trim();
+const TEMP = exec('mktemp -d /tmp/react-native-macos-XXXXXXXX').stdout.trim();
 // To make sure we actually installed the local version
 // of react-native, we will create a temp file inside the template
 // and check that it exists after `react-native init
-const MARKER_IOS = exec(`mktemp ${ROOT}/local-cli/generator-ios/templates/app/XXXXXXXX`).stdout.trim();
-const MARKER_ANDROID = exec(`mktemp ${ROOT}/local-cli/generator-android/templates/src/XXXXXXXX`).stdout.trim();
+const MARKER_IOS = exec(`mktemp ${ROOT}/local-cli/templates/HelloWorld/ios/HelloWorld/XXXXXXXX`).stdout.trim();
+const MARKER_ANDROID = exec(`mktemp ${ROOT}/local-cli/templates/HelloWorld/android/XXXXXXXX`).stdout.trim();
+const MARKER_MACOS = exec(`mktemp ${ROOT}/local-cli/templates/HelloWorld/macos/HelloWorld/XXXXXXXX`).stdout.trim();
 const numberOfRetries = argv.retries || 1;
 let SERVER_PID;
 let APPIUM_PID;
@@ -42,22 +44,22 @@ let exitCode;
 
 try {
   // install CLI
-  cd('react-native-cli');
+  cd('react-native-macos-cli');
   exec('npm pack');
-  const CLI_PACKAGE = path.join(ROOT, 'react-native-cli', 'react-native-cli-*.tgz');
+  const CLI_PACKAGE = path.join(ROOT, 'react-native-macos-cli', 'react-native-macos-cli-*.tgz');
   cd('..');
 
   // can skip cli install for non sudo mode
   if (!argv['skip-cli-install']) {
     if (exec(`npm install -g ${CLI_PACKAGE}`).code) {
-      echo('Could not install react-native-cli globally, please run in su mode');
+      echo('Could not install react-native-macos-cli globally, please run in su mode');
       echo('Or with --skip-cli-install to skip this step');
       exitCode = 1;
       throw Error(exitCode);
     }
   }
 
-  if (argv['android']) {
+  if (argv.android) {
     if (exec('./gradlew :ReactAndroid:installArchives -Pjobs=1 -Dorg.gradle.jvmargs="-Xmx512m -XX:+HeapDumpOnOutOfMemoryError"').code) {
       echo('Failed to compile Android binaries');
       exitCode = 1;
@@ -66,21 +68,21 @@ try {
   }
 
   if (exec('npm pack').code) {
-    echo('Failed to pack react-native');
+    echo('Failed to pack react-native-macos');
     exitCode = 1;
     throw Error(exitCode);
   }
 
-  const PACKAGE = path.join(ROOT, 'react-native-*.tgz');
+  const PACKAGE = path.join(ROOT, 'react-native-macos-*.tgz');
   cd(TEMP);
   if (tryExecNTimes(
     () => {
       exec('sleep 10s');
-      return exec(`react-native init EndToEndTest --version ${PACKAGE}`).code;
+      return exec(`react-native-macos init EndToEndTest --version ${PACKAGE} --npm`).code;
     },
     numberOfRetries,
     () => rm('-rf', 'EndToEndTest'))) {
-      echo('Failed to execute react-native init');
+      echo('Failed to execute react-native-macos init');
       echo('Most common reason is npm registry connectivity, try again');
       exitCode = 1;
       throw Error(exitCode);
@@ -88,7 +90,7 @@ try {
 
   cd('EndToEndTest');
 
-  if (argv['android']) {
+  if (argv.android) {
     echo('Running an Android e2e test');
     echo('Installing e2e framework');
     if (tryExecNTimes(
@@ -112,17 +114,19 @@ try {
     cd('..');
     exec('keytool -genkey -v -keystore android/keystores/debug.keystore -storepass android -alias androiddebugkey -keypass android -dname "CN=Android Debug,O=Android,C=US"');
 
-    echo(`Starting packager server, ${SERVER_PID}`);
+    echo(`Starting appium server, ${APPIUM_PID}`);
     const appiumProcess = spawn('node', ['./node_modules/.bin/appium']);
     APPIUM_PID = appiumProcess.pid;
-    echo(`Starting appium server, ${APPIUM_PID}`);
-    echo('Building app');
+
+    echo('Building the app');
     if (exec('buck build android/app').code) {
       echo('could not execute Buck build, is it installed and in PATH?');
       exitCode = 1;
       throw Error(exitCode);
     }
-    let packagerEnv = Object.create(process.env);
+
+    echo(`Starting packager server, ${SERVER_PID}`);
+    const packagerEnv = Object.create(process.env);
     packagerEnv.REACT_NATIVE_MAX_WORKERS = 1;
     // shelljs exec('', {async: true}) does not emit stdout events, so we rely on good old spawn
     const packagerProcess = spawn('npm', ['start'], {
@@ -146,8 +150,9 @@ try {
     }
   }
 
-  if (argv['ios']) {
-    echo('Running an iOS app');
+  if (argv.ios || argv.tvos) {
+    var iosTestType = (argv.tvos ? 'tvOS' : 'iOS');
+    echo('Running the ' + iosTestType + 'app');
     cd('ios');
     // Make sure we installed local version of react-native
     if (!test('-e', path.join('EndToEndTest', path.basename(MARKER_IOS)))) {
@@ -156,9 +161,9 @@ try {
       throw Error(exitCode);
     }
     // shelljs exec('', {async: true}) does not emit stdout events, so we rely on good old spawn
-    let packagerEnv = Object.create(process.env);
+    const packagerEnv = Object.create(process.env);
     packagerEnv.REACT_NATIVE_MAX_WORKERS = 1;
-    const packagerProcess = spawn('npm', ['start', '--', '--non-persistent'],
+    const packagerProcess = spawn('npm', ['start', '--', '--nonPersistent'],
       {
         stdio: 'inherit',
         env: packagerEnv
@@ -168,14 +173,18 @@ try {
     // prepare cache to reduce chances of possible red screen "Can't fibd variable __fbBatchedBridge..."
     exec('response=$(curl --write-out %{http_code} --silent --output /dev/null localhost:8081/index.ios.bundle?platform=ios&dev=true)');
     echo(`Starting packager server, ${SERVER_PID}`);
-    echo('Executing ios e2e test');
+    echo('Executing ' + iosTestType + ' e2e test');
     if (tryExecNTimes(
       () => {
         exec('sleep 10s');
-        return exec('xcodebuild -scheme EndToEndTest -sdk iphonesimulator test | xcpretty && exit ${PIPESTATUS[0]}').code;
+        if (argv.tvos) {
+          return exec('xcodebuild -destination "platform=tvOS Simulator,name=Apple TV 1080p,OS=10.0" -scheme EndToEndTest-tvOS -sdk appletvsimulator test | xcpretty && exit ${PIPESTATUS[0]}').code;
+        } else {
+          return exec('xcodebuild -destination "platform=iOS Simulator,name=iPhone 5s,OS=10.0" -scheme EndToEndTest -sdk iphonesimulator test | xcpretty && exit ${PIPESTATUS[0]}').code;
+        }
       },
       numberOfRetries)) {
-        echo('Failed to run iOS e2e tests');
+        echo('Failed to run ' + iosTestType + ' e2e tests');
         echo('Most likely the code is broken');
         exitCode = 1;
         throw Error(exitCode);
@@ -183,15 +192,52 @@ try {
     cd('..');
   }
 
-  if (argv['js']) {
-    // Check the packager produces a bundle (doesn't throw an error)
-    if (exec('react-native bundle --platform android --dev true --entry-file index.android.js --bundle-output android-bundle.js').code) {
-      echo('Could not build android package');
+  if (argv.macos) {
+    var iosTestType = 'macOS';
+    echo('Running the ' + iosTestType + 'app');
+    cd('macos');
+    // Make sure we installed local version of react-native
+    if (!test('-e', path.join('EndToEndTest', path.basename(MARKER_MACOS)))) {
+      echo('macOS marker was not found, `react-native-macos init` command failed?');
       exitCode = 1;
       throw Error(exitCode);
     }
-    if (exec('react-native bundle --platform ios --dev true --entry-file index.ios.js --bundle-output ios-bundle.js').code) {
-      echo('Could not build ios package');
+    // shelljs exec('', {async: true}) does not emit stdout events, so we rely on good old spawn
+    const packagerEnv = Object.create(process.env);
+    packagerEnv.REACT_NATIVE_MAX_WORKERS = 1;
+    const packagerProcess = spawn('npm', ['start', '--', '--nonPersistent'],
+      {
+        stdio: 'inherit',
+        env: packagerEnv
+      });
+    SERVER_PID = packagerProcess.pid;
+    exec('sleep 15s');
+    // prepare cache to reduce chances of possible red screen "Can't fibd variable __fbBatchedBridge..."
+    exec('response=$(curl --write-out %{http_code} --silent --output /dev/null localhost:8081/index.macos.bundle?platform=macos&dev=true)');
+    echo(`Starting packager server, ${SERVER_PID}`);
+    echo('Executing ' + iosTestType + ' e2e test');
+    if (tryExecNTimes(
+      () => {
+        exec('sleep 10s');
+        if (argv.tvos) {
+          return exec('xcodebuild -destination "platform=tvOS Simulator,name=Apple TV 1080p,OS=10.0" -scheme EndToEndTest-tvOS -sdk appletvsimulator test | xcpretty && exit ${PIPESTATUS[0]}').code;
+        } else {
+          return exec('xcodebuild -destination "platform=OS X,arch=x86_64" -scheme EndToEndTest -sdk macosx10.12 test | xcpretty && exit ${PIPESTATUS[0]}').code;
+        }
+      },
+      numberOfRetries)) {
+        echo('Failed to run ' + iosTestType + ' e2e tests');
+        echo('Most likely the code is broken');
+        exitCode = 1;
+        throw Error(exitCode);
+    }
+    cd('..');
+  }
+
+  if (argv.js) {
+    // Check the packager produces a bundle (doesn't throw an error)
+    if (exec('REACT_NATIVE_MAX_WORKERS=1 react-native-macos bundle --platform macos --dev true --entry-file index.macos.js --bundle-output macos-bundle.js').code) {
+      echo('Could not build macOS bundle');
       exitCode = 1;
       throw Error(exitCode);
     }
@@ -200,13 +246,19 @@ try {
       exitCode = 1;
       throw Error(exitCode);
     }
+    if (exec('npm test').code) {
+      echo('Jest test failure');
+      exitCode = 1;
+      throw Error(exitCode);
+    }
   }
   exitCode = 0;
 
 } finally {
   cd(ROOT);
-  rm(MARKER_IOS);
-  rm(MARKER_ANDROID);
+  // rm(MARKER_IOS);
+  // rm(MARKER_ANDROID);
+  rm(MARKER_MACOS);
 
   if (SERVER_PID) {
     echo(`Killing packager ${SERVER_PID}`);

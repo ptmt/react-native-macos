@@ -19,6 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * @flow weak
+ * @providesModule PanResponderExample
  */
 'use strict';
 
@@ -28,7 +29,6 @@ var {
   PanResponder,
   StyleSheet,
   View,
-  processColor,
 } = ReactNative;
 
 var CIRCLE_SIZE = 80;

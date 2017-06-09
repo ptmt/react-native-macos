@@ -8,109 +8,73 @@
  */
 #import "RCTNativeAnimatedModule.h"
 
-#import "RCTAdditionAnimatedNode.h"
-#import "RCTAnimationDriverNode.h"
-#import "RCTAnimationUtils.h"
-#import "RCTBridge.h"
-#import "RCTConvert.h"
-#import "RCTInterpolationAnimatedNode.h"
-#import "RCTLog.h"
-#import "RCTMultiplicationAnimatedNode.h"
-#import "RCTPropsAnimatedNode.h"
-#import "RCTStyleAnimatedNode.h"
-#import "RCTTransformAnimatedNode.h"
-#import "RCTValueAnimatedNode.h"
+#import "RCTNativeAnimatedNodesManager.h"
+
+typedef void (^AnimatedOperation)(RCTNativeAnimatedNodesManager *nodesManager);
 
 @implementation RCTNativeAnimatedModule
 {
-  NSMutableDictionary<NSNumber *, RCTAnimatedNode *> *_animationNodes;
-  NSMutableDictionary<NSNumber *, RCTAnimationDriverNode *> *_animationDrivers;
-  NSMutableSet<RCTAnimationDriverNode *> *_activeAnimations;
-  NSMutableSet<RCTAnimationDriverNode *> *_finishedAnimations;
-  NSMutableSet<RCTValueAnimatedNode *> *_updatedValueNodes;
-  NSMutableSet<RCTPropsAnimatedNode *> *_propAnimationNodes;
-  CADisplayLink *_displayLink;
+  RCTNativeAnimatedNodesManager *_nodesManager;
+
+  // Oparations called after views have been updated.
+  NSMutableArray<AnimatedOperation> *_operations;
+  // Operations called before views have been updated.
+  NSMutableArray<AnimatedOperation> *_preOperations;
 }
 
-@synthesize bridge = _bridge;
+RCT_EXPORT_MODULE();
 
-RCT_EXPORT_MODULE()
-
-- (void)setBridge:(RCTBridge *)bridge
+- (void)invalidate
 {
-  _bridge = bridge;
-  _animationNodes = [NSMutableDictionary new];
-  _animationDrivers = [NSMutableDictionary new];
-  _activeAnimations = [NSMutableSet new];
-  _finishedAnimations = [NSMutableSet new];
-  _updatedValueNodes = [NSMutableSet new];
-  _propAnimationNodes = [NSMutableSet new];
+  [_nodesManager stopAnimationLoop];
+  [self.bridge.eventDispatcher removeDispatchObserver:self];
+  [self.bridge.uiManager removeUIManagerObserver:self];
 }
 
 - (dispatch_queue_t)methodQueue
 {
-  return dispatch_get_main_queue();
+  // This module needs to be on the same queue as the UIManager to avoid
+  // having to lock `_operations` and `_preOperations` since `uiManagerWillFlushUIBlocks`
+  // will be called from that queue.
+  return RCTGetUIManagerQueue();
 }
+
+- (void)setBridge:(RCTBridge *)bridge
+{
+  [super setBridge:bridge];
+
+  _nodesManager = [[RCTNativeAnimatedNodesManager alloc] initWithUIManager:self.bridge.uiManager];
+  _operations = [NSMutableArray new];
+  _preOperations = [NSMutableArray new];
+
+  [bridge.eventDispatcher addDispatchObserver:self];
+  [bridge.uiManager addUIManagerObserver:self];
+}
+
+#pragma mark -- API
 
 RCT_EXPORT_METHOD(createAnimatedNode:(nonnull NSNumber *)tag
                   config:(NSDictionary<NSString *, id> *)config)
 {
-  static NSDictionary *map;
-  static dispatch_once_t mapToken;
-  dispatch_once(&mapToken, ^{
-    map = @{@"style" : [RCTStyleAnimatedNode class],
-            @"value" : [RCTValueAnimatedNode class],
-            @"props" : [RCTPropsAnimatedNode class],
-            @"interpolation" : [RCTInterpolationAnimatedNode class],
-            @"addition" : [RCTAdditionAnimatedNode class],
-            @"multiplication" : [RCTMultiplicationAnimatedNode class],
-            @"transform" : [RCTTransformAnimatedNode class]};
-  });
-
-  NSString *nodeType = [RCTConvert NSString:config[@"type"]];
-
-  Class nodeClass = map[nodeType];
-  if (!nodeClass) {
-    RCTLogError(@"Animated node type %@ not supported natively", nodeType);
-    return;
-  }
-
-  RCTAnimatedNode *node = [[nodeClass alloc] initWithTag:tag config:config];
-  _animationNodes[tag] = node;
-
-  if ([node isKindOfClass:[RCTPropsAnimatedNode class]]) {
-    [_propAnimationNodes addObject:(RCTPropsAnimatedNode *)node];
-  }
+  [self addOperationBlock:^(RCTNativeAnimatedNodesManager *nodesManager) {
+    [nodesManager createAnimatedNode:tag config:config];
+  }];
 }
 
 RCT_EXPORT_METHOD(connectAnimatedNodes:(nonnull NSNumber *)parentTag
                   childTag:(nonnull NSNumber *)childTag)
 {
-  RCTAssertParam(parentTag);
-  RCTAssertParam(childTag);
-
-  RCTAnimatedNode *parentNode = _animationNodes[parentTag];
-  RCTAnimatedNode *childNode = _animationNodes[childTag];
-
-  RCTAssertParam(parentNode);
-  RCTAssertParam(childNode);
-
-  [parentNode addChild:childNode];
+  [self addOperationBlock:^(RCTNativeAnimatedNodesManager *nodesManager) {
+    [nodesManager connectAnimatedNodes:parentTag childTag:childTag];
+  }];
 }
 
 RCT_EXPORT_METHOD(disconnectAnimatedNodes:(nonnull NSNumber *)parentTag
                   childTag:(nonnull NSNumber *)childTag)
 {
-  RCTAssertParam(parentTag);
-  RCTAssertParam(childTag);
-
-  RCTAnimatedNode *parentNode = _animationNodes[parentTag];
-  RCTAnimatedNode *childNode = _animationNodes[childTag];
-
-  RCTAssertParam(parentNode);
-  RCTAssertParam(childNode);
-
-  [parentNode removeChild:childNode];
+  [self addOperationBlock:^(RCTNativeAnimatedNodesManager *nodesManager) {
+    [nodesManager disconnectAnimatedNodes:parentTag childTag:childTag];
+  }];
 }
 
 RCT_EXPORT_METHOD(startAnimatingNode:(nonnull NSNumber *)animationId
@@ -118,135 +82,166 @@ RCT_EXPORT_METHOD(startAnimatingNode:(nonnull NSNumber *)animationId
                   config:(NSDictionary<NSString *, id> *)config
                   endCallback:(RCTResponseSenderBlock)callBack)
 {
-  if (RCT_DEBUG && ![config[@"type"] isEqual:@"frames"]) {
-    RCTLogError(@"Unsupported animation type: %@", config[@"type"]);
-    return;
-  }
-
-  NSTimeInterval delay = [RCTConvert double:config[@"delay"]];
-  NSNumber *toValue = [RCTConvert NSNumber:config[@"toValue"]] ?: @1;
-  NSArray<NSNumber *> *frames = [RCTConvert NSNumberArray:config[@"frames"]];
-
-  RCTValueAnimatedNode *valueNode = (RCTValueAnimatedNode *)_animationNodes[nodeTag];
-
-  RCTAnimationDriverNode *animationDriver =
-  [[RCTAnimationDriverNode alloc] initWithId:animationId
-                                       delay:delay
-                                     toValue:toValue.doubleValue
-                                      frames:frames
-                                     forNode:valueNode
-                                    callBack:callBack];
-  [_activeAnimations addObject:animationDriver];
-  _animationDrivers[animationId] = animationDriver;
-  [animationDriver startAnimation];
-  [self startAnimation];
+  [self addOperationBlock:^(RCTNativeAnimatedNodesManager *nodesManager) {
+    [nodesManager startAnimatingNode:animationId nodeTag:nodeTag config:config endCallback:callBack];
+  }];
 }
 
 RCT_EXPORT_METHOD(stopAnimation:(nonnull NSNumber *)animationId)
 {
-  RCTAnimationDriverNode *driver = _animationDrivers[animationId];
-  if (driver) {
-    [driver removeAnimation];
-    [_animationDrivers removeObjectForKey:animationId];
-    [_activeAnimations removeObject:driver];
-    [_finishedAnimations removeObject:driver];
-  }
+  [self addOperationBlock:^(RCTNativeAnimatedNodesManager *nodesManager) {
+    [nodesManager stopAnimation:animationId];
+  }];
 }
 
 RCT_EXPORT_METHOD(setAnimatedNodeValue:(nonnull NSNumber *)nodeTag
                   value:(nonnull NSNumber *)value)
 {
-  RCTAnimatedNode *node = _animationNodes[nodeTag];
-  if (![node isKindOfClass:[RCTValueAnimatedNode class]]) {
-    RCTLogError(@"Not a value node.");
-    return;
-  }
-  RCTValueAnimatedNode *valueNode = (RCTValueAnimatedNode *)node;
-  valueNode.value = value.floatValue;
-  [valueNode setNeedsUpdate];
+  [self addOperationBlock:^(RCTNativeAnimatedNodesManager *nodesManager) {
+    [nodesManager setAnimatedNodeValue:nodeTag value:value];
+  }];
+}
+
+RCT_EXPORT_METHOD(setAnimatedNodeOffset:(nonnull NSNumber *)nodeTag
+                  offset:(nonnull NSNumber *)offset)
+{
+  [self addOperationBlock:^(RCTNativeAnimatedNodesManager *nodesManager) {
+    [nodesManager setAnimatedNodeOffset:nodeTag offset:offset];
+  }];
+}
+
+RCT_EXPORT_METHOD(flattenAnimatedNodeOffset:(nonnull NSNumber *)nodeTag)
+{
+  [self addOperationBlock:^(RCTNativeAnimatedNodesManager *nodesManager) {
+    [nodesManager flattenAnimatedNodeOffset:nodeTag];
+  }];
+}
+
+RCT_EXPORT_METHOD(extractAnimatedNodeOffset:(nonnull NSNumber *)nodeTag)
+{
+  [self addOperationBlock:^(RCTNativeAnimatedNodesManager *nodesManager) {
+    [nodesManager extractAnimatedNodeOffset:nodeTag];
+  }];
 }
 
 RCT_EXPORT_METHOD(connectAnimatedNodeToView:(nonnull NSNumber *)nodeTag
                   viewTag:(nonnull NSNumber *)viewTag)
 {
-  RCTAnimatedNode *node = _animationNodes[nodeTag];
-  if (viewTag && [node isKindOfClass:[RCTPropsAnimatedNode class]]) {
-    [(RCTPropsAnimatedNode *)node connectToView:viewTag animatedModule:self];
-  }
+  NSString *viewName = [self.bridge.uiManager viewNameForReactTag:viewTag];
+  [self addOperationBlock:^(RCTNativeAnimatedNodesManager *nodesManager) {
+    [nodesManager connectAnimatedNodeToView:nodeTag viewTag:viewTag viewName:viewName];
+  }];
 }
 
 RCT_EXPORT_METHOD(disconnectAnimatedNodeFromView:(nonnull NSNumber *)nodeTag
                   viewTag:(nonnull NSNumber *)viewTag)
 {
-  RCTAnimatedNode *node = _animationNodes[nodeTag];
-  if (viewTag && node && [node isKindOfClass:[RCTPropsAnimatedNode class]]) {
-    [(RCTPropsAnimatedNode *)node disconnectFromView:viewTag];
-  }
+  // Disconnecting a view also restores its default values so we have to make
+  // sure this happens before views get updated with their new props. This is
+  // why we enqueue this on the pre-operations queue.
+  [self addPreOperationBlock:^(RCTNativeAnimatedNodesManager *nodesManager) {
+    [nodesManager disconnectAnimatedNodeFromView:nodeTag viewTag:viewTag];
+  }];
 }
 
 RCT_EXPORT_METHOD(dropAnimatedNode:(nonnull NSNumber *)tag)
 {
-  RCTAnimatedNode *node = _animationNodes[tag];
-  if (node) {
-    [node detachNode];
-    [_animationNodes removeObjectForKey:tag];
-    if ([node isKindOfClass:[RCTValueAnimatedNode class]]) {
-      [_updatedValueNodes removeObject:(RCTValueAnimatedNode *)node];
-    } else if ([node isKindOfClass:[RCTPropsAnimatedNode class]]) {
-      [_propAnimationNodes removeObject:(RCTPropsAnimatedNode *)node];
-    }
-  }
+  [self addOperationBlock:^(RCTNativeAnimatedNodesManager *nodesManager) {
+    [nodesManager dropAnimatedNode:tag];
+  }];
 }
 
-#pragma mark -- Animation Loop
-
-- (void)startAnimation
+RCT_EXPORT_METHOD(startListeningToAnimatedNodeValue:(nonnull NSNumber *)tag)
 {
-  if (!_displayLink && _activeAnimations.count > 0) {
-    _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updateAnimations)];
-    [_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
-  }
+  __weak id<RCTValueAnimatedNodeObserver> valueObserver = self;
+  [self addOperationBlock:^(RCTNativeAnimatedNodesManager *nodesManager) {
+    [nodesManager startListeningToAnimatedNodeValue:tag valueObserver:valueObserver];
+  }];
 }
 
-- (void)updateAnimations
+RCT_EXPORT_METHOD(stopListeningToAnimatedNodeValue:(nonnull NSNumber *)tag)
 {
-  // Step Current active animations
-  // This also recursively marks children nodes as needing update
-  for (RCTAnimationDriverNode *animationDriver in _activeAnimations) {
-    [animationDriver stepAnimation];
+  [self addOperationBlock:^(RCTNativeAnimatedNodesManager *nodesManager) {
+    [nodesManager stopListeningToAnimatedNodeValue:tag];
+  }];
+}
+
+RCT_EXPORT_METHOD(addAnimatedEventToView:(nonnull NSNumber *)viewTag
+                  eventName:(nonnull NSString *)eventName
+                  eventMapping:(NSDictionary<NSString *, id> *)eventMapping)
+{
+  [self addOperationBlock:^(RCTNativeAnimatedNodesManager *nodesManager) {
+    [nodesManager addAnimatedEventToView:viewTag eventName:eventName eventMapping:eventMapping];
+  }];
+}
+
+RCT_EXPORT_METHOD(removeAnimatedEventFromView:(nonnull NSNumber *)viewTag
+                  eventName:(nonnull NSString *)eventName
+            animatedNodeTag:(nonnull NSNumber *)animatedNodeTag)
+{
+  [self addOperationBlock:^(RCTNativeAnimatedNodesManager *nodesManager) {
+    [nodesManager removeAnimatedEventFromView:viewTag eventName:eventName animatedNodeTag:animatedNodeTag];
+  }];
+}
+
+#pragma mark -- Batch handling
+
+- (void)addOperationBlock:(AnimatedOperation)operation
+{
+  [_operations addObject:operation];
+}
+
+- (void)addPreOperationBlock:(AnimatedOperation)operation
+{
+  [_preOperations addObject:operation];
+}
+
+- (void)uiManagerWillFlushUIBlocks:(RCTUIManager *)uiManager
+{
+  if (_preOperations.count == 0 && _operations.count == 0) {
+    return;
   }
 
-  // Perform node updates for marked nodes.
-  // At this point all nodes that are in need of an update are properly marked as such.
-  for (RCTPropsAnimatedNode *propsNode in _propAnimationNodes) {
-    [propsNode updateNodeIfNecessary];
-  }
+  NSArray<AnimatedOperation> *preOperations = _preOperations;
+  NSArray<AnimatedOperation> *operations = _operations;
+  _preOperations = [NSMutableArray new];
+  _operations = [NSMutableArray new];
 
-  // Cleanup nodes and prepare for next cycle. Remove updated nodes from bucket.
-  for (RCTAnimationDriverNode *driverNode in _activeAnimations) {
-    [driverNode cleanupAnimationUpdate];
-  }
-  for (RCTValueAnimatedNode *valueNode in _updatedValueNodes) {
-    [valueNode cleanupAnimationUpdate];
-  }
-  [_updatedValueNodes removeAllObjects];
-
-  for (RCTAnimationDriverNode *driverNode in _activeAnimations) {
-    if (driverNode.animationHasFinished) {
-      [driverNode removeAnimation];
-      [_finishedAnimations addObject:driverNode];
+  [uiManager prependUIBlock:^(__unused RCTUIManager *manager, __unused NSDictionary<NSNumber *, NSView *> *viewRegistry) {
+    for (AnimatedOperation operation in preOperations) {
+      operation(self->_nodesManager);
     }
-  }
-  for (RCTAnimationDriverNode *driverNode in _finishedAnimations) {
-    [_activeAnimations removeObject:driverNode];
-    [_animationDrivers removeObjectForKey:driverNode.animationId];
-  }
-  [_finishedAnimations removeAllObjects];
+  }];
 
-  if (_activeAnimations.count == 0) {
-    [_displayLink invalidate];
-    _displayLink = nil;
+  [uiManager addUIBlock:^(__unused RCTUIManager *manager, __unused NSDictionary<NSNumber *, NSView *> *viewRegistry) {
+    for (AnimatedOperation operation in operations) {
+      operation(self->_nodesManager);
+    }
+
+    [self->_nodesManager updateAnimations];
+  }];
+}
+
+#pragma mark -- Events
+
+- (NSArray<NSString *> *)supportedEvents
+{
+  return @[@"onAnimatedValueUpdate"];
+}
+
+- (void)animatedNode:(RCTValueAnimatedNode *)node didUpdateValue:(CGFloat)value
+{
+  [self sendEventWithName:@"onAnimatedValueUpdate"
+                     body:@{@"tag": node.nodeTag, @"value": @(value)}];
+}
+
+- (void)eventDispatcherWillDispatchEvent:(id<RCTEvent>)event
+{
+  // Native animated events only work for events dispatched from the main queue.
+  if (!RCTIsMainQueue()) {
+    return;
   }
+  return [_nodesManager handleAnimatedEvent:event];
 }
 
 @end

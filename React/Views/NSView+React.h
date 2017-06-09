@@ -9,7 +9,7 @@
 
 #import <AppKit/AppKit.h>
 
-#import "RCTComponent.h"
+#import <React/RCTComponent.h>
 
 @class RCTShadowView;
 
@@ -22,6 +22,13 @@
 - (NSView *)reactSuperview NS_REQUIRES_SUPER;
 - (void)insertReactSubview:(NSView *)subview atIndex:(NSInteger)atIndex NS_REQUIRES_SUPER;
 - (void)removeReactSubview:(NSView *)subview NS_REQUIRES_SUPER;
+
+/**
+ * Layout direction of the view.
+ * Internally backed to `semanticContentAttribute` property.
+ * Defaults to `LeftToRight` in case of ambiguity.
+ */
+@property (nonatomic, assign) NSUserInterfaceLayoutDirection reactLayoutDirection;
 
 /**
  * z-index, used to override sibling order in didUpdateReactSubviews.
@@ -65,11 +72,11 @@
 - (void)reactAddControllerToClosestParent:(NSViewController *)controller;
 
 /**
- * Responder overrides - to be deprecated.
+ * Focus manipulation.
  */
-- (void)reactWillMakeFirstResponder;
-- (void)reactDidMakeFirstResponder;
-- (BOOL)reactRespondsToTouch:(NSEvent *)touch;
+- (void)reactFocus;
+- (void)reactFocusIfNeeded;
+- (void)reactBlur;
 
 /**
  * UIView replacement

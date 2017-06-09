@@ -9,11 +9,13 @@
 
 #import "RCTTextFieldManager.h"
 
-#import "RCTBridge.h"
-#import "RCTShadowView.h"
+#import <React/RCTBridge.h>
+#import <React/RCTFont.h>
+#import <React/RCTShadowView.h>
+
+#import "RCTShadowTextField.h"
 #import "RCTTextField.h"
 #import "RCTSecureTextField.h"
-#import "RCTFont.h"
 
 @implementation RCTConvert(RCTTextField)
 
@@ -33,63 +35,23 @@ RCT_ENUM_CONVERTER(NSFocusRingType, (@{
 
 RCT_EXPORT_MODULE()
 
+- (RCTShadowView *)shadowView
+{
+  return [RCTShadowTextField new];
+}
+
 - (NSView *)view
 {
-  RCTTextField *textField = [[RCTTextField alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
-  textField.delegate = self;
-  return textField;
-}
-
-- (BOOL)control:(NSControl *)control textView:(NSTextView * __unused)textView doCommandBySelector:(SEL)commandSelector {
-  if (![control isKindOfClass:[RCTTextField class]]) {
-    return YES;
-  }
-  
-  RCTTextField *textField = (RCTTextField*)control;
-  
-  if (commandSelector == @selector(insertNewline:)) {
-    [textField textFieldSubmitEditingWithString:@"\n"];
-    return YES;
-  }
-  
-  return NO;
-}
-
-- (BOOL)textField:(RCTTextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
-  // Only allow single keypresses for onKeyPress, pasted text will not be sent.
-  if (textField.textWasPasted) {
-    textField.textWasPasted = NO;
-  } else {
-    [textField sendKeyValueForString:string];
-  }
-
-  if (textField.maxLength == nil || [string isEqualToString:@"\n"]) {  // Make sure forms can be submitted via return
-    return YES;
-  }
-  
-  return YES;
-}
-
-// This method allows us to detect a `Backspace` keyPress
-// even when there is no more text in the TextField
-- (BOOL)keyboardInputShouldDelete:(RCTTextField *)textField
-{
-  [self textField:textField shouldChangeCharactersInRange:NSMakeRange(0, 0) replacementString:@""];
-  return YES;
-}
-
-- (BOOL)textFieldShouldEndEditing:(RCTTextField *)textField
-{
-  return [textField textFieldShouldEndEditing:textField];
+    RCTTextField *textField = [[RCTTextField alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
+    textField.delegate = self;
+    return textField;
 }
 
 RCT_EXPORT_VIEW_PROPERTY(caretHidden, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(autoCorrect, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(bezeled, BOOL)
 RCT_REMAP_VIEW_PROPERTY(editable, enabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(placeholder, NSString)
 RCT_EXPORT_VIEW_PROPERTY(placeholderTextColor, NSColor)
+RCT_EXPORT_VIEW_PROPERTY(selection, RCTTextSelection)
 RCT_EXPORT_VIEW_PROPERTY(text, NSString)
 RCT_EXPORT_VIEW_PROPERTY(maxLength, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(focusRingType, NSFocusRingType)

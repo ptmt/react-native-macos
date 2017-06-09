@@ -26,16 +26,13 @@
 #import <AppKit/AppKit.h>
 #import <XCTest/XCTest.h>
 
-#import "RCTAssert.h"
-
-#import "RCTEventDispatcher.h"
-#import "RCTRootView.h"
-#import "RCTRootViewDelegate.h"
-
 #import <RCTTest/RCTTestRunner.h>
+#import <React/RCTEventDispatcher.h>
+#import <React/RCTRootView.h>
+#import <React/RCTRootViewDelegate.h>
 
 #define RCT_TEST_DATA_CONFIGURATION_BLOCK(appName, testType, input, block) \
-- (void)test##appName##_##testType##_##input                               \
+- (void)DISABLED_test##appName##_##testType##_##input                      \
 {                                                                          \
   [_runner runTest:_cmd                                                    \
             module:@#appName                                               \
@@ -44,7 +41,7 @@ configurationBlock:block];                                                 \
 }
 
 #define RCT_TEST_CONFIGURATION_BLOCK(appName, block)  \
-- (void)test##appName                                 \
+- (void)DISABLED_test##appName                        \
 {                                                     \
   [_runner runTest:_cmd                               \
             module:@#appName                          \
@@ -124,13 +121,6 @@ static ControlBlock reactContentSizeUpdateBlock(RCTRootViewSizeFlexibility sizeF
   };
 }
 
-static ControlBlock propertiesUpdateBlock()
-{
-  return ^(RCTRootView *rootView){
-    rootView.appProperties = @{@"markTestPassed":@YES};
-  };
-}
-
 @interface RCTRootViewIntegrationTests : XCTestCase
 
 @end
@@ -142,14 +132,12 @@ static ControlBlock propertiesUpdateBlock()
 
 - (void)setUp
 {
-  NSOperatingSystemVersion version = [NSProcessInfo processInfo].operatingSystemVersion;
-  RCTAssert((version.majorVersion == 10 && version.minorVersion >= 10) || version.majorVersion >= 3, @"Tests should be run on OX 10.10.x+, found %zd.%zd.%zd", version.majorVersion, version.minorVersion, version.patchVersion);
   _runner = RCTInitRunnerForApp(@"IntegrationTests/RCTRootViewIntegrationTestApp", nil);
 }
 
 #pragma mark Logic Tests
 
-// This list should be kept in sync with RCTRootViewIntegrationTestApp.js
+// This list should be kept in sync with RCTRootViewIntegrationTestsApp.js
 
 // Simple size flexibility tests - test if the content is measured properly
 RCT_TEST_DATA_CONFIGURATION_BLOCK(SizeFlexibilityUpdateTest, SingleUpdate, none, simpleSizeFlexibilityBlock(RCTNone));
@@ -167,6 +155,8 @@ RCT_TEST_DATA_CONFIGURATION_BLOCK(SizeFlexibilityUpdateTest, MultipleUpdates, bo
 RCT_TEST_CONFIGURATION_BLOCK(ReactContentSizeUpdateTest, reactContentSizeUpdateBlock(RCTBoth))
 
 // Test if setting 'appProperties' property updates the RN app
-RCT_TEST_CONFIGURATION_BLOCK(PropertiesUpdateTest, propertiesUpdateBlock())
+RCT_TEST_CONFIGURATION_BLOCK(PropertiesUpdateTest, ^(RCTRootView *rootView) {
+  rootView.appProperties = @{@"markTestPassed":@YES};
+})
 
 @end

@@ -15,8 +15,8 @@
 #import "RCTConvert.h"
 #import "RCTDefines.h"
 #import "RCTErrorInfo.h"
-#import "RCTUtils.h"
 #import "RCTJSStackFrame.h"
+#import "RCTUtils.h"
 
 #if RCT_DEBUG
 
@@ -119,10 +119,11 @@
     [copyButton setTarget:self];
     [copyButton setAction:@selector(copyStack)];
 
-    CGFloat buttonWidth = self.frame.size.width / 3;
-    dismissButton.frame = CGRectMake(0, self.frame.size.height - buttonHeight + 1, buttonWidth, buttonHeight);
-    reloadButton.frame = CGRectMake(buttonWidth, self.frame.size.height - buttonHeight + 1, buttonWidth, buttonHeight);
-    copyButton.frame = CGRectMake(buttonWidth*2, self.frame.size.height - buttonHeight + 1, buttonWidth, buttonHeight);
+    CGFloat buttonWidthWithMargin = self.frame.size.width / 3;
+    CGFloat buttonWidth = buttonWidthWithMargin - 20;
+    dismissButton.frame = CGRectMake(10, self.frame.size.height - buttonHeight - 10, buttonWidth, buttonHeight);
+    reloadButton.frame = CGRectMake(self.frame.size.width / 3 + 10, self.frame.size.height - buttonHeight - 10, buttonWidth, buttonHeight);
+    copyButton.frame = CGRectMake(2 * self.frame.size.width / 3 + 10, self.frame.size.height - buttonHeight - 10, buttonWidth, buttonHeight);
     [rootView addSubview:dismissButton];
     [rootView addSubview:reloadButton];
     [rootView addSubview:copyButton];
@@ -165,13 +166,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     _lastErrorMessage = [message substringToIndex:MIN((NSUInteger)10000, message.length)];
     NSMutableArray *result = [NSMutableArray arrayWithCapacity:stack.count];
     [stack enumerateObjectsUsingBlock:^(RCTJSStackFrame* stackFrame, __unused NSUInteger idx, __unused BOOL *stop) {
-      NSString *lineInfo = [NSString stringWithFormat:@"%@:%zd",
-                            [stackFrame.file lastPathComponent],
-                            stackFrame.lineNumber];
-      if (stackFrame.column != 0) {
-        lineInfo = [lineInfo stringByAppendingFormat:@":%zd", stackFrame.column];
-      }
-
+      NSString *lineInfo = [self formatFrameSource:stackFrame];
+      
       NSString *methodName = [@"\t in " stringByAppendingString:stackFrame.methodName];
 
       [result addObject:[methodName stringByAppendingFormat:@"(at %@)", lineInfo]];
@@ -223,8 +219,9 @@ for (RCTJSStackFrame *stackFrame in _lastStackTrace) {
 
 - (NSString *)formatFrameSource:(RCTJSStackFrame *)stackFrame
 {
+  NSString *fileName = RCTNilIfNull(stackFrame.file) ? [stackFrame.file lastPathComponent] : @"<unknown file>";
   NSString *lineInfo = [NSString stringWithFormat:@"%@:%zd",
-                        [stackFrame.file lastPathComponent],
+                        fileName,
                         stackFrame.lineNumber];
 
   if (stackFrame.column != 0) {
@@ -401,7 +398,9 @@ RCT_EXPORT_MODULE()
 
 - (void)showError:(NSError *)error
 {
-  [self showErrorMessage:error.localizedDescription withDetails:error.localizedFailureReason];
+  [self showErrorMessage:error.localizedDescription
+             withDetails:error.localizedFailureReason
+                   stack:error.userInfo[RCTJSStackTraceKey]];
 }
 
 - (void)showErrorMessage:(NSString *)message
@@ -411,36 +410,39 @@ RCT_EXPORT_MODULE()
 
 - (void)showErrorMessage:(NSString *)message withDetails:(NSString *)details
 {
+  [self showErrorMessage:message withDetails:details stack:nil];
+}
+
+- (void)showErrorMessage:(NSString *)message withDetails:(NSString *)details stack:(NSArray<id> *)stack {
   NSString *combinedMessage = message;
   if (details) {
     combinedMessage = [NSString stringWithFormat:@"%@\n\n%@", message, details];
   }
-  [self showErrorMessage:combinedMessage];
+  [self showErrorMessage:combinedMessage withStack:stack isUpdate:NO];
 }
 
 - (void)showErrorMessage:(NSString *)message withRawStack:(NSString *)rawStack
 {
   NSArray<RCTJSStackFrame *> *stack = [RCTJSStackFrame stackFramesWithLines:rawStack];
-  [self _showErrorMessage:message withStack:stack isUpdate:NO];
+  [self showErrorMessage:message withStack:stack isUpdate:NO];
 }
 
-- (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack
+- (void)showErrorMessage:(NSString *)message withStack:(NSArray *)stack
 {
   [self showErrorMessage:message withStack:stack isUpdate:NO];
 }
 
-- (void)updateErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack
+- (void)updateErrorMessage:(NSString *)message withStack:(NSArray *)stack
 {
   [self showErrorMessage:message withStack:stack isUpdate:YES];
 }
 
-- (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack isUpdate:(BOOL)isUpdate
+- (void)showErrorMessage:(NSString *)message withStack:(NSArray<id> *)stack isUpdate:(BOOL)isUpdate
 {
-  [self _showErrorMessage:message withStack:[RCTJSStackFrame stackFramesWithDictionaries:stack] isUpdate:isUpdate];
-}
+  if (![[stack firstObject] isKindOfClass:[RCTJSStackFrame class]]) {
+    stack = [RCTJSStackFrame stackFramesWithDictionaries:stack];
+  }
 
-- (void)_showErrorMessage:(NSString *)message withStack:(NSArray<RCTJSStackFrame *> *)stack isUpdate:(BOOL)isUpdate
-{
   dispatch_async(dispatch_get_main_queue(), ^{
     if (!self->_window) {
       self->_window = [[RCTRedBoxWindow alloc] initWithContentRect:[[NSApplication sharedApplication] mainWindow].frame];
@@ -487,8 +489,10 @@ RCT_EXPORT_METHOD(dismiss)
   [[[NSURLSession sharedSession] dataTaskWithRequest:request] resume];
 }
 
-- (void)reloadFromRedBoxWindow:(__unused RCTRedBoxWindow *)redBoxWindow {
-  [[NSNotificationCenter defaultCenter] postNotificationName:RCTReloadNotification object:nil userInfo:nil];
+- (void)reloadFromRedBoxWindow:(__unused RCTRedBoxWindow *)redBoxWindow
+{
+  [_bridge reload];
+  [self dismiss];
 }
 
 @end

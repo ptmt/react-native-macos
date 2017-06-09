@@ -4,7 +4,8 @@ title: Native UI Components
 layout: docs
 category: Guides (Android)
 permalink: docs/native-components-android.html
-next: running-on-device-android
+banner: ejected
+next: headless-js-android
 previous: native-modules-android
 ---
 

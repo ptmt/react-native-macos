@@ -10,13 +10,13 @@
 #import <QuartzCore/QuartzCore.h>
 #import <AppKit/AppKit.h>
 
-#import <CSSLayout/CSSLayout.h>
-#import "RCTAnimationType.h"
-#import "RCTBorderStyle.h"
-#import "RCTTextDecorationLineType.h"
-#import "RCTDefines.h"
-#import "RCTLog.h"
-#import "RCTPointerEvents.h"
+#import <React/RCTAnimationType.h>
+#import <React/RCTBorderStyle.h>
+#import <React/RCTDefines.h>
+#import <React/RCTLog.h>
+#import <React/RCTPointerEvents.h>
+#import <React/RCTTextDecorationLineType.h>
+#import <yoga/Yoga.h>
 
 /**
  * This class provides a collection of conversion functions for mapping
@@ -47,6 +47,7 @@
 + (NSData *)NSData:(id)json;
 + (NSIndexSet *)NSIndexSet:(id)json;
 
++ (NSURLRequestCachePolicy)NSURLRequestCachePolicy:(id)json;
 + (NSURL *)NSURL:(id)json;
 + (NSURLRequest *)NSURLRequest:(id)json;
 
@@ -67,28 +68,16 @@ typedef NSURL RCTFileURL;
 + (CGSize)CGSize:(id)json;
 + (CGRect)CGRect:(id)json;
 + (NSEdgeInsets)NSEdgeInsets:(id)json;
-//
-//+ (CGLineCap)CGLineCap:(id)json;
-//+ (CGLineJoin)CGLineJoin:(id)json;
-//
-+ (CATransform3D)CATransform3D:(id)json;
+
++ (CGLineCap)CGLineCap:(id)json;
++ (CGLineJoin)CGLineJoin:(id)json;
+
 + (CGAffineTransform)CGAffineTransform:(id)json;
 //
 + (NSColor *)NSColor:(id)json;
 + (CGColorRef)CGColor:(id)json CF_RETURNS_NOT_RETAINED;
 
-//
-//+ (UIImage *)UIImage:(id)json;
-//+ (CGImageRef)CGImage:(id)json CF_RETURNS_NOT_RETAINED;
-//
-+ (NSFont *)NSFont:(id)json;
-+ (NSFont *)NSFont:(NSFont *)font withSize:(id)json;
-+ (NSFont *)NSFont:(NSFont *)font withWeight:(id)json;
-+ (NSFont *)NSFont:(NSFont *)font withStyle:(id)json;
-+ (NSFont *)NSFont:(NSFont *)font withFamily:(id)json;
-+ (NSFont *)NSFont:(NSFont *)font withFamily:(id)family
-              size:(id)size weight:(id)weight style:(id)style
-   scaleMultiplier:(CGFloat)scaleMultiplier;
++ (YGValue)YGValue:(id)json;
 
 + (NSArray<NSArray *> *)NSArrayArray:(id)json;
 + (NSArray<NSString *> *)NSStringArray:(id)json;
@@ -108,14 +97,16 @@ typedef NSArray CGColorArray;
 typedef id NSPropertyList;
 + (NSPropertyList)NSPropertyList:(id)json;
 
-typedef BOOL css_clip_t, css_backface_visibility_t;
-+ (css_clip_t)css_clip_t:(id)json;
+typedef BOOL css_backface_visibility_t;
++ (YGOverflow)YGOverflow:(id)json;
++ (YGDisplay)YGDisplay:(id)json;
 + (css_backface_visibility_t)css_backface_visibility_t:(id)json;
-+ (CSSFlexDirection)CSSFlexDirection:(id)json;
-+ (CSSJustify)CSSJustify:(id)json;
-+ (CSSAlign)CSSAlign:(id)json;
-+ (CSSPositionType)CSSPositionType:(id)json;
-+ (CSSWrapType)CSSWrapType:(id)json;
++ (YGFlexDirection)YGFlexDirection:(id)json;
++ (YGJustify)YGJustify:(id)json;
++ (YGAlign)YGAlign:(id)json;
++ (YGPositionType)YGPositionType:(id)json;
++ (YGWrap)YGWrap:(id)json;
++ (YGDirection)YGDirection:(id)json;
 
 + (RCTPointerEvents)RCTPointerEvents:(id)json;
 + (RCTAnimationType)RCTAnimationType:(id)json;
@@ -136,7 +127,7 @@ typedef NSArray NSDictionaryArray __deprecated_msg("Use NSArray<NSDictionary *>"
 typedef NSArray NSURLArray __deprecated_msg("Use NSArray<NSURL *>");
 typedef NSArray RCTFileURLArray __deprecated_msg("Use NSArray<RCTFileURL *>");
 typedef NSArray NSNumberArray __deprecated_msg("Use NSArray<NSNumber *>");
-typedef NSArray UIColorArray __deprecated_msg("Use NSArray<UIColor *>");
+typedef NSArray NSColorArray __deprecated_msg("Use NSArray<NSColor *>");
 
 /**
  * Synchronous image loading is generally a bad idea for performance reasons.
@@ -233,10 +224,18 @@ RCT_CUSTOM_CONVERTER(type, type, [RCT_DEBUG ? [self NSNumber:json] : json getter
 }
 
 /**
- * This macro is used for creating converter functions for typed arrays.
+ * This macro is used for creating explicitly-named converter functions
+ * for typed arrays.
  */
-#define RCT_ARRAY_CONVERTER(type)                      \
-+ (NSArray<id> *)type##Array:(id)json                      \
+#define RCT_ARRAY_CONVERTER_NAMED(type, name)          \
++ (NSArray<type *> *)name##Array:(id)json              \
 {                                                      \
-  return RCTConvertArrayValue(@selector(type:), json); \
+  return RCTConvertArrayValue(@selector(name:), json); \
 }
+
+/**
+ * This macro is used for creating converter functions for typed arrays.
+ * RCT_ARRAY_CONVERTER_NAMED may be used when type contains characters
+ * which are disallowed in selector names.
+ */
+#define RCT_ARRAY_CONVERTER(type) RCT_ARRAY_CONVERTER_NAMED(type, type)

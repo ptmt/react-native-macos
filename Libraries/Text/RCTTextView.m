@@ -9,112 +9,63 @@
 
 #import "RCTTextView.h"
 
-#import "RCTConvert.h"
-#import "RCTEventDispatcher.h"
+#import <React/RCTConvert.h>
+#import <React/RCTEventDispatcher.h>
+#import <React/RCTUIManager.h>
+#import <React/RCTUtils.h>
+#import <React/NSView+React.h>
+
 #import "RCTShadowText.h"
 #import "RCTText.h"
-#import "RCTUtils.h"
-#import "NSView+React.h"
-
-@interface RCTUITextView : NSTextView
-
-@property (nonatomic, strong) NSAttributedString *placeholderAttributedString;
-@property (nonatomic, assign) BOOL textWasPasted;
-
-@end
-
-@implementation RCTUITextView
-{
-  BOOL _jsRequestingFirstResponder;
-}
-
-- (void)paste:(id)sender
-{
-  _textWasPasted = YES;
-  [super paste:sender];
-}
-
-- (void)reactWillMakeFirstResponder
-{
-  _jsRequestingFirstResponder = YES;
-}
-
-- (BOOL)canBecomeFirstResponder
-{
-  return _jsRequestingFirstResponder;
-}
-
-- (void)reactDidMakeFirstResponder
-{
-  _jsRequestingFirstResponder = NO;
-}
-
-- (void)drawRect:(NSRect)rect
-{
-  if ([[self string] isEqualToString:@""] && self != [[self window] firstResponder]) {
-    [_placeholderAttributedString drawWithRect:rect options:NSStringDrawingOneShot];
-  }
-  [super drawRect:rect];
-}
-
-
-@end
+#import "RCTTextSelection.h"
+#import "RCTUITextView.h"
 
 @implementation RCTTextView
 {
+  RCTBridge *_bridge;
   RCTEventDispatcher *_eventDispatcher;
 
-  NSString *_placeholder;
   RCTUITextView *_textView;
-  NSInteger _nativeEventCount;
-  CGFloat _padding;
   RCTText *_richTextView;
   NSAttributedString *_pendingAttributedText;
-  NSMutableArray<NSView *> *_subviews;
+  
+  NSUInteger _previousTextLength;
+  CGFloat _previousContentHeight;
   NSString *_predictedText;
   BOOL _blockTextShouldChange;
   BOOL _nativeUpdatesInFlight;
+  NSInteger _nativeEventCount;
+  CGFloat _padding;
+  
   NSArray <NSValue *> * _previousSelectionRanges;
   NSScrollView *_scrollView;
 
-  NSUInteger _previousTextLength;
-  CGFloat _previousContentHeight;
   BOOL _jsRequestingFirstResponder;
 
   CGSize _previousContentSize;
-  BOOL _viewDidCompleteInitialLayout;
 }
 
-- (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
+- (instancetype)initWithBridge:(RCTBridge *)bridge
 {
-  RCTAssertParam(eventDispatcher);
+  RCTAssertParam(bridge);
 
-  if ((self = [super initWithFrame:CGRectZero])) {
+  if (self = [super initWithFrame:CGRectZero]) {
     _contentInset = NSEdgeInsetsZero;
-    _eventDispatcher = eventDispatcher;
-    _placeholderTextColor = [self defaultPlaceholderTextColor];
-    _jsRequestingFirstResponder = NO;
-    _padding = 0;
+    _bridge = bridge;
+    _eventDispatcher = bridge.eventDispatcher;
+    _blurOnSubmit = NO;
 
-    _textView = [[RCTUITextView alloc] initWithFrame:CGRectZero];
-    _textView.editable = YES;
+    _textView = [[RCTUITextView alloc] initWithFrame:self.bounds];
+//    _textView.autoresizingMask = NSViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _textView.backgroundColor = [NSColor clearColor];
+    _textView.textColor = [NSColor blackColor];
+    // This line actually removes 5pt (default value) left and right padding in UITextView.
+    _textView.textContainer.lineFragmentPadding = 0;
+    
     _textView.delegate = self;
     _textView.drawsBackground = NO;
     _textView.focusRingType = NSFocusRingTypeDefault;
 
-    // TODO: enable scrolLView back?
-//    _scrollView = [[NSScrollView alloc] initWithFrame:CGRectZero];
-//    [_scrollView setBorderType:NSNoBorder];
-//    [_scrollView setDrawsBackground:NO];
-//
-//    [_scrollView setHasVerticalScroller:NO];
-//    [_scrollView setHasHorizontalScroller:NO];
-//    [_scrollView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-//    [_scrollView setDocumentView:_textView];
-
-    _previousSelectionRanges = _textView.selectedRanges;
-
-    _subviews = [NSMutableArray new];
     [self addSubview:_textView];
   }
   return self;
@@ -123,9 +74,12 @@
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
+#pragma mark - RCTComponent
+
 - (void)insertReactSubview:(NSView *)subview atIndex:(NSInteger)index
 {
   [super insertReactSubview:subview atIndex:index];
+
   if ([subview isKindOfClass:[RCTText class]]) {
     if (_richTextView) {
       RCTLogError(@"Tried to insert a second <Text> into <TextInput> - there can only be one.");
@@ -135,7 +89,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     // If this <TextInput> is in rich text editing mode, and the child <Text> node providing rich text
     // styling has a backgroundColor, then the attributedText produced by the child <Text> node will have an
     // NSBackgroundColor attribute. We need to forward this attribute to the text view manually because the text view
-    // always has a clear background color in -initWithEventDispatcher:.
+    // always has a clear background color in `initWithBridge:`.
     //
     // TODO: This should be removed when the related hack in -performPendingTextUpdate is removed.
     if (subview.layer.backgroundColor) {
@@ -159,8 +113,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)didUpdateReactSubviews
 {
-  // Do nothing, as we don't allow non-text subviews
+  // Do nothing, as we don't allow non-text subviews.
 }
+
+#pragma mark - Routine
 
 - (void)setMostRecentEventCount:(NSInteger)mostRecentEventCount
 {
@@ -174,16 +130,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   [self performPendingTextUpdate];
 }
 
-- (void)performTextUpdate
-{
-  if (_richTextView) {
-    _pendingAttributedText = _richTextView.textStorage;
-    [self performPendingTextUpdate];
-  } else if (!self.text) {
-    [_textView setString:@""];
-  }
-}
-
 static NSAttributedString *removeReactTagFromString(NSAttributedString *string)
 {
   if (string.length == 0) {
@@ -195,12 +141,22 @@ static NSAttributedString *removeReactTagFromString(NSAttributedString *string)
   }
 }
 
+- (void)performTextUpdate
+{
+  if (_richTextView) {
+    _pendingAttributedText = _richTextView.textStorage;
+    [self performPendingTextUpdate];
+  } else if (!self.text) {
+    _textView.text = @"";
+  }
+}
+
 - (void)performPendingTextUpdate
 {
   if (!_pendingAttributedText || _mostRecentEventCount < _nativeEventCount || _nativeUpdatesInFlight) {
     return;
   }
-
+  
   // The underlying <Text> node that produces _pendingAttributedText has a react tag attribute on it that causes the
   // -isEqualToAttributedString: comparison below to spuriously fail. We don't want that comparison to fail unless it
   // needs to because when the comparison fails, we end up setting attributedText on the text view, which clears
@@ -208,27 +164,37 @@ static NSAttributedString *removeReactTagFromString(NSAttributedString *string)
   //
   // TODO: Kill this after we finish passing all style/attribute info into JS.
   _pendingAttributedText = removeReactTagFromString(_pendingAttributedText);
-
+  
   if ([_textView.attributedString isEqualToAttributedString:_pendingAttributedText]) {
     _pendingAttributedText = nil; // Don't try again.
     return;
   }
-
+  
   // When we update the attributed text, there might be pending autocorrections
   // that will get accepted by default. In order for this to not garble our text,
   // we temporarily block all textShouldChange events so they are not applied.
   _blockTextShouldChange = YES;
-
-  // NSInteger oldTextLength = _textView.attributedString.length;
-
-  [_textView.textStorage setAttributedString:_pendingAttributedText];
+  
+//  UITextRange *selection = _textView.selectedTextRange;
+ //  NSInteger oldTextLength = _textView.attributedString.length;
+  
+  [_textView setAttributedText:_pendingAttributedText];
   _predictedText = _pendingAttributedText.string;
   _pendingAttributedText = nil;
-
+  
+//  if (selection.empty) {
+//    // maintain cursor position relative to the end of the old text
+//    NSInteger start = [_textView offsetFromPosition:_textView.beginningOfDocument toPosition:selection.start];
+//    NSInteger offsetFromEnd = oldTextLength - start;
+//    NSInteger newOffset = _textView.attributedText.length - offsetFromEnd;
+//    UITextPosition *position = [_textView positionFromPosition:_textView.beginningOfDocument offset:newOffset];
+//    _textView.selectedTextRange = [_textView textRangeFromPosition:position toPosition:position];
+//  }
+  
   [_textView layoutSubtreeIfNeeded];
-
-  [self updatePlaceholderVisibility];
-
+  
+  [self invalidateContentSize];
+  
   _blockTextShouldChange = NO;
 }
 
@@ -250,47 +216,10 @@ static NSAttributedString *removeReactTagFromString(NSAttributedString *string)
   _textView.textContainerInset = adjustedTextContainerInset;
 }
 
-
-- (void)updateContentSize
-{
-  CGSize size = (CGSize){_scrollView.frame.size.width, INFINITY};
-  // size.height = [_textView sizeThatFits:size].height;
-
-  _textView.frame = (CGRect){CGPointZero, size};
-
-  if (_viewDidCompleteInitialLayout && _onContentSizeChange && !CGSizeEqualToSize(_previousContentSize, size)) {
-    _previousContentSize = size;
-    _onContentSizeChange(@{
-      @"contentSize": @{
-        @"height": @(size.height),
-        @"width": @(size.width),
-      },
-      @"target": self.reactTag,
-    });
-  }
-}
-
-- (void)updatePlaceholder
-{
-  if (_placeholder) {
-    _textView.placeholderAttributedString = [[NSAttributedString alloc]
-                                             initWithString:_placeholder
-                                             attributes:@{NSFontAttributeName : (_textView.font ? _textView.font : [self defaultPlaceholderFont]), NSForegroundColorAttributeName : _placeholderTextColor}];
-  }
-
-
-}
-
-
-- (NSFont *)font
-{
-  return _textView.font;
-}
-
 - (void)setFont:(NSFont *)font
 {
-  _textView.font = font;
-  [self updatePlaceholder];
+  _font = font;
+  [_textView setFont:font];
 }
 
 - (NSColor *)textColor
@@ -303,21 +232,6 @@ static NSAttributedString *removeReactTagFromString(NSAttributedString *string)
   _textView.textColor = textColor;
 }
 
-- (void)setPlaceholder:(NSString *)placeholder
-{
-  _placeholder = placeholder;
-  [self updatePlaceholder];
-}
-
-- (void)setPlaceholderTextColor:(NSColor *)placeholderTextColor
-{
-  if (placeholderTextColor) {
-    _placeholderTextColor = placeholderTextColor;
-  } else {
-    _placeholderTextColor = [self defaultPlaceholderTextColor];
-  }
-  [self updatePlaceholder];
-}
 
 - (void)setPadding:(CGFloat)padding
 {
@@ -376,7 +290,7 @@ static NSAttributedString *removeReactTagFromString(NSAttributedString *string)
                                          text:self.text
                                           key:nil
                                    eventCount:_nativeEventCount];
-      [self resignFirstResponder];
+      [_textView resignFirstResponder];
       return NO;
     }
   }
@@ -468,8 +382,8 @@ static NSAttributedString *removeReactTagFromString(NSAttributedString *string)
     NSArray <NSValue *> *previousRanges = [_textView selectedRanges];
     [_textView setString:text];
     [_textView setSelectedRanges:previousRanges];
-    [self updatePlaceholderVisibility];
-    [self updateContentSize];
+    // [self updatePlaceholderVisibility];
+    [self invalidateContentSize];
   } else if (eventLag > RCTTextUpdateLagWarningThreshold) {
     RCTLogWarn(@"Native TextInput(%@) is %zd events ahead of JS - try to make your JS faster.", self.text, eventLag);
   }
@@ -477,6 +391,26 @@ static NSAttributedString *removeReactTagFromString(NSAttributedString *string)
 
 - (void)updatePlaceholderVisibility
 {
+}
+
+- (NSString *)placeholder
+{
+  return _textView.placeholderText;
+}
+
+- (void)setPlaceholder:(NSString *)placeholder
+{
+  _textView.placeholderText = placeholder;
+}
+
+- (NSColor *)placeholderTextColor
+{
+  return _textView.placeholderTextColor;
+}
+
+- (void)setPlaceholderTextColor:(NSColor *)placeholderTextColor
+{
+  _textView.placeholderTextColor = placeholderTextColor;
 }
 
 - (NSFont *)defaultPlaceholderFont
@@ -534,9 +468,6 @@ static BOOL findMismatch(NSString *first, NSString *second, NSRange *firstRange,
 
 - (void)textViewDidChange:(NSTextView *)textView
 {
-  [self updatePlaceholderVisibility];
-  [self updateContentSize];
-
   // Detect when textView updates happend that didn't invoke `shouldChangeTextInRange`
   // (e.g. typing simplified chinese in pinyin will insert and remove spaces without
   // calling shouldChangeTextInRange).  This will cause JS to get out of sync so we
@@ -589,12 +520,22 @@ static BOOL findMismatch(NSString *first, NSString *second, NSRange *firstRange,
 
 - (void)textDidEndEditing:(NSNotification *)aNotification
 {
-  [self updateContentSize];
-  [self updatePlaceholderVisibility];
-  _nativeEventCount++;
+  if (_nativeUpdatesInFlight) {
+    // iOS does't call `textViewDidChange:` delegate method if the change was happened because of autocorrection
+    // which was triggered by loosing focus. So, we call it manually.
+    [self textViewDidChange:_textView];
+    //_nativeEventCount++;
+  }
+
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeEnd
                                  reactTag:self.reactTag
                                      text:[_textView string]
+                                      key:nil
+                               eventCount:_nativeEventCount];
+  
+  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeBlur
+                                 reactTag:self.reactTag
+                                     text:nil
                                       key:nil
                                eventCount:_nativeEventCount];
 }
@@ -605,7 +546,6 @@ static BOOL findMismatch(NSString *first, NSString *second, NSRange *firstRange,
   if (_clearTextOnFocus) {
     [_textView setString:@""];
   }
-  [self updatePlaceholderVisibility];
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeFocus
                                  reactTag:self.reactTag
                                      text:[_textView string]
@@ -613,54 +553,113 @@ static BOOL findMismatch(NSString *first, NSString *second, NSRange *firstRange,
                                eventCount:_nativeEventCount];
 }
 
-- (BOOL)isFirstResponder
+
+#pragma mark - Focus control deledation
+
+- (void)reactFocus
 {
-  return [_textView isEqualTo:[_textView window].firstResponder];
+  [_textView reactFocus];
 }
 
-- (BOOL)canBecomeFirstResponder
+- (void)reactBlur
 {
-  return [_textView canBecomeFirstResponder];
+  [_textView reactBlur];
 }
 
-- (void)reactWillMakeFirstResponder
+- (void)didMoveToWindow
 {
-  [_textView reactWillMakeFirstResponder];
+  [_textView reactFocusIfNeeded];
 }
 
-- (BOOL)becomeFirstResponder
+#pragma mark - Content size
+
+- (CGSize)contentSize
 {
-  return [_textView becomeFirstResponder];
+  // Returning value does NOT include insets.
+  CGSize contentSize = self.intrinsicContentSize;
+  contentSize.width -= _contentInset.left + _contentInset.right;
+  contentSize.height -= _contentInset.top + _contentInset.bottom;
+  return contentSize;
 }
 
-- (void)reactDidMakeFirstResponder
+- (void)invalidateContentSize
 {
-  [_textView reactDidMakeFirstResponder];
-}
+  CGSize contentSize = self.contentSize;
 
-- (BOOL)resignFirstResponder
-{
-  [super resignFirstResponder];
-  BOOL result = [_textView resignFirstResponder];
-  if (result) {
-    [_eventDispatcher sendTextEventWithType:RCTTextEventTypeBlur
-                                   reactTag:self.reactTag
-                                       text:[_textView string]
-                                        key:nil
-                                 eventCount:_nativeEventCount];
+  if (CGSizeEqualToSize(_previousContentSize, contentSize)) {
+    return;
   }
-  return result;
+  _previousContentSize = contentSize;
+
+  [_bridge.uiManager setIntrinsicContentSize:contentSize forView:self];
+
+  if (_onContentSizeChange) {
+    _onContentSizeChange(@{
+      @"contentSize": @{
+        @"height": @(contentSize.height),
+        @"width": @(contentSize.width),
+      },
+      @"target": self.reactTag,
+    });
+  }
+}
+
+#pragma mark - Layout
+
+- (CGSize)intrinsicContentSize
+{
+  // Calling `sizeThatFits:` is probably more expensive method to compute
+  // content size compare to direct access `_textView.contentSize` property,
+  // but seems `sizeThatFits:` returns more reliable and consistent result.
+  // Returning value DOES include insets.
+  return [self sizeThatFits:CGSizeMake(self.bounds.size.width, INFINITY)];
+}
+
+- (CGSize)sizeThatFits:(CGSize)size
+{
+  // return [_textView sizeThatFits:size];
+  return _textView.frame.size;
 }
 
 - (void)layout
 {
   [super layout];
-
-  // Start sending content size updates only after the view has been laid out
-  // otherwise we send multiple events with bad dimensions on initial render.
-  _viewDidCompleteInitialLayout = YES;
-
-  [self updateFrames];
+  [self invalidateContentSize];
 }
+
+//
+//#pragma mark - UIScrollViewDelegate
+//
+//- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+//{
+//  if (_onScroll) {
+//    CGPoint contentOffset = scrollView.contentOffset;
+//    CGSize contentSize = scrollView.contentSize;
+//    CGSize size = scrollView.bounds.size;
+//    UIEdgeInsets contentInset = scrollView.contentInset;
+//
+//    _onScroll(@{
+//      @"contentOffset": @{
+//        @"x": @(contentOffset.x),
+//        @"y": @(contentOffset.y)
+//      },
+//      @"contentInset": @{
+//        @"top": @(contentInset.top),
+//        @"left": @(contentInset.left),
+//        @"bottom": @(contentInset.bottom),
+//        @"right": @(contentInset.right)
+//      },
+//      @"contentSize": @{
+//        @"width": @(contentSize.width),
+//        @"height": @(contentSize.height)
+//      },
+//      @"layoutMeasurement": @{
+//        @"width": @(size.width),
+//        @"height": @(size.height)
+//      },
+//      @"zoomScale": @(scrollView.zoomScale ?: 1),
+//    });
+//  }
+//}
 
 @end

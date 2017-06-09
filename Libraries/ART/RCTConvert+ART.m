@@ -9,12 +9,13 @@
 
 #import "RCTConvert+ART.h"
 
+#import <React/RCTFont.h>
+#import <React/RCTLog.h>
+
 #import "ARTLinearGradient.h"
 #import "ARTPattern.h"
 #import "ARTRadialGradient.h"
 #import "ARTSolidColor.h"
-#import "RCTLog.h"
-#import "RCTFont.h"
 
 @implementation RCTConvert (ART)
 
@@ -88,35 +89,35 @@ RCT_ENUM_CONVERTER(CTTextAlignment, (@{
   }
 
   NSDictionary *fontDict = dict[@"font"];
-  CTFontRef font = (__bridge CTFontRef)[self NSFont:nil withFamily:fontDict[@"fontFamily"] size:fontDict[@"fontSize"] weight:fontDict[@"fontWeight"] style:fontDict[@"fontStyle"] scaleMultiplier:1.0];
-  if (!font) {
-    return frame;
-  }
+    CTFontRef font = (__bridge CTFontRef)[self NSFont:dict[@"font"]];
+    if (!font) {
+        return frame;
+    }
 
-  // Create a dictionary for this font
-  CFDictionaryRef attributes = (__bridge CFDictionaryRef)@{
-    (NSString *)kCTFontAttributeName:(__bridge id)font,
-    (NSString *)kCTForegroundColorFromContextAttributeName: @YES
-  };
+    // Create a dictionary for this font
+    CFDictionaryRef attributes = (__bridge CFDictionaryRef)@{
+                                                             (NSString *)kCTFontAttributeName:(__bridge id)font,
+                                                             (NSString *)kCTForegroundColorFromContextAttributeName: @YES
+                                                             };
 
-  // Set up text frame with font metrics
-  CGFloat size = CTFontGetSize(font);
-  frame.count = lineCount;
-  frame.baseLine = size; // estimate base line
-  frame.lineHeight = size * 1.1; // Base on ART canvas line height estimate
-  frame.lines = malloc(sizeof(CTLineRef) * lineCount);
-  frame.widths = malloc(sizeof(CGFloat) * lineCount);
+    // Set up text frame with font metrics
+    CGFloat size = CTFontGetSize(font);
+    frame.count = lineCount;
+    frame.baseLine = size; // estimate base line
+    frame.lineHeight = size * 1.1; // Base on ART canvas line height estimate
+    frame.lines = malloc(sizeof(CTLineRef) * lineCount);
+    frame.widths = malloc(sizeof(CGFloat) * lineCount);
 
-  [lines enumerateObjectsUsingBlock:^(NSString *text, NSUInteger i, BOOL *stop) {
-
-    CFStringRef string = (__bridge CFStringRef)text;
-    CFAttributedStringRef attrString = CFAttributedStringCreate(kCFAllocatorDefault, string, attributes);
-    CTLineRef line = CTLineCreateWithAttributedString(attrString);
-    CFRelease(attrString);
-
-    frame.lines[i] = line;
-    frame.widths[i] = CTLineGetTypographicBounds(line, NULL, NULL, NULL);
-  }];
+    [lines enumerateObjectsUsingBlock:^(NSString *text, NSUInteger i, BOOL *stop) {
+        
+        CFStringRef string = (__bridge CFStringRef)text;
+        CFAttributedStringRef attrString = CFAttributedStringCreate(kCFAllocatorDefault, string, attributes);
+        CTLineRef line = CTLineCreateWithAttributedString(attrString);
+        CFRelease(attrString);
+        
+        frame.lines[i] = line;
+        frame.widths[i] = CTLineGetTypographicBounds(line, NULL, NULL, NULL);
+    }];
 
   return frame;
 }

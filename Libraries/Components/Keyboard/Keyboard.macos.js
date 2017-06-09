@@ -11,6 +11,4 @@
  */
 'use strict';
 
-const EventEmitter = require('EventEmitter');
-
-module.exports = new EventEmitter()
+module.exports = require('UnimplementedView');

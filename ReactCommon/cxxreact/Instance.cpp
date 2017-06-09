@@ -4,6 +4,7 @@
 
 #include "Executor.h"
 #include "MethodCall.h"
+#include "RecoverableError.h"
 #include "SystraceSection.h"
 
 #include <folly/json.h>
@@ -13,12 +14,13 @@
 #include <glog/logging.h>
 
 #include <condition_variable>
-#include <fstream>
 #include <mutex>
 #include <string>
 
 namespace facebook {
 namespace react {
+
+using namespace detail;
 
 Instance::~Instance() {
   if (nativeToJsBridge_) {
@@ -30,18 +32,28 @@ void Instance::initializeBridge(
     std::unique_ptr<InstanceCallback> callback,
     std::shared_ptr<JSExecutorFactory> jsef,
     std::shared_ptr<MessageQueueThread> jsQueue,
-    std::unique_ptr<MessageQueueThread> nativeQueue,
     std::shared_ptr<ModuleRegistry> moduleRegistry) {
   callback_ = std::move(callback);
 
   jsQueue->runOnQueueSync(
-    [this, &jsef, moduleRegistry, jsQueue,
-     nativeQueue=folly::makeMoveWrapper(std::move(nativeQueue))] () mutable {
+    [this, &jsef, moduleRegistry, jsQueue] () mutable {
       nativeToJsBridge_ = folly::make_unique<NativeToJsBridge>(
-          jsef.get(), moduleRegistry, jsQueue, nativeQueue.move(), callback_);
+          jsef.get(), moduleRegistry, jsQueue, callback_);
+
+      std::lock_guard<std::mutex> lock(m_syncMutex);
+      m_syncReady = true;
+      m_syncCV.notify_all();
     });
 
   CHECK(nativeToJsBridge_);
+}
+
+void Instance::setSourceURL(std::string sourceURL) {
+  callback_->incrementPendingJSCalls();
+  SystraceSection s("reactbridge_xplat_setSourceURL",
+                    "sourceURL", sourceURL);
+
+  nativeToJsBridge_->loadApplication(nullptr, nullptr, std::move(sourceURL));
 }
 
 void Instance::loadScriptFromString(std::unique_ptr<const JSBigString> string,
@@ -49,49 +61,50 @@ void Instance::loadScriptFromString(std::unique_ptr<const JSBigString> string,
   callback_->incrementPendingJSCalls();
   SystraceSection s("reactbridge_xplat_loadScriptFromString",
                     "sourceURL", sourceURL);
-  // TODO mhorowitz: ReactMarker around loadApplicationScript
-  nativeToJsBridge_->loadApplicationScript(std::move(string), std::move(sourceURL));
+  nativeToJsBridge_->loadApplication(nullptr, std::move(string), std::move(sourceURL));
+}
+
+void Instance::loadScriptFromStringSync(std::unique_ptr<const JSBigString> string,
+                                        std::string sourceURL) {
+  std::unique_lock<std::mutex> lock(m_syncMutex);
+  m_syncCV.wait(lock, [this] { return m_syncReady; });
+
+  nativeToJsBridge_->loadApplicationSync(nullptr, std::move(string), std::move(sourceURL));
 }
 
 void Instance::loadScriptFromFile(const std::string& filename,
                                   const std::string& sourceURL) {
-  // TODO mhorowitz: ReactMarker around file read
-  std::unique_ptr<JSBigBufferString> buf;
-  {
-    SystraceSection s("reactbridge_xplat_loadScriptFromFile",
-                      "fileName", filename);
+  callback_->incrementPendingJSCalls();
+  SystraceSection s("reactbridge_xplat_loadScriptFromFile",
+                    "fileName", filename);
 
-    std::ifstream jsfile(filename);
-    if (!jsfile) {
-      LOG(ERROR) << "Unable to load script from file" << filename;
-    } else {
-      jsfile.seekg(0, std::ios::end);
-      buf.reset(new JSBigBufferString(jsfile.tellg()));
-      jsfile.seekg(0, std::ios::beg);
-      jsfile.read(buf->data(), buf->size());
-    }
-  }
+  std::unique_ptr<const JSBigFileString> script;
 
-  loadScriptFromString(std::move(buf), sourceURL);
-}
+  RecoverableError::runRethrowingAsRecoverable<std::system_error>(
+    [&filename, &script]() {
+      script = JSBigFileString::fromPath(filename);
+    });
 
-void Instance::loadScriptFromOptimizedBundle(std::string bundlePath,
-                                             std::string sourceURL,
-                                             int flags) {
-  SystraceSection s("reactbridge_xplat_loadScriptFromOptimizedBundle",
-                    "bundlePath", bundlePath);
-  nativeToJsBridge_->loadOptimizedApplicationScript(std::move(bundlePath),
-                                                    std::move(sourceURL),
-                                                    flags);
+  nativeToJsBridge_->loadApplication(nullptr, std::move(script), sourceURL);
 }
 
 void Instance::loadUnbundle(std::unique_ptr<JSModulesUnbundle> unbundle,
                             std::unique_ptr<const JSBigString> startupScript,
                             std::string startupScriptSourceURL) {
   callback_->incrementPendingJSCalls();
-  SystraceSection s("reactbridge_xplat_setJSModulesUnbundle");
-  nativeToJsBridge_->loadApplicationUnbundle(std::move(unbundle), std::move(startupScript),
-                                             std::move(startupScriptSourceURL));
+  nativeToJsBridge_->loadApplication(std::move(unbundle), std::move(startupScript),
+                                     std::move(startupScriptSourceURL));
+}
+
+void Instance::loadUnbundleSync(std::unique_ptr<JSModulesUnbundle> unbundle,
+                                std::unique_ptr<const JSBigString> startupScript,
+                                std::string startupScriptSourceURL) {
+  std::unique_lock<std::mutex> lock(m_syncMutex);
+  m_syncCV.wait(lock, [this] { return m_syncReady; });
+
+  SystraceSection s("reactbridge_xplat_loadApplicationSync");
+  nativeToJsBridge_->loadApplicationSync(std::move(unbundle), std::move(startupScript),
+                                         std::move(startupScriptSourceURL));
 }
 
 bool Instance::supportsProfiling() {
@@ -111,20 +124,19 @@ void Instance::setGlobalVariable(std::string propName,
   nativeToJsBridge_->setGlobalVariable(std::move(propName), std::move(jsonValue));
 }
 
-void Instance::callJSFunction(ExecutorToken token, std::string&& module, std::string&& method,
-                              folly::dynamic&& params) {
-  callback_->incrementPendingJSCalls();
-  nativeToJsBridge_->callFunction(token, std::move(module), std::move(method), std::move(params));
+void *Instance::getJavaScriptContext() {
+  return nativeToJsBridge_->getJavaScriptContext();
 }
 
-void Instance::callJSCallback(ExecutorToken token, uint64_t callbackId, folly::dynamic&& params) {
+void Instance::callJSFunction(std::string&& module, std::string&& method, folly::dynamic&& params) {
+  callback_->incrementPendingJSCalls();
+  nativeToJsBridge_->callFunction(std::move(module), std::move(method), std::move(params));
+}
+
+void Instance::callJSCallback(uint64_t callbackId, folly::dynamic&& params) {
   SystraceSection s("<callback>");
   callback_->incrementPendingJSCalls();
-  nativeToJsBridge_->invokeCallback(token, (double) callbackId, std::move(params));
-}
-
-ExecutorToken Instance::getMainExecutorToken() {
-  return nativeToJsBridge_->getMainExecutorToken();
+  nativeToJsBridge_->invokeCallback((double) callbackId, std::move(params));
 }
 
 void Instance::handleMemoryPressureUiHidden() {

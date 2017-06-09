@@ -19,6 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * @flow
+ * @providesModule ActionSheetIOSExample
  */
 'use strict';
 
@@ -27,8 +28,8 @@ var ReactNative = require('react-native');
 var {
   ActionSheetIOS,
   StyleSheet,
+  takeSnapshot,
   Text,
-  UIManager,
   View,
 } = ReactNative;
 
@@ -131,9 +132,9 @@ class ShareActionSheetExample extends React.Component {
       ]
     },
     (error) => alert(error),
-    (success, method) => {
+    (completed, method) => {
       var text;
-      if (success) {
+      if (completed) {
         text = `Shared via ${method}`;
       } else {
         text = 'You didn\'t share';
@@ -163,7 +164,7 @@ class ShareScreenshotExample extends React.Component {
 
   showShareActionSheet = () => {
     // Take the snapshot (returns a temp file uri)
-    UIManager.takeSnapshot('window').then((uri) => {
+    takeSnapshot('window').then((uri) => {
       // Share image data
       ActionSheetIOS.showShareActionSheetWithOptions({
         url: uri,
@@ -172,9 +173,9 @@ class ShareScreenshotExample extends React.Component {
         ]
       },
       (error) => alert(error),
-      (success, method) => {
+      (completed, method) => {
         var text;
-        if (success) {
+        if (completed) {
           text = `Shared via ${method}`;
         } else {
           text = 'You didn\'t share';
@@ -197,27 +198,27 @@ exports.description = 'Interface to show iOS\' action sheets';
 exports.examples = [
   {
     title: 'Show Action Sheet',
-    render(): ReactElement<any> { return <ActionSheetExample />; }
+    render(): React.Element<any> { return <ActionSheetExample />; }
   },
   {
     title: 'Show Action Sheet with tinted buttons',
-    render(): ReactElement<any> { return <ActionSheetTintExample />; }
+    render(): React.Element<any> { return <ActionSheetTintExample />; }
   },
   {
     title: 'Show Share Action Sheet',
-    render(): ReactElement<any> {
+    render(): React.Element<any> {
       return <ShareActionSheetExample url="https://code.facebook.com" />;
     }
   },
   {
     title: 'Share Local Image',
-    render(): ReactElement<any> {
+    render(): React.Element<any> {
       return <ShareActionSheetExample url="bunny.png" />;
     }
   },
   {
     title: 'Share Screenshot',
-    render(): ReactElement<any> {
+    render(): React.Element<any> {
       return <ShareScreenshotExample />;
     }
   }

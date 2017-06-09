@@ -14,7 +14,7 @@
 
 var Platform = {
   OS: 'macos',
-  select: (obj: Object) => obj.ios,
+  select: (obj: Object) => obj.macos,
 };
 
 module.exports = Platform;

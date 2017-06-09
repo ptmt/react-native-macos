@@ -53,19 +53,19 @@ RCT_ENUM_CONVERTER(NSBezelStyle, (@{
 
 RCT_EXPORT_MODULE()
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_12
 - (NSView *)view
 {
-  RCTButton *button = [RCTButton buttonWithTitle:@"Button" target:nil action:@selector(onPressHandler:)];
-  [button setTarget:button];
-  return button;
+  if ([NSButton methodSignatureForSelector: @selector(buttonWithTitle:target:action:)]) {
+    RCTButton *button = [RCTButton buttonWithTitle:@"Button" target:nil action:nil];
+    [button setTarget:button];
+    [button setAction:@selector(onPressHandler:)];
+
+    return button;
+  } else {
+    return [RCTButton new];
+  }
+
 }
-#else
-- (NSView *)view
-{
-  return [RCTButton new];
-}
-#endif
 
 RCT_EXPORT_VIEW_PROPERTY(title, NSString)
 RCT_EXPORT_VIEW_PROPERTY(alternateTitle, NSString)
@@ -73,7 +73,7 @@ RCT_EXPORT_VIEW_PROPERTY(toolTip, NSString)
 RCT_EXPORT_VIEW_PROPERTY(bezelStyle, NSBezelStyle)
 RCT_EXPORT_VIEW_PROPERTY(image, NSImage)
 RCT_EXPORT_VIEW_PROPERTY(alternateImage, NSImage)
-RCT_EXPORT_VIEW_PROPERTY(onClick, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPress, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(allowsMixedState, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(state, NSInteger)
 RCT_CUSTOM_VIEW_PROPERTY(fontSize, NSNumber, RCTButton)
@@ -109,18 +109,18 @@ RCT_CUSTOM_VIEW_PROPERTY(systemImage, NSString, __unused NSButton)
 
 - (NSDictionary<NSString *, id> *)constantsToExport
 {
-  NSButton *view = [self view];
-#ifdef NSAppKitVersionNumber10_12
-  return @{
-           @"ComponentHeight": @(view.frame.size.height),
-           @"ComponentWidth": @(view.frame.size.width)
-           };
-#else
-  return @{
-           @"ComponentHeight": @(view.intrinsicContentSize.height),
-           @"ComponentWidth": @(view.intrinsicContentSize.width)
-           };
-#endif
+  NSButton *view = (NSButton *)[self view];
+  if (view.frame.size.width > 0) {
+    return @{
+            @"ComponentHeight": @(view.frame.size.height),
+            @"ComponentWidth": @(view.frame.size.width)
+            };
+  } else {
+    return @{
+             @"ComponentHeight": @(view.intrinsicContentSize.height),
+             @"ComponentWidth": @(view.intrinsicContentSize.width)
+             };
+  }
 
 }
 

@@ -9,11 +9,10 @@
 
 #import <AppKit/AppKit.h>
 
-#import "RCTComponent.h"
-#import "RCTImageSource.h"
+#import <React/RCTComponent.h>
 
 @interface RCTButton : NSButton
 
-@property (nonatomic, copy) RCTBubblingEventBlock onClick;
+@property (nonatomic, copy) RCTBubblingEventBlock onPress;
 
 @end

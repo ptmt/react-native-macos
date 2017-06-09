@@ -9,7 +9,9 @@
  */
 
 #import <AppKit/AppKit.h>
-#import "RCTResizeMode.h"
+
+#import <React/RCTDefines.h>
+#import <React/RCTResizeMode.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

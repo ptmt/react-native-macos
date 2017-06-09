@@ -8,7 +8,8 @@
  */
 
 #import <AppKit/AppKit.h>
-#import "RCTResizeMode.h"
+
+#import <React/RCTResizeMode.h>
 
 @class RCTBridge;
 @class RCTImageSource;
@@ -19,8 +20,7 @@
 
 @property (nonatomic, assign) NSEdgeInsets capInsets;
 @property (nonatomic, strong) NSImage *defaultImage;
-@property (nonatomic, copy) NSString *src;
-@property (nonatomic, strong) NSArray<RCTImageSource *> *source;
+@property (nonatomic, copy) NSArray<RCTImageSource *> *imageSources;
 @property (nonatomic, assign) CGFloat blurRadius;
 @property (nonatomic, assign) RCTResizeMode resizeMode;
 

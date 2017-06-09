@@ -4,8 +4,9 @@ title: Integration With Existing Apps
 layout: docs
 category: Guides
 permalink: docs/integration-with-existing-apps.html
-next: colors
-previous: more-resources
+banner: ejected
+next: running-on-device
+previous: testing
 ---
 
 <div class="integration-toggler">
@@ -57,7 +58,7 @@ The keys to integrating React Native components into your iOS application are to
 5. Start the React Native server and run your native application.
 6. Optionally add more React Native components.
 7. [Debug](/react-native/releases/next/docs/debugging.html).
-8. Prepare for [deployment](/react-native/docs/running-on-device-ios.html) (e.g., via the `react-native-xcode.sh` script).
+8. Prepare for [deployment](docs/running-on-device.html) (e.g., via the `react-native-xcode.sh` script).
 9. Deploy and Profit!
 
 <block class="android" />
@@ -67,12 +68,12 @@ The keys to integrating React Native components into your Android application ar
 1. Understand what React Native components you want to integrate.
 2. Install `react-native` in your Android application root directory to create `node_modules/` directory.
 3. Create your actual React Native components in JavaScript.
-4. Add `com.facebook.react:react-native:+` and a `maven` pointing to the `react-native` binaries in `node_nodules/` to your `build.gradle` file.
+4. Add `com.facebook.react:react-native:+` and a `maven` pointing to the `react-native` binaries in `node_modules/` to your `build.gradle` file.
 4. Create a custom React Native specific `Activity` that creates a `ReactRootView`.
 5. Start the React Native server and run your native application.
 6. Optionally add more React Native components.
 7. [Debug](/react-native/releases/next/docs/debugging.html).
-8. [Prepare](/react-native/releases/next/docs/signed-apk-android.html) for [deployment](/react-native/docs/running-on-device-android.html).
+8. [Prepare](/react-native/releases/next/docs/signed-apk-android.html) for [deployment](docs/running-on-device.html).
 9. Deploy and Profit!
 
 <block class="objc swift android" />
@@ -81,13 +82,17 @@ The keys to integrating React Native components into your Android application ar
 
 <block class="android" />
 
-The [Android Getting Started guide](/react-native/docs/getting-started.html) will install the appropriate prerequisites (e.g., `npm`) for React Native on the Android target platform and your chosen development environment.
+The [Android Getting Started guide](docs/getting-started.html) will install the appropriate prerequisites (e.g., `npm`) for React Native on the Android target platform and your chosen development environment.
+
+> To ensure a smooth experience, make sure your `android` project is under `$root/android`.
 
 <block class="objc swift" />
 
 ### General
 
-First, follow the [Getting Started guide](/react-native/docs/getting-started.html) for your development environment and the iOS target platform to install the prerequisites for React Native.
+First, follow the [Getting Started guide](docs/getting-started.html) for your development environment and the iOS target platform to install the prerequisites for React Native.
+
+> To ensure a smooth experience, make sure your `iOS` project is under `$root/ios`.
 
 ### CocoaPods
 
@@ -103,11 +108,11 @@ $ sudo gem install cocoapods
 
 <block class="objc" />
 
-Assume the [app for integration](https://github.com/JoelMarcey/iOS-2048) is a [2048](https://en.wikipedia.org/wiki/2048_(video_game) game. Here is what the main menu of the native application looks like without React Native.
+Assume the [app for integration](https://github.com/JoelMarcey/iOS-2048) is a [2048](https://en.wikipedia.org/wiki/2048_%28video_game%29) game. Here is what the main menu of the native application looks like without React Native.
 
 <block class="swift" />
 
-Assume the [app for integration](https://github.com/JoelMarcey/swift-2048) is a [2048](https://en.wikipedia.org/wiki/2048_(video_game) game. Here is what the main menu of the native application looks like without React Native.
+Assume the [app for integration](https://github.com/JoelMarcey/swift-2048) is a [2048](https://en.wikipedia.org/wiki/2048_%28video_game%29) game. Here is what the main menu of the native application looks like without React Native.
 
 <block class="objc swift" />
 
@@ -126,7 +131,7 @@ We will add the package dependencies to a `package.json` file. Create this file 
 
 Below is an example of what your `package.json` file should minimally contain.
 
-> Version numbers will vary according to your needs. Normally the latest versions for both [React](https://github.com/facebook/react/releases) and [React Native](https://github.com/facebook/react/releases) will be sufficient.
+> Version numbers will vary according to your needs. Normally the latest versions for both [React](https://github.com/facebook/react/releases) and [React Native](https://github.com/facebook/react-native/releases) will be sufficient.
 
 <block class="objc" />
 
@@ -209,9 +214,12 @@ target 'NumberTileGame' do
   pod 'React', :path => '../node_modules/react-native', :subspecs => [
     'Core',
     'RCTText',
+    'RCTNetwork',
     'RCTWebSocket', # needed for debugging
     # Add any other subspecs you want to use in your project
   ]
+  # Explicitly include Yoga if you are using RN >= 0.42.0
+  pod "Yoga", :path => "../node_modules/react-native/ReactCommon/yoga"
 
 end
 ```
@@ -233,9 +241,12 @@ target 'swift-2048' do
   pod 'React', :path => '../node_modules/react-native', :subspecs => [
     'Core',
     'RCTText',
+    'RCTNetwork',
     'RCTWebSocket', # needed for debugging
     # Add any other subspecs you want to use in your project
   ]
+  # Explicitly include Yoga if you are using RN >= 0.42.0
+  pod "Yoga", :path => "../node_modules/react-native/ReactCommon/yoga"
 
 end
 ```
@@ -368,10 +379,10 @@ We will, for debugging purposes, log that the event handler was invoked. Then, w
 
 <block class="objc" />
 
-First `import` the `RCTRootView` library.
+First `import` the `RCTRootView` header.
 
 ```
-#import "RCTRootView.h"
+#import <React/RCTRootView.h>
 ```
 
 > The `initialProperties` are here for illustration purposes so we have some data for our high score screen. In our React Native component, we will use `this.props` to get access to that data.
@@ -419,7 +430,7 @@ import React
 ```
 @IBAction func highScoreButtonTapped(sender : UIButton) {
   NSLog("Hello")
-  let jsCodeLocation = NSURL(string: "http://localhost:8081/index.ios.bundle?platform=ios")
+  let jsCodeLocation = URL(string: "http://localhost:8081/index.ios.bundle?platform=ios")
   let mockData:NSDictionary = ["scores":
       [
           ["name":"Alex", "value":"42"],
@@ -435,7 +446,7 @@ import React
   )
   let vc = UIViewController()
   vc.view = rootView
-  self.presentViewController(vc, animated: true, completion: nil)
+  self.present(vc, animated: true, completion: nil)
 }
 ```
 
@@ -526,7 +537,7 @@ You can examine the code that added the React Native screen on [GitHub](https://
 In your app's root folder, run:
 
     $ npm init
-    $ npm install --save react-native
+    $ npm install --save react react-native
     $ curl -o .flowconfig https://raw.githubusercontent.com/facebook/react-native/master/.flowconfig
 
 This creates a node module for your app and adds the `react-native` npm dependency. Now open the newly created `package.json` file and add this under `scripts`:
@@ -573,10 +584,16 @@ AppRegistry.registerComponent('HelloWorld', () => HelloWorld);
 ## Prepare your current app
 
 In your app's `build.gradle` file add the React Native dependency:
+```
+dependencies {
+    ...
+    compile "com.facebook.react:react-native:+" // From node_modules.
+}
+```
 
-    compile "com.facebook.react:react-native:+"  // From node_modules
+> If you want to ensure that you are always using a specific React Native version in your native build, replace `+` with an actual React Native version you've downloaded from `npm`.
 
-In your project's `build.gradle` file add an entry for the local React Native maven directory:
+In your project's `build.gradle` file add an entry for the local React Native maven directory. Be sure to add it to the "allprojects" block:
 
 ```
 allprojects {
@@ -591,15 +608,23 @@ allprojects {
 }
 ```
 
+> Make sure that the path is correct! You shouldn’t run into any “Failed to resolve: com.facebook.react:react-native:0.x.x" errors after running Gradle sync in Android Studio.
+
 Next, make sure you have the Internet permission in your `AndroidManifest.xml`:
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+If you need to access to the `DevSettingsActivity` add to your `AndroidManifest.xml`:
+
+    <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
 
 This is only really used in dev mode when reloading JavaScript from the development server, so you can strip this in release builds if you need to.
 
 ## Add native code
 
 You need to add some native code in order to start the React Native runtime and get it to render something. To do this, we're going to create an `Activity` that creates a `ReactRootView`, starts a React application inside it and sets it as the main content view.
+
+> If you are targetting Android version <5, use the `AppCompatActivity` class from the `com.android.support:appcompat` package instead of `Activity`.
 
 ```java
 public class MyReactActivity extends Activity implements DefaultHardwareBackBtnHandler {
@@ -630,7 +655,11 @@ public class MyReactActivity extends Activity implements DefaultHardwareBackBtnH
     }
 }
 ```
-We need set the theme of `MyReactActivity` to `Theme.AppCompat.Light.NoActionBar` beause some components rely on this theme.
+> If you are using a starter kit for React Native, replace the "HelloWorld" string with the one in your index.android.js file (it’s the first argument to the `AppRegistry.registerComponent()` method).
+
+If you are using Android Studio, use `Alt + Enter` to add all missing imports in your MyReactActivity class. Be careful to use your package’s `BuildConfig` and not the one from the `...facebook...` package.
+
+We need set the theme of `MyReactActivity` to `Theme.AppCompat.Light.NoActionBar` because some components rely on this theme.
 ```xml
 <activity
   android:name=".MyReactActivity"
@@ -651,7 +680,7 @@ protected void onPause() {
     super.onPause();
 
     if (mReactInstanceManager != null) {
-        mReactInstanceManager.onPause();
+        mReactInstanceManager.onHostPause(this);
     }
 }
 
@@ -660,7 +689,7 @@ protected void onResume() {
     super.onResume();
 
     if (mReactInstanceManager != null) {
-        mReactInstanceManager.onResume(this, this);
+        mReactInstanceManager.onHostResume(this, this);
     }
 }
 
@@ -669,7 +698,7 @@ protected void onDestroy() {
     super.onDestroy();
 
     if (mReactInstanceManager != null) {
-        mReactInstanceManager.onDestroy();
+        mReactInstanceManager.onHostDestroy();
     }
 }
 ```
@@ -689,7 +718,7 @@ We also need to pass back button events to React Native:
 
 This allows JavaScript to control what happens when the user presses the hardware back button (e.g. to implement navigation). When JavaScript doesn't handle a back press, your `invokeDefaultOnBackPressed` method will be called. By default this simply finishes your `Activity`.
 
-Finally, we need to hook up the dev menu. By default, this is activated by (rage) shaking the device, but this is not very useful in emulators. So we make it show when you press the hardware menu button:
+Finally, we need to hook up the dev menu. By default, this is activated by (rage) shaking the device, but this is not very useful in emulators. So we make it show when you press the hardware menu button (use `Ctrl + M` if you're using Android Studio emulator):
 
 ```java
 @Override
@@ -702,7 +731,36 @@ public boolean onKeyUp(int keyCode, KeyEvent event) {
 }
 ```
 
-That's it, your activity is ready to run some JavaScript code.
+Now your activity is ready to run some JavaScript code.
+
+### Configure permissions for development error overlay
+
+If your app is targeting the Android `API level 23` or greater, make sure you have the `overlay` permission enabled for the development build. You can check it with `Settings.canDrawOverlays(this);`. This is required in dev builds because react native development errors must be displayed above all the other windows. Due to the new permissions system introduced in the API level 23, the user needs to approve it. This can be achieved by adding the following code to the Activity file in the onCreate() method. OVERLAY_PERMISSION_REQ_CODE is a field of the class which would be responsible for passing the result back to the Activity.
+
+```java
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    if (!Settings.canDrawOverlays(this)) {
+        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                   Uri.parse("package:" + getPackageName()));
+        startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+    }
+}
+```
+
+Finally, the `onActivityResult()` method (as shown in the code below) has to be overridden to handle the permission Accepted or Denied cases for consistent UX.
+
+```java
+@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == OVERLAY_PERMISSION_REQ_CODE) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(this)) {
+                // SYSTEM_ALERT_WINDOW permission not granted...
+            }
+        }
+    }
+}
+```
 
 ## Run your app
 
@@ -710,7 +768,11 @@ To run your app, you need to first start the development server. To do this, sim
 
     $ npm start
 
-Now build and run your Android app as normal (e.g. `./gradlew installDebug`). Once you reach your React-powered activity inside the app, it should load the JavaScript code from the development server and display:
+Now build and run your Android app as normal (`./gradlew installDebug` from command-line; in Android Studio just create debug build as usual).
+
+> If you are using Android Studio for your builds and not the Gradle Wrapper directly, make sure you install [watchman](https://facebook.github.io/watchman/) before running `npm start`. It will prevent the packager from crashing due to conflicts between Android Studio and the React Native packager.
+
+Once you reach your React-powered activity inside the app, it should load the JavaScript code from the development server and display:
 
 ![Screenshot](img/EmbeddedAppAndroid.png)
 
@@ -782,3 +844,15 @@ if (!foundHash) {
   display('platform', isMac ? 'objc' : 'android');
 }
 </script>
+
+<block class="android" />
+
+## Creating a release build in Android Studio
+
+You can use Android Studio to create your release builds too! It’s as easy as creating release builds of your previously-existing native Android app. There’s just one additional step, which you’ll have to do before every release build. You need to execute the following to create a React Native bundle, which’ll be included with your native Android app:
+
+    $ react-native bundle --platform android --dev false --entry-file index.android.js --bundle-output android/com/your-company-name/app-package-name/src/main/assets/index.android.bundle --assets-dest android/com/your-company-name/app-package-name/src/main/res/
+
+Don’t forget to replace the paths with correct ones and create the assets folder if it doesn’t exist!
+
+Now just create a release build of your native app from within Android Studio as usual and you should be good to go!

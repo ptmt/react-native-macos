@@ -15,25 +15,12 @@
 #import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
 
-#import "RCTBridge.h"
-#import "RCTBridge+Private.h"
-#import "RCTBridgeModule.h"
-#import "RCTUtils.h"
-#import "RCTUIManager.h"
-#import "RCTViewManager.h"
-#import "RCTJavaScriptExecutor.h"
-
-#define RUN_RUNLOOP_WHILE(CONDITION) \
-{ \
-  NSDate *timeout = [NSDate dateWithTimeIntervalSinceNow:5]; \
-  while ((CONDITION)) { \
-    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]]; \
-    if ([timeout timeIntervalSinceNow] <= 0) { \
-      XCTFail(@"Runloop timed out before condition was met"); \
-      break; \
-    } \
-  } \
-}
+#import <RCTTest/RCTTestRunner.h>
+#import <React/RCTBridge.h>
+#import <React/RCTBridgeModule.h>
+#import <React/RCTJavaScriptExecutor.h>
+#import <React/RCTUIManager.h>
+#import <React/RCTViewManager.h>
 
 @interface RCTTestViewManager : RCTViewManager
 @end
@@ -45,7 +32,7 @@ RCT_EXPORT_MODULE()
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-implementations"
 
-- (NSArray<NSString *> *)customDirectEventTypes
+- (NSArray<NSString *> *)customBubblingEventTypes
 {
   return @[@"foo"];
 }
@@ -101,7 +88,7 @@ RCT_EXPORT_MODULE()
 - (NSURL *)sourceURLForBridge:(__unused RCTBridge *)bridge
 {
   NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-  return [bundle URLForResource:@"TestBundle" withExtension:@"js"];
+  return [bundle URLForResource:@"UIExplorerUnitTestsBundle" withExtension:@"js"];
 }
 
 - (NSArray *)extraModulesForBridge:(__unused RCTBridge *)bridge
@@ -122,15 +109,13 @@ RCT_EXPORT_MODULE()
   [super tearDown];
 
   _notificationObserver = nil;
-  id<RCTJavaScriptExecutor> jsExecutor = _bridge.batchedBridge.javaScriptExecutor;
   [_bridge invalidate];
-  RUN_RUNLOOP_WHILE(jsExecutor.isValid);
   _bridge = nil;
 }
 
 - (void)testViewManagerNotInitializedBeforeSetBridgeModule
 {
-  RUN_RUNLOOP_WHILE(!_notificationObserver.didDetectViewManagerInit);
+  RCT_RUN_RUNLOOP_WHILE(!_notificationObserver.didDetectViewManagerInit);
 }
 
 @end

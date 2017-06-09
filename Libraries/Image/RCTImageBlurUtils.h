@@ -11,6 +11,6 @@
 #import <Accelerate/Accelerate.h>
 #import <AppKit/AppKit.h>
 
-#import "RCTDefines.h"
+#import <React/RCTDefines.h>
 
 RCT_EXTERN NSImage *RCTBlurredImageWithRadius(NSImage *inputImage, CGFloat radius);

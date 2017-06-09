@@ -11,7 +11,7 @@
 
 #import <libkern/OSAtomic.h>
 
-#import "RCTUtils.h"
+#import <React/RCTUtils.h>
 
 @implementation RCTLocalAssetImageLoader
 
@@ -41,6 +41,7 @@ RCT_EXPORT_MODULE()
                                               scale:(CGFloat)scale
                                          resizeMode:(RCTResizeMode)resizeMode
                                     progressHandler:(RCTImageLoaderProgressBlock)progressHandler
+                                 partialLoadHandler:(RCTImageLoaderPartialLoadBlock)partialLoadHandler
                                   completionHandler:(RCTImageLoaderCompletionBlock)completionHandler
 {
   __block volatile uint32_t cancelled = 0;
@@ -49,15 +50,15 @@ RCT_EXPORT_MODULE()
       return;
     }
 
-    NSString *imageName = RCTBundlePathForURL(imageURL);
-    NSImage *image = [self loadImageForName:imageName];
+    NSImage *image = RCTImageFromLocalAssetURL(imageURL);
     if (image) {
       if (progressHandler) {
         progressHandler(1, 1);
       }
       completionHandler(nil, image);
     } else {
-      NSString *message = [NSString stringWithFormat:@"Could not find image named %@", imageName];
+      NSString *message = [NSString stringWithFormat:@"Could not find image %@", imageURL];
+      RCTLogWarn(@"%@", message);
       completionHandler(RCTErrorWithMessage(message), nil);
     }
   });
@@ -65,17 +66,6 @@ RCT_EXPORT_MODULE()
   return ^{
     OSAtomicOr32Barrier(1, &cancelled);
   };
-}
-
-- (NSImage *)loadImageForName:(NSString *)imageName
-{
-  NSImage *image = nil;
-  NSBundle *currentBundle = [NSBundle bundleForClass:[self class]];
-  if (currentBundle != [NSBundle mainBundle]) {
-    image = [currentBundle imageForResource:imageName];
-  }
-  
-  return image == nil ? [NSImage imageNamed:imageName] : image;
 }
 
 @end

@@ -9,9 +9,9 @@
 
 #import "ARTSurfaceView.h"
 
+#import <React/RCTLog.h>
+
 #import "ARTNode.h"
-#import "RCTLog.h"
-#import "UIImageUtils.h"
 
 @implementation ARTSurfaceView
 

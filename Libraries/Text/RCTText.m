@@ -9,10 +9,13 @@
 
 #import "RCTText.h"
 
+#import <QuartzCore/QuartzCore.h>
+// #import <MobileCoreServices/UTCoreTypes.h>
+
+#import <React/RCTUtils.h>
+#import <React/NSView+React.h>
+
 #import "RCTShadowText.h"
-#import "RCTUtils.h"
-#import "NSView+React.h"
-#import <QuartzCore/CAShapeLayer.h>
 
 // https://github.com/BigZaphod/Chameleon/blob/84605ede274bd82b330d72dd6ac41e64eb925fd7/UIKit/Classes/UIGeometry.h
 CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
@@ -100,7 +103,6 @@ static void collectNonTextDescendants(RCTText *view, NSMutableArray *nonTextDesc
 {
   if ((self = [super initWithFrame:frame])) {
     _textStorage = [NSTextStorage new];
-    _respondsToLiveResizing = YES;
   }
   return self;
 }
@@ -118,11 +120,24 @@ static void collectNonTextDescendants(RCTText *view, NSMutableArray *nonTextDesc
   return [superDescription stringByReplacingCharactersInRange:semicolonRange withString:replacement];
 }
 
-- (void)reactSetFrame:(CGRect)frame
+- (void)setSelectable:(BOOL)selectable
 {
-  if (self.inLiveResize && !self.respondsToLiveResizing) {
+  if (_selectable == selectable) {
     return;
   }
+
+  _selectable = selectable;
+
+  if (_selectable) {
+    [self enableContextMenu];
+  }
+  else {
+    [self disableContextMenu];
+  }
+}
+
+- (void)reactSetFrame:(CGRect)frame
+{
   [super reactSetFrame:frame];
 }
 
@@ -166,11 +181,11 @@ static void collectNonTextDescendants(RCTText *view, NSMutableArray *nonTextDesc
 
 - (void)drawRect:(CGRect)dirtyRect
 {
-  NSLayoutManager *layoutManager = _textStorage.layoutManagers.firstObject;
-  NSTextContainer *textContainer = layoutManager.textContainers.firstObject;
-  CGRect textFrame = UIEdgeInsetsInsetRect(self.bounds, _contentInset);
-  NSRange glyphRange = [layoutManager glyphRangeForTextContainer:textContainer];
+  NSLayoutManager *layoutManager = [_textStorage.layoutManagers firstObject];
+  NSTextContainer *textContainer = [layoutManager.textContainers firstObject];
 
+  NSRange glyphRange = [layoutManager glyphRangeForTextContainer:textContainer];
+  CGRect textFrame = self.textFrame;
   [layoutManager drawBackgroundForGlyphRange:glyphRange atPoint:textFrame.origin];
   [layoutManager drawGlyphsForGlyphRange:glyphRange atPoint:textFrame.origin];
 
@@ -240,11 +255,43 @@ static void collectNonTextDescendants(RCTText *view, NSMutableArray *nonTextDesc
   }
 }
 
+
 #pragma mark - Accessibility
 
 - (NSString *)accessibilityLabel
 {
   return _textStorage.string;
+}
+
+#pragma mark - Context Menu
+
+- (void)enableContextMenu
+{
+
+}
+
+- (void)disableContextMenu
+{
+}
+
+- (BOOL)canBecomeFirstResponder
+{
+  return _selectable;
+}
+
+//- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
+//{
+//  if (_selectable && action == @selector(copy:)) {
+//    return YES;
+//  }
+//
+//  return [self.nextResponder canPerformAction:action withSender:sender];
+//}
+
+- (void)copy:(id)sender
+{
+#if !TARGET_OS_TV
+  #endif
 }
 
 @end

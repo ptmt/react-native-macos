@@ -7,6 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @flow
+ * @providesModule TransparentHitTestExample
  */
 
 'use strict';
@@ -46,6 +47,6 @@ exports.description = 'Transparent view receiving touch events';
 exports.examples = [
   {
     title: 'TransparentHitTestExample',
-    render(): ReactElement<any> { return <TransparentHitTestExample />; }
+    render(): React.Element<any> { return <TransparentHitTestExample />; }
   }
 ];

@@ -14,18 +14,17 @@
 
 var ColorPropType = require('ColorPropType');
 var React = require('React');
-var ReactChildren = require('react/lib/ReactChildren');
-var ReactPropTypes = require('react/lib/ReactPropTypes');
 var StyleSheet = require('StyleSheet');
 var StyleSheetPropType = require('StyleSheetPropType');
-var View = require('View');
+const ViewPropTypes = require('ViewPropTypes');
 var ViewStylePropTypes = require('ViewStylePropTypes');
 
 var processColor = require('processColor');
 var requireNativeComponent = require('requireNativeComponent');
 
+var ReactPropTypes = React.PropTypes;
+
 var REF_PICKER = 'picker';
-var MODE_DIALOG = 'dialog';
 var MODE_DROPDOWN = 'dropdown';
 
 var pickerStyleType = StyleSheetPropType({
@@ -52,7 +51,7 @@ class PickerAndroid extends React.Component {
   state: *;
 
   static propTypes = {
-    ...View.propTypes,
+    ...ViewPropTypes,
     style: pickerStyleType,
     selectedValue: React.PropTypes.any,
     enabled: ReactPropTypes.bool,
@@ -79,11 +78,11 @@ class PickerAndroid extends React.Component {
   // Translate prop and children into stuff that the native picker understands.
   _stateFromProps = (props) => {
     var selectedIndex = 0;
-    let items = ReactChildren.map(props.children, (child, index) => {
+    const items = React.Children.map(props.children, (child, index) => {
       if (child.props.value === props.selectedValue) {
         selectedIndex = index;
       }
-      let childProps = {
+      const childProps = {
         value: child.props.value,
         label: child.props.label,
       };
@@ -107,6 +106,7 @@ class PickerAndroid extends React.Component {
       selected: this.state.initialSelectedIndex,
       testID: this.props.testID,
       style: [styles.pickerAndroid, this.props.style],
+      accessibilityLabel: this.props.accessibilityLabel,
     };
 
     return <Picker ref={REF_PICKER} {...nativeProps} />;
@@ -116,7 +116,8 @@ class PickerAndroid extends React.Component {
     if (this.props.onValueChange) {
       var position = event.nativeEvent.position;
       if (position >= 0) {
-        var value = this.props.children[position].props.value;
+        var children = React.Children.toArray(this.props.children);
+        var value = children[position].props.value;
         this.props.onValueChange(value, position);
       } else {
         this.props.onValueChange(null, position);

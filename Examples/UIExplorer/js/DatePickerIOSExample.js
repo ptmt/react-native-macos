@@ -19,6 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * @flow
+ * @providesModule DatePickerIOSExample
  */
 'use strict';
 
@@ -128,7 +129,7 @@ exports.description = 'Select dates and times using the native UIDatePicker.';
 exports.examples = [
 {
   title: '<DatePickerIOS>',
-  render: function(): ReactElement<any> {
+  render: function(): React.Element<any> {
     return <DatePickerExample />;
   },
 }];

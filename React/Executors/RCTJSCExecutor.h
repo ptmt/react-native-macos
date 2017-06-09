@@ -9,7 +9,7 @@
 
 #import <JavaScriptCore/JavaScriptCore.h>
 
-#import "RCTJavaScriptExecutor.h"
+#import <React/RCTJavaScriptExecutor.h>
 
 typedef void (^RCTJavaScriptValueCallback)(JSValue *result, NSError *error);
 
@@ -28,17 +28,6 @@ RCT_EXTERN NSString *const RCTJSCThreadName;
 RCT_EXTERN NSString *const RCTJavaScriptContextCreatedNotification;
 
 /**
- * @experimental
- * May be used to pre-create the JSContext to make RCTJSCExecutor creation less costly.
- * Avoid using this; it's experimental and is not likely to be supported long-term.
- */
-@interface RCTJSContextProvider : NSObject
-
-- (instancetype)initWithUseCustomJSCLibrary:(BOOL)useCustomJSCLibrary;
-
-@end
-
-/**
  * Uses a JavaScriptCore context as the execution engine.
  */
 @interface RCTJSCExecutor : NSObject <RCTJavaScriptExecutor>
@@ -51,31 +40,32 @@ RCT_EXTERN NSString *const RCTJavaScriptContextCreatedNotification;
 @property (nonatomic, readonly, assign) BOOL useCustomJSCLibrary;
 
 /**
+ * Returns the bytecode file format that the underlying runtime supports.
+ */
+@property (nonatomic, readonly) int32_t bytecodeFileFormatVersion;
+
+/**
+ * Specify a name for the JSContext used, which will be visible in debugging tools
+ * @default is "RCTJSContext"
+ */
+@property (nonatomic, copy) NSString *contextName;
+
+/**
  * Inits a new executor instance with given flag that's used
  * to initialize RCTJSCWrapper.
  */
 - (instancetype)initWithUseCustomJSCLibrary:(BOOL)useCustomJSCLibrary;
 
 /**
- * Create a NSError from a JSError object.
- *
- * If available, the error's userInfo property will contain the JS stacktrace under
- * the RCTJSStackTraceKey key.
- */
-- (NSError *)errorForJSError:(JSValue *)jsError;
-
-/**
  * @experimental
- * Pass a RCTJSContextProvider object to use an NSThread/JSContext pair that have already been created.
- * The returned executor has already executed the supplied application script synchronously.
- * The underlying JSContext will be returned in the JSContext pointer if it is non-NULL and there was no error.
- * If an error occurs, this method will return nil and specify the error in the error pointer if it is non-NULL.
+ * synchronouslyExecuteApplicationScript:sourceURL:JSContext:error:
+ *
+ * Run the provided JS Script/Bundle, blocking the caller until it finishes.
+ * If there is an error during execution, it is returned, otherwise `NULL` is
+ * returned.
  */
-+ (instancetype)initializedExecutorWithContextProvider:(RCTJSContextProvider *)JSContextProvider
-                                     applicationScript:(NSData *)applicationScript
-                                             sourceURL:(NSURL *)sourceURL
-                                             JSContext:(JSContext **)JSContext
-                                                 error:(NSError **)error;
+- (NSError *)synchronouslyExecuteApplicationScript:(NSData *)script
+                                         sourceURL:(NSURL *)sourceURL;
 
 /**
  * Invokes the given module/method directly. The completion block will be called with the
@@ -87,5 +77,33 @@ RCT_EXTERN NSString *const RCTJavaScriptContextCreatedNotification;
                       method:(NSString *)method
                    arguments:(NSArray *)args
              jsValueCallback:(RCTJavaScriptValueCallback)onComplete;
+
+/**
+ * Get the JavaScriptCore context associated with this executor instance.
+ */
+- (JSContext *)jsContext;
+
+@end
+
+/**
+ * @experimental
+ * May be used to pre-create the JSContext to make RCTJSCExecutor creation less costly.
+ * Avoid using this; it's experimental and is not likely to be supported long-term.
+ */
+@interface RCTJSContextProvider : NSObject
+
+- (instancetype)initWithUseCustomJSCLibrary:(BOOL)useCustomJSCLibrary;
+
+/**
+ * Marks whether the provider uses the custom implementation of JSC and not the system one.
+ */
+@property (nonatomic, readonly, assign) BOOL useCustomJSCLibrary;
+
+/**
+ * @experimental
+ * Create an RCTJSCExecutor from an provider instance. This may only be called once.
+ * The underlying JSContext will be returned in the JSContext pointer if it is non-NULL.
+ */
+- (RCTJSCExecutor *)createExecutorWithContext:(JSContext **)JSContext;
 
 @end
