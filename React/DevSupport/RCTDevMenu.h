@@ -52,7 +52,7 @@
 /**
  * Manually show the dev menu (can be called from JS).
  */
-//- (void)show;
+- (void)show;
 
 /**
  * Deprecated, use -[RCTBRidge reload] instead.

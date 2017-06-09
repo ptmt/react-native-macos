@@ -37,6 +37,7 @@ trap cleanup EXIT
 
 if [ "$1" = "test" ]; then
 
+echo "testing"
 # Start the packager
 open "./packager/launchPackager.command" || echo "Can't start packager automatically"
 # Start the WebSocket test server
