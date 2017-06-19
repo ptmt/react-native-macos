@@ -721,7 +721,7 @@ struct RCTInstanceCallback : public InstanceCallback {
     NSNumber *port = self.bundleURL.port;
     [self enqueueJSCall:@"HMRClient"
                  method:@"enable"
-                   args:@[@"ios", path, host, RCTNullIfNil(port)]
+                   args:@[@"macos", path, host, RCTNullIfNil(port)]
              completion:NULL];  }
 #endif
 }

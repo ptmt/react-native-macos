@@ -21,9 +21,15 @@
     NSRect contentSize = NSMakeRect(200, 500, 1000, 500); // initial size of main NSWindow
 
     self.window = [[NSWindow alloc] initWithContentRect:contentSize
-                                              styleMask:NSTitledWindowMask | NSResizableWindowMask | NSFullSizeContentViewWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask
-                                                backing:NSBackingStoreBuffered
-                                                  defer:NO];
+                                             styleMask:
+                                                NSWindowStyleMaskTitled |
+                                                NSWindowStyleMaskResizable |
+                                                NSWindowStyleMaskFullSizeContentView |
+                                                NSWindowStyleMaskMiniaturizable |
+                                                NSWindowStyleMaskClosable
+                                               backing:NSBackingStoreBuffered
+                                                 defer:NO];
+
     NSWindowController *windowController = [[NSWindowController alloc] initWithWindow:self.window];
 
     [[self window] setTitleVisibility:NSWindowTitleHidden];

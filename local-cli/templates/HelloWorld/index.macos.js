@@ -20,7 +20,7 @@ export default class HelloWorld extends Component {
         </Text>
         <Text style={styles.instructions}>
           Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
+          Cmd+D for dev menu
         </Text>
       </View>
     );
