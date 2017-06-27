@@ -351,7 +351,7 @@
                      selector:@selector(stepAnimations:)
                      userInfo:nil
                      repeats:YES];
-      
+
     [[NSRunLoop mainRunLoop] addTimer:_displayLink forMode:NSRunLoopCommonModes];
   }
 }
@@ -373,7 +373,7 @@
 
 - (void)stepAnimations:(NSTimer *)timer
 {
-  NSTimeInterval time = timer.timeInterval;
+  NSTimeInterval time = timer.fireDate.timeIntervalSince1970;
   for (id<RCTAnimationDriver> animationDriver in _activeAnimations) {
     [animationDriver stepAnimationWithTime:time];
   }
