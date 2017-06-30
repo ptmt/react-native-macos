@@ -219,6 +219,35 @@ RCT_EXPORT_VIEW_PROPERTY(onMagicTap, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onDragEnter, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onDragLeave, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onDrop, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onContextMenuItemClick, RCTDirectEventBlock)
+
+RCT_CUSTOM_VIEW_PROPERTY(contextMenu, NSArray*<NSDictionary *>, __unused RCTView)
+{
+  if ([view respondsToSelector:@selector(setMenu:)] && json) {
+    NSArray *menuList = [RCTConvert NSArray:json];
+    if (menuList.count > 0) {
+      NSMenu *menu = [[NSMenu alloc] init];
+      for (NSUInteger i = 0; i < menuList.count; i++)
+      {
+        if (menuList[i][@"isSeparator"]) {
+          [menu addItem:[NSMenuItem separatorItem]];
+        } else {
+          NSMenuItem *menuItem = [[NSMenuItem alloc] init];
+          [menuItem setTarget:view];
+          [menuItem setAction:@selector(contextMenuItemClicked:)];
+          if (menuList[i][@"key"]) {
+            [menuItem setKeyEquivalent:menuList[i][@"key"]];
+          }
+
+          [menuItem setRepresentedObject:menuList[i]];
+          menuItem.title = menuList[i][@"title"];
+          [menu addItem:menuItem];
+        }
+      }
+      [view setMenu:menu];
+    }
+  }
+}
 
 #define RCT_VIEW_BORDER_PROPERTY(SIDE)                                  \
 RCT_CUSTOM_VIEW_PROPERTY(border##SIDE##Width, float, RCTView)           \

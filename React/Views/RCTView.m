@@ -605,7 +605,18 @@ static void RCTUpdateShadowPathForView(RCTView *view)
   layer.mask = mask;
 }
 
-- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
+- (void)contextMenuItemClicked:(NSMenuItem *)sender
+{
+  NSDictionary *menuItem = (NSDictionary *)sender.representedObject;
+  if (_onContextMenuItemClick) {
+    _onContextMenuItemClick(@{@"menuItem": menuItem});
+  } else {
+    RCTLogWarn(@"Set onContextMenuItemClick to handle this event");
+  }
+}
+
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender
+{
   NSPasteboard *pboard;
   NSDragOperation sourceDragMask;
   sourceDragMask = [sender draggingSourceOperationMask];

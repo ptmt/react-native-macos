@@ -115,6 +115,7 @@
 @property (nonatomic, copy) RCTDirectEventBlock onDragEnter;
 @property (nonatomic, copy) RCTDirectEventBlock onDragLeave;
 @property (nonatomic, copy) RCTDirectEventBlock onDrop;
+@property (nonatomic, copy) RCTDirectEventBlock onContextMenuItemClick;
 /**
  * Border styles.
  */

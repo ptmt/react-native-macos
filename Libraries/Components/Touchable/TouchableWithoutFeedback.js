@@ -27,7 +27,7 @@ const {
 
 type Event = Object;
 
-const PRESS_RETENTION_OFFSET = {top: 20, left: 20, right: 20, bottom: 30};
+const PRESS_RETENTION_OFFSET = { top: 20, left: 20, right: 20, bottom: 30 };
 
 /**
  * Do not use unless you have a very good reason. All elements that
@@ -42,9 +42,7 @@ const TouchableWithoutFeedback = React.createClass({
 
   propTypes: {
     accessible: PropTypes.bool,
-    accessibilityComponentType: PropTypes.oneOf(
-      AccessibilityComponentTypes
-    ),
+    accessibilityComponentType: PropTypes.oneOf(AccessibilityComponentTypes),
     accessibilityTraits: PropTypes.oneOfType([
       PropTypes.oneOf(AccessibilityTraits),
       PropTypes.arrayOf(PropTypes.oneOf(AccessibilityTraits)),
@@ -100,6 +98,8 @@ const TouchableWithoutFeedback = React.createClass({
     hitSlop: EdgeInsetsPropType,
     onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,
+    onContextMenuItemClick: PropTypes.func,
+    contextMenu: PropTypes.array,
   },
 
   getInitialState: function() {
@@ -147,8 +147,9 @@ const TouchableWithoutFeedback = React.createClass({
   },
 
   touchableGetLongPressDelayMS: function(): number {
-    return this.props.delayLongPress === 0 ? 0 :
-      this.props.delayLongPress || 500;
+    return this.props.delayLongPress === 0
+      ? 0
+      : this.props.delayLongPress || 500;
   },
 
   touchableGetPressOutDelayMS: function(): number {
@@ -163,15 +164,25 @@ const TouchableWithoutFeedback = React.createClass({
     warning(
       !child.type || child.type.displayName !== 'Text',
       'TouchableWithoutFeedback does not work well with Text children. Wrap children in a View instead. See ' +
-        ((child._owner && child._owner.getName && child._owner.getName()) || '<unknown>')
+        ((child._owner && child._owner.getName && child._owner.getName()) ||
+          '<unknown>')
     );
-    if (Touchable.TOUCH_TARGET_DEBUG && child.type && child.type.displayName === 'View') {
+    if (
+      Touchable.TOUCH_TARGET_DEBUG &&
+      child.type &&
+      child.type.displayName === 'View'
+    ) {
       children = React.Children.toArray(children);
-      children.push(Touchable.renderDebugView({color: 'red', hitSlop: this.props.hitSlop}));
+      children.push(
+        Touchable.renderDebugView({ color: 'red', hitSlop: this.props.hitSlop })
+      );
     }
-    const style = (Touchable.TOUCH_TARGET_DEBUG && child.type && child.type.displayName === 'Text') ?
-      [child.props.style, {color: 'red'}] :
-      child.props.style;
+    const style = Touchable.TOUCH_TARGET_DEBUG &&
+      child.type &&
+      child.type.displayName === 'Text'
+      ? [child.props.style, { color: 'red' }]
+      : child.props.style;
+
     return (React: any).cloneElement(child, {
       accessible: this.props.accessible !== false,
       // $FlowFixMe(>=0.41.0)
@@ -185,17 +196,20 @@ const TouchableWithoutFeedback = React.createClass({
       onLayout: this.props.onLayout,
       hitSlop: this.props.hitSlop,
       onStartShouldSetResponder: this.touchableHandleStartShouldSetResponder,
-      onResponderTerminationRequest: this.touchableHandleResponderTerminationRequest,
+      onResponderTerminationRequest: this
+        .touchableHandleResponderTerminationRequest,
       onResponderGrant: this.touchableHandleResponderGrant,
       onResponderMove: this.touchableHandleResponderMove,
       onResponderRelease: this.touchableHandleResponderRelease,
       onResponderTerminate: this.touchableHandleResponderTerminate,
       onMouseEnter: this.props.onMouseEnter,
       onMouseLeave: this.props.onMouseLeave,
+      onContextMenuItemClick: this.props.onContextMenuItemClick,
+      contextMenu: this.props.contextMenu,
       style,
       children,
     });
-  }
+  },
 });
 
 module.exports = TouchableWithoutFeedback;

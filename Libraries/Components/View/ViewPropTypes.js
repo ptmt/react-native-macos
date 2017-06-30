@@ -423,10 +423,16 @@ module.exports = {
   onDragEnter: PropTypes.func,
   onDragLeave: PropTypes.func,
   onDrop: PropTypes.func,
+  onContextMenuItemClick: PropTypes.func,
   /**
    * Mapped to toolTip property of NSView. Used to show extra information when
    * mouse hovering.
    * @platform macos
    */
   toolTip: PropTypes.string,
+  /**
+   * Context menu
+   * @platform macos
+   */
+  contextMenu: PropTypes.array,
 };
