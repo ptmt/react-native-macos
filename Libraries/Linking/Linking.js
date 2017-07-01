@@ -20,9 +20,6 @@ const invariant = require('fbjs/lib/invariant');
 const LinkingManager = Platform.OS === 'android' ?
   NativeModules.IntentAndroid : NativeModules.LinkingManager;
 
-// polyfill process.argv
-process.argv = LinkingManager && LinkingManager.argv;
-
 /**
  * <div class="banner-crna-ejected">
  *   <h3>Projects with Native Code Only</h3>
