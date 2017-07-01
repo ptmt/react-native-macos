@@ -103,4 +103,9 @@ RCT_EXPORT_METHOD(getCurrentAppState:(RCTResponseSenderBlock)callback
   callback(@[@{@"app_state": RCTCurrentAppBackgroundState()}]);
 }
 
+RCT_EXPORT_METHOD(exit)
+{
+  [RCTSharedApplication() terminate:self];
+}
+
 @end
