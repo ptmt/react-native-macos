@@ -21,8 +21,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 - (instancetype)initWithTimer:(NSTimer *)timer
 {
   if ((self = [super init])) {
-    _timestamp = timer.timeInterval;
-    _deltaTime = timer.tolerance; // TODO: real duration
+    _timestamp = timer.fireDate.timeIntervalSince1970;
+    _deltaTime = timer.timeInterval;
   }
   return self;
 }
