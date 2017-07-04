@@ -69,8 +69,7 @@ RCT_EXPORT_MODULE()
     [[NSApp mainWindow] makeKeyAndOrderFront:nil];
     NSString* url = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];
     NSDictionary *payload = @{@"url": url};
-    [_bridge.eventDispatcher sendDeviceEventWithName:@"openURL"
-                                                body:payload];
+    [self sendEventWithName:@"url" body:payload];
 }
 
 + (BOOL)application:(NSApplication *)application
