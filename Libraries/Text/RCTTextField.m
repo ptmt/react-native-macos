@@ -61,6 +61,27 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
                                eventCount:_nativeEventCount];
 }
 
+-(void)keyUp:(NSEvent *)theEvent
+{
+  [self sendKeyValueForString: [NSString stringWithFormat:@"%i", theEvent.keyCode ]];
+}
+
+// TODO:
+// figure out why this method doesn't get called
+
+//- (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector
+//{
+//  NSEvent *currentEvent = [[NSApplication sharedApplication]currentEvent];
+//  [self sendKeyValueForString: [NSString stringWithFormat:@"%i", currentEvent.keyCode ]];
+//  return YES;
+//}
+//
+//- (BOOL)textView:(NSTextView *)textView shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString;
+//{
+//  [self sendKeyValueForString: replacementString];
+//  return YES;
+//}
+
 // This method is overridden for `onKeyPress`. The manager
 // will not send a keyPress for text that was pasted.
 - (void)paste:(id)sender
@@ -88,6 +109,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 //    RCTLogWarn(@"Native TextInput(%@) is %zd events ahead of JS - try to make your JS faster.", self.text, eventLag);
 //  }
 }
+
 
 - (void)setText:(NSString *)text
 {
@@ -136,7 +158,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
-- (void)textFieldDidChange
+- (void)textDidChange:(NSNotification *)aNotification
 {
   _nativeEventCount++;
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeChange
@@ -157,7 +179,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     // iOS does't send event `UIControlEventEditingChanged` if the change was happened because of autocorrection
     // which was triggered by loosing focus. We assume that if `text` was changed in the middle of loosing focus process,
     // we did not receive that event. So, we call `textFieldDidChange` manually.
-    [self textFieldDidChange];
+    [self textDidChange:(NSNotification *)self];
   }
 
   [_eventDispatcher sendTextEventWithType:RCTTextEventTypeEnd

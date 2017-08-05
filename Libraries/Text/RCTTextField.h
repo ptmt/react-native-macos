@@ -16,7 +16,7 @@
 @interface TextFieldCellWithPaddings : NSTextFieldCell
 @end
 
-@interface RCTTextField : NSTextField <NSTextFieldDelegate, NSControlTextEditingDelegate>
+@interface RCTTextField : NSTextField <NSTextFieldDelegate, NSTextViewDelegate>
 
 @property (nonatomic, assign) BOOL caretHidden;
 @property (nonatomic, assign) BOOL selectTextOnFocus;
