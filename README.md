@@ -6,7 +6,7 @@ Build macOS desktop applications using React Native.
 
 ```jsx
 <View>
-  <Button onClick={() => alert('clicked!')} />
+  <Button onPress={() => alert('clicked!')} />
 </View>
 ```
 
