@@ -26,7 +26,7 @@ function generateAssetTransformResult(assetDescriptor: AssetDescriptor): {|
 |} {
   const properDescriptor = filterObject(assetDescriptor, assetPropertyBlacklist);
   const json = JSON.stringify(properDescriptor);
-  const assetRegistryPath = 'react-native/Libraries/Image/AssetRegistry';
+  const assetRegistryPath = 'react-native-macos/Libraries/Image/AssetRegistry';
   const code =
     `module.exports = require(${JSON.stringify(assetRegistryPath)}).registerAsset(${json});`;
   const dependencies = [assetRegistryPath];
