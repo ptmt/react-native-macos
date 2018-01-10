@@ -1044,6 +1044,8 @@
 		702B7FFD221C88BB0027174A /* RCTMouseEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 702B7FFB221C88BB0027174A /* RCTMouseEvent.m */; };
 		702B7FFE221C88CE0027174A /* RCTMouseEvent.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 702B7FFA221C88BB0027174A /* RCTMouseEvent.h */; };
 		702B7FFF221C88D70027174A /* RCTWindow.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 702B7FF6221C88AF0027174A /* RCTWindow.h */; };
+		705EDE2922107DD0000CAA67 /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 705EDE2722107DD0000CAA67 /* Utils.h */; };
+		705EDE2A22107DD0000CAA67 /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 705EDE2822107DD0000CAA67 /* Utils.cpp */; };
 		830A229E1A66C68A008503DA /* RCTRootView.m in Sources */ = {isa = PBXBuildFile; fileRef = 830A229D1A66C68A008503DA /* RCTRootView.m */; };
 		83392EB31B6634E10013B15F /* RCTModalHostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83392EB21B6634E10013B15F /* RCTModalHostViewController.m */; };
 		83A1FE8C1B62640A00BE0E65 /* RCTModalHostView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83A1FE8B1B62640A00BE0E65 /* RCTModalHostView.m */; };
@@ -2076,6 +2078,8 @@
 		702B7FF7221C88AF0027174A /* RCTWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTWindow.m; sourceTree = "<group>"; };
 		702B7FFA221C88BB0027174A /* RCTMouseEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTMouseEvent.h; sourceTree = "<group>"; };
 		702B7FFB221C88BB0027174A /* RCTMouseEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTMouseEvent.m; sourceTree = "<group>"; };
+		705EDE2722107DD0000CAA67 /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
+		705EDE2822107DD0000CAA67 /* Utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Utils.cpp; sourceTree = "<group>"; };
 		830213F31A654E0800B993E6 /* RCTBridgeModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTBridgeModule.h; sourceTree = "<group>"; };
 		830A229C1A66C68A008503DA /* RCTRootView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTRootView.h; sourceTree = "<group>"; };
 		830A229D1A66C68A008503DA /* RCTRootView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTRootView.m; sourceTree = "<group>"; };
@@ -2192,6 +2196,8 @@
 		130A77021DF767AF001F9587 /* yoga */ = {
 			isa = PBXGroup;
 			children = (
+				705EDE2822107DD0000CAA67 /* Utils.cpp */,
+				705EDE2722107DD0000CAA67 /* Utils.h */,
 				D49593E4202C96FF00A7694B /* YGNode.cpp */,
 				D49593E3202C96FF00A7694B /* YGNode.h */,
 				5376C5E11FC6DDB20083513D /* YGNodePrint.cpp */,
@@ -3312,6 +3318,7 @@
 				3D80DA5A1DF820620028D040 /* RCTUIManager.h in Headers */,
 				3D80DA5B1DF820620028D040 /* RCTFPSGraph.h in Headers */,
 				3D80DA5D1DF820620028D040 /* RCTMacros.h in Headers */,
+				705EDE2922107DD0000CAA67 /* Utils.h in Headers */,
 				3D80DA5E1DF820620028D040 /* RCTProfile.h in Headers */,
 				3D80DA5F1DF820620028D040 /* RCTActivityIndicatorView.h in Headers */,
 				3D80DA601DF820620028D040 /* RCTActivityIndicatorViewManager.h in Headers */,
@@ -4165,6 +4172,7 @@
 				594F0A341FD23228007FBE96 /* RCTSurfaceHostingView.mm in Sources */,
 				13134C861E296B2A00B9F3CB /* RCTCxxBridge.mm in Sources */,
 				13B07FEF1A69327A00A75B9A /* RCTAlertManager.m in Sources */,
+				705EDE2A22107DD0000CAA67 /* Utils.cpp in Sources */,
 				599FAA4C1FB274980058CCF6 /* RCTSurfaceView.mm in Sources */,
 				D4EEE2F7201DF63F00C4CBB6 /* RCTButton.m in Sources */,
 				352DCFF01D19F4C20056D623 /* RCTI18nUtil.m in Sources */,
