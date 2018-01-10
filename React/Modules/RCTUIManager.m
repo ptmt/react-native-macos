@@ -763,7 +763,7 @@ RCT_EXPORT_METHOD(removeSubviewsFromContainerWithID:(nonnull NSNumber *)containe
     // First one: We want to delete the view from view hierarchy.
     // Second one: We want to animate this view, which implies the existence of this view in the hierarchy.
     // So, we have to remove this view from React's view hierarchy but postpone removing from UIKit's hierarchy.
-    // Here the problem: the default implementation of `-[UIView removeReactSubview:]` also removes the view from UIKit's hierarchy.
+    // Here the problem: the default implementation of `-[NSView removeReactSubview:]` also removes the view from UIKit's hierarchy.
     // So, let's temporary restore the view back after removing.
     // To do so, we have to memorize original `superview` (which can differ from `container`) and an index of removed view.
     NSView *originalSuperview = removedChild.superview;
@@ -906,8 +906,8 @@ RCT_EXPORT_METHOD(manageChildren:(nonnull NSNumber *)containerTag
   NSArray<id<RCTComponent>> *temporarilyRemovedChildren =
   [self _childrenToRemoveFromContainer:container atIndices:moveFromIndices];
 
-  BOOL isUIViewRegistry = ((id)registry == (id)_viewRegistry);
-  if (isUIViewRegistry && _layoutAnimationGroup.deletingLayoutAnimation) {
+  BOOL isNSViewRegistry = ((id)registry == (id)_viewRegistry);
+  if (isNSViewRegistry && _layoutAnimationGroup.deletingLayoutAnimation) {
     [self _removeChildren:(NSArray<NSView *> *)permanentlyRemovedChildren
             fromContainer:(NSView *)container
             withAnimation:_layoutAnimationGroup];
@@ -963,19 +963,21 @@ RCT_EXPORT_METHOD(createView:(nonnull NSNumber *)reactTag
 
   // Dispatch view creation directly to the main thread instead of adding to
   // UIBlocks array. This way, it doesn't get deferred until after layout.
-  __block NSView *preliminaryCreatedView;
-
+  __weak RCTUIManager *weakManager = self;
   RCTExecuteOnMainQueue(^{
-    preliminaryCreatedView = [componentData createViewWithTag:reactTag];
-  });
-
-  [self addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, NSView *> *viewRegistry) {
-    if (!preliminaryCreatedView) {
+    RCTUIManager *uiManager = weakManager;
+    if (!uiManager) {
       return;
     }
+    NSView *view = [componentData createViewWithTag:reactTag];
+    if (view) {
+      uiManager->_viewRegistry[reactTag] = view;
+    }
+  });
 
-    uiManager->_viewRegistry[reactTag] = preliminaryCreatedView;
-    [componentData setProps:props forView:preliminaryCreatedView];
+  [self addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, NSView *> *viewRegistry) {
+    NSView *view = viewRegistry[reactTag];
+    [componentData setProps:props forView:view];
   }];
 
   [self _shadowView:shadowView didReceiveUpdatedProps:[props allKeys]];
