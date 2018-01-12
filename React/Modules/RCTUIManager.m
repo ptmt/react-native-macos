@@ -541,7 +541,10 @@ static NSDictionary *deviceOrientationEventBody()
       });
     }
 
-    if (RCTIsReactRootView(reactTag)) {
+    if (
+        RCTIsReactRootView(reactTag) &&
+        [shadowView isKindOfClass:[RCTRootShadowView class]]
+    ) {
       CGSize contentSize = shadowView.frame.size;
 
       RCTExecuteOnMainQueue(^{
