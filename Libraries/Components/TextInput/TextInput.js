@@ -8,6 +8,7 @@
  *
  * @providesModule TextInput
  * @flow
+ * @format
  */
 'use strict';
 
@@ -389,8 +390,8 @@ const TextInput = createReactClass({
      */
     password: PropTypes.bool,
     /**
-    * The highlight and cursor color of the text input.
-    */
+     * The highlight and cursor color of the text input.
+     */
     selectionColor: ColorPropType,
     /**
      * An instance of `DocumentSelectionState`, this is some state that is responsible for
@@ -577,7 +578,7 @@ const TextInput = createReactClass({
         } else if (this.isFocused()) {
           this.blur();
         }
-      }
+      },
     );
     if (this.props.autoFocus) {
       this.context.onFocusRequested(this);
@@ -592,7 +593,7 @@ const TextInput = createReactClass({
   },
 
   getChildContext: function(): Object {
-    return { isInAParentText: true };
+    return {isInAParentText: true};
   },
 
   childContextTypes: {
@@ -603,7 +604,7 @@ const TextInput = createReactClass({
    * Removes all text from the `TextInput`.
    */
   clear: function() {
-    this.setNativeProps({ text: '' });
+    this.setNativeProps({text: ''});
   },
 
   render: function() {
@@ -620,8 +621,8 @@ const TextInput = createReactClass({
     return typeof this.props.value === 'string'
       ? this.props.value
       : typeof this.props.defaultValue === 'string'
-          ? this.props.defaultValue
-          : '';
+        ? this.props.defaultValue
+        : '';
   },
 
   _setNativeRef: function(ref: any) {
@@ -648,7 +649,7 @@ const TextInput = createReactClass({
             const error = new Error(
               'TextInput prop `' +
                 propKey +
-                '` is only supported with multiline.'
+                '` is only supported with multiline.',
             );
             warning(false, '%s', error.stack);
           }
@@ -674,10 +675,14 @@ const TextInput = createReactClass({
       React.Children.forEach(children, () => ++childCount);
       invariant(
         !(props.value && childCount),
-        'Cannot specify both value and children.'
+        'Cannot specify both value and children.',
       );
       if (childCount >= 1) {
-        children = <Text style={props.style} allowFontScaling={props.allowFontScaling}>{children}</Text>;
+        children = (
+          <Text style={props.style} allowFontScaling={props.allowFontScaling}>
+            {children}
+          </Text>
+        );
       }
       if (props.inputView) {
         children = [children, props.inputView];
@@ -732,7 +737,7 @@ const TextInput = createReactClass({
     React.Children.forEach(children, () => ++childCount);
     invariant(
       !(this.props.value && childCount),
-      'Cannot specify both value and children.'
+      'Cannot specify both value and children.',
     );
     if (childCount > 1) {
       children = <Text>{children}</Text>;
@@ -843,7 +848,7 @@ const TextInput = createReactClass({
 
     // Selection is also a controlled prop, if the native value doesn't match
     // JS, update to the JS value.
-    const { selection } = this.props;
+    const {selection} = this.props;
     if (
       this._lastNativeSelection &&
       selection &&
