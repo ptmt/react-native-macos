@@ -32,6 +32,7 @@ const TimerMixin = require('react-timer-mixin');
 const TouchableWithoutFeedback = require('TouchableWithoutFeedback');
 const UIManager = require('UIManager');
 const ViewPropTypes = require('ViewPropTypes');
+const {ViewContextTypes} = require('ViewContext');
 
 /* $FlowFixMe(>=0.54.0 site=react_native_oss) This comment suppresses an error
  * found when Flow v0.54 was deployed. To see the error delete this comment and
@@ -48,6 +49,8 @@ const onlyMultiline = {
   onTextInput: true,
   children: true,
 };
+
+import type {ViewChildContext} from 'ViewContext';
 
 if (Platform.OS === 'android') {
   var AndroidTextInput = requireNativeComponent('AndroidTextInput', null);
@@ -557,11 +560,6 @@ const TextInput = createReactClass({
     );
   },
 
-  contextTypes: {
-    onFocusRequested: PropTypes.func,
-    focusEmitter: PropTypes.instanceOf(EventEmitter),
-  },
-
   _inputRef: (undefined: any),
   _focusSubscription: (undefined: ?Function),
   _lastNativeText: (undefined: ?string),
@@ -597,12 +595,18 @@ const TextInput = createReactClass({
     }
   },
 
-  getChildContext: function(): Object {
-    return {isInAParentText: true};
+  getChildContext(): ViewChildContext {
+    return {
+      isInAParentText: true,
+    };
   },
 
-  childContextTypes: {
-    isInAParentText: PropTypes.bool,
+  childContextTypes: ViewContextTypes,
+
+  contextTypes: {
+    ...ViewContextTypes,
+    onFocusRequested: PropTypes.func,
+    focusEmitter: PropTypes.instanceOf(EventEmitter),
   },
 
   /**
