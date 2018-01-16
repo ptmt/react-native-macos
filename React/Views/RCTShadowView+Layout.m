@@ -89,6 +89,12 @@ static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
   return  NSEdgeInsetsInsetRect((CGRect){CGPointZero, self.frame.size}, self.compoundInsets).size;
 }
 
+- (CGRect)contentFrame
+{
+  CGRect bounds = (CGRect){CGPointZero, self.frame.size};
+  return NSEdgeInsetsInsetRect(bounds, self.compoundInsets);
+}
+
 #pragma mark - Measuring
 
 - (CGSize)sizeThatFitsMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize
