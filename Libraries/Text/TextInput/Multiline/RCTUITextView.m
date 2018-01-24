@@ -7,47 +7,43 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <Cocoa/Cocoa.h>
 #import "RCTUITextView.h"
 
-#import <React/NSView+React.h>
 #import <React/RCTUtils.h>
-
-CGRect UIEdgeInsetsSizeRect(CGRect rect, CGSize insets) {
-//  rect.origin.x    += insets.left;
- //  rect.origin.y    += insets.top;
-  rect.size.width  -= (insets.width);
-  rect.size.height -= (insets.height);
-  return rect;
-}
-
+#import <React/UIView+React.h>
 
 #import "RCTBackedTextInputDelegateAdapter.h"
 
 @implementation RCTUITextView
 {
-  NSTextField *_placeholderView;
-  NSTextView *_detachedTextView;
+  UILabel *_placeholderView;
+  UITextView *_detachedTextView;
   RCTBackedTextViewDelegateAdapter *_textInputDelegateAdapter;
 }
 
-static NSFont *defaultPlaceholderFont()
+static UIFont *defaultPlaceholderFont()
 {
-  return [NSFont systemFontOfSize:17];
+  return [UIFont systemFontOfSize:17];
 }
 
-static NSColor *defaultPlaceholderTextColor()
+static UIColor *defaultPlaceholderColor()
 {
   // Default placeholder color from UITextField.
-  return [NSColor colorWithRed:0 green:0 blue:0.0980392 alpha:0.22];
+  return [UIColor colorWithRed:0 green:0 blue:0.0980392 alpha:0.22];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if (self = [super initWithFrame:frame]) {
-    _placeholderView = [[NSTextField alloc] initWithFrame:self.bounds];
-//    _placeholderView.isAccessibilityElement = NO;
-//    _placeholderView.numberOfLines = 0;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(textDidChange)
+                                                 name:UITextViewTextDidChangeNotification
+                                               object:self];
+
+    _placeholderView = [[UILabel alloc] initWithFrame:self.bounds];
+    _placeholderView.isAccessibilityElement = NO;
+    _placeholderView.numberOfLines = 0;
+    _placeholderView.textColor = defaultPlaceholderColor();
     [self addSubview:_placeholderView];
 
     _textInputDelegateAdapter = [[RCTBackedTextViewDelegateAdapter alloc] initWithTextView:self];
@@ -56,23 +52,27 @@ static NSColor *defaultPlaceholderTextColor()
   return self;
 }
 
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (NSString *)accessibilityLabel
 {
   NSMutableString *accessibilityLabel = [NSMutableString new];
-
+  
   NSString *superAccessibilityLabel = [super accessibilityLabel];
   if (superAccessibilityLabel.length > 0) {
     [accessibilityLabel appendString:superAccessibilityLabel];
   }
-
-  if (self.placeholder.length > 0 && self.text.length == 0) {
+  
+  if (self.placeholder.length > 0 && self.attributedText.string.length == 0) {
     if (accessibilityLabel.length > 0) {
       [accessibilityLabel appendString:@" "];
     }
     [accessibilityLabel appendString:self.placeholder];
   }
-
+  
   return accessibilityLabel;
 }
 
@@ -80,11 +80,11 @@ static NSColor *defaultPlaceholderTextColor()
 
 - (void)setPlaceholder:(NSString *)placeholder
 {
-  _placeholderText = placeholderText;
-  _placeholderView.stringValue = _placeholderText;
+  _placeholder = placeholder;
+  _placeholderView.text = _placeholder;
 }
 
-- (void)setPlaceholderTextColor:(NSColor *)placeholderTextColor
+- (void)setPlaceholderColor:(UIColor *)placeholderColor
 {
   _placeholderColor = placeholderColor;
   _placeholderView.textColor = _placeholderColor ?: defaultPlaceholderColor();
@@ -98,28 +98,27 @@ static NSColor *defaultPlaceholderTextColor()
 
 #pragma mark - Overrides
 
-- (void)setFont:(NSFont *)font
+- (void)setFont:(UIFont *)font
 {
-  // [super setFont:font];
-  [[super textStorage] setFont:font];
+  [super setFont:font];
   _placeholderView.font = font ?: defaultPlaceholderFont();
 }
 
 - (void)setTextAlignment:(NSTextAlignment)textAlignment
 {
-  // [super setTextAlignment:textAlignment];
-  // _placeholderView.textAlignment = textAlignment;
+  [super setTextAlignment:textAlignment];
+  _placeholderView.textAlignment = textAlignment;
 }
 
 - (void)setText:(NSString *)text
 {
-  [self setString:text];
+  [super setText:text];
   [self textDidChange];
 }
 
 - (void)setAttributedText:(NSAttributedString *)attributedText
 {
-  [self.textStorage setAttributedString:attributedText];
+  [super setAttributedText:attributedText];
   [self textDidChange];
 }
 
@@ -146,16 +145,46 @@ static NSColor *defaultPlaceholderTextColor()
 {
   // Turning off scroll animation.
   // This fixes the problem also known as "flaky scrolling".
-  // [super setContentOffset:contentOffset animated:NO];
+  [super setContentOffset:contentOffset animated:NO];
 }
 
 #pragma mark - Layout
 
-- (void)layout
+- (CGFloat)preferredMaxLayoutWidth
 {
-  [super layout];
+  // Returning size DOES contain `textContainerInset` (aka `padding`).
+  return _preferredMaxLayoutWidth ?: self.placeholderSize.width;
+}
 
-  CGRect textFrame = UIEdgeInsetsSizeRect(self.bounds, self.textContainerInset);
+- (CGSize)placeholderSize
+{
+  UIEdgeInsets textContainerInset = self.textContainerInset;
+  NSString *placeholder = self.placeholder ?: @"";
+  CGSize placeholderSize = [placeholder sizeWithAttributes:@{NSFontAttributeName: self.font ?: defaultPlaceholderFont()}];
+  placeholderSize = CGSizeMake(RCTCeilPixelValue(placeholderSize.width), RCTCeilPixelValue(placeholderSize.height));
+  placeholderSize.width += textContainerInset.left + textContainerInset.right;
+  placeholderSize.height += textContainerInset.top + textContainerInset.bottom;
+  // Returning size DOES contain `textContainerInset` (aka `padding`; as `sizeThatFits:` does).
+  return placeholderSize;
+}
+
+- (CGSize)contentSize
+{
+  CGSize contentSize = super.contentSize;
+  CGSize placeholderSize = self.placeholderSize;
+  // When a text input is empty, it actually displays a placehoder.
+  // So, we have to consider `placeholderSize` as a minimum `contentSize`.
+  // Returning size DOES contain `textContainerInset` (aka `padding`).
+  return CGSizeMake(
+    MAX(contentSize.width, placeholderSize.width),
+    MAX(contentSize.height, placeholderSize.height));
+}
+
+- (void)layoutSubviews
+{
+  [super layoutSubviews];
+
+  CGRect textFrame = UIEdgeInsetsInsetRect(self.bounds, self.textContainerInset);
   CGFloat placeholderHeight = [_placeholderView sizeThatFits:textFrame.size].height;
   textFrame.size.height = MIN(placeholderHeight, textFrame.size.height);
   _placeholderView.frame = textFrame;
@@ -164,20 +193,48 @@ static NSColor *defaultPlaceholderTextColor()
 - (CGSize)intrinsicContentSize
 {
   // Returning size DOES contain `textContainerInset` (aka `padding`).
-  return [self sizeThatFits:CGSizeMake(self.preferredMaxLayoutWidth, INFINITY)];
+  return [self sizeThatFits:CGSizeMake(self.preferredMaxLayoutWidth, CGFLOAT_MAX)];
 }
 
 - (CGSize)sizeThatFits:(CGSize)size
 {
-  NSRect rect = [super.layoutManager usedRectForTextContainer:super.textContainer];
-  return CGSizeMake(MIN(rect.size.width, size.width), rect.size.height);
+  // Returned fitting size depends on text size and placeholder size.
+  CGSize textSize = [self fixedSizeThatFits:size];
+  CGSize placeholderSize = self.placeholderSize;
+  // Returning size DOES contain `textContainerInset` (aka `padding`).
+  return CGSizeMake(MAX(textSize.width, placeholderSize.width), MAX(textSize.height, placeholderSize.height));
+}
+
+- (CGSize)fixedSizeThatFits:(CGSize)size
+{
+  // UITextView on iOS 8 has a bug that automatically scrolls to the top
+  // when calling `sizeThatFits:`. Use a copy so that self is not screwed up.
+  static BOOL useCustomImplementation = NO;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    useCustomImplementation = ![[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){9,0,0}];
+  });
+
+  if (!useCustomImplementation) {
+    return [super sizeThatFits:size];
+  }
+
+  if (!_detachedTextView) {
+    _detachedTextView = [UITextView new];
+  }
+
+  _detachedTextView.attributedText = self.attributedText;
+  _detachedTextView.font = self.font;
+  _detachedTextView.textContainerInset = self.textContainerInset;
+
+  return [_detachedTextView sizeThatFits:size];
 }
 
 #pragma mark - Placeholder
 
 - (void)invalidatePlaceholderVisibility
 {
-  BOOL isVisible = _placeholderText.length != 0 && self.string.length == 0;
+  BOOL isVisible = _placeholder.length != 0 && self.attributedText.length == 0;
   _placeholderView.hidden = !isVisible;
 }
 

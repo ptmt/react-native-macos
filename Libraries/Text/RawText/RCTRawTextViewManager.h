@@ -7,14 +7,11 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <React/RCTConvert.h>
+#import <React/RCTViewManager.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RCTConvert (Text)
-//
-//+ (NSTextAutocorrectionType)NSTextAutocorrectionType:(id)json;
-//+ (NSTextSpellCheckingType)NSTextSpellCheckingType:(id)json;
+@interface RCTRawTextViewManager : RCTViewManager
 
 @end
 

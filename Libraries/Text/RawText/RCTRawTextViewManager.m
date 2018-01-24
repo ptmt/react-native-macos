@@ -7,15 +7,24 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <React/RCTConvert.h>
+#import "RCTRawTextViewManager.h"
 
-NS_ASSUME_NONNULL_BEGIN
+#import "RCTRawTextShadowView.h"
 
-@interface RCTConvert (Text)
-//
-//+ (NSTextAutocorrectionType)NSTextAutocorrectionType:(id)json;
-//+ (NSTextSpellCheckingType)NSTextSpellCheckingType:(id)json;
+@implementation RCTRawTextViewManager
+
+RCT_EXPORT_MODULE(RCTRawText)
+
+- (UIView *)view
+{
+  return [UIView new];
+}
+
+- (RCTShadowView *)shadowView
+{
+  return [RCTRawTextShadowView new];
+}
+
+RCT_EXPORT_SHADOW_PROPERTY(text, NSString)
 
 @end
-
-NS_ASSUME_NONNULL_END

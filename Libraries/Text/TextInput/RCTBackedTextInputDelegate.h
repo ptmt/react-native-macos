@@ -7,9 +7,11 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <AppKit/AppKit.h>
+#import <UIKit/UIKit.h>
 
 @protocol RCTBackedTextInputViewProtocol;
+
+NS_ASSUME_NONNULL_BEGIN
 
 @protocol RCTBackedTextInputDelegate <NSObject>
 
@@ -28,3 +30,5 @@
 - (void)textInputDidChangeSelection;
 
 @end
+
+NS_ASSUME_NONNULL_END

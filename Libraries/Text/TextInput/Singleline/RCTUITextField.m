@@ -10,7 +10,7 @@
 #import "RCTUITextField.h"
 
 #import <React/RCTUtils.h>
-#import <React/NSView+React.h>
+#import <React/UIView+React.h>
 
 #import "RCTBackedTextInputDelegateAdapter.h"
 
@@ -21,6 +21,10 @@
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if (self = [super initWithFrame:frame]) {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(_textDidChange)
+                                                 name:UITextFieldTextDidChangeNotification
+                                               object:self];
 
     _textInputDelegateAdapter = [[RCTBackedTextFieldDelegateAdapter alloc] initWithTextField:self];
   }
@@ -40,21 +44,19 @@
 
 #pragma mark - Properties
 
-- (void)setTextContainerInset:(NSEdgeInsets)textContainerInset
+- (void)setTextContainerInset:(UIEdgeInsets)textContainerInset
 {
   _textContainerInset = textContainerInset;
-  [self setNeedsLayout:YES];
+  [self setNeedsLayout];
 }
 
 - (void)setPlaceholder:(NSString *)placeholder
 {
-  if (placeholder != nil && ![_placeholder isEqual:placeholder]) {
-    _placeholder = placeholder;
-    [self updatePlaceholder];
-  }
+  [super setPlaceholder:placeholder];
+  [self _updatePlaceholder];
 }
 
-- (void)setPlaceholderColor:(NSColor *)placeholderColor
+- (void)setPlaceholderColor:(UIColor *)placeholderColor
 {
   _placeholderColor = placeholderColor;
   [self _updatePlaceholder];
@@ -70,10 +72,8 @@
   if (_placeholderColor) {
     [attributes setObject:_placeholderColor forKey:NSForegroundColorAttributeName];
   }
-  
-  
 
-  self.placeholderAttributedString = [[NSAttributedString alloc] initWithString:self.placeholder
+  self.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.placeholder
                                                                attributes:attributes];
 }
 
@@ -89,44 +89,36 @@
 
 #pragma mark - Caret Manipulation
 
-//- (CGRect)caretRectForPosition:(UITextPosition *)position
-//{
-//  if (_caretHidden) {
-//    return CGRectZero;
-//  }
-//
-//  return [super caretRectForPosition:position];
-//}
+- (CGRect)caretRectForPosition:(UITextPosition *)position
+{
+  if (_caretHidden) {
+    return CGRectZero;
+  }
+
+  return [super caretRectForPosition:position];
+}
 
 #pragma mark - Positioning Overrides
 
-static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
-  rect.origin.x    += insets.left;
-  rect.origin.y    += insets.top;
-  rect.size.width  -= (insets.left + insets.right);
-  rect.size.height -= (insets.top  + insets.bottom);
-  return rect;
+- (CGRect)textRectForBounds:(CGRect)bounds
+{
+  return UIEdgeInsetsInsetRect([super textRectForBounds:bounds], _textContainerInset);
 }
 
-//- (CGRect)textRectForBounds:(CGRect)bounds
-//{
-//  return NSEdgeInsetsInsetRect([super textRectForBounds:bounds], _textContainerInset);
-//}
-
-//- (CGRect)editingRectForBounds:(CGRect)bounds
-//{
-//  return [self textRectForBounds:bounds];
-//}
+- (CGRect)editingRectForBounds:(CGRect)bounds
+{
+  return [self textRectForBounds:bounds];
+}
 
 #pragma mark - Overrides
 
-- (void)setSelectedTextRange:(NSRange)selectedTextRange
+- (void)setSelectedTextRange:(UITextRange *)selectedTextRange
 {
-  [[super currentEditor] setSelectedRange:selectedTextRange];
+  [super setSelectedTextRange:selectedTextRange];
   [_textInputDelegateAdapter selectedTextRangeWasSet];
 }
 
-- (void)setSelectedTextRange:(NSRange)selectedTextRange notifyDelegate:(BOOL)notifyDelegate
+- (void)setSelectedTextRange:(UITextRange *)selectedTextRange notifyDelegate:(BOOL)notifyDelegate
 {
   if (!notifyDelegate) {
     // We have to notify an adapter that following selection change was initiated programmatically,
@@ -134,12 +126,12 @@ static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
     [_textInputDelegateAdapter skipNextTextInputDidChangeSelectionEventWithTextRange:selectedTextRange];
   }
 
-  [[super currentEditor] setSelectedRange:selectedTextRange];
+  [super setSelectedTextRange:selectedTextRange];
 }
 
 - (void)paste:(id)sender
 {
-  [[super currentEditor] paste:sender];
+  [super paste:sender];
   _textWasPasted = YES;
 }
 

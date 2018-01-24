@@ -9,114 +9,39 @@
 
 #import "RCTTextView.h"
 
-#import <QuartzCore/QuartzCore.h>
-// #import <MobileCoreServices/UTCoreTypes.h>
+#import <MobileCoreServices/UTCoreTypes.h>
 
 #import <React/RCTUtils.h>
-#import <React/NSView+React.h>
+#import <React/UIView+React.h>
 
 #import "RCTTextShadowView.h"
 
-// https://github.com/BigZaphod/Chameleon/blob/84605ede274bd82b330d72dd6ac41e64eb925fd7/UIKit/Classes/UIGeometry.h
-CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
-  rect.origin.x    += insets.left;
-  rect.origin.y    += insets.top;
-  rect.size.width  -= (insets.left + insets.right);
-  rect.size.height -= (insets.top  + insets.bottom);
-  return rect;
-}
-
-@implementation NSBezierPath (BezierPathQuartzUtilities)
-// This method works only in OS X v10.2 and later.
-- (CGPathRef)quartzPath
-{
-  long i, numElements;
-
-  // Need to begin a path here.
-  CGPathRef           immutablePath = NULL;
-
-  // Then draw the path elements.
-  numElements = [self elementCount];
-  if (numElements > 0)
-  {
-    CGMutablePathRef    path = CGPathCreateMutable();
-    NSPoint             points[3];
-    BOOL                didClosePath = YES;
-
-    for (i = 0; i < numElements; i++)
-    {
-      switch ([self elementAtIndex:i associatedPoints:points])
-      {
-        case NSMoveToBezierPathElement:
-          CGPathMoveToPoint(path, NULL, points[0].x, points[0].y);
-          break;
-
-        case NSLineToBezierPathElement:
-          CGPathAddLineToPoint(path, NULL, points[0].x, points[0].y);
-          didClosePath = NO;
-          break;
-
-        case NSCurveToBezierPathElement:
-          CGPathAddCurveToPoint(path, NULL, points[0].x, points[0].y,
-                                points[1].x, points[1].y,
-                                points[2].x, points[2].y);
-          didClosePath = NO;
-          break;
-
-        case NSClosePathBezierPathElement:
-          CGPathCloseSubpath(path);
-          didClosePath = YES;
-          break;
-      }
-    }
-
-    // Be sure the path is closed or Quartz may not do valid hit detection.
-    if (!didClosePath)
-      CGPathCloseSubpath(path);
-
-    immutablePath = CGPathCreateCopy(path);
-    CGPathRelease(path);
-  }
-
-  return immutablePath; // TODO: potential leak
-}
-@end
-
-static void collectNonTextDescendants(RCTTextView *view, NSMutableArray *nonTextDescendants)
-{
-  for (NSView *child in view.reactSubviews) {
-    if ([child isKindOfClass:[RCTTextView class]]) {
-      collectNonTextDescendants((RCTTextView *)child, nonTextDescendants);
-    } else if (!CGRectEqualToRect(child.frame, CGRectZero)) {
-      [nonTextDescendants addObject:child];
-    }
-  }
-}
-
 @implementation RCTTextView
 {
-  NSTextStorage *_textStorage;
   CAShapeLayer *_highlightLayer;
+  UILongPressGestureRecognizer *_longPressGestureRecognizer;
+
+  NSArray<UIView *> *_Nullable _descendantViews;
+  NSTextStorage *_Nullable _textStorage;
+  CGRect _contentFrame;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
-  if ((self = [super initWithFrame:frame])) {
-    _textStorage = [NSTextStorage new];
+  if (self = [super initWithFrame:frame]) {
+    self.isAccessibilityElement = YES;
+    self.accessibilityTraits |= UIAccessibilityTraitStaticText;
+    self.opaque = NO;
+    self.contentMode = UIViewContentModeRedraw;
   }
   return self;
-}
-
-- (BOOL)isFlipped
-{
-  return YES;
 }
 
 - (NSString *)description
 {
   NSString *superDescription = super.description;
   NSRange semicolonRange = [superDescription rangeOfString:@";"];
-  NSString *replacement = [NSString stringWithFormat:@"; reactTag: %@; text: %@", self.reactTag, self.textStorage.string];
+  NSString *replacement = [NSString stringWithFormat:@"; reactTag: %@; text: %@", self.reactTag, _textStorage.string];
   return [superDescription stringByReplacingCharactersInRange:semicolonRange withString:replacement];
 }
 
@@ -138,15 +63,11 @@ static void collectNonTextDescendants(RCTTextView *view, NSMutableArray *nonText
 
 - (void)reactSetFrame:(CGRect)frame
 {
-  [super reactSetFrame:frame];
-}
-
-- (void)reactSetInheritedBackgroundColor:(NSColor *)inheritedBackgroundColor
-{
-  if (self.wantsLayer == NO) {
-    self.wantsLayer = YES;
-  }
-  self.layer.backgroundColor = [inheritedBackgroundColor CGColor];
+  // Text looks super weird if its frame is animated.
+  // This disables the frame animation, without affecting opacity, etc.
+  [UIView performWithoutAnimation:^{
+    [super reactSetFrame:frame];
+  }];
 }
 
 - (void)didUpdateReactSubviews
@@ -155,70 +76,81 @@ static void collectNonTextDescendants(RCTTextView *view, NSMutableArray *nonText
 }
 
 - (void)setTextStorage:(NSTextStorage *)textStorage
+          contentFrame:(CGRect)contentFrame
+       descendantViews:(NSArray<UIView *> *)descendantViews
 {
-  if (_textStorage != textStorage) {
-    _textStorage = textStorage;
+  _textStorage = textStorage;
+  _contentFrame = contentFrame;
 
-    // Update subviews
-    NSMutableArray *nonTextDescendants = [NSMutableArray new];
-    collectNonTextDescendants(self, nonTextDescendants);
-    NSArray *subviews = self.subviews;
-    if (![subviews isEqualToArray:nonTextDescendants]) {
-      for (NSView *child in subviews) {
-        if (![nonTextDescendants containsObject:child]) {
-          [child removeFromSuperview];
-        }
-      }
-      for (NSView *child in nonTextDescendants) {
-        [self addSubview:child];
-      }
-    }
-
-    [self setNeedsDisplay:YES];
+  // FIXME: Optimize this.
+  for (UIView *view in _descendantViews) {
+    [view removeFromSuperview];
   }
+
+  _descendantViews = descendantViews;
+
+  for (UIView *view in descendantViews) {
+    [self addSubview:view];
+  }
+
+  [self setNeedsDisplay];
 }
 
-- (void)drawRect:(CGRect)dirtyRect
+- (void)drawRect:(CGRect)rect
 {
-  NSLayoutManager *layoutManager = [_textStorage.layoutManagers firstObject];
-  NSTextContainer *textContainer = [layoutManager.textContainers firstObject];
+  if (!_textStorage) {
+    return;
+  }
+
+
+  NSLayoutManager *layoutManager = _textStorage.layoutManagers.firstObject;
+  NSTextContainer *textContainer = layoutManager.textContainers.firstObject;
 
   NSRange glyphRange = [layoutManager glyphRangeForTextContainer:textContainer];
-  CGRect textFrame = self.textFrame;
-  [layoutManager drawBackgroundForGlyphRange:glyphRange atPoint:textFrame.origin];
-  [layoutManager drawGlyphsForGlyphRange:glyphRange atPoint:textFrame.origin];
+  [layoutManager drawBackgroundForGlyphRange:glyphRange atPoint:_contentFrame.origin];
+  [layoutManager drawGlyphsForGlyphRange:glyphRange atPoint:_contentFrame.origin];
 
-  __block NSBezierPath *highlightPath = nil;
-  NSRange characterRange = [layoutManager characterRangeForGlyphRange:glyphRange actualGlyphRange:NULL];
-
-  [layoutManager.textStorage enumerateAttribute:RCTIsHighlightedAttributeName inRange:characterRange options:0 usingBlock:^(NSNumber *value, NSRange range, BOOL *_) {
-    if (!value.boolValue) {
-      return;
-    }
-
-    [layoutManager enumerateEnclosingRectsForGlyphRange:range withinSelectedGlyphRange:range inTextContainer:textContainer usingBlock:^(CGRect enclosingRect, __unused BOOL *__) {
-      NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:CGRectInset(enclosingRect, -2, -2) xRadius:2 yRadius:2];
-      if (highlightPath) {
-        [highlightPath appendBezierPath:path];
-      } else {
-        highlightPath = path;
+  __block UIBezierPath *highlightPath = nil;
+  NSRange characterRange = [layoutManager characterRangeForGlyphRange:glyphRange
+                                                     actualGlyphRange:NULL];
+  [_textStorage enumerateAttribute:RCTTextAttributesIsHighlightedAttributeName
+                           inRange:characterRange
+                           options:0
+                        usingBlock:
+    ^(NSNumber *value, NSRange range, __unused BOOL *stop) {
+      if (!value.boolValue) {
+        return;
       }
-    }];
+
+      [layoutManager enumerateEnclosingRectsForGlyphRange:range
+                                 withinSelectedGlyphRange:range
+                                          inTextContainer:textContainer
+                                               usingBlock:
+        ^(CGRect enclosingRect, __unused BOOL *anotherStop) {
+          UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(enclosingRect, -2, -2) cornerRadius:2];
+          if (highlightPath) {
+            [highlightPath appendPath:path];
+          } else {
+            highlightPath = path;
+          }
+        }
+      ];
   }];
 
   if (highlightPath) {
     if (!_highlightLayer) {
       _highlightLayer = [CAShapeLayer layer];
-      _highlightLayer.fillColor = [NSColor colorWithWhite:0 alpha:0.25].CGColor;
+      _highlightLayer.fillColor = [UIColor colorWithWhite:0 alpha:0.25].CGColor;
       [self.layer addSublayer:_highlightLayer];
     }
-    _highlightLayer.position = (CGPoint){_contentInset.left, _contentInset.top};
-    _highlightLayer.path = highlightPath.quartzPath;
+    _highlightLayer.position = _contentFrame.origin;
+    _highlightLayer.path = highlightPath.CGPath;
   } else {
     [_highlightLayer removeFromSuperlayer];
     _highlightLayer = nil;
   }
 }
+
 
 - (NSNumber *)reactTagAtPoint:(CGPoint)point
 {
@@ -234,14 +166,15 @@ static void collectNonTextDescendants(RCTTextView *view, NSMutableArray *nonText
   // If the point is not before (fraction == 0.0) the first character and not
   // after (fraction == 1.0) the last character, then the attribute is valid.
   if (_textStorage.length > 0 && (fraction > 0 || characterIndex > 0) && (fraction < 1 || characterIndex < _textStorage.length - 1)) {
-    reactTag = [_textStorage attribute:RCTReactTagAttributeName atIndex:characterIndex effectiveRange:NULL];
+    reactTag = [_textStorage attribute:RCTTextAttributesTagAttributeName atIndex:characterIndex effectiveRange:NULL];
   }
+
   return reactTag;
 }
 
-- (void)viewDidMoveToWindow
+- (void)didMoveToWindow
 {
-  [super viewDidMoveToWindow];
+  [super didMoveToWindow];
 
   if (!self.window) {
     self.layer.contents = nil;
@@ -249,11 +182,10 @@ static void collectNonTextDescendants(RCTTextView *view, NSMutableArray *nonText
       [_highlightLayer removeFromSuperlayer];
       _highlightLayer = nil;
     }
-  } else if (_textStorage.length) {
-    [self setNeedsDisplay:YES];
+  } else if (_textStorage) {
+    [self setNeedsDisplay];
   }
 }
-
 
 #pragma mark - Accessibility
 
@@ -270,11 +202,32 @@ static void collectNonTextDescendants(RCTTextView *view, NSMutableArray *nonText
 
 - (void)enableContextMenu
 {
-
+  _longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+  [self addGestureRecognizer:_longPressGestureRecognizer];
 }
 
 - (void)disableContextMenu
 {
+  [self removeGestureRecognizer:_longPressGestureRecognizer];
+  _longPressGestureRecognizer = nil;
+}
+
+- (void)handleLongPress:(UILongPressGestureRecognizer *)gesture
+{
+#if !TARGET_OS_TV
+  UIMenuController *menuController = [UIMenuController sharedMenuController];
+
+  if (menuController.isMenuVisible) {
+    return;
+  }
+
+  if (!self.isFirstResponder) {
+    [self becomeFirstResponder];
+  }
+
+  [menuController setTargetRect:self.bounds inView:self];
+  [menuController setMenuVisible:YES animated:YES];
+#endif
 }
 
 - (BOOL)canBecomeFirstResponder
@@ -282,19 +235,35 @@ static void collectNonTextDescendants(RCTTextView *view, NSMutableArray *nonText
   return _selectable;
 }
 
-//- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
-//{
-//  if (_selectable && action == @selector(copy:)) {
-//    return YES;
-//  }
-//
-//  return [self.nextResponder canPerformAction:action withSender:sender];
-//}
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
+{
+  if (_selectable && action == @selector(copy:)) {
+    return YES;
+  }
+  
+  return [self.nextResponder canPerformAction:action withSender:sender];
+}
 
 - (void)copy:(id)sender
 {
 #if !TARGET_OS_TV
-  #endif
+  NSAttributedString *attributedText = _textStorage;
+
+  NSMutableDictionary *item = [NSMutableDictionary new];
+
+  NSData *rtf = [attributedText dataFromRange:NSMakeRange(0, attributedText.length)
+                           documentAttributes:@{NSDocumentTypeDocumentAttribute: NSRTFDTextDocumentType}
+                                        error:nil];
+
+  if (rtf) {
+    [item setObject:rtf forKey:(id)kUTTypeFlatRTFD];
+  }
+
+  [item setObject:attributedText.string forKey:(id)kUTTypeUTF8PlainText];
+
+  UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+  pasteboard.items = @[item];
+#endif
 }
 
 @end

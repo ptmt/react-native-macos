@@ -7,26 +7,21 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <AppKit/AppKit.h>
+#import <UIKit/UIKit.h>
 
 #import <React/RCTView.h>
 
+#import "RCTBackedTextInputDelegate.h"
 #import "RCTBackedTextInputViewProtocol.h"
-#import "RCTFontAttributes.h"
-#import "RCTFontAttributesDelegate.h"
 
 @class RCTBridge;
 @class RCTEventDispatcher;
+@class RCTTextAttributes;
 @class RCTTextSelection;
 
-@interface RCTBaseTextInputView : RCTView <RCTFontAttributesDelegate> {
-@protected
-  __weak RCTBridge *_bridge;
-  RCTEventDispatcher *_eventDispatcher;
-  NSInteger _nativeEventCount;
-  NSInteger _mostRecentEventCount;
-  BOOL _blurOnSubmit;
-}
+NS_ASSUME_NONNULL_BEGIN
+
+@interface RCTBaseTextInputView : RCTView <RCTBackedTextInputDelegate>
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge NS_DESIGNATED_INITIALIZER;
 
@@ -34,35 +29,26 @@
 - (instancetype)initWithCoder:(NSCoder *)decoder NS_UNAVAILABLE;
 - (instancetype)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
 
-@property (nonatomic, readonly) NSView<RCTBackedTextInputViewProtocol> *backedTextInputView;
+@property (nonatomic, readonly) UIView<RCTBackedTextInputViewProtocol> *backedTextInputView;
 
-@property (nonatomic, assign) NSEdgeInsets reactPaddingInsets;
-@property (nonatomic, assign) NSEdgeInsets reactBorderInsets;
-@property (nonatomic, assign, readonly) CGSize contentSize;
+@property (nonatomic, strong, nullable) RCTTextAttributes *textAttributes;
+@property (nonatomic, assign) UIEdgeInsets reactPaddingInsets;
+@property (nonatomic, assign) UIEdgeInsets reactBorderInsets;
 
-@property (nonatomic, copy) RCTDirectEventBlock onContentSizeChange;
-@property (nonatomic, copy) RCTDirectEventBlock onSelectionChange;
-
-@property (nonatomic, readonly, strong) RCTFontAttributes *fontAttributes;
+@property (nonatomic, copy, nullable) RCTDirectEventBlock onContentSizeChange;
+@property (nonatomic, copy, nullable) RCTDirectEventBlock onSelectionChange;
+@property (nonatomic, copy, nullable) RCTDirectEventBlock onChange;
+@property (nonatomic, copy, nullable) RCTDirectEventBlock onTextInput;
+@property (nonatomic, copy, nullable) RCTDirectEventBlock onScroll;
 
 @property (nonatomic, assign) NSInteger mostRecentEventCount;
 @property (nonatomic, assign) BOOL blurOnSubmit;
 @property (nonatomic, assign) BOOL selectTextOnFocus;
 @property (nonatomic, assign) BOOL clearTextOnFocus;
 @property (nonatomic, copy) RCTTextSelection *selection;
-
-- (void)setFont:(NSFont *)font;
-
-- (void)invalidateContentSize;
-
-// Temporary exposure of particial `RCTBackedTextInputDelegate` support.
-// In the future all methods of the protocol should move to this class.
-- (BOOL)textInputShouldBeginEditing;
-- (void)textInputDidBeginEditing;
-- (BOOL)textInputShouldReturn;
-- (void)textInputDidReturn;
-- (void)textInputDidChangeSelection;
-- (BOOL)textInputShouldEndEditing;
-- (void)textInputDidEndEditing;
+@property (nonatomic, strong, nullable) NSNumber *maxLength;
+@property (nonatomic, copy) NSAttributedString *attributedText;
 
 @end
+
+NS_ASSUME_NONNULL_END
