@@ -41,6 +41,9 @@ const NativeModules = require('NativeModules');
  * Example usage:
  *
  * ```
+ * import { Button } from 'react-native';
+ * ...
+ *
  * <Button
  *   onPress={onPressLearnMore}
  *   title="Learn More"
@@ -51,7 +54,15 @@ const NativeModules = require('NativeModules');
  *
  */
 
-class Button extends React.Component {
+class Button extends React.Component<{
+  title: string,
+  onPress: () => any,
+  color?: ?string,
+  accessibilityLabel?: ?string,
+  disabled?: ?boolean,
+  testID?: ?string,
+  hasTVPreferredFocus?: ?boolean,
+}> {
   static propTypes = {
     /**
      * Text to display inside the button
@@ -137,6 +148,7 @@ class Button extends React.Component {
       color,
       onPress,
       title,
+      hasTVPreferredFocus,
       disabled,
       testID,
     } = this.props;
@@ -150,9 +162,11 @@ class Button extends React.Component {
     } else if (color) {
       buttonStyles.push({ backgroundColor: color });
     }
+    const accessibilityTraits = ['button'];
     if (disabled) {
       buttonStyles.push(styles.buttonDisabled);
       textStyles.push(styles.textDisabled);
+      accessibilityTraits.push('disabled');
     }
     if (Platform.OS === 'ios' || Platform.OS === 'android') {
       invariant(
@@ -177,6 +191,7 @@ class Button extends React.Component {
         accessibilityComponentType="button"
         accessibilityLabel={accessibilityLabel}
         accessibilityTraits={accessibilityTraits}
+        hasTVPreferredFocus={hasTVPreferredFocus}
         testID={testID}
         disabled={disabled}
         onPress={onPress}>
@@ -205,7 +220,8 @@ const styles = StyleSheet.create({
     ios: {},
     android: {
       elevation: 4,
-      backgroundColor: defaultBlue,
+      // Material design blue from https://material.google.com/style/color.html#color-color-palette
+      backgroundColor: '#2196F3',
       borderRadius: 2,
     },
     macos: {
@@ -215,14 +231,15 @@ const styles = StyleSheet.create({
   }),
   text: Platform.select({
     ios: {
-      color: defaultBlue,
+      // iOS blue from https://developer.apple.com/ios/human-interface-guidelines/visual-design/color/
+      color: '#007AFF',
       textAlign: 'center',
       padding: 8,
       fontSize: 18,
     },
     android: {
-      textAlign: 'center',
       color: 'white',
+      textAlign: 'center',
       padding: 8,
       fontWeight: '500',
     },

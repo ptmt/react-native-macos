@@ -29,20 +29,15 @@
   objc_setAssociatedObject(self, @selector(reactTag), reactTag, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-#if RCT_DEV
-
-- (RCTShadowView *)_DEBUG_reactShadowView
+- (NSNumber *)nativeID
 {
   return objc_getAssociatedObject(self, _cmd);
 }
 
-- (void)_DEBUG_setReactShadowView:(RCTShadowView *)shadowView
+- (void)setNativeID:(NSNumber *)nativeID
 {
-  // Use assign to avoid keeping the shadowView alive it if no longer exists
-  objc_setAssociatedObject(self, @selector(_DEBUG_reactShadowView), shadowView, OBJC_ASSOCIATION_ASSIGN);
+  objc_setAssociatedObject(self, @selector(nativeID), nativeID, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
-
-#endif
 
 - (BOOL)isReactRootView
 {
@@ -89,6 +84,20 @@
   [subview removeFromSuperview];
 }
 
+#pragma mark - Display
+
+- (YGDisplay)reactDisplay
+{
+  return self.isHidden ? YGDisplayNone : YGDisplayFlex;
+}
+
+- (void)setReactDisplay:(YGDisplay)display
+{
+  self.hidden = display == YGDisplayNone;
+}
+
+#pragma mark - Layout Direction
+
 - (NSUserInterfaceLayoutDirection)reactLayoutDirection
 {
   return [objc_getAssociatedObject(self, @selector(reactLayoutDirection)) integerValue];
@@ -99,53 +108,49 @@
   objc_setAssociatedObject(self, @selector(reactLayoutDirection), @(layoutDirection), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+#pragma mark - zIndex
+
 - (NSInteger)reactZIndex
 {
-  return [objc_getAssociatedObject(self, _cmd) integerValue];
+  return self.layer.zPosition;
 }
 
 - (void)setReactZIndex:(NSInteger)reactZIndex
 {
-  objc_setAssociatedObject(self, @selector(reactZIndex), @(reactZIndex), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  self.layer.zPosition = reactZIndex;
 }
 
-- (NSArray<NSView *> *)sortedReactSubviews
+- (NSArray<UIView *> *)reactZIndexSortedSubviews
 {
-  NSArray *subviews = objc_getAssociatedObject(self, _cmd);
-  if (!subviews) {
-    // Check if sorting is required - in most cases it won't be
-    BOOL sortingRequired = NO;
-    for (NSView *subview in self.reactSubviews) {
-      if (subview.reactZIndex != 0) {
-        sortingRequired = YES;
-        break;
-      }
+  // Check if sorting is required - in most cases it won't be.
+  BOOL sortingRequired = NO;
+  for (UIView *subview in self.subviews) {
+    if (subview.reactZIndex != 0) {
+      sortingRequired = YES;
+      break;
     }
-    subviews = sortingRequired ? [self.reactSubviews sortedArrayUsingComparator:^NSComparisonResult(NSView *a, NSView *b) {
-      if (a.reactZIndex > b.reactZIndex) {
-        return NSOrderedDescending;
-      } else {
-        // ensure sorting is stable by treating equal zIndex as ascending so
-        // that original order is preserved
-        return NSOrderedAscending;
-      }
-    }] : self.reactSubviews;
-    objc_setAssociatedObject(self, _cmd, subviews, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
   }
-  return subviews;
-}
-
-// private method, used to reset sort
-- (void)clearSortedSubviews
-{
-  objc_setAssociatedObject(self, @selector(sortedReactSubviews), nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  return sortingRequired ? [self.reactSubviews sortedArrayUsingComparator:^NSComparisonResult(UIView *a, UIView *b) {
+    if (a.reactZIndex > b.reactZIndex) {
+      return NSOrderedDescending;
+    } else {
+      // Ensure sorting is stable by treating equal zIndex as ascending so
+      // that original order is preserved.
+      return NSOrderedAscending;
+    }
+  }] : self.subviews;
 }
 
 - (void)didUpdateReactSubviews
 {
-  for (NSView *subview in self.sortedReactSubviews) {
+  for (NSView *subview in self.reactSubviews) {
     [self addSubview:subview];
   }
+}
+
+- (void)didSetProps:(__unused NSArray<NSString *> *)changedProps
+{
+  // The default implementation does nothing.
 }
 
 - (void)reactSetFrame:(CGRect)frame
@@ -174,15 +179,6 @@
   // TODO: why position matters? It's only produce bugs
   // self.layer.position = position;
   self.layer.bounds = bounds;
-}
-
-- (void)reactSetInheritedBackgroundColor:(NSColor *)inheritedBackgroundColor
-{
-  if (![self wantsLayer]) {
-    [self setWantsLayer:YES];
-  }
-  [self.layer setBackgroundColor:[inheritedBackgroundColor CGColor]];
-
 }
 
 - (NSViewController *)reactViewController
@@ -246,6 +242,44 @@
 
 - (void)reactBlur {
   [self resignFirstResponder];
+}
+
+#pragma mark - Layout
+
+- (UIEdgeInsets)reactBorderInsets
+{
+  CGFloat borderWidth = self.layer.borderWidth;
+  return UIEdgeInsetsMake(borderWidth, borderWidth, borderWidth, borderWidth);
+}
+
+- (UIEdgeInsets)reactPaddingInsets
+{
+  return UIEdgeInsetsZero;
+}
+
+- (UIEdgeInsets)reactCompoundInsets
+{
+  UIEdgeInsets borderInsets = self.reactBorderInsets;
+  UIEdgeInsets paddingInsets = self.reactPaddingInsets;
+
+  return UIEdgeInsetsMake(
+    borderInsets.top + paddingInsets.top,
+    borderInsets.left + paddingInsets.left,
+    borderInsets.bottom + paddingInsets.bottom,
+    borderInsets.right + paddingInsets.right
+  );
+}
+
+- (CGRect)reactContentFrame
+{
+  return UIEdgeInsetsInsetRect(self.bounds, self.reactCompoundInsets);
+}
+
+#pragma mark - Accessiblity
+
+- (NSView *)reactAccessibilityElement
+{
+  return self;
 }
 
 @end

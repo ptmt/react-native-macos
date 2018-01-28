@@ -49,7 +49,6 @@ try {
   const CLI_PACKAGE = path.join(ROOT, 'react-native-macos-cli', 'react-native-macos-cli-*.tgz');
   cd('..');
 
-  // can skip cli install for non sudo mode
   if (!argv['skip-cli-install']) {
     if (exec(`npm install -g ${CLI_PACKAGE}`).code) {
       echo('Could not install react-native-macos-cli globally, please run in su mode');
@@ -126,12 +125,9 @@ try {
     }
 
     echo(`Starting packager server, ${SERVER_PID}`);
-    const packagerEnv = Object.create(process.env);
-    packagerEnv.REACT_NATIVE_MAX_WORKERS = 1;
     // shelljs exec('', {async: true}) does not emit stdout events, so we rely on good old spawn
-    const packagerProcess = spawn('npm', ['start'], {
-      // stdio: 'inherit',
-      env: packagerEnv
+    const packagerProcess = spawn('npm', ['start', '--', '--max-workers 1'], {
+      env: process.env
     });
     SERVER_PID = packagerProcess.pid;
     // wait a bit to allow packager to startup
@@ -171,7 +167,7 @@ try {
     SERVER_PID = packagerProcess.pid;
     exec('sleep 15s');
     // prepare cache to reduce chances of possible red screen "Can't fibd variable __fbBatchedBridge..."
-    exec('response=$(curl --write-out %{http_code} --silent --output /dev/null localhost:8081/index.ios.bundle?platform=ios&dev=true)');
+    exec('response=$(curl --write-out %{http_code} --silent --output /dev/null localhost:8081/index.bundle?platform=ios&dev=true)');
     echo(`Starting packager server, ${SERVER_PID}`);
     echo('Executing ' + iosTestType + ' e2e test');
     if (tryExecNTimes(
@@ -180,7 +176,7 @@ try {
         if (argv.tvos) {
           return exec('xcodebuild -destination "platform=tvOS Simulator,name=Apple TV 1080p,OS=10.0" -scheme EndToEndTest-tvOS -sdk appletvsimulator test | xcpretty && exit ${PIPESTATUS[0]}').code;
         } else {
-          return exec('xcodebuild -destination "platform=iOS Simulator,name=iPhone 5s,OS=10.0" -scheme EndToEndTest -sdk iphonesimulator test | xcpretty && exit ${PIPESTATUS[0]}').code;
+          return exec('xcodebuild -destination "platform=iOS Simulator,name=iPhone 5s,OS=10.3.1" -scheme EndToEndTest -sdk iphonesimulator test | xcpretty && exit ${PIPESTATUS[0]}').code;
         }
       },
       numberOfRetries)) {

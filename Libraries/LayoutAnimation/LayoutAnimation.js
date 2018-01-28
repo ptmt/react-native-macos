@@ -15,9 +15,12 @@
 const PropTypes = require('prop-types');
 const UIManager = require('UIManager');
 
+/* $FlowFixMe(>=0.54.0 site=react_native_oss) This comment suppresses an error
+ * found when Flow v0.54 was deployed. To see the error delete this comment and
+ * run Flow. */
 const keyMirror = require('fbjs/lib/keyMirror');
 
-const { checkPropTypes } = PropTypes;
+const {checkPropTypes} = PropTypes;
 
 const TypesEnum = {
   spring: true,
@@ -43,7 +46,7 @@ const animType = PropTypes.shape({
   type: PropTypes.oneOf(Object.keys(Types)).isRequired,
   property: PropTypes.oneOf(
     // Only applies to create/delete
-    Object.keys(Properties)
+    Object.keys(Properties),
   ),
 });
 
@@ -71,7 +74,7 @@ type Config = {
 };
 
 function checkConfig(config: Config, location: string, name: string) {
-  checkPropTypes({ config: configType }, { config }, location, name);
+  checkPropTypes({config: configType}, {config}, location, name);
 }
 
 function configureNext(config: Config, onAnimationDidEnd?: Function) {
@@ -83,7 +86,7 @@ function configureNext(config: Config, onAnimationDidEnd?: Function) {
     onAnimationDidEnd || function() {},
     function() {
       /* unused */
-    }
+    },
   );
 }
 

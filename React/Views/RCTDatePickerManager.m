@@ -38,9 +38,11 @@ RCT_EXPORT_MODULE()
   return [RCTDatePicker new];
 }
 
-RCT_REMAP_VIEW_PROPERTY(date, dateValue, NSDate)
-RCT_REMAP_VIEW_PROPERTY(minimumDate, minDate, NSDate)
-RCT_REMAP_VIEW_PROPERTY(maximumDate, maxDate, NSDate)
+RCT_EXPORT_VIEW_PROPERTY(date, NSDate)
+RCT_EXPORT_VIEW_PROPERTY(locale, NSLocale)
+RCT_EXPORT_VIEW_PROPERTY(minimumDate, NSDate)
+RCT_EXPORT_VIEW_PROPERTY(maximumDate, NSDate)
+RCT_EXPORT_VIEW_PROPERTY(minuteInterval, NSInteger)
 RCT_EXPORT_VIEW_PROPERTY(onChange, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(datePickerStyle, NSDatePickerStyle)
 RCT_EXPORT_VIEW_PROPERTY(datePickerMode, NSDatePickerMode)

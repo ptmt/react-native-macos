@@ -8,6 +8,7 @@
  *
  * @providesModule Vibration
  * @flow
+ * @jsdoc
  */
  'use strict';
 

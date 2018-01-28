@@ -9,7 +9,7 @@
 
 #import "RCTImageStoreManager.h"
 
-#import <libkern/OSAtomic.h>
+#import <stdatomic.h>
 
 #import <ImageIO/ImageIO.h>
 //#import <MobileCoreServices/UTType.h>
@@ -34,7 +34,12 @@ static NSString *const RCTImageStoreURLScheme = @"rct-image-store";
 
 RCT_EXPORT_MODULE()
 
-- (void)removeImageForTag:(NSString *)imageTag withBlock:(void (^)())block
+- (float)handlerPriority
+{
+    return 1;
+}
+
+- (void)removeImageForTag:(NSString *)imageTag withBlock:(void (^)(void))block
 {
   dispatch_async(_methodQueue, ^{
     [self removeImageForTag:imageTag];
@@ -139,14 +144,14 @@ RCT_EXPORT_METHOD(addImageFromBase64:(NSString *)base64String
 
 - (id)sendRequest:(NSURLRequest *)request withDelegate:(id<RCTURLRequestDelegate>)delegate
 {
-  __block volatile uint32_t cancelled = 0;
+  __block atomic_bool cancelled = ATOMIC_VAR_INIT(NO);
   void (^cancellationBlock)(void) = ^{
-    OSAtomicOr32Barrier(1, &cancelled);
+    atomic_store(&cancelled, YES);
   };
 
   // Dispatch async to give caller time to cancel the request
   dispatch_async(_methodQueue, ^{
-    if (cancelled) {
+    if (atomic_load(&cancelled)) {
       return;
     }
 

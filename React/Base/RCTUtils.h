@@ -105,7 +105,8 @@ RCT_EXTERN NSError *RCTErrorWithMessage(NSString *message);
 
 // Convert nil values to NSNull, and vice-versa
 #define RCTNullIfNil(value) (value ?: (id)kCFNull)
-#define RCTNilIfNull(value) (value == (id)kCFNull ? nil : value)
+#define RCTNilIfNull(value) \
+  ({ __typeof__(value) t = (value); (id)t == (id)kCFNull ? (__typeof(value))nil : t; })
 
 // Convert NaN or infinite values to zero, as these aren't JSON-safe
 RCT_EXTERN double RCTZeroIfNaN(double value);
@@ -122,6 +123,19 @@ RCT_EXTERN NSData *__nullable RCTGzipData(NSData *__nullable data, float level);
 // Returns the relative path within the main bundle for an absolute URL
 // (or nil, if the URL does not specify a path within the main bundle)
 RCT_EXTERN NSString *__nullable RCTBundlePathForURL(NSURL *__nullable URL);
+
+// Returns the Path of Library directory
+RCT_EXTERN NSString *__nullable RCTLibraryPath(void);
+
+// Returns the relative path within the library for an absolute URL
+// (or nil, if the URL does not specify a path within the Library directory)
+RCT_EXTERN NSString *__nullable RCTLibraryPathForURL(NSURL *__nullable URL);
+
+// Determines if a given image URL refers to a image in bundle
+RCT_EXTERN BOOL RCTIsBundleAssetURL(NSURL *__nullable imageURL);
+
+// Determines if a given image URL refers to a image in library
+RCT_EXTERN BOOL RCTIsLibraryAssetURL(NSURL *__nullable imageURL);
 
 // Determines if a given image URL refers to a local image
 RCT_EXTERN BOOL RCTIsLocalAssetURL(NSURL *__nullable imageURL);

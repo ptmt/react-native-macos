@@ -16,6 +16,7 @@
 #import "RCTUtils.h"
 #import "NSView+React.h"
 #import "UIImageUtils.h"
+#import "RCTI18nUtil.h"
 
 @implementation NSView (RCTViewUnmounting)
 
@@ -83,20 +84,17 @@
 
 static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
 {
-  BOOL isFirstIteration = YES;
   NSMutableString *str = [NSMutableString stringWithString:@""];
   for (NSView *subview in view.subviews) {
-    if (isFirstIteration) {
-      isFirstIteration = NO;
-    } else {
-      [str appendString:@" "];
-    }
-    
     NSString *label = subview.accessibilityLabel;
-    if (label) {
+    if (!label) {
+      label = RCTRecursiveAccessibilityLabel(subview);
+    }
+    if (label && label.length > 0) {
+      if (str.length > 0) {
+        [str appendString:@" "];
+      }
       [str appendString:label];
-    } else {
-      [str appendString:RCTRecursiveAccessibilityLabel(subview)];
     }
   }
   return str;
@@ -107,8 +105,6 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
   NSColor *_backgroundColor;
 }
 
-@synthesize reactZIndex = _reactZIndex;
-
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if ((self = [super initWithFrame:frame])) {
@@ -117,12 +113,16 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
     _borderRightWidth = -1;
     _borderBottomWidth = -1;
     _borderLeftWidth = -1;
+    _borderStartWidth = -1;
+    _borderEndWidth = -1;
     _borderTopLeftRadius = -1;
     _borderTopRightRadius = -1;
+    _borderTopStartRadius = -1;
+    _borderTopEndRadius = -1;
     _borderBottomLeftRadius = -1;
     _borderBottomRightRadius = -1;
-    _respondsToLiveResizing = YES;
-    self.needsLayout = NO;
+    _borderBottomStartRadius = -1;
+    _borderBottomEndRadius = -1;
     _borderStyle = RCTBorderStyleSolid;
     self.clipsToBounds = NO;
   }
@@ -134,13 +134,24 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)setReactLayoutDirection:(NSUserInterfaceLayoutDirection)layoutDirection
 {
-  _reactLayoutDirection = layoutDirection;
+  if (_reactLayoutDirection != layoutDirection) {
+    _reactLayoutDirection = layoutDirection;
+    [self.layer setNeedsDisplay];
+  }
+
+  if ([self respondsToSelector:@selector(setSemanticContentAttribute:)]) {
+    self.semanticContentAttribute =
+      layoutDirection == UIUserInterfaceLayoutDirectionLeftToRight ?
+        UISemanticContentAttributeForceLeftToRight :
+        UISemanticContentAttributeForceRightToLeft;
+  }
 }
 
 - (NSString *)accessibilityLabel
 {
-  if (super.accessibilityLabel) {
-    return super.accessibilityLabel;
+  NSString *label = super.accessibilityLabel;
+  if (label) {
+    return label;
   }
   return RCTRecursiveAccessibilityLabel(self);
 }
@@ -183,6 +194,20 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 //      return [super hitTest:point withEvent:event];
 //  }
   return [super hitTest:point];
+}
+
+- (NSView *)reactAccessibilityElement
+{
+  return self;
+}
+
+- (BOOL)isAccessibilityElement
+{
+  if (self.reactAccessibilityElement == self) {
+    return [super isAccessibilityElement];
+  }
+
+  return NO;
 }
 
 - (BOOL)accessibilityActivate
@@ -267,7 +292,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 - (void)react_remountAllSubviews
 {
   if (_removeClippedSubviews) {
-    for (NSView *view in self.sortedReactSubviews) {
+    for (NSView *view in self.reactSubviews) {
       if (view.superview != self) {
         [self addSubview:view];
         [view react_remountAllSubviews];
@@ -306,9 +331,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   clipView = self;
 
   // Mount / unmount views
-  for (NSView *view in self.sortedReactSubviews) {
-    if (!CGRectIsEmpty(CGRectIntersection(clipRect, view.frame))) {
-
+  for (NSView *view in self.reactSubviews) {
+    if (!CGSizeEqualToSize(CGRectIntersection(clipRect, view.frame).size, CGSizeZero)) {
       // View is at least partially visible, so remount it if unmounted
       [self addSubview:view];
 
@@ -402,26 +426,77 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   _backgroundColor = backgroundColor;
 }
 
+static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x) {
+  return x >= 0 ? x : defaultValue;
+};
+
 - (NSEdgeInsets)bordersAsInsets
 {
   const CGFloat borderWidth = MAX(0, _borderWidth);
+  const BOOL isRTL = _reactLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft;
+
+  if ([[RCTI18nUtil sharedInstance] doLeftAndRightSwapInRTL]) {
+    const CGFloat borderStartWidth = RCTDefaultIfNegativeTo(_borderLeftWidth, _borderStartWidth);
+    const CGFloat borderEndWidth = RCTDefaultIfNegativeTo(_borderRightWidth, _borderEndWidth);
+
+    const CGFloat directionAwareBorderLeftWidth = isRTL ? borderEndWidth : borderStartWidth;
+    const CGFloat directionAwareBorderRightWidth = isRTL ? borderStartWidth : borderEndWidth;
+
+    return (UIEdgeInsets) {
+      RCTDefaultIfNegativeTo(borderWidth, _borderTopWidth),
+      RCTDefaultIfNegativeTo(borderWidth, directionAwareBorderLeftWidth),
+      RCTDefaultIfNegativeTo(borderWidth, _borderBottomWidth),
+      RCTDefaultIfNegativeTo(borderWidth, directionAwareBorderRightWidth),
+    };
+  }
+
+  const CGFloat directionAwareBorderLeftWidth = isRTL ? _borderEndWidth : _borderStartWidth;
+  const CGFloat directionAwareBorderRightWidth = isRTL ? _borderStartWidth : _borderEndWidth;
 
   return (NSEdgeInsets) {
-    _borderTopWidth >= 0 ? _borderTopWidth : borderWidth,
-    _borderLeftWidth >= 0 ? _borderLeftWidth : borderWidth,
-    _borderBottomWidth >= 0 ? _borderBottomWidth : borderWidth,
-    _borderRightWidth  >= 0 ? _borderRightWidth : borderWidth,
+    RCTDefaultIfNegativeTo(borderWidth, _borderTopWidth),
+    RCTDefaultIfNegativeTo(borderWidth, RCTDefaultIfNegativeTo(_borderLeftWidth, directionAwareBorderLeftWidth)),
+    RCTDefaultIfNegativeTo(borderWidth, _borderBottomWidth),
+    RCTDefaultIfNegativeTo(borderWidth, RCTDefaultIfNegativeTo(_borderRightWidth, directionAwareBorderRightWidth)),
   };
 }
 
 - (RCTCornerRadii)cornerRadii
 {
-  // Get corner radii
+  const BOOL isRTL = _reactLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft;
   const CGFloat radius = MAX(0, _borderRadius);
-  const CGFloat topLeftRadius = _borderTopLeftRadius >= 0 ? _borderTopLeftRadius : radius;
-  const CGFloat topRightRadius = _borderTopRightRadius >= 0 ? _borderTopRightRadius : radius;
-  const CGFloat bottomLeftRadius = _borderBottomLeftRadius >= 0 ? _borderBottomLeftRadius : radius;
-  const CGFloat bottomRightRadius = _borderBottomRightRadius >= 0 ? _borderBottomRightRadius : radius;
+
+  CGFloat topLeftRadius;
+  CGFloat topRightRadius;
+  CGFloat bottomLeftRadius;
+  CGFloat bottomRightRadius;
+
+  if ([[RCTI18nUtil sharedInstance] doLeftAndRightSwapInRTL]) {
+    const CGFloat topStartRadius = RCTDefaultIfNegativeTo(_borderTopLeftRadius, _borderTopStartRadius);
+    const CGFloat topEndRadius = RCTDefaultIfNegativeTo(_borderTopRightRadius, _borderTopEndRadius);
+    const CGFloat bottomStartRadius = RCTDefaultIfNegativeTo(_borderBottomLeftRadius, _borderBottomStartRadius);
+    const CGFloat bottomEndRadius = RCTDefaultIfNegativeTo(_borderBottomRightRadius, _borderBottomEndRadius);
+
+    const CGFloat directionAwareTopLeftRadius = isRTL ? topEndRadius : topStartRadius;
+    const CGFloat directionAwareTopRightRadius = isRTL ? topStartRadius : topEndRadius;
+    const CGFloat directionAwareBottomLeftRadius = isRTL ? bottomEndRadius : bottomStartRadius;
+    const CGFloat directionAwareBottomRightRadius = isRTL ? bottomStartRadius : bottomEndRadius;
+
+    topLeftRadius = RCTDefaultIfNegativeTo(radius, directionAwareTopLeftRadius);
+    topRightRadius = RCTDefaultIfNegativeTo(radius, directionAwareTopRightRadius);
+    bottomLeftRadius = RCTDefaultIfNegativeTo(radius, directionAwareBottomLeftRadius);
+    bottomRightRadius = RCTDefaultIfNegativeTo(radius, directionAwareBottomRightRadius);
+  } else {
+    const CGFloat directionAwareTopLeftRadius = isRTL ? _borderTopEndRadius : _borderTopStartRadius;
+    const CGFloat directionAwareTopRightRadius = isRTL ? _borderTopStartRadius : _borderTopEndRadius;
+    const CGFloat directionAwareBottomLeftRadius = isRTL ? _borderBottomEndRadius : _borderBottomStartRadius;
+    const CGFloat directionAwareBottomRightRadius = isRTL ? _borderBottomStartRadius : _borderBottomEndRadius;
+
+    topLeftRadius = RCTDefaultIfNegativeTo(radius, RCTDefaultIfNegativeTo(_borderTopLeftRadius, directionAwareTopLeftRadius));
+    topRightRadius = RCTDefaultIfNegativeTo(radius, RCTDefaultIfNegativeTo(_borderTopRightRadius, directionAwareTopRightRadius));
+    bottomLeftRadius = RCTDefaultIfNegativeTo(radius, RCTDefaultIfNegativeTo(_borderBottomLeftRadius, directionAwareBottomLeftRadius));
+    bottomRightRadius = RCTDefaultIfNegativeTo(radius, RCTDefaultIfNegativeTo(_borderBottomRightRadius, directionAwareBottomRightRadius));
+  }
 
   // Get scale factors required to prevent radii from overlapping
   const CGSize size = self.bounds.size;
@@ -441,11 +516,31 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (RCTBorderColors)borderColors
 {
+  const BOOL isRTL = _reactLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft;
+
+  if ([[RCTI18nUtil sharedInstance] doLeftAndRightSwapInRTL]) {
+    const CGColorRef borderStartColor = _borderStartColor ?: _borderLeftColor;
+    const CGColorRef borderEndColor = _borderEndColor ?: _borderRightColor;
+
+    const CGColorRef directionAwareBorderLeftColor = isRTL ? borderEndColor : borderStartColor;
+    const CGColorRef directionAwareBorderRightColor = isRTL ? borderStartColor : borderEndColor;
+
+    return (RCTBorderColors){
+      _borderTopColor ?: _borderColor,
+      directionAwareBorderLeftColor ?: _borderColor,
+      _borderBottomColor ?: _borderColor,
+      directionAwareBorderRightColor ?: _borderColor,
+    };
+  }
+
+  const CGColorRef directionAwareBorderLeftColor = isRTL ? _borderEndColor : _borderStartColor;
+  const CGColorRef directionAwareBorderRightColor = isRTL ? _borderStartColor : _borderEndColor;
+
   return (RCTBorderColors){
     _borderTopColor ?: _borderColor,
-    _borderLeftColor ?: _borderColor,
+    directionAwareBorderLeftColor ?: _borderLeftColor ?: _borderColor,
     _borderBottomColor ?: _borderColor,
-    _borderRightColor ?: _borderColor,
+    directionAwareBorderRightColor ?: _borderRightColor ?: _borderColor,
   };
 }
 
@@ -549,14 +644,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 static BOOL RCTLayerHasShadow(CALayer *layer)
 {
   return layer.shadowOpacity * CGColorGetAlpha(layer.shadowColor) > 0;
-}
-
-- (void)reactSetInheritedBackgroundColor:(NSColor *)inheritedBackgroundColor
-{
-  // Inherit background color if a shadow has been set, as an optimization
-  if (RCTLayerHasShadow(self.layer)) {
-    self.backgroundColor = inheritedBackgroundColor;
-  }
 }
 
 static void RCTUpdateShadowPathForView(RCTView *view)
@@ -673,6 +760,8 @@ setBorderColor(Top)
 setBorderColor(Right)
 setBorderColor(Bottom)
 setBorderColor(Left)
+setBorderColor(Start)
+setBorderColor(End)
 
 #pragma mark - Border Width
 
@@ -691,6 +780,8 @@ setBorderWidth(Top)
 setBorderWidth(Right)
 setBorderWidth(Bottom)
 setBorderWidth(Left)
+setBorderWidth(Start)
+setBorderWidth(End)
 
 #pragma mark - Border Radius
 
@@ -707,8 +798,12 @@ setBorderWidth(Left)
 setBorderRadius()
 setBorderRadius(TopLeft)
 setBorderRadius(TopRight)
+setBorderRadius(TopStart)
+setBorderRadius(TopEnd)
 setBorderRadius(BottomLeft)
 setBorderRadius(BottomRight)
+setBorderRadius(BottomStart)
+setBorderRadius(BottomEnd)
 
 #pragma mark - Border Style
 
@@ -731,6 +826,8 @@ setBorderStyle()
   CGColorRelease(_borderRightColor);
   CGColorRelease(_borderBottomColor);
   CGColorRelease(_borderLeftColor);
+  CGColorRelease(_borderStartColor);
+  CGColorRelease(_borderEndColor);
 }
 
 @end

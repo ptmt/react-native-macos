@@ -25,7 +25,6 @@
   RCTEventDispatcher *_eventDispatcher;
   CGFloat _previousTopLayoutLength;
   CGFloat _previousBottomLayoutLength;
-}
 
 //@synthesize currentTopLayoutGuide = _currentTopLayoutGuide;
 //@synthesize currentBottomLayoutGuide = _currentBottomLayoutGuide;

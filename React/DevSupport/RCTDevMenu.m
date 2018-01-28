@@ -9,6 +9,7 @@
 
 #import "RCTDevMenu.h"
 
+#import "RCTBridge+Private.h"
 #import "RCTDevSettings.h"
 #import "RCTKeyCommands.h"
 #import "RCTLog.h"
@@ -18,7 +19,11 @@
 
 #if RCT_DEV
 
-static NSString *const RCTShowDevMenuNotification = @"RCTShowDevMenuNotification";
+#if RCT_ENABLE_INSPECTOR
+#import "RCTInspectorDevServerHelper.h"
+#endif
+
+NSString *const RCTShowDevMenuNotification = @"RCTShowDevMenuNotification";
 
 @interface RCTDevMenuItem ()
 
@@ -117,6 +122,11 @@ RCT_EXPORT_MODULE()
   // RCTSwapInstanceMethods([UIWindow class], @selector(motionEnded:withEvent:), @selector(RCT_motionEnded:withEvent:));
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+  return YES;
+}
+
 - (instancetype)init
 {
   if ((self = [super init])) {
@@ -136,21 +146,21 @@ RCT_EXPORT_MODULE()
                                    action:^(__unused NSEvent *command) {
                                      [weakSelf toggle];
                                    }];
-    
+
     // Toggle element inspector
     [commands registerKeyCommandWithInput:@"i"
                             modifierFlags:NSEventModifierFlagCommand
                                    action:^(__unused NSEvent *command) {
                                      [weakSelf.bridge.devSettings toggleElementInspector];
                                    }];
-    
+
     // Reload in normal mode
     [commands registerKeyCommandWithInput:@"n"
                             modifierFlags:NSEventModifierFlagCommand
                                    action:^(__unused NSEvent *command) {
                                      [weakSelf.bridge.devSettings setIsDebuggingRemotely:NO];
                                    }];
-    
+
 #endif
   }
   return self;
@@ -207,6 +217,14 @@ RCT_EXPORT_MODULE()
     [bridge reload];
   }]];
 
+  if (devSettings.isNuclideDebuggingAvailable) {
+    [items addObject:[RCTDevMenuItem buttonItemWithTitle:[NSString stringWithFormat:@"Debug JS in Nuclide %@", @"\U0001F4AF"] handler:^{
+#if RCT_ENABLE_INSPECTOR
+      [RCTInspectorDevServerHelper attachDebugger:@"ReactNative" withBundleURL:bridge.bundleURL withView: RCTPresentedViewController()];
+#endif
+    }]];
+  }
+
   if (!devSettings.isRemoteDebuggingAvailable) {
     [items addObject:[RCTDevMenuItem buttonItemWithTitle:@"Remote JS Debugger Unavailable" handler:^{
       NSAlert *alert = RCTAlertView(@"Remote JS Debugger Unavailable",
@@ -218,7 +236,12 @@ RCT_EXPORT_MODULE()
     }]];
   } else {
     [items addObject:[RCTDevMenuItem buttonItemWithTitleBlock:^NSString *{
-      return devSettings.isDebuggingRemotely ? @"Stop Remote JS Debugging" : @"Debug JS Remotely";
+      NSString *title = devSettings.isDebuggingRemotely ? @"Stop Remote JS Debugging" : @"Debug JS Remotely";
+      if (devSettings.isNuclideDebuggingAvailable) {
+        return [NSString stringWithFormat:@"%@ %@", title, @"\U0001F645"];
+      } else {
+        return title;
+      }
     }
                                                        hotkey:@"R"
                                                       handler:^{
@@ -261,7 +284,7 @@ RCT_EXPORT_MODULE()
   }
 
   [items addObject:[RCTDevMenuItem buttonItemWithTitleBlock:^NSString *{
-    return (devSettings.isElementInspectorShown) ? @"Hide Inspector" : @"Show Inspector";
+    return @"Toggle Inspector";
   } handler:^{
     [devSettings toggleElementInspector];
     [self show];
@@ -293,16 +316,16 @@ RCT_EXPORT_METHOD(show)
   if (!_bridge || RCTRunningInAppExtension()) {
     return;
   }
-  
+
   isShown = YES;
-  
+
   NSArray<RCTDevMenuItem *> *items = [self _menuItemsToPresent];
   NSMenu *developerMenu = [self getDeveloperMenu];
   [developerMenu removeAllItems];
   for (RCTDevMenuItem *item in items) {
-    [developerMenu addItem:item];    
+    [developerMenu addItem:item];
   }
-  
+
   _presentedItems = items;
 }
 
