@@ -120,17 +120,17 @@
   self.layer.zPosition = reactZIndex;
 }
 
-- (NSArray<UIView *> *)reactZIndexSortedSubviews
+- (NSArray<NSView *> *)reactZIndexSortedSubviews
 {
   // Check if sorting is required - in most cases it won't be.
   BOOL sortingRequired = NO;
-  for (UIView *subview in self.subviews) {
+  for (NSView *subview in self.subviews) {
     if (subview.reactZIndex != 0) {
       sortingRequired = YES;
       break;
     }
   }
-  return sortingRequired ? [self.reactSubviews sortedArrayUsingComparator:^NSComparisonResult(UIView *a, UIView *b) {
+  return sortingRequired ? [self.reactSubviews sortedArrayUsingComparator:^NSComparisonResult(NSView *a, NSView *b) {
     if (a.reactZIndex > b.reactZIndex) {
       return NSOrderedDescending;
     } else {
@@ -246,23 +246,23 @@
 
 #pragma mark - Layout
 
-- (UIEdgeInsets)reactBorderInsets
+- (NSEdgeInsets)reactBorderInsets
 {
   CGFloat borderWidth = self.layer.borderWidth;
-  return UIEdgeInsetsMake(borderWidth, borderWidth, borderWidth, borderWidth);
+  return NSEdgeInsetsMake(borderWidth, borderWidth, borderWidth, borderWidth);
 }
 
-- (UIEdgeInsets)reactPaddingInsets
+- (NSEdgeInsets)reactPaddingInsets
 {
-  return UIEdgeInsetsZero;
+  return NSEdgeInsetsZero;
 }
 
-- (UIEdgeInsets)reactCompoundInsets
+- (NSEdgeInsets)reactCompoundInsets
 {
-  UIEdgeInsets borderInsets = self.reactBorderInsets;
-  UIEdgeInsets paddingInsets = self.reactPaddingInsets;
+  NSEdgeInsets borderInsets = self.reactBorderInsets;
+  NSEdgeInsets paddingInsets = self.reactPaddingInsets;
 
-  return UIEdgeInsetsMake(
+  return NSEdgeInsetsMake(
     borderInsets.top + paddingInsets.top,
     borderInsets.left + paddingInsets.left,
     borderInsets.bottom + paddingInsets.bottom,
@@ -270,9 +270,17 @@
   );
 }
 
+static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
+  rect.origin.x    += insets.left;
+  rect.origin.y    += insets.top;
+  rect.size.width  -= (insets.left + insets.right);
+  rect.size.height -= (insets.top  + insets.bottom);
+  return rect;
+}
+
 - (CGRect)reactContentFrame
 {
-  return UIEdgeInsetsInsetRect(self.bounds, self.reactCompoundInsets);
+  return NSEdgeInsetsInsetRect(self.bounds, self.reactCompoundInsets);
 }
 
 #pragma mark - Accessiblity

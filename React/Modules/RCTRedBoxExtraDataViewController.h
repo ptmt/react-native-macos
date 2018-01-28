@@ -7,13 +7,13 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 @protocol RCTRedBoxExtraDataActionDelegate <NSObject>
 - (void)reload;
 @end
 
-@interface RCTRedBoxExtraDataViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+@interface RCTRedBoxExtraDataViewController : NSViewController <NSTableViewDelegate, NSTableViewDataSource>
 
 @property (nonatomic, weak) id<RCTRedBoxExtraDataActionDelegate> actionDelegate;
 

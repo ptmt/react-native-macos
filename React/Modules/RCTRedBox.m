@@ -59,7 +59,7 @@
 {
 
   if ((self = [super initWithContentRect:frame
-                               styleMask:NSClosableWindowMask | NSResizableWindowMask | NSFullSizeContentViewWindowMask
+                               styleMask:NSWindowStyleMaskClosable | NSResizableWindowMask | NSWindowStyleMaskFullSizeContentView
                                  backing:NSBackingStoreBuffered defer:NO])) {
 
     RCTView *rootView = [[RCTView alloc] initWithFrame:frame];
@@ -466,7 +466,7 @@ RCT_EXPORT_MODULE()
         [self->_bridge.eventDispatcher sendDeviceEventWithName:@"collectRedBoxExtraData" body:nil];
 
         if (!self->_window) {
-            self->_window = [[RCTRedBoxWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+          self->_window = [[RCTRedBoxWindow alloc] initWithContentRect:[[NSApplication sharedApplication] mainWindow].frame];
             self->_window.actionDelegate = self;
         }
 
@@ -482,8 +482,8 @@ RCT_EXPORT_MODULE()
 - (void)loadExtraDataViewController {
     dispatch_async(dispatch_get_main_queue(), ^{
         // Make sure the CMD+E shortcut doesn't call this twice
-        if (self->_extraDataViewController != nil && ![self->_window.rootViewController presentedViewController]) {
-            [self->_window.rootViewController presentViewController:self->_extraDataViewController animated:YES completion:nil];
+      if (self->_extraDataViewController != nil && ![self->_window.contentViewController presentedViewControllers]) {
+          [self->_window.contentViewController presentViewControllerAsSheet:self->_extraDataViewController];
         }
     });
 }

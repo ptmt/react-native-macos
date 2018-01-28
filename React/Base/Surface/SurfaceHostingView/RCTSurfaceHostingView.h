@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import <React/RCTSurfaceSizeMeasureMode.h>
 #import <React/RCTSurfaceStage.h>
@@ -15,7 +15,7 @@
 @class RCTBridge;
 @class RCTSurface;
 
-typedef UIView *(^RCTSurfaceHostingViewActivityIndicatorViewFactory)();
+typedef NSView *(^RCTSurfaceHostingViewActivityIndicatorViewFactory)();
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
  * This class can be used as easy-to-use general purpose integration point
  * of ReactNative-powered experiences in UIKit based apps.
  */
-@interface RCTSurfaceHostingView : UIView
+@interface RCTSurfaceHostingView : NSView
 
 /**
  * Designated initializer.

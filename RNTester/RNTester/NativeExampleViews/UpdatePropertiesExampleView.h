@@ -8,7 +8,7 @@
  *
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import <React/RCTView.h>
 

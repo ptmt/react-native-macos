@@ -73,7 +73,7 @@ RCT_EXTERN NSString *const RCTUIManagerWillUpdateViewsDueToContentSizeMultiplier
  * the shadow view.
  * Please respect one-directional data flow of React.
  */
-- (void)setLocalData:(NSObject *)localData forView:(UIView *)view;
+- (void)setLocalData:(NSObject *)localData forView:(NSView *)view;
 
 /**
  * Set the size of a view. This might be in response to a screen rotation

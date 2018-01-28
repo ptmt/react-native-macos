@@ -10,7 +10,7 @@
 #import "RCTScrollContentView.h"
 
 #import <React/RCTAssert.h>
-#import <React/UIView+React.h>
+#import <React/NSView+React.h>
 
 #import "RCTScrollView.h"
 

@@ -29,8 +29,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3D13F83D1D6F6AE000E69E0E"
-               BuildableName = "UIExplorerBundle.bundle"
-               BlueprintName = "UIExplorerBundle"
+               BuildableName = "RNTesterBundle.bundle"
+               BlueprintName = "RNTesterBundle"
                ReferencedContainer = "container:RNTester.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -43,8 +43,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "UIExplorer.app"
-               BlueprintName = "UIExplorer"
+               BuildableName = "RNTester.app"
+               BlueprintName = "RNTester"
                ReferencedContainer = "container:RNTester.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -57,8 +57,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "004D289D1AAF61C70097A701"
-               BuildableName = "UIExplorerUnitTests.xctest"
-               BlueprintName = "UIExplorerUnitTests"
+               BuildableName = "RNTesterUnitTests.xctest"
+               BlueprintName = "RNTesterUnitTests"
                ReferencedContainer = "container:RNTester.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -71,8 +71,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "143BC5941B21E3E100462512"
-               BuildableName = "UIExplorerIntegrationTests.xctest"
-               BlueprintName = "UIExplorerIntegrationTests"
+               BuildableName = "RNTesterIntegrationTests.xctest"
+               BlueprintName = "RNTesterIntegrationTests"
                ReferencedContainer = "container:RNTester.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -90,8 +90,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "004D289D1AAF61C70097A701"
-               BuildableName = "UIExplorerUnitTests.xctest"
-               BlueprintName = "UIExplorerUnitTests"
+               BuildableName = "RNTesterUnitTests.xctest"
+               BlueprintName = "RNTesterUnitTests"
                ReferencedContainer = "container:RNTester.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -100,8 +100,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "143BC5941B21E3E100462512"
-               BuildableName = "UIExplorerIntegrationTests.xctest"
-               BlueprintName = "UIExplorerIntegrationTests"
+               BuildableName = "RNTesterIntegrationTests.xctest"
+               BlueprintName = "RNTesterIntegrationTests"
                ReferencedContainer = "container:RNTester.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -110,8 +110,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "UIExplorer.app"
-            BlueprintName = "UIExplorer"
+            BuildableName = "RNTester.app"
+            BlueprintName = "RNTester"
             ReferencedContainer = "container:RNTester.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -134,8 +134,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "UIExplorer.app"
-            BlueprintName = "UIExplorer"
+            BuildableName = "RNTester.app"
+            BlueprintName = "RNTester"
             ReferencedContainer = "container:RNTester.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -160,8 +160,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "UIExplorer.app"
-            BlueprintName = "UIExplorer"
+            BuildableName = "RNTester.app"
+            BlueprintName = "RNTester"
             ReferencedContainer = "container:RNTester.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

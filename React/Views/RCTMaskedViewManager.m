@@ -16,7 +16,7 @@
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
+- (NSView *)view
 {
   return [RCTMaskedView new];
 }

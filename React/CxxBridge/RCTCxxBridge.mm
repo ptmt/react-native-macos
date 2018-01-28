@@ -330,7 +330,7 @@ struct RCTInstanceCallback : public InstanceCallback {
         [self.delegate respondsToSelector:@selector(shouldBridgeUseCustomJSC:)] &&
         [self.delegate shouldBridgeUseCustomJSC:self];
       // We use the name of the device and the app for debugging & metrics
-      NSString *deviceName = [[UIDevice currentDevice] name];
+      NSString *deviceName = [[NSHost currentHost] localizedName];
       NSString *appName = [[NSBundle mainBundle] bundleIdentifier];
       // The arg is a cache dir.  It's not used with standard JSC.
       executorFactory.reset(new JSCExecutorFactory(folly::dynamic::object

@@ -23,19 +23,19 @@
 
 @implementation RCTConvert (NSScrollView)
 
-RCT_ENUM_CONVERTER(UIScrollViewKeyboardDismissMode, (@{
-  @"none": @(UIScrollViewKeyboardDismissModeNone),
-  @"on-drag": @(UIScrollViewKeyboardDismissModeOnDrag),
-  @"interactive": @(UIScrollViewKeyboardDismissModeInteractive),
-  // Backwards compatibility
-  @"onDrag": @(UIScrollViewKeyboardDismissModeOnDrag),
-}), UIScrollViewKeyboardDismissModeNone, integerValue)
-
-RCT_ENUM_CONVERTER(UIScrollViewIndicatorStyle, (@{
-  @"default": @(UIScrollViewIndicatorStyleDefault),
-  @"black": @(UIScrollViewIndicatorStyleBlack),
-  @"white": @(UIScrollViewIndicatorStyleWhite),
-}), UIScrollViewIndicatorStyleDefault, integerValue)
+//RCT_ENUM_CONVERTER(UIScrollViewKeyboardDismissMode, (@{
+//  @"none": @(UIScrollViewKeyboardDismissModeNone),
+//  @"on-drag": @(UIScrollViewKeyboardDismissModeOnDrag),
+//  @"interactive": @(UIScrollViewKeyboardDismissModeInteractive),
+//  // Backwards compatibility
+//  @"onDrag": @(UIScrollViewKeyboardDismissModeOnDrag),
+//}), UIScrollViewKeyboardDismissModeNone, integerValue)
+//
+//RCT_ENUM_CONVERTER(UIScrollViewIndicatorStyle, (@{
+//  @"default": @(UIScrollViewIndicatorStyleDefault),
+//  @"black": @(UIScrollViewIndicatorStyleBlack),
+//  @"white": @(UIScrollViewIndicatorStyleWhite),
+//}), UIScrollViewIndicatorStyleDefault, integerValue)
 
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 110000 /* __IPHONE_11_0 */
 RCT_ENUM_CONVERTER(UIScrollViewContentInsetAdjustmentBehavior, (@{
@@ -78,7 +78,7 @@ RCT_EXPORT_VIEW_PROPERTY(pagingEnabled, BOOL)
 RCT_REMAP_VIEW_PROPERTY(pinchGestureEnabled, scrollView.pinchGestureEnabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(scrollsToTop, BOOL)
 #endif
->>>>>>> 11a495cb3235ebbc2ad890e92ec612fd5316bffb:React/Views/ScrollView/RCTScrollViewManager.m
+
 RCT_EXPORT_VIEW_PROPERTY(showsHorizontalScrollIndicator, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(showsVerticalScrollIndicator, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(scrollEventThrottle, NSTimeInterval)
@@ -177,7 +177,7 @@ RCT_EXPORT_METHOD(flashScrollIndicators:(nonnull NSNumber *)reactTag)
        return;
      }
 
-     [view.scrollView flashScrollIndicators];
+    // [view.scrollView flashScrollIndicators];
    }];
 }
 

@@ -3,7 +3,7 @@
 #if RCT_DEV
 
 #import <jschelpers/JSCWrapper.h>
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 #import <React/RCTLog.h>
 
 #import "RCTDefines.h"
@@ -31,7 +31,7 @@ static NSString *getServerHost(NSURL *bundleURL, NSNumber *port)
 static NSURL *getInspectorDeviceUrl(NSURL *bundleURL)
 {
   NSNumber *inspectorProxyPort = @8082;
-  NSString *escapedDeviceName = [[[UIDevice currentDevice] name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+  NSString *escapedDeviceName = [[[NSHost currentHost] localizedName] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
   NSString *escapedAppName = [[[NSBundle mainBundle] bundleIdentifier] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
   return [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/inspector/device?name=%@&app=%@",
                                                         getServerHost(bundleURL, inspectorProxyPort),
@@ -42,7 +42,7 @@ static NSURL *getInspectorDeviceUrl(NSURL *bundleURL)
 static NSURL *getAttachDeviceUrl(NSURL *bundleURL, NSString *title)
 {
   NSNumber *metroBundlerPort = @8081;
-  NSString *escapedDeviceName = [[[UIDevice currentDevice] name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+  NSString *escapedDeviceName = [[[NSHost currentHost] localizedName] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
   NSString *escapedAppName = [[[NSBundle mainBundle] bundleIdentifier] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
   return [NSURL URLWithString:[NSString stringWithFormat:@"http://%@/attach-debugger-nuclide?title=%@&device=%@&app=%@",
                                getServerHost(bundleURL, metroBundlerPort),
@@ -64,35 +64,27 @@ static void sendEventToAllConnections(NSString *event)
   }
 }
 
-static void displayErrorAlert(UIViewController *view, NSString *message) {
-  UIAlertController *alert =
-      [UIAlertController alertControllerWithTitle:nil
-                                          message:message
-                                   preferredStyle:UIAlertControllerStyleAlert];
-  [view presentViewController:alert animated:YES completion:nil];
-  dispatch_after(
-      dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 2.5),
-      dispatch_get_main_queue(),
-      ^{
-        [alert dismissViewControllerAnimated:YES completion:nil];
-      });
+static void displayErrorAlert(NSViewController *view, NSString *message) {
+  NSAlert *alert = [[NSAlert alloc] init];
+  alert.messageText = message;
+  [alert runModal];
 }
 
 + (void)attachDebugger:(NSString *)owner
          withBundleURL:(NSURL *)bundleURL
-              withView:(UIViewController *)view
+              withView:(NSViewController *)view
 {
   NSURL *url = getAttachDeviceUrl(bundleURL, owner);
 
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
   [request setHTTPMethod:@"GET"];
 
-  __weak UIViewController *viewCapture = view;
+  __weak NSViewController *viewCapture = view;
   [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:
     ^(NSData *_Nullable data,
       NSURLResponse *_Nullable response,
       NSError *_Nullable error) {
-      UIViewController *viewCaptureStrong = viewCapture;
+      NSViewController *viewCaptureStrong = viewCapture;
       if (error != nullptr && viewCaptureStrong != nullptr) {
         displayErrorAlert(viewCaptureStrong, @"The request to attach Nuclide couldn't reach Metro Bundler!");
       }

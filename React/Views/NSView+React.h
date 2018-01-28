@@ -95,9 +95,9 @@
 /**
  * Useful properties for computing layout.
  */
-@property (nonatomic, readonly) UIEdgeInsets reactBorderInsets;
-@property (nonatomic, readonly) UIEdgeInsets reactPaddingInsets;
-@property (nonatomic, readonly) UIEdgeInsets reactCompoundInsets;
+@property (nonatomic, readonly) NSEdgeInsets reactBorderInsets;
+@property (nonatomic, readonly) NSEdgeInsets reactPaddingInsets;
+@property (nonatomic, readonly) NSEdgeInsets reactCompoundInsets;
 @property (nonatomic, readonly) CGRect reactContentFrame;
 
 /**
@@ -107,6 +107,11 @@
  * transparent in favour of some subview.
  * Defaults to `self`.
  */
-@property (nonatomic, readonly) UIView *reactAccessibilityElement;
+@property (nonatomic, readonly) NSView *reactAccessibilityElement;
+
+/*
+ * UIKit replacement
+ */
+@property (nonatomic, assign) BOOL clipsToBounds;
 
 @end

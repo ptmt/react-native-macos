@@ -60,7 +60,7 @@ RCTCornerInsets RCTGetCornerInsets(RCTCornerRadii cornerRadii,
   };
 }
 
-static UIEdgeInsets RCTRoundInsetsToPixel(UIEdgeInsets edgeInsets) {
+static NSEdgeInsets RCTRoundInsetsToPixel(NSEdgeInsets edgeInsets) {
     edgeInsets.top = RCTRoundPixelValue(edgeInsets.top);
     edgeInsets.bottom = RCTRoundPixelValue(edgeInsets.bottom);
     edgeInsets.left = RCTRoundPixelValue(edgeInsets.left);

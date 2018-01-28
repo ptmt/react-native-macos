@@ -85,7 +85,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
   [_bridge.uiManager setAvailableSize:self.availableSize forRootView:self];
 }
 
-- (NSView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+- (NSView *)hitTest:(CGPoint)point withEvent:(NSEvent *)event
 {
   // The root content view itself should never receive touches
 //  NSView *hitView = [super hitTest:point withEvent:event];

@@ -29,8 +29,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2DD3238F1DA2DD8A000FE1B8"
-               BuildableName = "UIExplorer-tvOS.app"
-               BlueprintName = "UIExplorer-tvOS"
+               BuildableName = "RNTester-tvOS.app"
+               BlueprintName = "RNTester-tvOS"
                ReferencedContainer = "container:RNTester.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -48,8 +48,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2DD323A41DA2DD8B000FE1B8"
-               BuildableName = "UIExplorer-tvOSUnitTests.xctest"
-               BlueprintName = "UIExplorer-tvOSUnitTests"
+               BuildableName = "RNTester-tvOSUnitTests.xctest"
+               BlueprintName = "RNTester-tvOSUnitTests"
                ReferencedContainer = "container:RNTester.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -58,8 +58,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D4624C11DA2EA6900C74D09"
-               BuildableName = "UIExplorer-tvOSIntegrationTests.xctest"
-               BlueprintName = "UIExplorer-tvOSIntegrationTests"
+               BuildableName = "RNTester-tvOSIntegrationTests.xctest"
+               BlueprintName = "RNTester-tvOSIntegrationTests"
                ReferencedContainer = "container:RNTester.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -68,8 +68,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2DD3238F1DA2DD8A000FE1B8"
-            BuildableName = "UIExplorer-tvOS.app"
-            BlueprintName = "UIExplorer-tvOS"
+            BuildableName = "RNTester-tvOS.app"
+            BlueprintName = "RNTester-tvOS"
             ReferencedContainer = "container:RNTester.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -92,8 +92,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2DD3238F1DA2DD8A000FE1B8"
-            BuildableName = "UIExplorer-tvOS.app"
-            BlueprintName = "UIExplorer-tvOS"
+            BuildableName = "RNTester-tvOS.app"
+            BlueprintName = "RNTester-tvOS"
             ReferencedContainer = "container:RNTester.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -118,8 +118,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2DD3238F1DA2DD8A000FE1B8"
-            BuildableName = "UIExplorer-tvOS.app"
-            BlueprintName = "UIExplorer-tvOS"
+            BuildableName = "RNTester-tvOS.app"
+            BlueprintName = "RNTester-tvOS"
             ReferencedContainer = "container:RNTester.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

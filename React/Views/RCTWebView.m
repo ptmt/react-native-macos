@@ -201,7 +201,7 @@ willPerformClientRedirectToURL:(NSURL *)URL
        fireDate:(NSDate *)date
        forFrame:(WebFrame *)frame {
    BOOL isJSNavigation = [URL.scheme isEqualToString:RCTJSNavigationScheme];
-  if (isJSNavigation && [URL.host isEqualToString:RCTJSPostMessageHost]) {
+  if (isJSNavigation && [URL.host isEqualToString:kPostMessageHost]) {
     NSString *data = URL.query;
     data = [data stringByReplacingOccurrencesOfString:@"+" withString:@" "];
     data = [data stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];

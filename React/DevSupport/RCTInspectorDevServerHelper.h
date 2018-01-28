@@ -2,7 +2,7 @@
 
 #import <Foundation/Foundation.h>
 #import <JavaScriptCore/JSBase.h>
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import <React/RCTDefines.h>
 
@@ -14,7 +14,7 @@
 + (void)disableDebugger;
 + (void)attachDebugger:(NSString *)owner
          withBundleURL:(NSURL *)bundleURL
-              withView:(UIViewController *)view;
+              withView:(NSViewController *)view;
 @end
 
 #endif

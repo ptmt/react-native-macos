@@ -41,10 +41,10 @@ CGFloat RCTCoreGraphicsFloatFromYogaFloat(float value)
 
 #pragma mark - Computed Layout-Inferred Metrics
 
-- (UIEdgeInsets)paddingAsInsets
+- (NSEdgeInsets)paddingAsInsets
 {
   YGNodeRef yogaNode = self.yogaNode;
-  return (UIEdgeInsets){
+  return (NSEdgeInsets){
     RCTCoreGraphicsFloatFromYogaFloat(YGNodeLayoutGetPadding(yogaNode, YGEdgeTop)),
     RCTCoreGraphicsFloatFromYogaFloat(YGNodeLayoutGetPadding(yogaNode, YGEdgeLeft)),
     RCTCoreGraphicsFloatFromYogaFloat(YGNodeLayoutGetPadding(yogaNode, YGEdgeBottom)),
@@ -52,10 +52,10 @@ CGFloat RCTCoreGraphicsFloatFromYogaFloat(float value)
   };
 }
 
-- (UIEdgeInsets)borderAsInsets
+- (NSEdgeInsets)borderAsInsets
 {
   YGNodeRef yogaNode = self.yogaNode;
-  return (UIEdgeInsets){
+  return (NSEdgeInsets){
     RCTCoreGraphicsFloatFromYogaFloat(YGNodeLayoutGetBorder(yogaNode, YGEdgeTop)),
     RCTCoreGraphicsFloatFromYogaFloat(YGNodeLayoutGetBorder(yogaNode, YGEdgeLeft)),
     RCTCoreGraphicsFloatFromYogaFloat(YGNodeLayoutGetBorder(yogaNode, YGEdgeBottom)),
@@ -63,12 +63,12 @@ CGFloat RCTCoreGraphicsFloatFromYogaFloat(float value)
   };
 }
 
-- (UIEdgeInsets)compoundInsets
+- (NSEdgeInsets)compoundInsets
 {
-  UIEdgeInsets borderAsInsets = self.borderAsInsets;
-  UIEdgeInsets paddingAsInsets = self.paddingAsInsets;
+  NSEdgeInsets borderAsInsets = self.borderAsInsets;
+  NSEdgeInsets paddingAsInsets = self.paddingAsInsets;
 
-  return (UIEdgeInsets){
+  return (NSEdgeInsets){
     borderAsInsets.top + paddingAsInsets.top,
     borderAsInsets.left + paddingAsInsets.left,
     borderAsInsets.bottom + paddingAsInsets.bottom,
@@ -76,9 +76,17 @@ CGFloat RCTCoreGraphicsFloatFromYogaFloat(float value)
   };
 }
 
-- (CGSize)availableSize
+static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
+  rect.origin.x    += insets.left;
+  rect.origin.y    += insets.top;
+  rect.size.width  -= (insets.left + insets.right);
+  rect.size.height -= (insets.top  + insets.bottom);
+  return rect;
+}
+
+- (NSSize)availableSize
 {
-  return UIEdgeInsetsInsetRect((CGRect){CGPointZero, self.frame.size}, self.compoundInsets).size;
+  return  NSEdgeInsetsInsetRect((CGRect){CGPointZero, self.frame.size}, self.compoundInsets).size;
 }
 
 #pragma mark - Measuring

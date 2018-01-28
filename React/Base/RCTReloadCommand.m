@@ -24,7 +24,7 @@ void RCTRegisterReloadCommandListener(id<RCTReloadListener> listener)
     [[RCTKeyCommands sharedInstance] registerKeyCommandWithInput:@"r"
                                                    modifierFlags:NSEventModifierFlagCommand
                                                           action:
-     ^(__unused UIKeyCommand *command) {
+     ^(__unused NSEvent *command) {
        RCTTriggerReloadCommandListeners();
      }];
   });

@@ -44,10 +44,7 @@ static BOOL RCTIsIPhoneX() {
   dispatch_once(&onceToken, ^{
     RCTAssertMainQueue();
 
-    isIPhoneX = CGSizeEqualToSize(
-      [UIScreen mainScreen].nativeBounds.size,
-      CGSizeMake(1125, 2436)
-    );
+    isIPhoneX = NO;
   });
 
   return isIPhoneX;

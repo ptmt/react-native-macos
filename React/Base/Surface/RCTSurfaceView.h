@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * UIView instance which represents the Surface
  */
-@interface RCTSurfaceView : UIView
+@interface RCTSurfaceView : NSView
 
 - (instancetype)initWithSurface:(RCTSurface *)surface NS_DESIGNATED_INITIALIZER;
 

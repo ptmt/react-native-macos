@@ -223,8 +223,8 @@ RCT_CUSTOM_VIEW_PROPERTY(borderStyle, RCTBorderStyle, RCTView)
     view.borderStyle = json ? [RCTConvert RCTBorderStyle:json] : defaultView.borderStyle;
   }
 }
-RCT_EXPORT_VIEW_PROPERTY(onAccessibilityTap, RCTDirectEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onMagicTap, RCTDirectEventBlock)
+// RCT_EXPORT_VIEW_PROPERTY(onAccessibilityTap, RCTDirectEventBlock)
+// RCT_EXPORT_VIEW_PROPERTY(onMagicTap, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onDragEnter, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onDragLeave, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onDrop, RCTDirectEventBlock)

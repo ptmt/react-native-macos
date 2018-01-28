@@ -712,7 +712,7 @@ NSImage *__nullable RCTImageFromLocalAssetURL(NSURL *imageURL)
     } else {
       fileData = [NSData dataWithContentsOfURL:imageURL];
     }
-    image = [UIImage imageWithData:fileData];
+    image = [[NSImage alloc] initWithData:fileData];
   }
 
   if (!image && !bundle) {

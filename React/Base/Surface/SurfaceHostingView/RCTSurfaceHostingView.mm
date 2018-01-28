@@ -23,8 +23,8 @@
 @end
 
 @implementation RCTSurfaceHostingView {
-  UIView *_Nullable _activityIndicatorView;
-  UIView *_Nullable _surfaceView;
+  NSView *_Nullable _activityIndicatorView;
+  NSView *_Nullable _surfaceView;
   RCTSurfaceStage _stage;
 }
 
@@ -78,7 +78,8 @@ RCT_NOT_IMPLEMENTED(- (nullable instancetype)initWithCoder:(NSCoder *)coder)
 {
   if (RCTSurfaceStageIsPreparing(_stage)) {
     if (_activityIndicatorView) {
-      return [_activityIndicatorView sizeThatFits:size];
+     
+      return _activityIndicatorView.fittingSize;
     }
 
     return CGSizeZero;
@@ -147,7 +148,7 @@ RCT_NOT_IMPLEMENTED(- (nullable instancetype)initWithCoder:(NSCoder *)coder)
     if (_activityIndicatorViewFactory) {
       _activityIndicatorView = _activityIndicatorViewFactory();
       _activityIndicatorView.frame = self.bounds;
-      _activityIndicatorView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+      _activityIndicatorView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
       [self addSubview:_activityIndicatorView];
     }
   } else {
@@ -167,7 +168,7 @@ RCT_NOT_IMPLEMENTED(- (nullable instancetype)initWithCoder:(NSCoder *)coder)
   if (visible) {
     _surfaceView = _surface.view;
     _surfaceView.frame = self.bounds;
-    _surfaceView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _surfaceView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
     [self addSubview:_surfaceView];
   } else {
     [_surfaceView removeFromSuperview];
@@ -190,7 +191,7 @@ RCT_NOT_IMPLEMENTED(- (nullable instancetype)initWithCoder:(NSCoder *)coder)
 
 - (void)_invalidateLayout
 {
-  [self.superview setNeedsLayout];
+  [self.superview setNeedsLayout:YES];
 }
 
 - (void)_updateViews
@@ -199,9 +200,9 @@ RCT_NOT_IMPLEMENTED(- (nullable instancetype)initWithCoder:(NSCoder *)coder)
   self.isActivityIndicatorViewVisible = RCTSurfaceStageIsPreparing(_stage);
 }
 
-- (void)didMoveToWindow
+- (void)viewDidMoveToWindow
 {
-  [super didMoveToWindow];
+  [super viewDidMoveToWindow];
   [self _updateViews];
 }
 

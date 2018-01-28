@@ -27,8 +27,7 @@
 typedef CGFloat RCTFontWeight;
 static RCTFontWeight weightOfFont(NSFont *font)
 {
-  static NSArray *fontNames;
-  static NSArray *fontWeights;
+  static NSDictionary *nameToWeight;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     nameToWeight = @{
@@ -56,8 +55,7 @@ static RCTFontWeight weightOfFont(NSFont *font)
     }
   }
 
-  NSDictionary *traits = [font.fontDescriptor objectForKey:UIFontDescriptorTraitsAttribute];
-  return (RCTFontWeight)[traits[UIFontWeightTrait] doubleValue];
+  return weight;
 }
 
 static BOOL isItalicFont(NSFont *font)

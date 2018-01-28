@@ -669,7 +669,7 @@ completionBlock:(void (^)(NSError *error, id imageOrData, NSString *fetchDate))c
                 if (!atomic_load(&cancelled)) {
 
                     // Decompress the image data (this may be CPU and memory intensive)
-                    UIImage *image = RCTDecodeImageWithData(data, size, scale, resizeMode);
+                    NSImage *image = RCTDecodeImageWithData(data, size, scale, resizeMode);
 
 #if RCT_DEV
                     CGSize imagePixelSize = RCTSizeInPixels(image.size, image.scale);

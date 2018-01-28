@@ -8,30 +8,31 @@
  */
 
 #import "RCTLayoutAnimation.h"
+#import "NSView+NSViewAnimationWithBlocks.h"
 
 #import "RCTConvert.h"
 
 @implementation RCTLayoutAnimation
 
-static UIViewAnimationCurve _currentKeyboardAnimationCurve;
+static NSViewAnimationCurve _currentKeyboardAnimationCurve;
 
-static UIViewAnimationOptions UIViewAnimationOptionsFromRCTAnimationType(RCTAnimationType type)
+static NSViewAnimationOptions NSViewAnimationOptionsFromRCTAnimationType(RCTAnimationType type)
 {
   switch (type) {
     case RCTAnimationTypeLinear:
-      return UIViewAnimationOptionCurveLinear;
+      return NSViewAnimationOptionCurveLinear;
     case RCTAnimationTypeEaseIn:
-      return UIViewAnimationOptionCurveEaseIn;
+      return NSViewAnimationOptionCurveEaseIn;
     case RCTAnimationTypeEaseOut:
-      return UIViewAnimationOptionCurveEaseOut;
+      return NSViewAnimationOptionCurveEaseOut;
     case RCTAnimationTypeEaseInEaseOut:
-      return UIViewAnimationOptionCurveEaseInOut;
+      return NSViewAnimationOptionCurveEaseInOut;
     case RCTAnimationTypeKeyboard:
       // http://stackoverflow.com/questions/18870447/how-to-use-the-default-ios7-uianimation-curve
-      return (UIViewAnimationOptions)(_currentKeyboardAnimationCurve << 16);
+      return (NSViewAnimationOptions)(_currentKeyboardAnimationCurve << 16);
     default:
-      RCTLogError(@"Unsupported animation type %lld", (long long)type);
-      return UIViewAnimationOptionCurveEaseInOut;
+      RCTLogError(@"Unsupported animation type %zd", type);
+      return NSViewAnimationOptionCurveEaseInOut;
   }
 }
 
@@ -42,21 +43,21 @@ static UIViewAnimationOptions UIViewAnimationOptionsFromRCTAnimationType(RCTAnim
 + (void)initializeStatics
 {
 #if !TARGET_OS_TV
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillChangeFrame:)
-                                                 name:UIKeyboardWillChangeFrameNotification
-                                               object:nil];
-  });
+//  static dispatch_once_t onceToken;
+//  dispatch_once(&onceToken, ^{
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(keyboardWillChangeFrame:)
+//                                                 name:UIKeyboardWillChangeFrameNotification
+//                                               object:nil];
+//  });
 #endif
 }
 
 + (void)keyboardWillChangeFrame:(NSNotification *)notification
 {
 #if !TARGET_OS_TV
-  NSDictionary *userInfo = notification.userInfo;
-  _currentKeyboardAnimationCurve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
+  // NSDictionary *userInfo = notification.userInfo;
+  // _currentKeyboardAnimationCurve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
 #endif
 }
 
@@ -115,19 +116,19 @@ static UIViewAnimationOptions UIViewAnimationOptionsFromRCTAnimationType(RCTAnim
       withCompletionBlock:(void (^)(BOOL completed))completionBlock
 {
   if (_animationType == RCTAnimationTypeSpring) {
-    [UIView animateWithDuration:_duration
+    [NSView animateWithDuration:_duration
                           delay:_delay
          usingSpringWithDamping:_springDamping
           initialSpringVelocity:_initialVelocity
-                        options:UIViewAnimationOptionBeginFromCurrentState
+                        options:NSViewAnimationOptionBeginFromCurrentState
                      animations:animations
                      completion:completionBlock];
   } else {
-    UIViewAnimationOptions options =
-      UIViewAnimationOptionBeginFromCurrentState |
-      UIViewAnimationOptionsFromRCTAnimationType(_animationType);
+    NSViewAnimationOptions options =
+      NSViewAnimationOptionBeginFromCurrentState |
+      NSViewAnimationOptionsFromRCTAnimationType(_animationType);
 
-    [UIView animateWithDuration:_duration
+    [NSView animateWithDuration:_duration
                           delay:_delay
                         options:options
                      animations:animations

@@ -346,8 +346,7 @@ RCT_ENUM_CONVERTER(UIViewContentMode, (@{
   @"stretch": @(UIViewContentModeScaleToFill),
 }), UIViewContentModeScaleAspectFill, integerValue)
 
-// TODO: normalise the use of w/width so we can do away with the alias values (#6566645)
-static void RCTConvertCGStructValue(const char *type, NSArray *fields, NSDictionary *aliases, CGFloat *result, id json)
+static void convertCGStruct(const char *type, NSArray *fields, CGFloat *result, id json)
 {
   NSUInteger count = fields.count;
   if ([json isKindOfClass:[NSArray class]]) {
@@ -402,13 +401,6 @@ RCT_ENUM_CONVERTER(CGLineCap, (@{
   @"round": @(kCGLineCapRound),
   @"square": @(kCGLineCapSquare),
 }), kCGLineCapButt, intValue)
-
-RCT_CGSTRUCT_CONVERTER(CATransform3D, (@[
-  @"m11", @"m12", @"m13", @"m14",
-  @"m21", @"m22", @"m23", @"m24",
-  @"m31", @"m32", @"m33", @"m34",
-  @"m41", @"m42", @"m43", @"m44"
-]), nil)
 
 RCT_CGSTRUCT_CONVERTER(CGAffineTransform, (@[
   @"a", @"b", @"c", @"d", @"tx", @"ty"

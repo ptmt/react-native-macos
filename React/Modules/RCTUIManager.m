@@ -102,7 +102,7 @@ RCT_EXPORT_MODULE()
   RCTExecuteOnMainQueue(^{
     RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, @"UIManager invalidate", nil);
     for (NSNumber *rootViewTag in self->_rootViewTags) {
-      UIView *rootView = self->_viewRegistry[rootViewTag];
+      NSView *rootView = self->_viewRegistry[rootViewTag];
       if ([rootView conformsToProtocol:@protocol(RCTInvalidating)]) {
         [(id<RCTInvalidating>)rootView invalidate];
       }
@@ -165,7 +165,7 @@ RCT_EXPORT_MODULE()
 
   _componentDataByName = [componentDataByName copy];
 
-  [RCTAnimation initializeStatics];
+  [RCTLayoutAnimation initializeStatics];
 }
 
 #pragma mark - Event emitting
@@ -190,37 +190,37 @@ RCT_EXPORT_MODULE()
 // Names and coordinate system from html5 spec:
 // https://developer.mozilla.org/en-US/docs/Web/API/Screen.orientation
 // https://developer.mozilla.org/en-US/docs/Web/API/Screen.lockOrientation
-static NSDictionary *deviceOrientationEventBody(UIDeviceOrientation orientation)
+static NSDictionary *deviceOrientationEventBody()
 {
   NSString *name;
   NSNumber *degrees = @0;
   BOOL isLandscape = NO;
-  switch(orientation) {
-    case UIDeviceOrientationPortrait:
-      name = @"portrait-primary";
-      break;
-    case UIDeviceOrientationPortraitUpsideDown:
-      name = @"portrait-secondary";
-      degrees = @180;
-      break;
-    case UIDeviceOrientationLandscapeRight:
-      name = @"landscape-primary";
-      degrees = @-90;
-      isLandscape = YES;
-      break;
-    case UIDeviceOrientationLandscapeLeft:
-      name = @"landscape-secondary";
-      degrees = @90;
-      isLandscape = YES;
-      break;
-    case UIDeviceOrientationFaceDown:
-    case UIDeviceOrientationFaceUp:
-    case UIDeviceOrientationUnknown:
-      // Unsupported
-      return nil;
-  }
+//  switch(orientation) {
+//    case UIDeviceOrientationPortrait:
+//      name = @"portrait-primary";
+//      break;
+//    case UIDeviceOrientationPortraitUpsideDown:
+//      name = @"portrait-secondary";
+//      degrees = @180;
+//      break;
+//    case UIDeviceOrientationLandscapeRight:
+//      name = @"landscape-primary";
+//      degrees = @-90;
+//      isLandscape = YES;
+//      break;
+//    case UIDeviceOrientationLandscapeLeft:
+//      name = @"landscape-secondary";
+//      degrees = @90;
+//      isLandscape = YES;
+//      break;
+//    case UIDeviceOrientationFaceDown:
+//    case UIDeviceOrientationFaceUp:
+//    case UIDeviceOrientationUnknown:
+//      // Unsupported
+//      return nil;
+//  }
   return @{
-    @"name": name,
+    @"name": @"portrait-primary",
     @"rotationDegrees": degrees,
     @"isLandscape": @(isLandscape),
   };
@@ -228,16 +228,16 @@ static NSDictionary *deviceOrientationEventBody(UIDeviceOrientation orientation)
 
 - (void)namedOrientationDidChange
 {
-  NSDictionary *orientationEvent = deviceOrientationEventBody([UIDevice currentDevice].orientation);
-  if (!orientationEvent) {
-    return;
-  }
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-  [_bridge.eventDispatcher sendDeviceEventWithName:@"namedOrientationDidChange"
-                                              body:orientationEvent];
-#pragma clang diagnostic pop
+//  NSDictionary *orientationEvent = deviceOrientationEventBody([UIDevice currentDevice].orientation);
+//  if (!orientationEvent) {
+//    return;
+//  }
+//
+//#pragma clang diagnostic push
+//#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+//  [_bridge.eventDispatcher sendDeviceEventWithName:@"namedOrientationDidChange"
+//                                              body:orientationEvent];
+//#pragma clang diagnostic pop
 }
 #endif
 
@@ -337,7 +337,7 @@ static NSDictionary *deviceOrientationEventBody(UIDeviceOrientation orientation)
   });
 }
 
-- (void)setAvailableSize:(CGSize)availableSize forRootView:(UIView *)rootView
+- (void)setAvailableSize:(CGSize)availableSize forRootView:(NSView *)rootView
 {
   RCTAssertMainQueue();
   [self _executeBlockWithShadowView:^(RCTShadowView *shadowView) {
@@ -354,7 +354,7 @@ static NSDictionary *deviceOrientationEventBody(UIDeviceOrientation orientation)
   } forTag:rootView.reactTag];
 }
 
-- (void)setLocalData:(NSObject *)localData forView:(UIView *)view
+- (void)setLocalData:(NSObject *)localData forView:(NSView *)view
 {
   RCTAssertMainQueue();
   [self _executeBlockWithShadowView:^(RCTShadowView *shadowView) {
@@ -403,7 +403,7 @@ static NSDictionary *deviceOrientationEventBody(UIDeviceOrientation orientation)
   } forTag:view.reactTag];
 }
 
-- (void)setIntrinsicContentSize:(CGSize)intrinsicContentSize forView:(UIView *)view
+- (void)setIntrinsicContentSize:(CGSize)intrinsicContentSize forView:(NSView *)view
 {
   RCTAssertMainQueue();
   [self _executeBlockWithShadowView:^(RCTShadowView *shadowView) {
@@ -772,7 +772,7 @@ RCT_EXPORT_METHOD(removeSubviewsFromContainerWithID:(nonnull NSNumber *)containe
     // Disable user interaction while the view is animating
     // since the view is (conseptually) deleted and not supposed to be interactive.
     // removedChild.userInteractionEnabled = NO;
-    [originalSuperview insertSubview:removedChild atIndex:originalIndex];
+    [originalSuperview addSubview:removedChild];// TODO: atIndex:originalIndex];
 
     NSString *property = deletingLayoutAnimation.property;
     [deletingLayoutAnimation performAnimations:^{
@@ -963,13 +963,13 @@ RCT_EXPORT_METHOD(createView:(nonnull NSNumber *)reactTag
 
   // Dispatch view creation directly to the main thread instead of adding to
   // UIBlocks array. This way, it doesn't get deferred until after layout.
-  __block UIView *preliminaryCreatedView;
+  __block NSView *preliminaryCreatedView;
 
   RCTExecuteOnMainQueue(^{
     preliminaryCreatedView = [componentData createViewWithTag:reactTag];
   });
 
-  [self addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+  [self addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, NSView *> *viewRegistry) {
     if (!preliminaryCreatedView) {
       return;
     }
@@ -1184,9 +1184,9 @@ RCT_EXPORT_METHOD(dispatchViewManagerCommand:(nonnull NSNumber *)reactTag
     [tags addObject:shadowView.reactTag];
   }
 
-  [self addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+  [self addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, NSView *> *viewRegistry) {
     for (NSNumber *tag in tags) {
-      UIView<RCTComponent> *view = viewRegistry[tag];
+      NSView<RCTComponent> *view = viewRegistry[tag];
       [view didUpdateReactSubviews];
     }
   }];
@@ -1209,9 +1209,9 @@ RCT_EXPORT_METHOD(dispatchViewManagerCommand:(nonnull NSNumber *)reactTag
     [tags setObject:props forKey:shadowView.reactTag];
   }
 
-  [self addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+  [self addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, NSView *> *viewRegistry) {
     for (NSNumber *tag in tags) {
-      UIView<RCTComponent> *view = viewRegistry[tag];
+      NSView<RCTComponent> *view = viewRegistry[tag];
       [view didSetProps:[tags objectForKey:tag]];
     }
   }];

@@ -139,12 +139,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
     [self.layer setNeedsDisplay];
   }
 
-  if ([self respondsToSelector:@selector(setSemanticContentAttribute:)]) {
-    self.semanticContentAttribute =
-      layoutDirection == UIUserInterfaceLayoutDirectionLeftToRight ?
-        UISemanticContentAttributeForceLeftToRight :
-        UISemanticContentAttributeForceRightToLeft;
-  }
+//  if ([self respondsToSelector:@selector(setSemanticContentAttribute:)]) {
+//    self.semanticContentAttribute =
+//      layoutDirection == UIUserInterfaceLayoutDirectionLeftToRight ?
+//        UISemanticContentAttributeForceLeftToRight :
+//        UISemanticContentAttributeForceRightToLeft;
+//  }
 }
 
 - (NSString *)accessibilityLabel
@@ -433,7 +433,7 @@ static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x) {
 - (NSEdgeInsets)bordersAsInsets
 {
   const CGFloat borderWidth = MAX(0, _borderWidth);
-  const BOOL isRTL = _reactLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft;
+  const BOOL isRTL = _reactLayoutDirection == NSUserInterfaceLayoutDirectionRightToLeft;
 
   if ([[RCTI18nUtil sharedInstance] doLeftAndRightSwapInRTL]) {
     const CGFloat borderStartWidth = RCTDefaultIfNegativeTo(_borderLeftWidth, _borderStartWidth);
@@ -442,7 +442,7 @@ static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x) {
     const CGFloat directionAwareBorderLeftWidth = isRTL ? borderEndWidth : borderStartWidth;
     const CGFloat directionAwareBorderRightWidth = isRTL ? borderStartWidth : borderEndWidth;
 
-    return (UIEdgeInsets) {
+    return (NSEdgeInsets) {
       RCTDefaultIfNegativeTo(borderWidth, _borderTopWidth),
       RCTDefaultIfNegativeTo(borderWidth, directionAwareBorderLeftWidth),
       RCTDefaultIfNegativeTo(borderWidth, _borderBottomWidth),
@@ -463,7 +463,7 @@ static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x) {
 
 - (RCTCornerRadii)cornerRadii
 {
-  const BOOL isRTL = _reactLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft;
+  const BOOL isRTL = _reactLayoutDirection == NSUserInterfaceLayoutDirectionRightToLeft;
   const CGFloat radius = MAX(0, _borderRadius);
 
   CGFloat topLeftRadius;
@@ -516,7 +516,7 @@ static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x) {
 
 - (RCTBorderColors)borderColors
 {
-  const BOOL isRTL = _reactLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft;
+  const BOOL isRTL = _reactLayoutDirection == NSUserInterfaceLayoutDirectionRightToLeft;
 
   if ([[RCTI18nUtil sharedInstance] doLeftAndRightSwapInRTL]) {
     const CGColorRef borderStartColor = _borderStartColor ?: _borderLeftColor;

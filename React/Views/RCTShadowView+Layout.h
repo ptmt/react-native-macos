@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import <React/RCTShadowView.h>
 
@@ -22,9 +22,9 @@ RCT_EXTERN CGFloat RCTCoreGraphicsFloatFromYogaFloat(float value);
 
 #pragma mark - Computed Layout-Inferred Metrics
 
-@property (nonatomic, readonly) UIEdgeInsets paddingAsInsets;
-@property (nonatomic, readonly) UIEdgeInsets borderAsInsets;
-@property (nonatomic, readonly) UIEdgeInsets compoundInsets;
+@property (nonatomic, readonly) NSEdgeInsets paddingAsInsets;
+@property (nonatomic, readonly) NSEdgeInsets borderAsInsets;
+@property (nonatomic, readonly) NSEdgeInsets compoundInsets;
 @property (nonatomic, readonly) CGSize availableSize;
 
 #pragma mark - Measuring
