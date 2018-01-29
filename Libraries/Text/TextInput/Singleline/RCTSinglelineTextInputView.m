@@ -15,7 +15,7 @@
 #import <React/RCTFont.h>
 #import <React/RCTUIManager.h>
 #import <React/RCTUtils.h>
-#import <React/UIView+React.h>
+#import <React/NSView+React.h>
 
 #import "RCTBackedTextInputDelegate.h"
 #import "RCTTextSelection.h"
@@ -39,7 +39,7 @@
     _blurOnSubmit = YES;
 
     _backedTextInput = [[RCTUITextField alloc] initWithFrame:self.bounds];
-    _backedTextInput.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _backedTextInput.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
     _backedTextInput.textInputDelegate = self;
     _backedTextInput.font = self.fontAttributes.font;
 

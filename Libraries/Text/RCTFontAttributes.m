@@ -19,7 +19,7 @@
   RCTAccessibilityManager *_accessibilityManager;
 }
 
-@property (nonatomic, strong) UIFont *font;
+@property (nonatomic, strong) NSFont *font;
 
 @end
 

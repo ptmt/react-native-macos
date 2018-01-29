@@ -9,6 +9,6 @@
 
 @protocol RCTFontAttributesDelegate <NSObject>
 
-- (void)fontAttributesDidChangeWithFont:(UIFont *)font;
+- (void)fontAttributesDidChangeWithFont:(NSFont *)font;
 
 @end

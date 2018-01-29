@@ -15,7 +15,7 @@
 #import <React/RCTEventDispatcher.h>
 #import <React/RCTUIManager.h>
 #import <React/RCTUtils.h>
-#import <React/UIView+React.h>
+#import <React/NSView+React.h>
 
 #import "RCTTextSelection.h"
 
@@ -48,20 +48,20 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
   return nil;
 }
 
-- (void)setFont:(UIFont *)font
+- (void)setFont:(NSFont *)font
 {
   self.backedTextInputView.font = font;
   [self invalidateContentSize];
 }
 
-- (void)fontAttributesDidChangeWithFont:(UIFont *)font
+- (void)fontAttributesDidChangeWithFont:(NSFont *)font
 {
   self.font = font;
 }
 
 #pragma mark - Properties
 
-- (void)setReactPaddingInsets:(UIEdgeInsets)reactPaddingInsets
+- (void)setReactPaddingInsets:(NSEdgeInsets)reactPaddingInsets
 {
   _reactPaddingInsets = reactPaddingInsets;
   // We apply `paddingInsets` as `backedTextInputView`'s `textContainerInset`.
@@ -69,18 +69,18 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
   [self setNeedsLayout];
 }
 
-- (void)setReactBorderInsets:(UIEdgeInsets)reactBorderInsets
+- (void)setReactBorderInsets:(NSEdgeInsets)reactBorderInsets
 {
   _reactBorderInsets = reactBorderInsets;
   // We apply `borderInsets` as `backedTextInputView` layout offset.
-  self.backedTextInputView.frame = UIEdgeInsetsInsetRect(self.bounds, reactBorderInsets);
+  self.backedTextInputView.frame = NSEdgeInsetsInsetRect(self.bounds, reactBorderInsets);
   [self setNeedsLayout];
 }
 
 - (RCTTextSelection *)selection
 {
   id<RCTBackedTextInputViewProtocol> backedTextInput = self.backedTextInputView;
-  UITextRange *selectedTextRange = backedTextInput.selectedTextRange;
+  NSTextRange *selectedTextRange = backedTextInput.selectedTextRange;
   return [[RCTTextSelection new] initWithStart:[backedTextInput offsetFromPosition:backedTextInput.beginningOfDocument toPosition:selectedTextRange.start]
                                            end:[backedTextInput offsetFromPosition:backedTextInput.beginningOfDocument toPosition:selectedTextRange.end]];
 }
@@ -93,10 +93,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
 
   id<RCTBackedTextInputViewProtocol> backedTextInput = self.backedTextInputView;
 
-  UITextRange *previousSelectedTextRange = backedTextInput.selectedTextRange;
-  UITextPosition *start = [backedTextInput positionFromPosition:backedTextInput.beginningOfDocument offset:selection.start];
-  UITextPosition *end = [backedTextInput positionFromPosition:backedTextInput.beginningOfDocument offset:selection.end];
-  UITextRange *selectedTextRange = [backedTextInput textRangeFromPosition:start toPosition:end];
+  NSRange previousSelectedTextRange = backedTextInput.;
+  NSTextPosition *start = [backedTextInput positionFromPosition:backedTextInput.beginningOfDocument offset:selection.start];
+  NSTextPosition *end = [backedTextInput positionFromPosition:backedTextInput.beginningOfDocument offset:selection.end];
+  NSRange selectedTextRange = [backedTextInput textRangeFromPosition:start toPosition:end];
 
   NSInteger eventLag = _nativeEventCount - _mostRecentEventCount;
   if (eventLag == 0 && ![previousSelectedTextRange isEqual:selectedTextRange]) {

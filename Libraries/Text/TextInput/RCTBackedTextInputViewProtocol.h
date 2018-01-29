@@ -7,20 +7,20 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 @protocol RCTBackedTextInputDelegate;
 
-@protocol RCTBackedTextInputViewProtocol <UITextInput>
+@protocol RCTBackedTextInputViewProtocol <NSTextInput>
 
 @property (nonatomic, copy, nullable) NSString *text;
-@property (nonatomic, strong, nullable) UIColor *textColor;
+@property (nonatomic, strong, nullable) NSColor *textColor;
 @property (nonatomic, copy, nullable) NSString *placeholder;
-@property (nonatomic, strong, nullable) UIColor *placeholderColor;
+@property (nonatomic, strong, nullable) NSColor *placeholderColor;
 @property (nonatomic, assign, readonly) BOOL textWasPasted;
-@property (nonatomic, strong, nullable) UIFont *font;
-@property (nonatomic, assign) UIEdgeInsets textContainerInset;
-@property (nonatomic, strong, nullable) UIView *inputAccessoryView;
+@property (nonatomic, strong, nullable) NSFont *font;
+@property (nonatomic, assign) NSEdgeInsets textContainerInset;
+@property (nonatomic, strong, nullable) NSView *inputAccessoryView;
 @property (nonatomic, weak, nullable) id<RCTBackedTextInputDelegate> textInputDelegate;
 @property (nonatomic, readonly) CGSize contentSize;
 
@@ -29,7 +29,7 @@
 // explicitly specify should `delegate` be notified about the change or not.
 // If the change was initiated programmatically, we must NOT notify the delegate.
 // If the change was a result of user actions (like typing or touches), we MUST notify the delegate.
-- (void)setSelectedTextRange:(nullable UITextRange *)selectedTextRange NS_UNAVAILABLE;
-- (void)setSelectedTextRange:(nullable UITextRange *)selectedTextRange notifyDelegate:(BOOL)notifyDelegate;
+- (void)setSelectedTextRange:(NSRange)selectedTextRange NS_UNAVAILABLE;
+- (void)setSelectedTextRange:(NSRange)selectedTextRange notifyDelegate:(BOOL)notifyDelegate;
 
 @end

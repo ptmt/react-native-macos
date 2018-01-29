@@ -9,16 +9,16 @@
 
 #import <AppKit/AppKit.h>
 
-#import <React/RCTComponent.h>
-#import <React/RCTView.h>
+@class RCTEventDispatcher;
 
-#import "RCTBaseTextInputView.h"
+@interface RCTSecureTextField : NSSecureTextField <NSTextFieldDelegate>
 
-@class RCTUITextField;
-
-@interface RCTSinglelineTextInputView : RCTBaseTextInputView
-
-@property (nonatomic, assign) BOOL caretHidden;
+@property (nonatomic, assign) BOOL selectTextOnFocus;
+@property (nonatomic, assign) NSEdgeInsets contentInset;
+@property (nonatomic, assign) NSInteger mostRecentEventCount;
 @property (nonatomic, strong) NSNumber *maxLength;
 
+- (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
+
 @end
+

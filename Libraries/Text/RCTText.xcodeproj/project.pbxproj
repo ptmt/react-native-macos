@@ -7,9 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5989E14D20018A2200EA444A /* RCTBaseTextInputViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5989E14C20018A2200EA444A /* RCTBaseTextInputViewManager.m */; };
-		5989E14E20018A6600EA444A /* RCTBaseTextInputViewManager.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 5989E14B20018A2200EA444A /* RCTBaseTextInputViewManager.h */; };
-		5989E14F20018A7800EA444A /* RCTBaseTextInputViewManager.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 5989E14B20018A2200EA444A /* RCTBaseTextInputViewManager.h */; };
 		59E604521FE9CAF100BD90C5 /* RCTTextShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E6042F1FE9CAF100BD90C5 /* RCTTextShadowView.m */; };
 		59E604531FE9CAF100BD90C5 /* RCTTextShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E6042F1FE9CAF100BD90C5 /* RCTTextShadowView.m */; };
 		59E604541FE9CAF100BD90C5 /* RCTTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E604311FE9CAF100BD90C5 /* RCTTextView.m */; };
@@ -20,29 +17,6 @@
 		59E604591FE9CAF100BD90C5 /* RCTRawTextShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E604341FE9CAF100BD90C5 /* RCTRawTextShadowView.m */; };
 		59E6045A1FE9CAF100BD90C5 /* RCTRawTextViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E604361FE9CAF100BD90C5 /* RCTRawTextViewManager.m */; };
 		59E6045B1FE9CAF100BD90C5 /* RCTRawTextViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E604361FE9CAF100BD90C5 /* RCTRawTextViewManager.m */; };
-		59E6045C1FE9CAF100BD90C5 /* RCTMultilineTextInputShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E6043A1FE9CAF100BD90C5 /* RCTMultilineTextInputShadowView.m */; };
-		59E6045D1FE9CAF100BD90C5 /* RCTMultilineTextInputShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E6043A1FE9CAF100BD90C5 /* RCTMultilineTextInputShadowView.m */; };
-		59E6045E1FE9CAF100BD90C5 /* RCTMultilineTextInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E6043C1FE9CAF100BD90C5 /* RCTMultilineTextInputView.m */; };
-		59E6045F1FE9CAF100BD90C5 /* RCTMultilineTextInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E6043C1FE9CAF100BD90C5 /* RCTMultilineTextInputView.m */; };
-		59E604601FE9CAF100BD90C5 /* RCTMultilineTextInputViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E6043E1FE9CAF100BD90C5 /* RCTMultilineTextInputViewManager.m */; };
-		59E604611FE9CAF100BD90C5 /* RCTMultilineTextInputViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E6043E1FE9CAF100BD90C5 /* RCTMultilineTextInputViewManager.m */; };
-		59E604621FE9CAF100BD90C5 /* RCTUITextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E604401FE9CAF100BD90C5 /* RCTUITextView.m */; };
-		59E604631FE9CAF100BD90C5 /* RCTUITextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E604401FE9CAF100BD90C5 /* RCTUITextView.m */; };
-		59E604641FE9CAF100BD90C5 /* RCTBackedTextInputDelegateAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E604431FE9CAF100BD90C5 /* RCTBackedTextInputDelegateAdapter.m */; };
-		59E604651FE9CAF100BD90C5 /* RCTBackedTextInputDelegateAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E604431FE9CAF100BD90C5 /* RCTBackedTextInputDelegateAdapter.m */; };
-		59E604661FE9CAF100BD90C5 /* RCTBaseTextInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E604461FE9CAF100BD90C5 /* RCTBaseTextInputView.m */; };
-		59E604671FE9CAF100BD90C5 /* RCTBaseTextInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E604461FE9CAF100BD90C5 /* RCTBaseTextInputView.m */; };
-		59E604681FE9CAF100BD90C5 /* RCTTextSelection.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E604481FE9CAF100BD90C5 /* RCTTextSelection.m */; };
-		59E604691FE9CAF100BD90C5 /* RCTTextSelection.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E604481FE9CAF100BD90C5 /* RCTTextSelection.m */; };
-		59E6046A1FE9CAF100BD90C5 /* RCTSinglelineTextInputShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E6044B1FE9CAF100BD90C5 /* RCTSinglelineTextInputShadowView.m */; };
-		59E6046B1FE9CAF100BD90C5 /* RCTSinglelineTextInputShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E6044B1FE9CAF100BD90C5 /* RCTSinglelineTextInputShadowView.m */; };
-		59E6046C1FE9CAF100BD90C5 /* RCTSinglelineTextInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E6044D1FE9CAF100BD90C5 /* RCTSinglelineTextInputView.m */; };
-		59E6046D1FE9CAF100BD90C5 /* RCTSinglelineTextInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E6044D1FE9CAF100BD90C5 /* RCTSinglelineTextInputView.m */; };
-		59E6046E1FE9CAF100BD90C5 /* RCTSinglelineTextInputViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E6044F1FE9CAF100BD90C5 /* RCTSinglelineTextInputViewManager.m */; };
-		59E6046F1FE9CAF100BD90C5 /* RCTSinglelineTextInputViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E6044F1FE9CAF100BD90C5 /* RCTSinglelineTextInputViewManager.m */; };
-		59E604701FE9CAF100BD90C5 /* RCTUITextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E604511FE9CAF100BD90C5 /* RCTUITextField.m */; };
-		59E604711FE9CAF100BD90C5 /* RCTUITextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E604511FE9CAF100BD90C5 /* RCTUITextField.m */; };
-		59E604721FE9CB3F00BD90C5 /* RCTConvert+Text.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = AF3225F71DE5574F00D3E7E7 /* RCTConvert+Text.h */; };
 		59E604731FE9CB3F00BD90C5 /* RCTFontAttributes.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = A85C82981F742AA20036C019 /* RCTFontAttributes.h */; };
 		59E604741FE9CB3F00BD90C5 /* RCTFontAttributesDelegate.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = A85C82BA1F742D8F0036C019 /* RCTFontAttributesDelegate.h */; };
 		59E604751FE9CB3F00BD90C5 /* RCTRawTextShadowView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E6042C1FE9CAF100BD90C5 /* RCTRawTextShadowView.h */; };
@@ -50,20 +24,6 @@
 		59E604771FE9CB3F00BD90C5 /* RCTTextShadowView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E6042E1FE9CAF100BD90C5 /* RCTTextShadowView.h */; };
 		59E604781FE9CB3F00BD90C5 /* RCTTextView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604301FE9CAF100BD90C5 /* RCTTextView.h */; };
 		59E604791FE9CB3F00BD90C5 /* RCTTextViewManager.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604321FE9CAF100BD90C5 /* RCTTextViewManager.h */; };
-		59E6047A1FE9CB3F00BD90C5 /* RCTMultilineTextInputShadowView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604391FE9CAF100BD90C5 /* RCTMultilineTextInputShadowView.h */; };
-		59E6047B1FE9CB3F00BD90C5 /* RCTMultilineTextInputView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E6043B1FE9CAF100BD90C5 /* RCTMultilineTextInputView.h */; };
-		59E6047C1FE9CB3F00BD90C5 /* RCTMultilineTextInputViewManager.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E6043D1FE9CAF100BD90C5 /* RCTMultilineTextInputViewManager.h */; };
-		59E6047D1FE9CB3F00BD90C5 /* RCTUITextView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E6043F1FE9CAF100BD90C5 /* RCTUITextView.h */; };
-		59E6047E1FE9CB3F00BD90C5 /* RCTBackedTextInputDelegate.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604411FE9CAF100BD90C5 /* RCTBackedTextInputDelegate.h */; };
-		59E6047F1FE9CB3F00BD90C5 /* RCTBackedTextInputDelegateAdapter.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604421FE9CAF100BD90C5 /* RCTBackedTextInputDelegateAdapter.h */; };
-		59E604801FE9CB3F00BD90C5 /* RCTBackedTextInputViewProtocol.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604441FE9CAF100BD90C5 /* RCTBackedTextInputViewProtocol.h */; };
-		59E604811FE9CB3F00BD90C5 /* RCTBaseTextInputView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604451FE9CAF100BD90C5 /* RCTBaseTextInputView.h */; };
-		59E604821FE9CB3F00BD90C5 /* RCTTextSelection.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604471FE9CAF100BD90C5 /* RCTTextSelection.h */; };
-		59E604831FE9CB3F00BD90C5 /* RCTSinglelineTextInputShadowView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E6044A1FE9CAF100BD90C5 /* RCTSinglelineTextInputShadowView.h */; };
-		59E604841FE9CB3F00BD90C5 /* RCTSinglelineTextInputView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E6044C1FE9CAF100BD90C5 /* RCTSinglelineTextInputView.h */; };
-		59E604851FE9CB3F00BD90C5 /* RCTSinglelineTextInputViewManager.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E6044E1FE9CAF100BD90C5 /* RCTSinglelineTextInputViewManager.h */; };
-		59E604861FE9CB3F00BD90C5 /* RCTUITextField.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604501FE9CAF100BD90C5 /* RCTUITextField.h */; };
-		59E604871FE9CB4A00BD90C5 /* RCTConvert+Text.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = AF3225F71DE5574F00D3E7E7 /* RCTConvert+Text.h */; };
 		59E604881FE9CB4A00BD90C5 /* RCTFontAttributes.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = A85C82981F742AA20036C019 /* RCTFontAttributes.h */; };
 		59E604891FE9CB4A00BD90C5 /* RCTFontAttributesDelegate.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = A85C82BA1F742D8F0036C019 /* RCTFontAttributesDelegate.h */; };
 		59E6048A1FE9CB4A00BD90C5 /* RCTRawTextShadowView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E6042C1FE9CAF100BD90C5 /* RCTRawTextShadowView.h */; };
@@ -71,23 +31,17 @@
 		59E6048C1FE9CB4A00BD90C5 /* RCTTextShadowView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E6042E1FE9CAF100BD90C5 /* RCTTextShadowView.h */; };
 		59E6048D1FE9CB4A00BD90C5 /* RCTTextView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604301FE9CAF100BD90C5 /* RCTTextView.h */; };
 		59E6048E1FE9CB4A00BD90C5 /* RCTTextViewManager.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604321FE9CAF100BD90C5 /* RCTTextViewManager.h */; };
-		59E6048F1FE9CB4A00BD90C5 /* RCTMultilineTextInputShadowView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604391FE9CAF100BD90C5 /* RCTMultilineTextInputShadowView.h */; };
-		59E604901FE9CB4A00BD90C5 /* RCTMultilineTextInputView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E6043B1FE9CAF100BD90C5 /* RCTMultilineTextInputView.h */; };
-		59E604911FE9CB4A00BD90C5 /* RCTMultilineTextInputViewManager.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E6043D1FE9CAF100BD90C5 /* RCTMultilineTextInputViewManager.h */; };
-		59E604921FE9CB4A00BD90C5 /* RCTUITextView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E6043F1FE9CAF100BD90C5 /* RCTUITextView.h */; };
-		59E604931FE9CB4A00BD90C5 /* RCTBackedTextInputDelegate.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604411FE9CAF100BD90C5 /* RCTBackedTextInputDelegate.h */; };
-		59E604941FE9CB4A00BD90C5 /* RCTBackedTextInputDelegateAdapter.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604421FE9CAF100BD90C5 /* RCTBackedTextInputDelegateAdapter.h */; };
-		59E604951FE9CB4A00BD90C5 /* RCTBackedTextInputViewProtocol.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604441FE9CAF100BD90C5 /* RCTBackedTextInputViewProtocol.h */; };
-		59E604961FE9CB4A00BD90C5 /* RCTBaseTextInputView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604451FE9CAF100BD90C5 /* RCTBaseTextInputView.h */; };
-		59E604971FE9CB4A00BD90C5 /* RCTTextSelection.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604471FE9CAF100BD90C5 /* RCTTextSelection.h */; };
-		59E604981FE9CB4A00BD90C5 /* RCTSinglelineTextInputShadowView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E6044A1FE9CAF100BD90C5 /* RCTSinglelineTextInputShadowView.h */; };
-		59E604991FE9CB4A00BD90C5 /* RCTSinglelineTextInputView.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E6044C1FE9CAF100BD90C5 /* RCTSinglelineTextInputView.h */; };
-		59E6049A1FE9CB4A00BD90C5 /* RCTSinglelineTextInputViewManager.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E6044E1FE9CAF100BD90C5 /* RCTSinglelineTextInputViewManager.h */; };
-		59E6049B1FE9CB4A00BD90C5 /* RCTUITextField.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 59E604501FE9CAF100BD90C5 /* RCTUITextField.h */; };
 		59E8C5CC1F8833D100204F5E /* RCTFontAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = A85C82991F742AA20036C019 /* RCTFontAttributes.m */; };
 		A85C829A1F742AA20036C019 /* RCTFontAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = A85C82991F742AA20036C019 /* RCTFontAttributes.m */; };
-		AF3225F91DE5574F00D3E7E7 /* RCTConvert+Text.m in Sources */ = {isa = PBXBuildFile; fileRef = AF3225F81DE5574F00D3E7E7 /* RCTConvert+Text.m */; };
-		AF3225FA1DE5574F00D3E7E7 /* RCTConvert+Text.m in Sources */ = {isa = PBXBuildFile; fileRef = AF3225F81DE5574F00D3E7E7 /* RCTConvert+Text.m */; };
+		D4EEE317201FA3B300C4CBB6 /* RCTMultilineTextInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EEE303201FA3B100C4CBB6 /* RCTMultilineTextInputView.m */; };
+		D4EEE318201FA3B300C4CBB6 /* RCTUITextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EEE307201FA3B100C4CBB6 /* RCTUITextView.m */; };
+		D4EEE31A201FA3B300C4CBB6 /* RCTShadowTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EEE30C201FA3B200C4CBB6 /* RCTShadowTextView.m */; };
+		D4EEE31B201FA3B300C4CBB6 /* RCTTextSelection.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EEE30D201FA3B200C4CBB6 /* RCTTextSelection.m */; };
+		D4EEE31C201FA3B300C4CBB6 /* RCTTextFieldManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EEE310201FA3B200C4CBB6 /* RCTTextFieldManager.m */; };
+		D4EEE31D201FA3B300C4CBB6 /* RCTSecureTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EEE312201FA3B200C4CBB6 /* RCTSecureTextField.m */; };
+		D4EEE31E201FA3B300C4CBB6 /* RCTTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EEE313201FA3B200C4CBB6 /* RCTTextField.m */; };
+		D4EEE31F201FA3B300C4CBB6 /* RCTShadowTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EEE315201FA3B300C4CBB6 /* RCTShadowTextField.m */; };
+		D4EEE320201FA3B300C4CBB6 /* RCTTextViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EEE316201FA3B300C4CBB6 /* RCTTextViewManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -97,8 +51,6 @@
 			dstPath = include/RCTText;
 			dstSubfolderSpec = 16;
 			files = (
-				5989E14E20018A6600EA444A /* RCTBaseTextInputViewManager.h in Copy Headers */,
-				59E604871FE9CB4A00BD90C5 /* RCTConvert+Text.h in Copy Headers */,
 				59E604881FE9CB4A00BD90C5 /* RCTFontAttributes.h in Copy Headers */,
 				59E604891FE9CB4A00BD90C5 /* RCTFontAttributesDelegate.h in Copy Headers */,
 				59E6048A1FE9CB4A00BD90C5 /* RCTRawTextShadowView.h in Copy Headers */,
@@ -106,19 +58,6 @@
 				59E6048C1FE9CB4A00BD90C5 /* RCTTextShadowView.h in Copy Headers */,
 				59E6048D1FE9CB4A00BD90C5 /* RCTTextView.h in Copy Headers */,
 				59E6048E1FE9CB4A00BD90C5 /* RCTTextViewManager.h in Copy Headers */,
-				59E6048F1FE9CB4A00BD90C5 /* RCTMultilineTextInputShadowView.h in Copy Headers */,
-				59E604901FE9CB4A00BD90C5 /* RCTMultilineTextInputView.h in Copy Headers */,
-				59E604911FE9CB4A00BD90C5 /* RCTMultilineTextInputViewManager.h in Copy Headers */,
-				59E604921FE9CB4A00BD90C5 /* RCTUITextView.h in Copy Headers */,
-				59E604931FE9CB4A00BD90C5 /* RCTBackedTextInputDelegate.h in Copy Headers */,
-				59E604941FE9CB4A00BD90C5 /* RCTBackedTextInputDelegateAdapter.h in Copy Headers */,
-				59E604951FE9CB4A00BD90C5 /* RCTBackedTextInputViewProtocol.h in Copy Headers */,
-				59E604961FE9CB4A00BD90C5 /* RCTBaseTextInputView.h in Copy Headers */,
-				59E604971FE9CB4A00BD90C5 /* RCTTextSelection.h in Copy Headers */,
-				59E604981FE9CB4A00BD90C5 /* RCTSinglelineTextInputShadowView.h in Copy Headers */,
-				59E604991FE9CB4A00BD90C5 /* RCTSinglelineTextInputView.h in Copy Headers */,
-				59E6049A1FE9CB4A00BD90C5 /* RCTSinglelineTextInputViewManager.h in Copy Headers */,
-				59E6049B1FE9CB4A00BD90C5 /* RCTUITextField.h in Copy Headers */,
 			);
 			name = "Copy Headers";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -129,8 +68,6 @@
 			dstPath = include/RCTText;
 			dstSubfolderSpec = 16;
 			files = (
-				5989E14F20018A7800EA444A /* RCTBaseTextInputViewManager.h in Copy Headers */,
-				59E604721FE9CB3F00BD90C5 /* RCTConvert+Text.h in Copy Headers */,
 				59E604731FE9CB3F00BD90C5 /* RCTFontAttributes.h in Copy Headers */,
 				59E604741FE9CB3F00BD90C5 /* RCTFontAttributesDelegate.h in Copy Headers */,
 				59E604751FE9CB3F00BD90C5 /* RCTRawTextShadowView.h in Copy Headers */,
@@ -138,19 +75,6 @@
 				59E604771FE9CB3F00BD90C5 /* RCTTextShadowView.h in Copy Headers */,
 				59E604781FE9CB3F00BD90C5 /* RCTTextView.h in Copy Headers */,
 				59E604791FE9CB3F00BD90C5 /* RCTTextViewManager.h in Copy Headers */,
-				59E6047A1FE9CB3F00BD90C5 /* RCTMultilineTextInputShadowView.h in Copy Headers */,
-				59E6047B1FE9CB3F00BD90C5 /* RCTMultilineTextInputView.h in Copy Headers */,
-				59E6047C1FE9CB3F00BD90C5 /* RCTMultilineTextInputViewManager.h in Copy Headers */,
-				59E6047D1FE9CB3F00BD90C5 /* RCTUITextView.h in Copy Headers */,
-				59E6047E1FE9CB3F00BD90C5 /* RCTBackedTextInputDelegate.h in Copy Headers */,
-				59E6047F1FE9CB3F00BD90C5 /* RCTBackedTextInputDelegateAdapter.h in Copy Headers */,
-				59E604801FE9CB3F00BD90C5 /* RCTBackedTextInputViewProtocol.h in Copy Headers */,
-				59E604811FE9CB3F00BD90C5 /* RCTBaseTextInputView.h in Copy Headers */,
-				59E604821FE9CB3F00BD90C5 /* RCTTextSelection.h in Copy Headers */,
-				59E604831FE9CB3F00BD90C5 /* RCTSinglelineTextInputShadowView.h in Copy Headers */,
-				59E604841FE9CB3F00BD90C5 /* RCTSinglelineTextInputView.h in Copy Headers */,
-				59E604851FE9CB3F00BD90C5 /* RCTSinglelineTextInputViewManager.h in Copy Headers */,
-				59E604861FE9CB3F00BD90C5 /* RCTUITextField.h in Copy Headers */,
 			);
 			name = "Copy Headers";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -160,8 +84,6 @@
 /* Begin PBXFileReference section */
 		2D2A287B1D9B048500D4039D /* libRCTText-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libRCTText-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		58B5119B1A9E6C1200147676 /* libRCTText.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTText.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		5989E14B20018A2200EA444A /* RCTBaseTextInputViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTBaseTextInputViewManager.h; sourceTree = "<group>"; };
-		5989E14C20018A2200EA444A /* RCTBaseTextInputViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTBaseTextInputViewManager.m; sourceTree = "<group>"; };
 		59E6042C1FE9CAF100BD90C5 /* RCTRawTextShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTRawTextShadowView.h; sourceTree = "<group>"; };
 		59E6042E1FE9CAF100BD90C5 /* RCTTextShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTTextShadowView.h; sourceTree = "<group>"; };
 		59E6042F1FE9CAF100BD90C5 /* RCTTextShadowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTTextShadowView.m; sourceTree = "<group>"; };
@@ -172,44 +94,35 @@
 		59E604341FE9CAF100BD90C5 /* RCTRawTextShadowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTRawTextShadowView.m; sourceTree = "<group>"; };
 		59E604351FE9CAF100BD90C5 /* RCTRawTextViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTRawTextViewManager.h; sourceTree = "<group>"; };
 		59E604361FE9CAF100BD90C5 /* RCTRawTextViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTRawTextViewManager.m; sourceTree = "<group>"; };
-		59E604391FE9CAF100BD90C5 /* RCTMultilineTextInputShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTMultilineTextInputShadowView.h; sourceTree = "<group>"; };
-		59E6043A1FE9CAF100BD90C5 /* RCTMultilineTextInputShadowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTMultilineTextInputShadowView.m; sourceTree = "<group>"; };
-		59E6043B1FE9CAF100BD90C5 /* RCTMultilineTextInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTMultilineTextInputView.h; sourceTree = "<group>"; };
-		59E6043C1FE9CAF100BD90C5 /* RCTMultilineTextInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTMultilineTextInputView.m; sourceTree = "<group>"; };
-		59E6043D1FE9CAF100BD90C5 /* RCTMultilineTextInputViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTMultilineTextInputViewManager.h; sourceTree = "<group>"; };
-		59E6043E1FE9CAF100BD90C5 /* RCTMultilineTextInputViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTMultilineTextInputViewManager.m; sourceTree = "<group>"; };
-		59E6043F1FE9CAF100BD90C5 /* RCTUITextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTUITextView.h; sourceTree = "<group>"; };
-		59E604401FE9CAF100BD90C5 /* RCTUITextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTUITextView.m; sourceTree = "<group>"; };
-		59E604411FE9CAF100BD90C5 /* RCTBackedTextInputDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTBackedTextInputDelegate.h; sourceTree = "<group>"; };
-		59E604421FE9CAF100BD90C5 /* RCTBackedTextInputDelegateAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTBackedTextInputDelegateAdapter.h; sourceTree = "<group>"; };
-		59E604431FE9CAF100BD90C5 /* RCTBackedTextInputDelegateAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTBackedTextInputDelegateAdapter.m; sourceTree = "<group>"; };
-		59E604441FE9CAF100BD90C5 /* RCTBackedTextInputViewProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTBackedTextInputViewProtocol.h; sourceTree = "<group>"; };
-		59E604451FE9CAF100BD90C5 /* RCTBaseTextInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTBaseTextInputView.h; sourceTree = "<group>"; };
-		59E604461FE9CAF100BD90C5 /* RCTBaseTextInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTBaseTextInputView.m; sourceTree = "<group>"; };
-		59E604471FE9CAF100BD90C5 /* RCTTextSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTTextSelection.h; sourceTree = "<group>"; };
-		59E604481FE9CAF100BD90C5 /* RCTTextSelection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTTextSelection.m; sourceTree = "<group>"; };
-		59E6044A1FE9CAF100BD90C5 /* RCTSinglelineTextInputShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTSinglelineTextInputShadowView.h; sourceTree = "<group>"; };
-		59E6044B1FE9CAF100BD90C5 /* RCTSinglelineTextInputShadowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTSinglelineTextInputShadowView.m; sourceTree = "<group>"; };
-		59E6044C1FE9CAF100BD90C5 /* RCTSinglelineTextInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTSinglelineTextInputView.h; sourceTree = "<group>"; };
-		59E6044D1FE9CAF100BD90C5 /* RCTSinglelineTextInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTSinglelineTextInputView.m; sourceTree = "<group>"; };
-		59E6044E1FE9CAF100BD90C5 /* RCTSinglelineTextInputViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTSinglelineTextInputViewManager.h; sourceTree = "<group>"; };
-		59E6044F1FE9CAF100BD90C5 /* RCTSinglelineTextInputViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTSinglelineTextInputViewManager.m; sourceTree = "<group>"; };
-		59E604501FE9CAF100BD90C5 /* RCTUITextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTUITextField.h; sourceTree = "<group>"; };
-		59E604511FE9CAF100BD90C5 /* RCTUITextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTUITextField.m; sourceTree = "<group>"; };
 		A85C82981F742AA20036C019 /* RCTFontAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTFontAttributes.h; sourceTree = "<group>"; };
 		A85C82991F742AA20036C019 /* RCTFontAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTFontAttributes.m; sourceTree = "<group>"; };
 		A85C82BA1F742D8F0036C019 /* RCTFontAttributesDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTFontAttributesDelegate.h; sourceTree = "<group>"; };
-		AF3225F71DE5574F00D3E7E7 /* RCTConvert+Text.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+Text.h"; sourceTree = "<group>"; };
-		AF3225F81DE5574F00D3E7E7 /* RCTConvert+Text.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+Text.m"; sourceTree = "<group>"; };
+		D4EEE303201FA3B100C4CBB6 /* RCTMultilineTextInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTMultilineTextInputView.m; path = TextInputLegacy/RCTMultilineTextInputView.m; sourceTree = "<group>"; };
+		D4EEE304201FA3B100C4CBB6 /* RCTShadowTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTShadowTextField.h; path = TextInputLegacy/RCTShadowTextField.h; sourceTree = "<group>"; };
+		D4EEE305201FA3B100C4CBB6 /* RCTShadowTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTShadowTextView.h; path = TextInputLegacy/RCTShadowTextView.h; sourceTree = "<group>"; };
+		D4EEE306201FA3B100C4CBB6 /* RCTTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTTextField.h; path = TextInputLegacy/RCTTextField.h; sourceTree = "<group>"; };
+		D4EEE307201FA3B100C4CBB6 /* RCTUITextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTUITextView.m; path = TextInputLegacy/RCTUITextView.m; sourceTree = "<group>"; };
+		D4EEE308201FA3B100C4CBB6 /* RCTTextFieldManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTTextFieldManager.h; path = TextInputLegacy/RCTTextFieldManager.h; sourceTree = "<group>"; };
+		D4EEE309201FA3B100C4CBB6 /* RCTTextSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTTextSelection.h; path = TextInputLegacy/RCTTextSelection.h; sourceTree = "<group>"; };
+		D4EEE30A201FA3B100C4CBB6 /* RCTSecureTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTSecureTextField.h; path = TextInputLegacy/RCTSecureTextField.h; sourceTree = "<group>"; };
+		D4EEE30C201FA3B200C4CBB6 /* RCTShadowTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTShadowTextView.m; path = TextInputLegacy/RCTShadowTextView.m; sourceTree = "<group>"; };
+		D4EEE30D201FA3B200C4CBB6 /* RCTTextSelection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTTextSelection.m; path = TextInputLegacy/RCTTextSelection.m; sourceTree = "<group>"; };
+		D4EEE30E201FA3B200C4CBB6 /* RCTMultilineTextInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTMultilineTextInputView.h; path = TextInputLegacy/RCTMultilineTextInputView.h; sourceTree = "<group>"; };
+		D4EEE30F201FA3B200C4CBB6 /* RCTTextViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTTextViewManager.h; path = TextInputLegacy/RCTTextViewManager.h; sourceTree = "<group>"; };
+		D4EEE310201FA3B200C4CBB6 /* RCTTextFieldManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTTextFieldManager.m; path = TextInputLegacy/RCTTextFieldManager.m; sourceTree = "<group>"; };
+		D4EEE311201FA3B200C4CBB6 /* RCTUITextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTUITextView.h; path = TextInputLegacy/RCTUITextView.h; sourceTree = "<group>"; };
+		D4EEE312201FA3B200C4CBB6 /* RCTSecureTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTSecureTextField.m; path = TextInputLegacy/RCTSecureTextField.m; sourceTree = "<group>"; };
+		D4EEE313201FA3B200C4CBB6 /* RCTTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTTextField.m; path = TextInputLegacy/RCTTextField.m; sourceTree = "<group>"; };
+		D4EEE315201FA3B300C4CBB6 /* RCTShadowTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTShadowTextField.m; path = TextInputLegacy/RCTShadowTextField.m; sourceTree = "<group>"; };
+		D4EEE316201FA3B300C4CBB6 /* RCTTextViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTTextViewManager.m; path = TextInputLegacy/RCTTextViewManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		58B511921A9E6C1200147676 = {
 			isa = PBXGroup;
 			children = (
+				D4EEE302201FA3A100C4CBB6 /* TextInputLegacy */,
 				58B5119C1A9E6C1200147676 /* Products */,
-				AF3225F71DE5574F00D3E7E7 /* RCTConvert+Text.h */,
-				AF3225F81DE5574F00D3E7E7 /* RCTConvert+Text.m */,
 				A85C82981F742AA20036C019 /* RCTFontAttributes.h */,
 				A85C82991F742AA20036C019 /* RCTFontAttributes.m */,
 				A85C82BA1F742D8F0036C019 /* RCTFontAttributesDelegate.h */,
@@ -218,7 +131,6 @@
 				59E604351FE9CAF100BD90C5 /* RCTRawTextViewManager.h */,
 				59E604361FE9CAF100BD90C5 /* RCTRawTextViewManager.m */,
 				59E6042D1FE9CAF100BD90C5 /* Text */,
-				59E604371FE9CAF100BD90C5 /* TextInput */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -247,53 +159,29 @@
 			path = Text;
 			sourceTree = "<group>";
 		};
-		59E604371FE9CAF100BD90C5 /* TextInput */ = {
+		D4EEE302201FA3A100C4CBB6 /* TextInputLegacy */ = {
 			isa = PBXGroup;
 			children = (
-				59E604381FE9CAF100BD90C5 /* Multiline */,
-				59E604411FE9CAF100BD90C5 /* RCTBackedTextInputDelegate.h */,
-				59E604421FE9CAF100BD90C5 /* RCTBackedTextInputDelegateAdapter.h */,
-				59E604431FE9CAF100BD90C5 /* RCTBackedTextInputDelegateAdapter.m */,
-				59E604441FE9CAF100BD90C5 /* RCTBackedTextInputViewProtocol.h */,
-				59E604451FE9CAF100BD90C5 /* RCTBaseTextInputView.h */,
-				59E604461FE9CAF100BD90C5 /* RCTBaseTextInputView.m */,
-				5989E14B20018A2200EA444A /* RCTBaseTextInputViewManager.h */,
-				5989E14C20018A2200EA444A /* RCTBaseTextInputViewManager.m */,
-				59E604471FE9CAF100BD90C5 /* RCTTextSelection.h */,
-				59E604481FE9CAF100BD90C5 /* RCTTextSelection.m */,
-				59E604491FE9CAF100BD90C5 /* Singleline */,
+				D4EEE30E201FA3B200C4CBB6 /* RCTMultilineTextInputView.h */,
+				D4EEE303201FA3B100C4CBB6 /* RCTMultilineTextInputView.m */,
+				D4EEE30A201FA3B100C4CBB6 /* RCTSecureTextField.h */,
+				D4EEE312201FA3B200C4CBB6 /* RCTSecureTextField.m */,
+				D4EEE304201FA3B100C4CBB6 /* RCTShadowTextField.h */,
+				D4EEE315201FA3B300C4CBB6 /* RCTShadowTextField.m */,
+				D4EEE305201FA3B100C4CBB6 /* RCTShadowTextView.h */,
+				D4EEE30C201FA3B200C4CBB6 /* RCTShadowTextView.m */,
+				D4EEE306201FA3B100C4CBB6 /* RCTTextField.h */,
+				D4EEE313201FA3B200C4CBB6 /* RCTTextField.m */,
+				D4EEE308201FA3B100C4CBB6 /* RCTTextFieldManager.h */,
+				D4EEE310201FA3B200C4CBB6 /* RCTTextFieldManager.m */,
+				D4EEE309201FA3B100C4CBB6 /* RCTTextSelection.h */,
+				D4EEE30D201FA3B200C4CBB6 /* RCTTextSelection.m */,
+				D4EEE30F201FA3B200C4CBB6 /* RCTTextViewManager.h */,
+				D4EEE316201FA3B300C4CBB6 /* RCTTextViewManager.m */,
+				D4EEE311201FA3B200C4CBB6 /* RCTUITextView.h */,
+				D4EEE307201FA3B100C4CBB6 /* RCTUITextView.m */,
 			);
-			path = TextInput;
-			sourceTree = "<group>";
-		};
-		59E604381FE9CAF100BD90C5 /* Multiline */ = {
-			isa = PBXGroup;
-			children = (
-				59E604391FE9CAF100BD90C5 /* RCTMultilineTextInputShadowView.h */,
-				59E6043A1FE9CAF100BD90C5 /* RCTMultilineTextInputShadowView.m */,
-				59E6043B1FE9CAF100BD90C5 /* RCTMultilineTextInputView.h */,
-				59E6043C1FE9CAF100BD90C5 /* RCTMultilineTextInputView.m */,
-				59E6043D1FE9CAF100BD90C5 /* RCTMultilineTextInputViewManager.h */,
-				59E6043E1FE9CAF100BD90C5 /* RCTMultilineTextInputViewManager.m */,
-				59E6043F1FE9CAF100BD90C5 /* RCTUITextView.h */,
-				59E604401FE9CAF100BD90C5 /* RCTUITextView.m */,
-			);
-			path = Multiline;
-			sourceTree = "<group>";
-		};
-		59E604491FE9CAF100BD90C5 /* Singleline */ = {
-			isa = PBXGroup;
-			children = (
-				59E6044A1FE9CAF100BD90C5 /* RCTSinglelineTextInputShadowView.h */,
-				59E6044B1FE9CAF100BD90C5 /* RCTSinglelineTextInputShadowView.m */,
-				59E6044C1FE9CAF100BD90C5 /* RCTSinglelineTextInputView.h */,
-				59E6044D1FE9CAF100BD90C5 /* RCTSinglelineTextInputView.m */,
-				59E6044E1FE9CAF100BD90C5 /* RCTSinglelineTextInputViewManager.h */,
-				59E6044F1FE9CAF100BD90C5 /* RCTSinglelineTextInputViewManager.m */,
-				59E604501FE9CAF100BD90C5 /* RCTUITextField.h */,
-				59E604511FE9CAF100BD90C5 /* RCTUITextField.m */,
-			);
-			path = Singleline;
+			name = TextInputLegacy;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -372,24 +260,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59E6046F1FE9CAF100BD90C5 /* RCTSinglelineTextInputViewManager.m in Sources */,
-				59E604671FE9CAF100BD90C5 /* RCTBaseTextInputView.m in Sources */,
-				59E604631FE9CAF100BD90C5 /* RCTUITextView.m in Sources */,
 				59E604571FE9CAF100BD90C5 /* RCTTextViewManager.m in Sources */,
 				59E604531FE9CAF100BD90C5 /* RCTTextShadowView.m in Sources */,
-				59E6045D1FE9CAF100BD90C5 /* RCTMultilineTextInputShadowView.m in Sources */,
 				59E604591FE9CAF100BD90C5 /* RCTRawTextShadowView.m in Sources */,
 				59E604551FE9CAF100BD90C5 /* RCTTextView.m in Sources */,
-				59E604691FE9CAF100BD90C5 /* RCTTextSelection.m in Sources */,
-				59E6045F1FE9CAF100BD90C5 /* RCTMultilineTextInputView.m in Sources */,
-				59E604611FE9CAF100BD90C5 /* RCTMultilineTextInputViewManager.m in Sources */,
-				59E604711FE9CAF100BD90C5 /* RCTUITextField.m in Sources */,
-				59E6046D1FE9CAF100BD90C5 /* RCTSinglelineTextInputView.m in Sources */,
 				59E8C5CC1F8833D100204F5E /* RCTFontAttributes.m in Sources */,
 				59E6045B1FE9CAF100BD90C5 /* RCTRawTextViewManager.m in Sources */,
-				59E604651FE9CAF100BD90C5 /* RCTBackedTextInputDelegateAdapter.m in Sources */,
-				AF3225FA1DE5574F00D3E7E7 /* RCTConvert+Text.m in Sources */,
-				59E6046B1FE9CAF100BD90C5 /* RCTSinglelineTextInputShadowView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -397,25 +273,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59E6046E1FE9CAF100BD90C5 /* RCTSinglelineTextInputViewManager.m in Sources */,
-				59E604661FE9CAF100BD90C5 /* RCTBaseTextInputView.m in Sources */,
-				59E604621FE9CAF100BD90C5 /* RCTUITextView.m in Sources */,
 				59E604561FE9CAF100BD90C5 /* RCTTextViewManager.m in Sources */,
+				D4EEE318201FA3B300C4CBB6 /* RCTUITextView.m in Sources */,
+				D4EEE31C201FA3B300C4CBB6 /* RCTTextFieldManager.m in Sources */,
+				D4EEE31D201FA3B300C4CBB6 /* RCTSecureTextField.m in Sources */,
 				59E604521FE9CAF100BD90C5 /* RCTTextShadowView.m in Sources */,
-				59E6045C1FE9CAF100BD90C5 /* RCTMultilineTextInputShadowView.m in Sources */,
+				D4EEE320201FA3B300C4CBB6 /* RCTTextViewManager.m in Sources */,
+				D4EEE31A201FA3B300C4CBB6 /* RCTShadowTextView.m in Sources */,
+				D4EEE31F201FA3B300C4CBB6 /* RCTShadowTextField.m in Sources */,
+				D4EEE31B201FA3B300C4CBB6 /* RCTTextSelection.m in Sources */,
+				D4EEE317201FA3B300C4CBB6 /* RCTMultilineTextInputView.m in Sources */,
 				59E604581FE9CAF100BD90C5 /* RCTRawTextShadowView.m in Sources */,
+				D4EEE31E201FA3B300C4CBB6 /* RCTTextField.m in Sources */,
 				59E604541FE9CAF100BD90C5 /* RCTTextView.m in Sources */,
-				5989E14D20018A2200EA444A /* RCTBaseTextInputViewManager.m in Sources */,
-				59E604681FE9CAF100BD90C5 /* RCTTextSelection.m in Sources */,
-				59E6045E1FE9CAF100BD90C5 /* RCTMultilineTextInputView.m in Sources */,
-				59E604601FE9CAF100BD90C5 /* RCTMultilineTextInputViewManager.m in Sources */,
-				59E604701FE9CAF100BD90C5 /* RCTUITextField.m in Sources */,
-				59E6046C1FE9CAF100BD90C5 /* RCTSinglelineTextInputView.m in Sources */,
 				A85C829A1F742AA20036C019 /* RCTFontAttributes.m in Sources */,
 				59E6045A1FE9CAF100BD90C5 /* RCTRawTextViewManager.m in Sources */,
-				59E604641FE9CAF100BD90C5 /* RCTBackedTextInputDelegateAdapter.m in Sources */,
-				AF3225F91DE5574F00D3E7E7 /* RCTConvert+Text.m in Sources */,
-				59E6046A1FE9CAF100BD90C5 /* RCTSinglelineTextInputShadowView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

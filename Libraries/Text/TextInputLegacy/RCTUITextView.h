@@ -9,30 +9,24 @@
 
 #import <AppKit/AppKit.h>
 
-#import "RCTBackedTextInputViewProtocol.h"
-
-#import "RCTBackedTextInputDelegate.h"
-
 NS_ASSUME_NONNULL_BEGIN
 
 /*
  * Just regular UITextView... but much better!
  */
 
-@interface RCTUITextView : NSTextView <RCTBackedTextInputViewProtocol>
+@interface RCTUITextView : NSTextView
 
 - (instancetype)initWithFrame:(CGRect)frame textContainer:(nullable NSTextContainer *)textContainer NS_UNAVAILABLE;
 - (instancetype)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 
-@property (nonatomic, weak) id<RCTBackedTextInputDelegate> textInputDelegate;
-// - (void)setText:(NSString *)text;
+- (void)setText:(NSString *)text;
 - (void)setAttributedText:(NSAttributedString *)attributedText;
 
 @property (nonatomic, strong) NSAttributedString *placeholderAttributedString;
 @property (nonatomic, assign) BOOL textWasPasted;
 @property (nonatomic, copy, nullable) NSString *placeholderText;
 @property (nonatomic, assign, nullable) NSColor *placeholderTextColor;
-@property (nonatomic, assign) CGFloat preferredMaxLayoutWidth;
 
 @end
 

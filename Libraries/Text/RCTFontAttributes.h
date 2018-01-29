@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTFontAttributesDelegate.h"
 
@@ -17,7 +17,7 @@
 
 @property (nonatomic, weak) id<RCTFontAttributesDelegate> delegate;
 
-@property (readonly, nonatomic, strong) UIFont *font;
+@property (readonly, nonatomic, strong) NSFont *font;
 
 @property (nonatomic, assign) BOOL allowFontScaling;
 @property (nonatomic, copy) NSString *fontFamily;

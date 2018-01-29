@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import <React/RCTView.h>
 
@@ -34,10 +34,10 @@
 - (instancetype)initWithCoder:(NSCoder *)decoder NS_UNAVAILABLE;
 - (instancetype)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
 
-@property (nonatomic, readonly) UIView<RCTBackedTextInputViewProtocol> *backedTextInputView;
+@property (nonatomic, readonly) NSView<RCTBackedTextInputViewProtocol> *backedTextInputView;
 
-@property (nonatomic, assign) UIEdgeInsets reactPaddingInsets;
-@property (nonatomic, assign) UIEdgeInsets reactBorderInsets;
+@property (nonatomic, assign) NSEdgeInsets reactPaddingInsets;
+@property (nonatomic, assign) NSEdgeInsets reactBorderInsets;
 @property (nonatomic, assign, readonly) CGSize contentSize;
 
 @property (nonatomic, copy) RCTDirectEventBlock onContentSizeChange;
@@ -51,7 +51,7 @@
 @property (nonatomic, assign) BOOL clearTextOnFocus;
 @property (nonatomic, copy) RCTTextSelection *selection;
 
-- (void)setFont:(UIFont *)font;
+- (void)setFont:(NSFont *)font;
 
 - (void)invalidateContentSize;
 

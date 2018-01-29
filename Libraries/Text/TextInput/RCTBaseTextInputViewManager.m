@@ -55,8 +55,8 @@ RCT_EXPORT_VIEW_PROPERTY(mostRecentEventCount, NSInteger)
 - (RCTViewManagerUIBlock)uiBlockToAmendWithShadowView:(RCTShadowView *)shadowView
 {
   NSNumber *reactTag = shadowView.reactTag;
-  UIEdgeInsets borderAsInsets = shadowView.borderAsInsets;
-  UIEdgeInsets paddingAsInsets = shadowView.paddingAsInsets;
+  NSEdgeInsets borderAsInsets = shadowView.borderAsInsets;
+  NSEdgeInsets paddingAsInsets = shadowView.paddingAsInsets;
   return ^(RCTUIManager *uiManager, NSDictionary<NSNumber *, RCTBaseTextInputView *> *viewRegistry) {
     RCTBaseTextInputView *view = viewRegistry[reactTag];
     view.reactBorderInsets = borderAsInsets;

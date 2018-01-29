@@ -7,26 +7,26 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import "RCTTextViewManager.h"
+#import "RCTTextManager.h"
 
 #import <yoga/Yoga.h>
 // #import <React/RCTAccessibilityManager.h>
 #import <React/RCTAssert.h>
 #import <React/RCTConvert.h>
 #import <React/RCTLog.h>
-#import <React/RCTShadowView+Layout.h>
 #import <React/NSView+React.h>
 
-#import "RCTRawTextShadowView.h"
-#import "RCTTextShadowView.h"
+#import "RCTShadowRawText.h"
+#import "RCTShadowText.h"
+#import "RCTText.h"
 #import "RCTTextView.h"
-#import "RCTMultilineTextInputView.h"
 
-static void collectDirtyNonTextDescendants(RCTTextShadowView *shadowView, NSMutableArray *nonTextDescendants) {
+
+static void collectDirtyNonTextDescendants(RCTShadowText *shadowView, NSMutableArray *nonTextDescendants) {
   for (RCTShadowView *child in shadowView.reactSubviews) {
-    if ([child isKindOfClass:[RCTTextShadowView class]]) {
-      collectDirtyNonTextDescendants((RCTTextShadowView *)child, nonTextDescendants);
-    } else if ([child isKindOfClass:[RCTRawTextShadowView class]]) {
+    if ([child isKindOfClass:[RCTShadowText class]]) {
+      collectDirtyNonTextDescendants((RCTShadowText *)child, nonTextDescendants);
+    } else if ([child isKindOfClass:[RCTShadowRawText class]]) {
       // no-op
     } else if ([child isTextDirty]) {
       [nonTextDescendants addObject:child];
@@ -34,25 +34,25 @@ static void collectDirtyNonTextDescendants(RCTTextShadowView *shadowView, NSMuta
   }
 }
 
-@interface RCTTextShadowView (Private)
+@interface RCTShadowText (Private)
 
 - (NSTextStorage *)buildTextStorageForWidth:(CGFloat)width widthMode:(YGMeasureMode)widthMode;
 
 @end
 
 
-@implementation RCTTextViewManager
+@implementation RCTTextManager
 
-RCT_EXPORT_MODULE(RCTText)
+RCT_EXPORT_MODULE()
 
 - (NSView *)view
 {
-  return [RCTTextView new];
+  return [RCTText new];
 }
 
 - (RCTShadowView *)shadowView
 {
-  return [RCTTextShadowView new];
+  return [RCTShadowText new];
 }
 
 #pragma mark - Shadow properties
@@ -100,13 +100,13 @@ RCT_EXPORT_SHADOW_PROPERTY(selectable, BOOL)
       RCTShadowView *shadowView = queue[i];
       RCTAssert([shadowView isTextDirty], @"Don't process any nodes that don't have dirty text");
 
-      if ([shadowView isKindOfClass:[RCTTextShadowView class]]) {
-        // ((RCTTextShadowView *)shadowView).fontSizeMultiplier = self.bridge.accessibilityManager.multiplier;
-        [(RCTTextShadowView *)shadowView recomputeText];
-        collectDirtyNonTextDescendants((RCTTextShadowView *)shadowView, queue);
-      } else if ([shadowView isKindOfClass:[RCTRawTextShadowView class]]) {
+      if ([shadowView isKindOfClass:[RCTShadowText class]]) {
+        ((RCTShadowText *)shadowView).fontSizeMultiplier = 1; //TODO: accessability
+        [(RCTShadowText *)shadowView recomputeText];
+        collectDirtyNonTextDescendants((RCTShadowText *)shadowView, queue);
+      } else if ([shadowView isKindOfClass:[RCTShadowRawText class]]) {
         RCTLogError(@"Raw text cannot be used outside of a <Text> tag. Not rendering string: '%@'",
-                    [(RCTRawTextShadowView *)shadowView text]);
+                    [(RCTShadowRawText *)shadowView text]);
       } else {
         for (RCTShadowView *child in [shadowView reactSubviews]) {
           if ([child isTextDirty]) {
@@ -122,13 +122,13 @@ RCT_EXPORT_SHADOW_PROPERTY(selectable, BOOL)
   return nil;
 }
 
-- (RCTViewManagerUIBlock)uiBlockToAmendWithShadowView:(RCTTextShadowView *)shadowView
+- (RCTViewManagerUIBlock)uiBlockToAmendWithShadowView:(RCTShadowText *)shadowView
 {
   NSNumber *reactTag = shadowView.reactTag;
   NSEdgeInsets padding = shadowView.paddingAsInsets;
 
-  return ^(RCTUIManager *uiManager, NSDictionary<NSNumber *, RCTTextView *> *viewRegistry) {
-    RCTTextView *text = viewRegistry[reactTag];
+  return ^(RCTUIManager *uiManager, NSDictionary<NSNumber *, RCTText *> *viewRegistry) {
+    RCTText *text = viewRegistry[reactTag];
     text.contentInset = padding;
   };
 }

@@ -39,7 +39,7 @@ static CGFloat const kAutoSizeGranularity       = 0.001f;
   CGFloat _cachedTextStorageWidthMode;
   NSAttributedString *_cachedAttributedString;
   CGFloat _effectiveLetterSpacing;
-  NSUserInterfaceLayoutDirection _cachedEffectiveLayoutDirection;
+  NSUserInterfaceLayoutDirection _cachedLayoutDirection;
 }
 
 static YGSize RCTMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, float height, YGMeasureMode heightMode)
@@ -73,7 +73,7 @@ static YGSize RCTMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, f
     _fontSizeMultiplier = 1.0;
     _textAlign = NSTextAlignmentNatural;
     _writingDirection = NSWritingDirectionNatural;
-    _cachedEffectiveLayoutDirection = NSUserInterfaceLayoutDirectionLeftToRight;
+    _cachedLayoutDirection = NSUserInterfaceLayoutDirectionLeftToRight;
 
      YGNodeSetMeasureFunc(self.yogaNode, RCTMeasure);
 
@@ -122,7 +122,7 @@ static YGSize RCTMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, f
   NSTextStorage *textStorage = [self buildTextStorageForWidth:availableWidth widthMode:YGMeasureModeExactly];
   CGRect textFrame = [self calculateTextFrame:textStorage];
   BOOL selectable = _selectable;
-  [applierBlocks addObject:^(NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+  [applierBlocks addObject:^(NSDictionary<NSNumber *, NSView *> *viewRegistry) {
     RCTTextView *view = (RCTTextView *)viewRegistry[self.reactTag];
     view.textFrame = textFrame;
     view.textStorage = textStorage;
@@ -620,12 +620,6 @@ static YGSize RCTMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, f
   [textContainer setMaximumNumberOfLines:maxLines];
 
   return requiredSize;
-}
-
-- (void)setBackgroundColor:(NSColor *)backgroundColor
-{
-  super.backgroundColor = backgroundColor;
-  [self dirtyText];
 }
 
 #define RCT_TEXT_PROPERTY(setProp, ivar, type) \

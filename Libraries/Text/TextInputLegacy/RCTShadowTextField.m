@@ -7,11 +7,13 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <React/RCTConvert.h>
+#import "RCTShadowTextField.h"
 
-@interface RCTConvert (Text)
-//
-//+ (NSTextAutocorrectionType)NSTextAutocorrectionType:(id)json;
-//+ (NSTextSpellCheckingType)NSTextSpellCheckingType:(id)json;
+@implementation RCTShadowTextField
+
+- (BOOL)isYogaLeafNode
+{
+  return YES;
+}
 
 @end

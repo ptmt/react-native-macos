@@ -28,7 +28,7 @@ RCT_EXPORT_MODULE()
   return [RCTMultilineTextInputShadowView new];
 }
 
-- (UIView *)view
+- (NSView *)view
 {
   return [[RCTMultilineTextInputView alloc] initWithBridge:self.bridge];
 }

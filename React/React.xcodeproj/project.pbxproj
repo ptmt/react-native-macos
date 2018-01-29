@@ -1092,6 +1092,8 @@
 		D4EEE2F8201DF63F00C4CBB6 /* RCTButtonManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EEE2F4201DF63F00C4CBB6 /* RCTButtonManager.m */; };
 		D4EEE2FB201DF64800C4CBB6 /* NSView+NSViewAnimationWithBlocks.h in Headers */ = {isa = PBXBuildFile; fileRef = D4EEE2F9201DF64800C4CBB6 /* NSView+NSViewAnimationWithBlocks.h */; };
 		D4EEE2FC201DF64800C4CBB6 /* NSView+NSViewAnimationWithBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EEE2FA201DF64800C4CBB6 /* NSView+NSViewAnimationWithBlocks.m */; };
+		D4EEE2FF201F95F900C4CBB6 /* UIImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EEE2FD201F95F900C4CBB6 /* UIImageUtils.m */; };
+		D4EEE300201F95F900C4CBB6 /* UIImageUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = D4EEE2FE201F95F900C4CBB6 /* UIImageUtils.h */; };
 		EBF21BBC1FC498270052F4D5 /* InspectorInterfaces.h in Headers */ = {isa = PBXBuildFile; fileRef = EBF21BBA1FC498270052F4D5 /* InspectorInterfaces.h */; };
 		EBF21BBD1FC498270052F4D5 /* InspectorInterfaces.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBF21BBB1FC498270052F4D5 /* InspectorInterfaces.cpp */; };
 		EBF21BBE1FC498630052F4D5 /* InspectorInterfaces.h in Headers */ = {isa = PBXBuildFile; fileRef = EBF21BBA1FC498270052F4D5 /* InspectorInterfaces.h */; };
@@ -2113,6 +2115,8 @@
 		D4EEE2F4201DF63F00C4CBB6 /* RCTButtonManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTButtonManager.m; sourceTree = "<group>"; };
 		D4EEE2F9201DF64800C4CBB6 /* NSView+NSViewAnimationWithBlocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSView+NSViewAnimationWithBlocks.h"; sourceTree = "<group>"; };
 		D4EEE2FA201DF64800C4CBB6 /* NSView+NSViewAnimationWithBlocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSView+NSViewAnimationWithBlocks.m"; sourceTree = "<group>"; };
+		D4EEE2FD201F95F900C4CBB6 /* UIImageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageUtils.m; sourceTree = "<group>"; };
+		D4EEE2FE201F95F900C4CBB6 /* UIImageUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageUtils.h; sourceTree = "<group>"; };
 		E3BBC8EB1ADE6F47001BBD81 /* RCTTextDecorationLineType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTTextDecorationLineType.h; sourceTree = "<group>"; };
 		EBF21BBA1FC498270052F4D5 /* InspectorInterfaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InspectorInterfaces.h; sourceTree = "<group>"; };
 		EBF21BBB1FC498270052F4D5 /* InspectorInterfaces.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InspectorInterfaces.cpp; sourceTree = "<group>"; };
@@ -2697,6 +2701,8 @@
 		83CBBA491A601E3B00E9B192 /* Base */ = {
 			isa = PBXGroup;
 			children = (
+				D4EEE2FE201F95F900C4CBB6 /* UIImageUtils.h */,
+				D4EEE2FD201F95F900C4CBB6 /* UIImageUtils.m */,
 				83CBBA4A1A601E3B00E9B192 /* RCTAssert.h */,
 				83CBBA4B1A601E3B00E9B192 /* RCTAssert.m */,
 				83CBBA5E1A601EAA00E9B192 /* RCTBridge.h */,
@@ -3244,6 +3250,7 @@
 				3D80DA441DF820620028D040 /* RCTUtils.h in Headers */,
 				13134C981E296B2A00B9F3CB /* RCTCxxMethod.h in Headers */,
 				3D80DA491DF820620028D040 /* RCTJSCSamplingProfiler.h in Headers */,
+				D4EEE300201F95F900C4CBB6 /* UIImageUtils.h in Headers */,
 				3D80DA4B1DF820620028D040 /* RCTAlertManager.h in Headers */,
 				3D80DA4C1DF820620028D040 /* RCTAppState.h in Headers */,
 				3D0E378C1F1CC58C00DCAC9F /* RCTWebSocketObserver.h in Headers */,
@@ -4189,6 +4196,7 @@
 				13A6E20E1C19AA0C00845B82 /* RCTParserUtils.m in Sources */,
 				13E067571A70F44B002CDEE1 /* RCTView.m in Sources */,
 				3D7749441DC1065C007EC8D8 /* RCTPlatform.m in Sources */,
+				D4EEE2FF201F95F900C4CBB6 /* UIImageUtils.m in Sources */,
 				EBF21BBD1FC498270052F4D5 /* InspectorInterfaces.cpp in Sources */,
 				59EDBCAF1FDF4E0C003573DE /* RCTScrollContentView.m in Sources */,
 				135A9C001E7B0EE600587AEB /* RCTJSCHelpers.mm in Sources */,

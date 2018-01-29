@@ -82,11 +82,11 @@ CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
 }
 @end
 
-static void collectNonTextDescendants(RCTText *view, NSMutableArray *nonTextDescendants)
+static void collectNonTextDescendants(RCTTextView *view, NSMutableArray *nonTextDescendants)
 {
   for (NSView *child in view.reactSubviews) {
-    if ([child isKindOfClass:[RCTText class]]) {
-      collectNonTextDescendants((RCTText *)child, nonTextDescendants);
+    if ([child isKindOfClass:[RCTTextView class]]) {
+      collectNonTextDescendants((RCTTextView *)child, nonTextDescendants);
     } else if (!CGRectEqualToRect(child.frame, CGRectZero)) {
       [nonTextDescendants addObject:child];
     }

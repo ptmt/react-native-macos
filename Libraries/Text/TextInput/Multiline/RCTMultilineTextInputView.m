@@ -14,7 +14,7 @@
 #import <React/RCTFont.h>
 #import <React/RCTUIManager.h>
 #import <React/RCTUtils.h>
-#import <React/UIView+React.h>
+#import <React/NSView+React.h>
 
 #import "RCTTextShadowView.h"
 #import "RCTTextView.h"
@@ -46,15 +46,15 @@
     _blurOnSubmit = NO;
 
     _backedTextInput = [[RCTUITextView alloc] initWithFrame:self.bounds];
-    _backedTextInput.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    _backedTextInput.backgroundColor = [UIColor clearColor];
-    _backedTextInput.textColor = [UIColor blackColor];
+    _backedTextInput.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    _backedTextInput.backgroundColor = [NSColor clearColor];
+    _backedTextInput.textColor = [NSColor blackColor];
     // This line actually removes 5pt (default value) left and right padding in UITextView.
     _backedTextInput.textContainer.lineFragmentPadding = 0;
-#if !TARGET_OS_TV
-    _backedTextInput.scrollsToTop = NO;
-#endif
-    _backedTextInput.scrollEnabled = YES;
+//#if !TARGET_OS_TV
+//    _backedTextInput.scrollsToTop = NO;
+//#endif
+//    _backedTextInput.scrollEnabled = YES;
     _backedTextInput.textInputDelegate = self;
     _backedTextInput.font = self.fontAttributes.font;
 
@@ -73,7 +73,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 #pragma mark - RCTComponent
 
-- (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)index
+- (void)insertReactSubview:(NSView *)subview atIndex:(NSInteger)index
 {
   [super insertReactSubview:subview atIndex:index];
 
@@ -89,9 +89,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     // always has a clear background color in `initWithBridge:`.
     //
     // TODO: This should be removed when the related hack in -performPendingTextUpdate is removed.
-    if (subview.backgroundColor) {
+    if (subview.layer.backgroundColor) {
       NSMutableDictionary<NSString *, id> *attrs = [_backedTextInput.typingAttributes mutableCopy];
-      attrs[NSBackgroundColorAttributeName] = subview.backgroundColor;
+      NSColor *backgroundColor = [NSColor colorWithCGColor:subview.layer.backgroundColor];
+      attrs[NSBackgroundColorAttributeName] = backgroundColor;
       _backedTextInput.typingAttributes = attrs;
     }
 
@@ -99,7 +100,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
-- (void)removeReactSubview:(UIView *)subview
+- (void)removeReactSubview:(NSView *)subview
 {
   [super removeReactSubview:subview];
   if (_richTextView == subview) {
@@ -133,7 +134,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     _pendingAttributedText = _richTextView.textStorage;
     [self performPendingTextUpdate];
   } else if (!self.text) {
-    _backedTextInput.attributedText = nil;
+    _backedTextInput.attributedString = nil;
   }
 }
 
@@ -184,7 +185,7 @@ static NSAttributedString *removeReactTagFromString(NSAttributedString *string)
     NSInteger start = [_backedTextInput offsetFromPosition:_backedTextInput.beginningOfDocument toPosition:selection.start];
     NSInteger offsetFromEnd = oldTextLength - start;
     NSInteger newOffset = _backedTextInput.attributedText.length - offsetFromEnd;
-    UITextPosition *position = [_backedTextInput positionFromPosition:_backedTextInput.beginningOfDocument offset:newOffset];
+    NSTextPosition *position = [_backedTextInput positionFromPosition:_backedTextInput.beginningOfDocument offset:newOffset];
     [_backedTextInput setSelectedTextRange:[_backedTextInput textRangeFromPosition:position toPosition:position]
                             notifyDelegate:YES];
   }
@@ -198,12 +199,12 @@ static NSAttributedString *removeReactTagFromString(NSAttributedString *string)
 
 #pragma mark - Properties
 
-- (UIFont *)font
+- (NSFont *)font
 {
   return _backedTextInput.font;
 }
 
-- (void)setFont:(UIFont *)font
+- (void)setFont:(NSFont *)font
 {
   _backedTextInput.font = font;
   [self setNeedsLayout];
@@ -376,13 +377,13 @@ static BOOL findMismatch(NSString *first, NSString *second, NSRange *firstRange,
 
 #pragma mark - UIScrollViewDelegate
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+- (void)scrollViewDidScroll:(NSScrollView *)scrollView
 {
   if (_onScroll) {
     CGPoint contentOffset = scrollView.contentOffset;
     CGSize contentSize = scrollView.contentSize;
     CGSize size = scrollView.bounds.size;
-    UIEdgeInsets contentInset = scrollView.contentInset;
+    NSEdgeInsets contentInset = scrollView.contentInset;
 
     _onScroll(@{
       @"contentOffset": @{
