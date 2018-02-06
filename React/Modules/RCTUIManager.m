@@ -489,7 +489,6 @@ static NSDictionary *deviceOrientationEventBody()
     NSUserInterfaceLayoutDirection layoutDirection;
     BOOL isNew;
     BOOL parentIsNew;
-    BOOL isHidden;
   } RCTFrameData;
 
   // Construct arrays then hand off to main thread
@@ -506,7 +505,6 @@ static NSDictionary *deviceOrientationEventBody()
         shadowView.layoutDirection,
         shadowView.isNewView,
         shadowView.superview.isNewView,
-        shadowView.isHidden,
       };
     }
   }
@@ -563,7 +561,6 @@ static NSDictionary *deviceOrientationEventBody()
       NSView *view = viewRegistry[reactTag];
       CGRect frame = frameData.frame;
 
-      BOOL isHidden = frameData.isHidden;
       NSUserInterfaceLayoutDirection layoutDirection = frameData.layoutDirection;
       BOOL isNew = frameData.isNew;
       RCTLayoutAnimation *updatingLayoutAnimation = isNew ? nil : layoutAnimationGroup.updatingLayoutAnimation;
@@ -580,10 +577,6 @@ static NSDictionary *deviceOrientationEventBody()
           layoutAnimationGroup.callback = nil;
         }
       };
-
-      if (view.isHidden != isHidden) {
-        view.hidden = isHidden;
-      }
 
       if (view.reactLayoutDirection != layoutDirection) {
         view.reactLayoutDirection = layoutDirection;
