@@ -17,7 +17,7 @@
 #import "RCTErrorInfo.h"
 #import "RCTEventDispatcher.h"
 #import "RCTJSStackFrame.h"
-#import "RCTRedBoxExtraDataViewController.h"
+// #import "RCTRedBoxExtraDataViewController.h"
 #import "RCTUtils.h"
 
 #if RCT_DEBUG
@@ -363,14 +363,14 @@ for (RCTJSStackFrame *stackFrame in _lastStackTrace) {
 
 @end
 
-@interface RCTRedBox () <RCTInvalidating, RCTRedBoxWindowActionDelegate, RCTRedBoxExtraDataActionDelegate>
+@interface RCTRedBox () <RCTInvalidating, RCTRedBoxWindowActionDelegate>
 @end
 
 @implementation RCTRedBox
 {
     RCTRedBoxWindow *_window;
     NSMutableArray<id<RCTErrorCustomizer>> *_errorCustomizers;
-    RCTRedBoxExtraDataViewController *_extraDataViewController;
+    //RCTRedBoxExtraDataViewController *_extraDataViewController;
 }
 
 @synthesize bridge = _bridge;
@@ -459,10 +459,10 @@ RCT_EXPORT_MODULE()
 - (void)showErrorMessage:(NSString *)message withParsedStack:(NSArray<RCTJSStackFrame *> *)stack isUpdate:(BOOL)isUpdate
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self->_extraDataViewController == nil) {
-            self->_extraDataViewController = [RCTRedBoxExtraDataViewController new];
-            self->_extraDataViewController.actionDelegate = self;
-        }
+        // if (self->_extraDataViewController == nil) {
+        //     self->_extraDataViewController = [RCTRedBoxExtraDataViewController new];
+        //     self->_extraDataViewController.actionDelegate = self;
+        // }
         [self->_bridge.eventDispatcher sendDeviceEventWithName:@"collectRedBoxExtraData" body:nil];
 
         if (!self->_window) {
@@ -482,14 +482,16 @@ RCT_EXPORT_MODULE()
 - (void)loadExtraDataViewController {
     dispatch_async(dispatch_get_main_queue(), ^{
         // Make sure the CMD+E shortcut doesn't call this twice
-      if (self->_extraDataViewController != nil && ![self->_window.contentViewController presentedViewControllers]) {
-          [self->_window.contentViewController presentViewControllerAsSheet:self->_extraDataViewController];
-        }
+        NSLog(@"_extraDataViewController is not yet implemented");
+      // if (self->_extraDataViewController != nil && ![self->_window.contentViewController presentedViewControllers]) {
+      //     [self->_window.contentViewController presentViewControllerAsSheet:self->_extraDataViewController];
+      //   }
     });
 }
 
 RCT_EXPORT_METHOD(setExtraData:(NSDictionary *)extraData forIdentifier:(NSString *)identifier) {
-    [_extraDataViewController addExtraData:extraData forIdentifier:identifier];
+    // [_extraDataViewController addExtraData:extraData forIdentifier:identifier];
+    NSLog(@"_extraDataViewController is not yet implemented %@", extraData);
 }
 
 RCT_EXPORT_METHOD(dismiss)

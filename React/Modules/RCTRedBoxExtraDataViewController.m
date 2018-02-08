@@ -9,10 +9,10 @@
 
 #import "RCTRedBoxExtraDataViewController.h"
 
-@interface RCTRedBoxExtraDataCell : UITableViewCell
+@interface RCTRedBoxExtraDataCell : NSTableCellView
 
-@property (nonatomic, strong) UILabel *keyLabel;
-@property (nonatomic, strong) UILabel *valueLabel;
+@property (nonatomic, strong) NSTextField *keyLabel;
+@property (nonatomic, strong) NSTextField *valueLabel;
 
 @end
 
@@ -22,24 +22,24 @@
               reuseIdentifier:(NSString *)reuseIdentifier
 {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
-        self.backgroundColor = [UIColor colorWithRed:0.8
+        self.backgroundColor = [NSColor colorWithRed:0.8
                                                green:0 blue:0
                                                alpha:1];
-        UILayoutGuide *contentLayout =  self.contentView.layoutMarginsGuide;
+       //  UILayoutGuide *contentLayout =  self.contentView.layoutMarginsGuide;
 
-        self.keyLabel = [UILabel new];
+        self.keyLabel = [NSTextField new];
         [self.contentView addSubview:self.keyLabel];
 
-        self.keyLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.keyLabel.leadingAnchor
-            constraintEqualToAnchor:contentLayout.leadingAnchor].active = YES;
-        [self.keyLabel.topAnchor
-            constraintEqualToAnchor:contentLayout.topAnchor].active = YES;
-        [self.keyLabel.bottomAnchor
-            constraintEqualToAnchor:contentLayout.bottomAnchor].active = YES;
-        [self.keyLabel.widthAnchor
-            constraintEqualToAnchor:contentLayout.widthAnchor
-            multiplier:0.3].active = YES;
+//        self.keyLabel.translatesAutoresizingMaskIntoConstraints = NO;
+//        [self.keyLabel.leadingAnchor
+//            constraintEqualToAnchor:contentLayout.leadingAnchor].active = YES;
+//        [self.keyLabel.topAnchor
+//            constraintEqualToAnchor:contentLayout.topAnchor].active = YES;
+//        [self.keyLabel.bottomAnchor
+//            constraintEqualToAnchor:contentLayout.bottomAnchor].active = YES;
+//        [self.keyLabel.widthAnchor
+//            constraintEqualToAnchor:contentLayout.widthAnchor
+//            multiplier:0.3].active = YES;
 
 
         self.keyLabel.textColor = [UIColor whiteColor];

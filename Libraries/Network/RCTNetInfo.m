@@ -61,29 +61,29 @@ static void RCTReachabilityCallback(__unused SCNetworkReachabilityRef target, SC
   
 #if !TARGET_OS_TV
   
-  else if ((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0) {
-    connectionType = RCTConnectionTypeCellular;
-    status = RCTReachabilityStateCell;
-    
-    CTTelephonyNetworkInfo *netinfo = [[CTTelephonyNetworkInfo alloc] init];
-    if (netinfo) {
-      if ([netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyGPRS] ||
-          [netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyEdge] ||
-          [netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMA1x]) {
-        effectiveConnectionType = RCTEffectiveConnectionType2g;
-      } else if ([netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyWCDMA] ||
-                 [netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyHSDPA] ||
-                 [netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyHSUPA] ||
-                 [netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMAEVDORev0] ||
-                 [netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMAEVDORevA] ||
-                 [netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMAEVDORevB] ||
-                 [netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyeHRPD]) {
-        effectiveConnectionType = RCTEffectiveConnectionType3g;
-      } else if ([netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyLTE]) {
-        effectiveConnectionType = RCTEffectiveConnectionType4g;
-      }
-    }
-  }
+//  else if ((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0) {
+//    connectionType = RCTConnectionTypeCellular;
+//    status = RCTReachabilityStateCell;
+//
+//    CTTelephonyNetworkInfo *netinfo = [[CTTelephonyNetworkInfo alloc] init];
+//    if (netinfo) {
+//      if ([netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyGPRS] ||
+//          [netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyEdge] ||
+//          [netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMA1x]) {
+//        effectiveConnectionType = RCTEffectiveConnectionType2g;
+//      } else if ([netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyWCDMA] ||
+//                 [netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyHSDPA] ||
+//                 [netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyHSUPA] ||
+//                 [netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMAEVDORev0] ||
+//                 [netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMAEVDORevA] ||
+//                 [netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyCDMAEVDORevB] ||
+//                 [netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyeHRPD]) {
+//        effectiveConnectionType = RCTEffectiveConnectionType3g;
+//      } else if ([netinfo.currentRadioAccessTechnology isEqualToString:CTRadioAccessTechnologyLTE]) {
+//        effectiveConnectionType = RCTEffectiveConnectionType4g;
+//      }
+//    }
+//  }
   
 #endif
   

@@ -17,15 +17,12 @@ fi
 
 case "$CONFIGURATION" in
   *Debug*)
-    if [[ "$PLATFORM_NAME" == *simulator ]]; then
-      if [[ "$FORCE_BUNDLING" ]]; then
-        echo "FORCE_BUNDLING enabled; continuing to bundle."
-      else
-        echo "Skipping bundling in Debug for the Simulator (since the packager bundles for you). Use the FORCE_BUNDLING flag to change this behavior."
-        exit 0;
-      fi
+
+    if [[ "$FORCE_BUNDLING" ]]; then
+      echo "FORCE_BUNDLING enabled; continuing to bundle."
     else
-      echo "Bundling for physical device. Use the SKIP_BUNDLING flag to change this behavior."
+      echo "Skipping bundling in Debug for the Simulator (since the packager bundles for you). Use the FORCE_BUNDLING flag to change this behavior."
+      exit 0;
     fi
 
     ;;

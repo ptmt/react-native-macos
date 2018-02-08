@@ -603,6 +603,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RCTAnimation;
 			};
@@ -612,6 +613,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RCTAnimation;
 			};

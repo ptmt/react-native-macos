@@ -1086,6 +1086,14 @@
 		CF2731C11E7B8DE40044CA4F /* RCTDeviceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CF2731BF1E7B8DE40044CA4F /* RCTDeviceInfo.m */; };
 		CF2731C21E7B8DEF0044CA4F /* RCTDeviceInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = CF2731BE1E7B8DE40044CA4F /* RCTDeviceInfo.h */; };
 		CF2731C31E7B8DF30044CA4F /* RCTDeviceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CF2731BF1E7B8DE40044CA4F /* RCTDeviceInfo.m */; };
+		D49593DE202C937C00A7694B /* RCTCursorManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D49593D8202C937B00A7694B /* RCTCursorManager.h */; };
+		D49593DF202C937C00A7694B /* RCTCursorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D49593D9202C937B00A7694B /* RCTCursorManager.m */; };
+		D49593E0202C937C00A7694B /* RCTMenuManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D49593DA202C937B00A7694B /* RCTMenuManager.h */; };
+		D49593E1202C937C00A7694B /* RCTMenuManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D49593DB202C937C00A7694B /* RCTMenuManager.m */; };
+		D49593E5202C96FF00A7694B /* YGNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D49593E3202C96FF00A7694B /* YGNode.h */; };
+		D49593E6202C96FF00A7694B /* YGNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D49593E4202C96FF00A7694B /* YGNode.cpp */; };
+		D49593E7202C970600A7694B /* YGNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D49593E3202C96FF00A7694B /* YGNode.h */; };
+		D49593E8202C972800A7694B /* YGNode.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = D49593E3202C96FF00A7694B /* YGNode.h */; };
 		D4EEE2F5201DF63F00C4CBB6 /* RCTButtonManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D4EEE2F1201DF63F00C4CBB6 /* RCTButtonManager.h */; };
 		D4EEE2F6201DF63F00C4CBB6 /* RCTButton.h in Headers */ = {isa = PBXBuildFile; fileRef = D4EEE2F2201DF63F00C4CBB6 /* RCTButton.h */; };
 		D4EEE2F7201DF63F00C4CBB6 /* RCTButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EEE2F3201DF63F00C4CBB6 /* RCTButton.m */; };
@@ -1094,6 +1102,7 @@
 		D4EEE2FC201DF64800C4CBB6 /* NSView+NSViewAnimationWithBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EEE2FA201DF64800C4CBB6 /* NSView+NSViewAnimationWithBlocks.m */; };
 		D4EEE2FF201F95F900C4CBB6 /* UIImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EEE2FD201F95F900C4CBB6 /* UIImageUtils.m */; };
 		D4EEE300201F95F900C4CBB6 /* UIImageUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = D4EEE2FE201F95F900C4CBB6 /* UIImageUtils.h */; };
+		D4EEE3542020933B00C4CBB6 /* UIImageUtils.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = D4EEE2FE201F95F900C4CBB6 /* UIImageUtils.h */; };
 		EBF21BBC1FC498270052F4D5 /* InspectorInterfaces.h in Headers */ = {isa = PBXBuildFile; fileRef = EBF21BBA1FC498270052F4D5 /* InspectorInterfaces.h */; };
 		EBF21BBD1FC498270052F4D5 /* InspectorInterfaces.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBF21BBB1FC498270052F4D5 /* InspectorInterfaces.cpp */; };
 		EBF21BBE1FC498630052F4D5 /* InspectorInterfaces.h in Headers */ = {isa = PBXBuildFile; fileRef = EBF21BBA1FC498270052F4D5 /* InspectorInterfaces.h */; };
@@ -1462,6 +1471,7 @@
 			dstPath = include/React;
 			dstSubfolderSpec = 16;
 			files = (
+				D4EEE3542020933B00C4CBB6 /* UIImageUtils.h in Copy Headers */,
 				59EDBCBD1FDF4E43003573DE /* RCTScrollableProtocol.h in Copy Headers */,
 				59EDBCBE1FDF4E43003573DE /* RCTScrollContentShadowView.h in Copy Headers */,
 				59EDBCBF1FDF4E43003573DE /* RCTScrollContentView.h in Copy Headers */,
@@ -1590,6 +1600,7 @@
 			dstPath = include/yoga;
 			dstSubfolderSpec = 16;
 			files = (
+				D49593E8202C972800A7694B /* YGNode.h in Copy Headers */,
 				3DE4F8681DF85D8E00B9E5A0 /* YGEnums.h in Copy Headers */,
 				3DE4F8691DF85D8E00B9E5A0 /* YGMacros.h in Copy Headers */,
 				3DE4F86A1DF85D8E00B9E5A0 /* Yoga.h in Copy Headers */,
@@ -2109,6 +2120,12 @@
 		C6D380191F71D75B00621378 /* RAMBundleRegistry.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RAMBundleRegistry.cpp; sourceTree = "<group>"; };
 		CF2731BE1E7B8DE40044CA4F /* RCTDeviceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTDeviceInfo.h; sourceTree = "<group>"; };
 		CF2731BF1E7B8DE40044CA4F /* RCTDeviceInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTDeviceInfo.m; sourceTree = "<group>"; };
+		D49593D8202C937B00A7694B /* RCTCursorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCursorManager.h; sourceTree = "<group>"; };
+		D49593D9202C937B00A7694B /* RCTCursorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCursorManager.m; sourceTree = "<group>"; };
+		D49593DA202C937B00A7694B /* RCTMenuManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTMenuManager.h; sourceTree = "<group>"; };
+		D49593DB202C937C00A7694B /* RCTMenuManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTMenuManager.m; sourceTree = "<group>"; };
+		D49593E3202C96FF00A7694B /* YGNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YGNode.h; sourceTree = "<group>"; };
+		D49593E4202C96FF00A7694B /* YGNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = YGNode.cpp; sourceTree = "<group>"; };
 		D4EEE2F1201DF63F00C4CBB6 /* RCTButtonManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTButtonManager.h; sourceTree = "<group>"; };
 		D4EEE2F2201DF63F00C4CBB6 /* RCTButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTButton.h; sourceTree = "<group>"; };
 		D4EEE2F3201DF63F00C4CBB6 /* RCTButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTButton.m; sourceTree = "<group>"; };
@@ -2165,6 +2182,8 @@
 		130A77021DF767AF001F9587 /* yoga */ = {
 			isa = PBXGroup;
 			children = (
+				D49593E4202C96FF00A7694B /* YGNode.cpp */,
+				D49593E3202C96FF00A7694B /* YGNode.h */,
 				5376C5E11FC6DDB20083513D /* YGNodePrint.cpp */,
 				5376C5E01FC6DDB20083513D /* YGNodePrint.h */,
 				53CBF1861FB4FE80002CBB31 /* YGEnums.cpp */,
@@ -2298,6 +2317,10 @@
 		13B07FE01A69315300A75B9A /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				D49593D8202C937B00A7694B /* RCTCursorManager.h */,
+				D49593D9202C937B00A7694B /* RCTCursorManager.m */,
+				D49593DA202C937B00A7694B /* RCTMenuManager.h */,
+				D49593DB202C937C00A7694B /* RCTMenuManager.m */,
 				13B07FE71A69327A00A75B9A /* RCTAlertManager.h */,
 				13B07FE81A69327A00A75B9A /* RCTAlertManager.m */,
 				1372B7081AB030C200659ED6 /* RCTAppState.h */,
@@ -3112,6 +3135,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D49593E7202C970600A7694B /* YGNode.h in Headers */,
 				53D1239E1FBF1EFB001B8A10 /* Yoga-internal.h in Headers */,
 				133957881DF76D3500EC27BE /* YGEnums.h in Headers */,
 				1339578B1DF76D3500EC27BE /* Yoga.h in Headers */,
@@ -3175,6 +3199,7 @@
 				3D80DA191DF820620028D040 /* RCTImageLoader.h in Headers */,
 				C654505E1F3BD9280090799B /* RCTManagedPointer.h in Headers */,
 				13134C941E296B2A00B9F3CB /* RCTObjcExecutor.h in Headers */,
+				D49593E0202C937C00A7694B /* RCTMenuManager.h in Headers */,
 				199B8A6F1F44DB16005DEF67 /* RCTVersion.h in Headers */,
 				3D80DA1A1DF820620028D040 /* RCTImageStoreManager.h in Headers */,
 				130443A11E3FEAA900D93A67 /* RCTFollyConvert.h in Headers */,
@@ -3279,6 +3304,7 @@
 				5960C1B91F0804A00066FD5B /* RCTLayoutAnimationGroup.h in Headers */,
 				CF2731C01E7B8DE40044CA4F /* RCTDeviceInfo.h in Headers */,
 				3D80DA611DF820620028D040 /* RCTAnimationType.h in Headers */,
+				D49593E5202C96FF00A7694B /* YGNode.h in Headers */,
 				3D0E378A1F1CC40000DCAC9F /* RCTWebSocketModule.h in Headers */,
 				3D80DA621DF820620028D040 /* RCTAutoInsetsProtocol.h in Headers */,
 				C60128AB1F3D1258009DF9FF /* RCTCxxConvert.h in Headers */,
@@ -3310,6 +3336,7 @@
 				657734901EE8354A00A0E9EA /* RCTInspectorPackagerConnection.h in Headers */,
 				3D7BFD1D1EA8E351008DFB7A /* RCTPackagerConnection.h in Headers */,
 				3D80DA811DF820620028D040 /* RCTSegmentedControl.h in Headers */,
+				D49593DE202C937C00A7694B /* RCTCursorManager.h in Headers */,
 				599FAA3C1FB274980058CCF6 /* RCTSurfaceRootShadowView.h in Headers */,
 				3D80DA821DF820620028D040 /* RCTSegmentedControlManager.h in Headers */,
 				3D80DA831DF820620028D040 /* RCTShadowView.h in Headers */,
@@ -4118,6 +4145,7 @@
 				001BFCD01D8381DE008E587E /* RCTMultipartStreamReader.m in Sources */,
 				133CAE8E1B8E5CFD00F6AD92 /* RCTDatePicker.m in Sources */,
 				14C2CA761B3AC64F00E6CBB2 /* RCTFrameUpdate.m in Sources */,
+				D49593E6202C96FF00A7694B /* YGNode.cpp in Sources */,
 				594F0A341FD23228007FBE96 /* RCTSurfaceHostingView.mm in Sources */,
 				13134C861E296B2A00B9F3CB /* RCTCxxBridge.mm in Sources */,
 				13B07FEF1A69327A00A75B9A /* RCTAlertManager.m in Sources */,
@@ -4203,6 +4231,7 @@
 				B233E6EA1D2D845D00BC68BA /* RCTI18nManager.m in Sources */,
 				3D7BFD1F1EA8E351008DFB7A /* RCTPackagerConnection.mm in Sources */,
 				13456E931ADAD2DE009F94A7 /* RCTConvert+CoreLocation.m in Sources */,
+				D49593DF202C937C00A7694B /* RCTCursorManager.m in Sources */,
 				13A1F71E1A75392D00D3D453 /* RCTKeyCommands.m in Sources */,
 				83CBBA531A601E3B00E9B192 /* RCTUtils.m in Sources */,
 				130443C61E401A8C00D93A67 /* RCTConvert+Transform.m in Sources */,
@@ -4211,6 +4240,7 @@
 				D4EEE2F8201DF63F00C4CBB6 /* RCTButtonManager.m in Sources */,
 				590D7BFF1EBD458B00D8A370 /* RCTShadowView+Layout.m in Sources */,
 				66CD94B31F1045E700CB3C7C /* RCTMaskedView.m in Sources */,
+				D49593E1202C937C00A7694B /* RCTMenuManager.m in Sources */,
 				13C156061AB1A2840079392D /* RCTWebViewManager.m in Sources */,
 				58114A161AAE854800E7D092 /* RCTPicker.m in Sources */,
 				83A1FE8C1B62640A00BE0E65 /* RCTModalHostView.m in Sources */,
@@ -4364,6 +4394,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = V9WTTPBFK9;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRIVATE_HEADERS_FOLDER_PATH = "/usr/local/include/double-conversion";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4381,6 +4412,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = V9WTTPBFK9;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRIVATE_HEADERS_FOLDER_PATH = "/usr/local/include/double-conversion";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4398,6 +4430,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = V9WTTPBFK9;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4417,6 +4450,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = V9WTTPBFK9;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4543,6 +4577,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/yoga;
@@ -4557,6 +4592,7 @@
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/yoga;
@@ -4607,6 +4643,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/jschelpers;
@@ -4622,6 +4659,7 @@
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/jschelpers;
@@ -4674,6 +4712,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/cxxreact;
@@ -4689,6 +4728,7 @@
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/cxxreact;
@@ -4845,6 +4885,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/React;
@@ -4860,6 +4901,7 @@
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/React;
@@ -4874,6 +4916,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/privatedata;
@@ -4889,6 +4932,7 @@
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/privatedata;
@@ -4941,6 +4985,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/jsinspector;
@@ -4956,6 +5001,7 @@
 				CLANG_STATIC_ANALYZER_MODE = deep;
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/jsinspector;

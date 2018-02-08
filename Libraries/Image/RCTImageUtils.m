@@ -35,21 +35,21 @@ static CGSize RCTCeilSize(CGSize size, CGFloat scale)
   };
 }
 
-static CGImagePropertyOrientation CGImagePropertyOrientationFromUIImageOrientation(UIImageOrientation imageOrientation)
-{
-  // see https://stackoverflow.com/a/6699649/496389
-  switch (imageOrientation) {
-    case UIImageOrientationUp: return kCGImagePropertyOrientationUp;
-    case UIImageOrientationDown: return kCGImagePropertyOrientationDown;
-    case UIImageOrientationLeft: return kCGImagePropertyOrientationLeft;
-    case UIImageOrientationRight: return kCGImagePropertyOrientationRight;
-    case UIImageOrientationUpMirrored: return kCGImagePropertyOrientationUpMirrored;
-    case UIImageOrientationDownMirrored: return kCGImagePropertyOrientationDownMirrored;
-    case UIImageOrientationLeftMirrored: return kCGImagePropertyOrientationLeftMirrored;
-    case UIImageOrientationRightMirrored: return kCGImagePropertyOrientationRightMirrored;
-    default: return kCGImagePropertyOrientationUp;
-  }
-}
+//static CGImagePropertyOrientation CGImagePropertyOrientationFromUIImageOrientation(UIImageOrientation imageOrientation)
+//{
+//  // see https://stackoverflow.com/a/6699649/496389
+//  switch (imageOrientation) {
+////    case UIImageOrientationUp: return kCGImagePropertyOrientationUp;
+////    case UIImageOrientationDown: return kCGImagePropertyOrientationDown;
+////    case UIImageOrientationLeft: return kCGImagePropertyOrientationLeft;
+////    case UIImageOrientationRight: return kCGImagePropertyOrientationRight;
+////    case UIImageOrientationUpMirrored: return kCGImagePropertyOrientationUpMirrored;
+////    case UIImageOrientationDownMirrored: return kCGImagePropertyOrientationDownMirrored;
+////    case UIImageOrientationLeftMirrored: return kCGImagePropertyOrientationLeftMirrored;
+////    case UIImageOrientationRightMirrored: return kCGImagePropertyOrientationRightMirrored;
+//    default: return kCGImagePropertyOrientationUp;
+//  }
+//}
 
 CGRect RCTTargetRect(CGSize sourceSize, CGSize destSize,
                      CGFloat destScale, RCTResizeMode resizeMode)
@@ -327,14 +327,14 @@ NSDictionary<NSString *, id> *__nullable RCTGetImageMetadata(NSData *data)
   return (__bridge_transfer id)imageProperties;
 }
 
-NSData *__nullable RCTGetImageData(UIImage *image, float quality)
+NSData *__nullable RCTGetImageData(NSImage* image, float quality)
 {
   NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary:@{
-    (id)kCGImagePropertyOrientation : @(CGImagePropertyOrientationFromUIImageOrientation(image.imageOrientation))
+    (id)kCGImagePropertyOrientation : @(kCGImagePropertyOrientationUp)
   }];
   CGImageDestinationRef destination;
   CFMutableDataRef imageData = CFDataCreateMutable(NULL, 0);
-  CGImageRef cgImage = image.CGImage;
+  CGImageRef cgImage = RCTGetCGImage(image);
   if (RCTImageHasAlpha(cgImage)) {
     // get png data
     destination = CGImageDestinationCreateWithData(imageData, kUTTypePNG, 1, NULL);

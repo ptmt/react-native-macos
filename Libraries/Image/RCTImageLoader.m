@@ -354,7 +354,7 @@ static NSImage *RCTResizeImageIfNeeded(NSImage *image,
 
         // If we've received an image, we should try to set it synchronously,
         // if it's data, do decoding on a background thread.
-        if (RCTIsMainQueue() && ![imageOrData isKindOfClass:[UIImage class]]) {
+        if (RCTIsMainQueue() && ![imageOrData isKindOfClass:[NSImage class]]) {
             // Most loaders do not return on the main thread, so caller is probably not
             // expecting it, and may do expensive post-processing in the callback
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -376,7 +376,7 @@ static NSImage *RCTResizeImageIfNeeded(NSImage *image,
                                  resizeMode:resizeMode
                             progressHandler:progressHandler
                          partialLoadHandler:partialLoadHandler
-                          completionHandler:^(NSError *error, UIImage *image){
+                          completionHandler:^(NSError *error, NSImage *image){
                               completionHandler(error, image, nil);
                           }];
     }
@@ -569,7 +569,7 @@ completionBlock:(void (^)(NSError *error, id imageOrData, NSString *fetchDate))c
             return;
         }
 
-        if (!imageOrData || [imageOrData isKindOfClass:[UIImage class]]) {
+        if (!imageOrData || [imageOrData isKindOfClass:[NSImage class]]) {
             cancelLoad = nil;
             completionBlock(error, imageOrData);
             return;
@@ -577,7 +577,7 @@ completionBlock:(void (^)(NSError *error, id imageOrData, NSString *fetchDate))c
 
         // Check decoded image cache
         if (cacheResult) {
-            UIImage *image = [[strongSelf imageCache] imageForUrl:imageURLRequest.URL.absoluteString
+            NSImage *image = [[strongSelf imageCache] imageForUrl:imageURLRequest.URL.absoluteString
                                                              size:size
                                                             scale:scale
                                                        resizeMode:resizeMode
@@ -589,7 +589,7 @@ completionBlock:(void (^)(NSError *error, id imageOrData, NSString *fetchDate))c
             }
         }
 
-        RCTImageLoaderCompletionBlock decodeCompletionHandler = ^(NSError *error_, UIImage *image) {
+        RCTImageLoaderCompletionBlock decodeCompletionHandler = ^(NSError *error_, NSImage *image) {
             if (cacheResult && image) {
                 // Store decoded image in cache
                 [[strongSelf imageCache] addImageToCache:image
@@ -635,7 +635,7 @@ completionBlock:(void (^)(NSError *error, id imageOrData, NSString *fetchDate))c
     }
 
     __block atomic_bool cancelled = ATOMIC_VAR_INIT(NO);
-    void (^completionHandler)(NSError *, UIImage *) = ^(NSError *error, UIImage *image) {
+    void (^completionHandler)(NSError *, NSImage *) = ^(NSError *error, NSImage *image) {
         if (RCTIsMainQueue()) {
             // Most loaders do not return on the main thread, so caller is probably not
             // expecting it, and may do expensive post-processing in the callback
@@ -672,13 +672,13 @@ completionBlock:(void (^)(NSError *error, id imageOrData, NSString *fetchDate))c
                     NSImage *image = RCTDecodeImageWithData(data, size, scale, resizeMode);
 
 #if RCT_DEV
-                    CGSize imagePixelSize = RCTSizeInPixels(image.size, image.scale);
+                    CGSize imagePixelSize = RCTSizeInPixels(image.size, 1.0f);
                     CGSize screenPixelSize = RCTSizeInPixels(RCTScreenSize(), RCTScreenScale());
                     if (imagePixelSize.width * imagePixelSize.height >
                         screenPixelSize.width * screenPixelSize.height) {
-                        RCTLogInfo(@"[PERF ASSETS] Loading image at size %@, which is larger "
-                                   "than the screen size %@", NSStringFromCGSize(imagePixelSize),
-                                   NSStringFromCGSize(screenPixelSize));
+                      RCTLogInfo(@"[PERF ASSETS] Loading image at size %@, which is larger "
+                                   "than the screen size %@", NSStringFromSize(imagePixelSize),
+                                   NSStringFromSize(screenPixelSize));
                     }
 #endif
 
@@ -760,10 +760,10 @@ completionBlock:(void (^)(NSError *error, id imageOrData, NSString *fetchDate))c
                     break;
             }
         } else {
-            UIImage *image = imageOrData;
+            NSImage *image = imageOrData;
             size = (CGSize){
-                image.size.width * image.scale,
-                image.size.height * image.scale,
+                image.size.width * RCTScreenScale(),
+                image.size.height * RCTScreenScale(),
             };
         }
         callback(error, size);
@@ -822,7 +822,7 @@ completionBlock:(void (^)(NSError *error, id imageOrData, NSString *fetchDate))c
 - (id)sendRequest:(NSURLRequest *)request withDelegate:(id<RCTURLRequestDelegate>)delegate
 {
     __block RCTImageLoaderCancellationBlock requestToken;
-    requestToken = [self loadImageWithURLRequest:request callback:^(NSError *error, UIImage *image) {
+    requestToken = [self loadImageWithURLRequest:request callback:^(NSError *error, NSImage *image) {
         if (error) {
             [delegate URLRequest:requestToken didCompleteWithError:error];
             return;
@@ -830,7 +830,7 @@ completionBlock:(void (^)(NSError *error, id imageOrData, NSString *fetchDate))c
 
         NSString *mimeType = nil;
         NSData *imageData = nil;
-        if (RCTImageHasAlpha(image.CGImage)) {
+        if (RCTImageHasAlpha(RCTGetCGImage(image))) {
             mimeType = @"image/png";
             imageData = UIImagePNGRepresentation(image);
         } else {

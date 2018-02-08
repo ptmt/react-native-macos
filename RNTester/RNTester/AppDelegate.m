@@ -71,7 +71,7 @@
                                   launchOptions:@{@"argv": [self argv]}];
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:_bridge
-                                                   moduleName:@"UIExplorerApp"
+                                                   moduleName:@"RNTesterApp"
                                             initialProperties:nil];
 
 
@@ -81,7 +81,7 @@
 
 - (void)setDefaultURL
 {
-  _sourceURL = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"Examples/UIExplorer/js/UIExplorerApp.macos"
+  _sourceURL = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"RNTester/js/RNTesterApp.macos"
                                                         fallbackResource:nil];
 }
 

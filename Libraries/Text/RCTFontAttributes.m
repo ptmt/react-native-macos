@@ -33,10 +33,10 @@
     _accessibilityManager = accessibilityManager;
     _fontSizeMultiplier = _accessibilityManager.multiplier;
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(contentSizeMultiplierDidChange)
-                                                 name:RCTAccessibilityManagerDidUpdateMultiplierNotification
-                                               object:_accessibilityManager];
+    // [[NSNotificationCenter defaultCenter] addObserver:self
+    //                                          selector:@selector(contentSizeMultiplierDidChange)
+    //                                              name:RCTAccessibilityManagerDidUpdateMultiplierNotification
+    //                                            object:_accessibilityManager];
 
     [self updateFont];
   }

@@ -169,10 +169,10 @@ RCT_EXPORT_METHOD(scrollTo:(nonnull NSNumber *)reactTag
 RCT_EXPORT_METHOD(flashScrollIndicators:(nonnull NSNumber *)reactTag)
 {
   [self.bridge.uiManager addUIBlock:
-   ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, RCTScrollView *> *viewRegistry){
+   ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, RCTNativeScrollView *> *viewRegistry){
 
-     RCTScrollView *view = viewRegistry[reactTag];
-     if (!view || ![view isKindOfClass:[RCTScrollView class]]) {
+     RCTNativeScrollView *view = viewRegistry[reactTag];
+     if (!view || ![view isKindOfClass:[RCTNativeScrollView class]]) {
        RCTLogError(@"Cannot find RCTScrollView with tag #%@", reactTag);
        return;
      }

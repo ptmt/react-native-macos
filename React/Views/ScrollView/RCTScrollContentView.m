@@ -20,16 +20,16 @@
 {
   [super reactSetFrame:frame];
 
-  RCTScrollView *scrollView = (RCTScrollView *)self.superview.superview;
+  RCTNativeScrollView *scrollView = (RCTNativeScrollView *)self.superview.superview;
 
   if (!scrollView) {
     return;
   }
 
-  RCTAssert([scrollView isKindOfClass:[RCTScrollView class]],
+  RCTAssert([scrollView isKindOfClass:[RCTNativeScrollView class]],
             @"Unexpected view hierarchy of RCTScrollView component.");
 
-  [scrollView updateContentOffsetIfNeeded];
+  // [scrollView updateContentOffsetIfNeeded];
 }
 
 @end
