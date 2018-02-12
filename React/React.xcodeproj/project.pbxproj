@@ -1046,8 +1046,10 @@
 		702B7FFF221C88D70027174A /* RCTWindow.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 702B7FF6221C88AF0027174A /* RCTWindow.h */; };
 		705EDE2922107DD0000CAA67 /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 705EDE2722107DD0000CAA67 /* Utils.h */; };
 		705EDE2A22107DD0000CAA67 /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 705EDE2822107DD0000CAA67 /* Utils.cpp */; };
+		70BA7CC32217790F006B6654 /* RCTLayout.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 70D4B5142217707C0007C3F1 /* RCTLayout.h */; };
+		70D4B5162217707D0007C3F1 /* RCTLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 70D4B5142217707C0007C3F1 /* RCTLayout.h */; };
+		70D4B5172217707D0007C3F1 /* RCTLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 70D4B5152217707C0007C3F1 /* RCTLayout.m */; };
 		705EDE2C221082CB000CAA67 /* RCTSurfaceSizeMeasureMode.mm in Sources */ = {isa = PBXBuildFile; fileRef = 705EDE2B221082CB000CAA67 /* RCTSurfaceSizeMeasureMode.mm */; };
-		705EDE2D221082D9000CAA67 /* RCTSurfaceSizeMeasureMode.mm in Sources */ = {isa = PBXBuildFile; fileRef = 705EDE2B221082CB000CAA67 /* RCTSurfaceSizeMeasureMode.mm */; };
 		830A229E1A66C68A008503DA /* RCTRootView.m in Sources */ = {isa = PBXBuildFile; fileRef = 830A229D1A66C68A008503DA /* RCTRootView.m */; };
 		83392EB31B6634E10013B15F /* RCTModalHostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83392EB21B6634E10013B15F /* RCTModalHostViewController.m */; };
 		83A1FE8C1B62640A00BE0E65 /* RCTModalHostView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83A1FE8B1B62640A00BE0E65 /* RCTModalHostView.m */; };
@@ -1481,6 +1483,7 @@
 			files = (
 				702B7FFF221C88D70027174A /* RCTWindow.h in Copy Headers */,
 				702B7FFE221C88CE0027174A /* RCTMouseEvent.h in Copy Headers */,
+				70BA7CC32217790F006B6654 /* RCTLayout.h in Copy Headers */,
 				D4EEE3542020933B00C4CBB6 /* UIImageUtils.h in Copy Headers */,
 				59EDBCBD1FDF4E43003573DE /* RCTScrollableProtocol.h in Copy Headers */,
 				59EDBCBE1FDF4E43003573DE /* RCTScrollContentShadowView.h in Copy Headers */,
@@ -2083,6 +2086,8 @@
 		705EDE2722107DD0000CAA67 /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		705EDE2822107DD0000CAA67 /* Utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Utils.cpp; sourceTree = "<group>"; };
 		705EDE2B221082CB000CAA67 /* RCTSurfaceSizeMeasureMode.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RCTSurfaceSizeMeasureMode.mm; sourceTree = "<group>"; };
+		70D4B5142217707C0007C3F1 /* RCTLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTLayout.h; sourceTree = "<group>"; };
+		70D4B5152217707C0007C3F1 /* RCTLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTLayout.m; sourceTree = "<group>"; };
 		830213F31A654E0800B993E6 /* RCTBridgeModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTBridgeModule.h; sourceTree = "<group>"; };
 		830A229C1A66C68A008503DA /* RCTRootView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTRootView.h; sourceTree = "<group>"; };
 		830A229D1A66C68A008503DA /* RCTRootView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTRootView.m; sourceTree = "<group>"; };
@@ -2417,6 +2422,8 @@
 				58C571BF1AA56C1900CDF9C8 /* RCTDatePickerManager.m */,
 				3D37B5801D522B190042D5B5 /* RCTFont.h */,
 				3D37B5811D522B190042D5B5 /* RCTFont.mm */,
+				70D4B5142217707C0007C3F1 /* RCTLayout.h */,
+				70D4B5152217707C0007C3F1 /* RCTLayout.m */,
 				66CD94AD1F1045E700CB3C7C /* RCTMaskedView.h */,
 				66CD94AE1F1045E700CB3C7C /* RCTMaskedView.m */,
 				66CD94AF1F1045E700CB3C7C /* RCTMaskedViewManager.h */,
@@ -3383,6 +3390,7 @@
 				3D80DA901DF820620028D040 /* RCTWebView.h in Headers */,
 				3D80DA911DF820620028D040 /* RCTWebViewManager.h in Headers */,
 				3D80DA931DF820620028D040 /* NSView+Private.h in Headers */,
+				70D4B5162217707D0007C3F1 /* RCTLayout.h in Headers */,
 				3D80DA941DF820620028D040 /* NSView+React.h in Headers */,
 				599FAA481FB274980058CCF6 /* RCTSurfaceView+Internal.h in Headers */,
 			);
@@ -4283,6 +4291,7 @@
 				657734911EE8354A00A0E9EA /* RCTInspectorPackagerConnection.m in Sources */,
 				68EFE4EE1CF6EB3900A1DE13 /* RCTBundleURLProvider.m in Sources */,
 				B95154321D1B34B200FE7B80 /* RCTActivityIndicatorView.m in Sources */,
+				70D4B5172217707D0007C3F1 /* RCTLayout.m in Sources */,
 				5960C1BB1F0804A00066FD5B /* RCTLayoutAnimationGroup.m in Sources */,
 				13F17A851B8493E5007D4C75 /* RCTRedBox.m in Sources */,
 				135A9BFC1E7B0EAE00587AEB /* RCTJSCErrorHandling.mm in Sources */,
