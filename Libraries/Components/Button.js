@@ -177,10 +177,7 @@ class Button extends React.Component<{
     const formattedTitle = Platform.OS === 'android'
       ? title.toUpperCase()
       : title;
-    const accessibilityTraits = ['button'];
-    if (disabled) {
-      accessibilityTraits.push('disabled');
-    }
+
     if (Platform.OS === 'macos') {
       return (
         <RCTButton {...this.props} style={[styles.button, this.props.style]} />

@@ -681,7 +681,7 @@ const TextInput = createReactClass({
         children = [children, props.inputView];
       }
       props.style.unshift(styles.multilineInput);
-      textContainer =
+      textContainer = (
         <RCTMultilineTextInputView
           ref={this._setNativeRef}
           {...props}

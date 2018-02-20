@@ -31,6 +31,7 @@ const createReactClass = require('create-react-class');
 const dismissKeyboard = require('dismissKeyboard');
 const flattenStyle = require('flattenStyle');
 const invariant = require('fbjs/lib/invariant');
+const deprecatedPropType = require('deprecatedPropType');
 const processDecelerationRate = require('processDecelerationRate');
 const requireNativeComponent = require('requireNativeComponent');
 /* $FlowFixMe(>=0.54.0 site=react_native_oss) This comment suppresses an error

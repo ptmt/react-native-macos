@@ -183,7 +183,7 @@ class StatusBar extends React.Component<{
    *
    * @platform android
    */
-  static currentHeight = StatusBarManager.HEIGHT;
+  static currentHeight = StatusBarManager && StatusBarManager.HEIGHT;
 
   // Provide an imperative API as static functions of the component.
   // See the corresponding prop for more detail.

@@ -97,8 +97,8 @@ if (!global.process.env.NODE_ENV) {
   global.process.env.NODE_ENV = __DEV__ ? 'development' : 'production';
 }
 global.process.exit = require('NativeModules').AppState.exit;
-defineProperty(global.process, 'argv',
-  () => require('NativeModules').LinkingManager.argv)
+Object.defineProperty(global.process, 'argv',
+  () => require('NativeModules').LinkingManager.argv);
 
 // Setup the Systrace profiling hooks if necessary
 if (global.__RCTProfileIsProfiling) {
