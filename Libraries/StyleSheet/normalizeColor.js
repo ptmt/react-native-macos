@@ -34,18 +34,18 @@ function normalizeColor(color: string | number): ?number {
   if ((match = matchers.rgb.exec(color))) {
     return (
       (// b
-      parse255(match[1]) << 24 | // r
+      (parse255(match[1]) << 24 | // r
       parse255(match[2]) << 16 | // g
-      parse255(match[3]) << 8 | 0x000000ff) // a
+      parse255(match[3]) << 8 | 0x000000ff)) // a
     ) >>> 0;
   }
 
   if ((match = matchers.rgba.exec(color))) {
     return (
       (// b
-      parse255(match[1]) << 24 | // r
+      (parse255(match[1]) << 24 | // r
       parse255(match[2]) << 16 | // g
-      parse255(match[3]) << 8 | parse1(match[4])) // a
+      parse255(match[3]) << 8 | parse1(match[4]))) // a
     ) >>> 0;
   }
 

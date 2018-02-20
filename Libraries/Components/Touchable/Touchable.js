@@ -732,8 +732,8 @@ var TouchableMixin = {
       var hasLongPressHandler = !!this.props.onLongPress;
       var pressIsLongButStillCallOnPress =
         IsLongPressingIn[curState] && (    // We *are* long pressing..
-          !hasLongPressHandler ||          // But either has no long handler
-          !this.touchableLongPressCancelsPress() // or we're told to ignore it.
+          (// But either has no long handler
+          !hasLongPressHandler || !this.touchableLongPressCancelsPress()) // or we're told to ignore it.
         );
 
       var shouldInvokePress =  !IsLongPressingIn[curState] || pressIsLongButStillCallOnPress;

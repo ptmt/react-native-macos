@@ -14,6 +14,7 @@
 
 const NativeMethodsMixin = require('NativeMethodsMixin');
 var React = require('React');
+var createReactClass = require('create-react-class');
 var PropTypes = require('prop-types');
 var RCTPickerIOSConsts = require('NativeModules').UIManager.RCTPicker.Constants;
 var StyleSheet = require('StyleSheet');
@@ -23,7 +24,8 @@ var requireNativeComponent = require('requireNativeComponent');
 
 var PICKER = 'picker';
 
-var PickerIOS = React.createClass({
+var PickerIOS = createReactClass({
+  displayName: 'PickerIOS',
   mixins: [NativeMethodsMixin],
 
   propTypes: {
@@ -88,17 +90,17 @@ var PickerIOS = React.createClass({
   },
 });
 
-PickerIOS.Item = React.createClass({
-  propTypes: {
+PickerIOS.Item = class extends React.Component {
+  static propTypes = {
     value: React.PropTypes.any, // string or integer basically
     label: React.PropTypes.string,
-  },
+  };
 
-  render: function() {
+  render() {
     // These items don't get rendered directly.
     return null;
-  },
-});
+  }
+};
 var styles = StyleSheet.create({
   pickerIOS: {
     // The picker will conform to whatever width is given, but we do

@@ -25,14 +25,13 @@ var {
 exports.title = 'Dran\'n\'Drop';
 exports.description = 'Dragging APIs';
 
-var DragExample = React.createClass({
-  getInitialState() {
-    return {
-      dragOver: false,
-      mouseOver: false,
-      files: []
-    };
-  },
+class DragExample extends React.Component {
+  state = {
+    dragOver: false,
+    mouseOver: false,
+    files: []
+  };
+
   render() {
     return (
       <View
@@ -54,7 +53,8 @@ var DragExample = React.createClass({
       </View>
     );
   }
-});
+}
+
 exports.displayName = 'Dran\'n\'Drop';
 exports.examples = [
   {

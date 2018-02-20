@@ -5,6 +5,7 @@
 
 const React = require('React');
 const ReactNative = require('react-native');
+
 const {
   MenuManager,
   TouchableOpacity,
@@ -15,30 +16,28 @@ const {
   View,
 } = ReactNative;
 
-const MenuManagerExample = React.createClass({
-  getInitialState() {
-    return {
-      title: 'Example',
-      itemTitle: '',
-      items: [{
-        title: 'First submenu',
-        key: 'f',
-        callback: () => AlertIOS.alert('Menu Example', 'You have clicked on the test item', [
-          {text: 'OK', onPress: () => console.log('OK Pressed!')},
-        ])
-      }]
-    };
-  },
+class MenuManagerExample extends React.Component {
+  state = {
+    title: 'Example',
+    itemTitle: '',
+    items: [{
+      title: 'First submenu',
+      key: 'f',
+      callback: () => AlertIOS.alert('Menu Example', 'You have clicked on the test item', [
+        {text: 'OK', onPress: () => console.log('OK Pressed!')},
+      ])
+    }]
+  };
 
-  _addNewSubmenu() {
+  _addNewSubmenu = () => {
     MenuManager.addSubmenu(this.state.title, this.state.items);
-  },
+  };
 
-  _addNewItemToSubmenu() {
+  _addNewItemToSubmenu = () => {
     MenuManager.addItemToSubmenu(this.state.title, {
       title: this.state.itemTitle,
     });
-  },
+  };
 
   render() {
     return (
@@ -65,8 +64,8 @@ const MenuManagerExample = React.createClass({
         </View>
       </View>
     );
-  },
-});
+  }
+}
 
 exports.displayName = (undefined: ?string);
 exports.framework = 'React';
