@@ -103,7 +103,7 @@ Object.defineProperty(global.process, 'argv',
 // Setup the Systrace profiling hooks if necessary
 if (global.__RCTProfileIsProfiling) {
   const Systrace = require('Systrace');
-  Systrace.installReactHook(true);
+  Systrace.installReactHook();
   Systrace.setEnabled(true);
 }
 
