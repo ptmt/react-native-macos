@@ -48,6 +48,11 @@ RCT_EXPORT_VIEW_PROPERTY(datePickerStyle, NSDatePickerStyle)
 RCT_EXPORT_VIEW_PROPERTY(datePickerMode, NSDatePickerMode)
 RCT_REMAP_VIEW_PROPERTY(timeZoneOffsetInMinutes, timeZone, NSTimeZone)
 
++ (BOOL)requiresMainQueueSetup
+{
+  return YES;
+}
+
 - (NSDictionary<NSString *, id> *)constantsToExport
 {
   NSDatePicker *view = [NSDatePicker new];

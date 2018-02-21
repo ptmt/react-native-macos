@@ -12,25 +12,23 @@
 'use strict';
 
 const AsyncStorage = require('AsyncStorage');
-const BackHandler = require('BackHandler');
 const Linking = require('Linking');
 const React = require('react');
 const ReactNative = require('react-native');
 const RNTesterActions = require('./RNTesterActions');
 const RNTesterExampleContainer = require('./RNTesterExampleContainer');
 const RNTesterExampleList = require('./RNTesterExampleList');
-const RNTesterList = require('./RNTesterList.ios');
+const RNTesterList = require('./RNTesterList.macos');
 const RNTesterNavigationReducer = require('./RNTesterNavigationReducer');
 const URIActionMap = require('./URIActionMap');
 
 const {
-  Button,
   AppRegistry,
   SnapshotViewIOS,
   StyleSheet,
-  Text,
   View,
-  SafeAreaView
+  Text,
+  Dimensions,
 } = ReactNative;
 
 import type { RNTesterExample } from './RNTesterList.ios';
@@ -43,24 +41,8 @@ type Props = {
 
 const APP_STATE_KEY = 'RNTesterAppState.v2';
 
-const Header = ({ onBack, title }: { onBack?: () => mixed, title: string }) => (
-  <SafeAreaView style={styles.headerContainer}>
-    <View style={styles.header}>
-      <View style={styles.headerCenter}>
-        <Text style={styles.title}>{title}</Text>
-      </View>
-      {onBack && <View style={styles.headerLeft}>
-        <Button title="Back" onPress={onBack} />
-      </View>}
-    </View>
-  </SafeAreaView>
-);
-
 class RNTesterApp extends React.Component<Props, RNTesterNavigationState> {
-  componentWillMount() {
-    BackHandler.addEventListener('hardwareBackPress', this._handleBack);
-  }
-
+  state = {}
   componentDidMount() {
     Linking.getInitialURL().then((url) => {
       AsyncStorage.getItem(APP_STATE_KEY, (err, storedString) => {
@@ -78,6 +60,7 @@ class RNTesterApp extends React.Component<Props, RNTesterNavigationState> {
           return;
         }
         this.setState(storedState);
+        console.log(storedState);
       });
     });
 
@@ -103,10 +86,7 @@ class RNTesterApp extends React.Component<Props, RNTesterNavigationState> {
     }
   }
 
-  render() {
-    if (!this.state) {
-      return null;
-    }
+  renderInnerComponent() {
     if (this.state.openExample) {
       const Component = RNTesterList.Modules[this.state.openExample];
       if (Component.external) {
@@ -117,55 +97,73 @@ class RNTesterApp extends React.Component<Props, RNTesterNavigationState> {
         );
       } else {
         return (
-          <View style={styles.exampleContainer}>
-            <Header onBack={this._handleBack} title={Component.title} />
             <RNTesterExampleContainer module={Component} />
-          </View>
         );
       }
-
     }
+    return <Welcome />;
+  }
+
+  render() {
+
+    console.log('this.state.openExample', this.state.openExample);
     return (
-      <View style={styles.exampleContainer}>
-        <Header title="RNTester" />
-        {/* $FlowFixMe(>=0.53.0 site=react_native_fb,react_native_oss) This
-          * comment suppresses an error when upgrading Flow's support for
-          * React. To see the error delete this comment and run Flow. */}
-        <RNTesterExampleList
-          onNavigate={this._handleAction}
-          list={RNTesterList}
-        />
+      <View
+        style={styles.container}>
+        <View style={[styles.leftPanel, { width: '30%' }]}>
+          <RNTesterExampleList
+            onNavigate={this._handleAction}
+            list={RNTesterList}
+            openExample={this.state.openExample}
+          />
+        </View>
+        <View
+          style={[styles.rightPanel]}
+          >
+          {this.renderInnerComponent()}
+        </View>
+      </View>
+
+    );
+  }
+}
+
+class Welcome extends React.Component {
+  render() {
+    return (
+      <View style={styles.welcomeWrapper}>
+        <Text style={styles.welcomeText}>
+          Choose an example on the left side
+        </Text>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  headerContainer: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#96969A',
-    backgroundColor: '#F5F5F6',
-  },
-  header: { 
-    height: 40, 
-    flexDirection: 'row' 
-  },
-  headerLeft: {
-  },
-  headerCenter: {
+  container: {
     flex: 1,
-    position: 'absolute',
-    top: 7,
-    left: 0,
-    right: 0,
+    flexDirection: 'row',
   },
-  title: {
-    fontSize: 19,
-    fontWeight: '600',
-    textAlign: 'center',
+  itemWrapper: {
+    backgroundColor: '#eaeaea',
   },
-  exampleContainer: {
+  leftPanel: {
+    width: 300,
+  },
+  rightPanel: {
     flex: 1,
+    backgroundColor: '#fff',
+    width: '100%',
+  },
+  welcomeWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  welcomeText: {
+    color: '#999',
+    fontSize: 18,
   },
 });
 

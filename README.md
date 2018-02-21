@@ -43,9 +43,9 @@ Please use these community resources for getting help. We use the GitHub issues 
 
 ## Examples
 
-### UIExplorer
+### RNTesterApp
 
-UIExplorer includes a set of component examples that illustrate their functionality. It also allows you to load external JavaScript bundle files through HTTP. Simply copy and paste a URL into the Search Field.
+RNTesterApp includes a set of component examples that illustrate their functionality. It also allows you to load external JavaScript bundle files through HTTP. Just copy and paste a URL into the Search Field.
 
 [Download UIExplorer](https://github.com/ptmt/react-native-macos/files/199128/UIExplorer.zip)
 
@@ -57,4 +57,4 @@ UIExplorer includes a set of component examples that illustrate their functional
 
 ## License
 
-See license for React is [BSD licensed](./LICENSE). Facebook also provide an additional [patent grant](./PATENTS).
+React Native is MIT licensed.

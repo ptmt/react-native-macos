@@ -49,6 +49,11 @@ RCT_CUSTOM_VIEW_PROPERTY(progress, BOOL, NSProgressIndicator)
   }
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+  return YES;
+}
+
 - (NSDictionary<NSString *, id> *)constantsToExport
 {
   NSProgressIndicator *view = [NSProgressIndicator new];

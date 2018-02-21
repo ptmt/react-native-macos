@@ -235,7 +235,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   NSString *superDescription = super.description;
   NSRange semicolonRange = [superDescription rangeOfString:@";"];
   NSString *replacement = [NSString stringWithFormat:@"; reactTag: %@;", self.reactTag];
-  return [superDescription stringByReplacingCharactersInRange:semicolonRange withString:replacement];
+  
+  if ([superDescription length] > 0 && semicolonRange.length > 0) {
+    return [superDescription stringByReplacingCharactersInRange:semicolonRange withString:replacement];
+  }
+  return [NSString stringWithFormat:@"reactTag: %@;", self.reactTag];
 }
 
 #pragma mark - Statics for dealing with layoutGuides
@@ -546,9 +550,10 @@ static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x) {
 
 - (void)reactSetFrame:(CGRect)frame
 {
-  if (self.inLiveResize && !self.respondsToLiveResizing) {
-    return;
-  }
+  // TODO: understand if we need to be able to disable live resizing for certain use
+  //  if (self.inLiveResize && !self.respondsToLiveResizing) {
+  //    return;
+  //  }
   // If frame is zero, or below the threshold where the border radii can
   // be rendered as a stretchable image, we'll need to re-render.
   // TODO: detect up-front if re-rendering is necessary

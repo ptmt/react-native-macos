@@ -85,6 +85,7 @@
 
 @property (nonatomic, assign) BOOL automaticallyAdjustContentInsets;
 @property (nonatomic, assign) NSTimeInterval scrollEventThrottle;
+@property (nonatomic, assign) BOOL DEPRECATED_sendUpdatedChildFrames;
 
 // NOTE: currently these event props are only declared so we can export the
 // event names to JS - we don't call the blocks directly because scroll events

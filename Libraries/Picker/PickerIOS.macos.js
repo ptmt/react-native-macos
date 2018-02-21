@@ -92,8 +92,8 @@ var PickerIOS = createReactClass({
 
 PickerIOS.Item = class extends React.Component {
   static propTypes = {
-    value: React.PropTypes.any, // string or integer basically
-    label: React.PropTypes.string,
+    value: PropTypes.any, // string or integer basically
+    label: PropTypes.string,
   };
 
   render() {

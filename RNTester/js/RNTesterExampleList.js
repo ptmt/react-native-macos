@@ -17,7 +17,7 @@ const SectionList = require('SectionList');
 const StyleSheet = require('StyleSheet');
 const Text = require('Text');
 const TextInput = require('TextInput');
-const TouchableHighlight = require('TouchableHighlight');
+const TouchableOpacity = require('TouchableOpacity');
 const RNTesterActions = require('./RNTesterActions');
 const RNTesterStatePersister = require('./RNTesterStatePersister');
 const View = require('View');
@@ -41,6 +41,7 @@ type Props = {
   persister: PassProps<*>,
   searchTextInputStyle: StyleObj,
   style?: ?StyleObj,
+  exampleKey?: string,
 };
 
 class RowComponent extends React.PureComponent<{
@@ -59,9 +60,10 @@ class RowComponent extends React.PureComponent<{
   };
   render() {
     const {item} = this.props;
+
     return (
-      <TouchableHighlight {...this.props} onPress={this._onPress}>
-        <View style={styles.row}>
+      <TouchableOpacity {...this.props} onPress={this._onPress}>
+        <View style={[styles.row, this.props.selected ? styles.selectedRow : {}]}>
           <Text style={styles.rowTitleText}>
             {item.module.title}
           </Text>
@@ -69,7 +71,7 @@ class RowComponent extends React.PureComponent<{
             {item.module.description}
           </Text>
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   }
 }
@@ -80,6 +82,7 @@ const renderSectionHeader = ({section}) =>
   </Text>;
 
 class RNTesterExampleList extends React.Component<Props, $FlowFixMeState> {
+
   render() {
     const filterText = this.props.persister.state.filter;
     const filterRegex = new RegExp(String(filterText), 'i');
@@ -87,6 +90,7 @@ class RNTesterExampleList extends React.Component<Props, $FlowFixMeState> {
       this.props.disableSearch ||
         filterRegex.test(example.module.title) &&
         (!Platform.isTVOS || example.supportsTVOS);
+
 
     const sections = [
       {
@@ -100,35 +104,33 @@ class RNTesterExampleList extends React.Component<Props, $FlowFixMeState> {
         key: 'a',
       },
     ];
+
     return (
       <View style={[styles.listContainer, this.props.style]}>
         {this._renderTitleRow()}
-        {this._renderTextInput()}
+        {/* {this._renderTextInput()} */}
         <SectionList
-          ItemSeparatorComponent={ItemSeparator}
           contentContainerStyle={{backgroundColor: 'white'}}
           style={styles.list}
           sections={sections}
           renderItem={this._renderItem}
           enableEmptySections={true}
-          itemShouldUpdate={this._itemShouldUpdate}
+          extraData={Math.random()}
           keyboardShouldPersistTaps="handled"
           automaticallyAdjustContentInsets={false}
           keyboardDismissMode="on-drag"
           legacyImplementation={false}
+          scrollsToTop={false}
           renderSectionHeader={renderSectionHeader}
         />
       </View>
     );
   }
 
-  _itemShouldUpdate(curr, prev) {
-    return curr.item !== prev.item;
-  }
-
   _renderItem = ({item, separators}) => (
     <RowComponent
       item={item}
+      selected={item.key === this.props.openExample}
       onNavigate={this.props.onNavigate}
       onShowUnderlay={separators.highlight}
       onHideUnderlay={separators.unhighlight}
@@ -177,6 +179,7 @@ class RNTesterExampleList extends React.Component<Props, $FlowFixMeState> {
   }
 
   _handleRowPress(exampleKey: string): void {
+    this.setState({ exampleKey });
     this.props.onNavigate(RNTesterActions.ExampleAction(exampleKey));
   }
 }
@@ -219,11 +222,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(217, 217, 217)',
   },
   rowTitleText: {
-    fontSize: 17,
+    fontSize: 14,
     fontWeight: '500',
   },
   rowDetailText: {
-    fontSize: 15,
+    fontSize: 12,
     color: '#888888',
     lineHeight: 20,
   },
@@ -239,6 +242,9 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     paddingVertical: 0,
     height: 35,
+  },
+  selectedRow: {
+    backgroundColor: 'rgba(0, 0, 0, 0.10)',
   },
 });
 

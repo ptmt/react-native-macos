@@ -49,6 +49,11 @@ RCT_EXPORT_MODULE()
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+  return NO;
+}
+
 - (NSDictionary<NSString *, id> *)constantsToExport
 {
   NSString *argv = _bridge.launchOptions[@"argv"];
@@ -126,21 +131,21 @@ RCT_EXPORT_METHOD(canOpenURL:(NSURL *)URL
   resolve(@(canOpen));
 }
 
-    /*
+
 RCT_EXPORT_METHOD(getInitialURL:(RCTPromiseResolveBlock)resolve
                   reject:(__unused RCTPromiseRejectBlock)reject)
 {
   NSURL *initialURL = nil;
-  if (self.bridge.launchOptions[UIApplicationLaunchOptionsURLKey]) {
-    initialURL = self.bridge.launchOptions[UIApplicationLaunchOptionsURLKey];
-  } else {
-    NSDictionary *userActivityDictionary =
-      self.bridge.launchOptions[UIApplicationLaunchOptionsUserActivityDictionaryKey];
-    if ([userActivityDictionary[UIApplicationLaunchOptionsUserActivityTypeKey] isEqual:NSUserActivityTypeBrowsingWeb]) {
-      initialURL = ((NSUserActivity *)userActivityDictionary[@"UIApplicationLaunchOptionsUserActivityKey"]).webpageURL;
-    }
-  }
+//  if (self.bridge.launchOptions[UIApplicationLaunchOptionsURLKey]) {
+//    initialURL = self.bridge.launchOptions[UIApplicationLaunchOptionsURLKey];
+//  } else {
+//    NSDictionary *userActivityDictionary =
+//      self.bridge.launchOptions[UIApplicationLaunchOptionsUserActivityDictionaryKey];
+//    if ([userActivityDictionary[UIApplicationLaunchOptionsUserActivityTypeKey] isEqual:NSUserActivityTypeBrowsingWeb]) {
+//      initialURL = ((NSUserActivity *)userActivityDictionary[@"UIApplicationLaunchOptionsUserActivityKey"]).webpageURL;
+//    }
+//  }
   resolve(RCTNullIfNil(initialURL.absoluteString));
 }
-*/
+
 @end

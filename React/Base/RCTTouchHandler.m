@@ -117,8 +117,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithTarget:(id)target action:(SEL)action
     // Check if item is becoming first responder to delete touch
     NSView *targetView = [self.view hitTest:touchLocation];
 
-    if (![targetView.className isEqualToString:@"RCTText"] &&
-        ![targetView.className isEqualToString:@"RCTView"] &&
+    if (![targetView.className isEqualToString:@"RCTView"] &&
+        ![targetView.className isEqualToString:@"RCTTextView"] &&
         ![targetView.className isEqualToString:@"RCTImageView"] &&
         ![targetView.className isEqualToString:@"ARTSurfaceView"]) {
       self.state = NSGestureRecognizerStateEnded;

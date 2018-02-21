@@ -156,7 +156,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)mouseMoved:(NSEvent *)theEvent
 {
   [[_contentView touchHandler] mouseMoved:theEvent];
-  // [((RCTTouchHandler *)self.gestureRecognizers.firstObject) mouseMoved:theEvent];
 }
 
 - (void)setBackgroundColor:(NSColor *)backgroundColor
