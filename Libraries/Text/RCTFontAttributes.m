@@ -9,7 +9,7 @@
 
 #import "RCTFontAttributes.h"
 
-#import <React/RCTAccessibilityManager.h>
+// #import <React/RCTAccessibilityManager.h>
 #import <React/RCTAssert.h>
 #import <React/RCTFont.h>
 #import <React/RCTLog.h>
@@ -31,7 +31,7 @@
 
   if (self = [super init]) {
     _accessibilityManager = accessibilityManager;
-    _fontSizeMultiplier = _accessibilityManager.multiplier;
+    // _fontSizeMultiplier = _accessibilityManager.multiplier;
 
     // [[NSNotificationCenter defaultCenter] addObserver:self
     //                                          selector:@selector(contentSizeMultiplierDidChange)
@@ -50,7 +50,7 @@
 
 - (void)contentSizeMultiplierDidChange
 {
-  self.fontSizeMultiplier = _accessibilityManager.multiplier;
+  // self.fontSizeMultiplier = _accessibilityManager.multiplier;
 }
 
 - (void)setAllowFontScaling:(BOOL)allowFontScaling
