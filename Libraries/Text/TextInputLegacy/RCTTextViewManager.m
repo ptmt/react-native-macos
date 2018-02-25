@@ -19,7 +19,7 @@
 #import "RCTTextShadowView.h"
 #import "RCTMultilineTextInputView.h"
 
-@implementation RCTTextViewManager
+@implementation RCTMultilineTextInputViewManager
 
 RCT_EXPORT_MODULE()
 

@@ -51,7 +51,7 @@ const onlyMultiline = {
 if (Platform.OS === 'android') {
   var AndroidTextInput = requireNativeComponent('AndroidTextInput', null);
 } else if (Platform.OS === 'ios' || Platform.OS === 'macos') {
-  var RCTMultilineTextInputView = requireNativeComponent('RCTTextView', null);
+  var RCTMultilineTextInputView = requireNativeComponent('RCTMultilineTextInputView', null);
   var RCTSinglelineTextInputView = requireNativeComponent('RCTTextField', null);
   var RCTSecureTextField = requireNativeComponent('RCTSecureTextField', null);
 }

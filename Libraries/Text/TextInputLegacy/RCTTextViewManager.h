@@ -9,6 +9,6 @@
 
 #import <React/RCTViewManager.h>
 
-@interface RCTTextViewManager : RCTViewManager
+@interface RCTMultilineTextInputViewManager : RCTViewManager
 
 @end

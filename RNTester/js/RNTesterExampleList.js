@@ -222,13 +222,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(217, 217, 217)',
   },
   rowTitleText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '500',
   },
   rowDetailText: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#888888',
-    lineHeight: 20,
+    lineHeight: 15,
   },
   searchRow: {
     backgroundColor: '#eeeeee',
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     height: 35,
   },
   selectedRow: {
-    backgroundColor: 'rgba(0, 0, 0, 0.10)',
+    backgroundColor: 'rgba(0, 0, 0, 0.03)',
   },
 });
 

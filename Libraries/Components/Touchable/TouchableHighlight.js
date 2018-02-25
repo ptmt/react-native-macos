@@ -233,9 +233,9 @@ const TouchableHighlight = createReactClass({
   touchableHandlePress: function(e: PressEvent) {
     clearTimeout(this._hideTimeout);
     this._showUnderlay();
-    this._hideTimeout = this.setTimeout(
+    this._hideTimeout = setTimeout(
       this._hideUnderlay,
-      this.props.delayPressOut || 100,
+      this.props.delayPressOut,
     );
     this.props.onPress && this.props.onPress(e);
   },
