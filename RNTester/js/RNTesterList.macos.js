@@ -158,11 +158,11 @@ const ComponentExamples: Array<RNTesterExample> = [
     module: require('./SwipeableFlatListExample'),
     supportsTVOS: false,
   },
-  {
-    key: 'SwipeableListViewExample',
-    module: require('./SwipeableListViewExample'),
-    supportsTVOS: false,
-  },
+  // {
+  //   key: 'SwipeableListViewExample',
+  //   module: require('./SwipeableListViewExample'),
+  //   supportsTVOS: false,
+  // },
   // {
   //   key: 'SwitchExample',
   //   module: require('./SwitchExample'),
@@ -180,12 +180,12 @@ const ComponentExamples: Array<RNTesterExample> = [
   // },
   {
     key: 'TextExample',
-    module: require('./TextExample.ios'),
+    module: require('./TextExample'),
     supportsTVOS: true,
   },
   {
     key: 'TextInputExample',
-    module: require('./TextInputExample.ios'),
+    module: require('./TextInputExample'),
     supportsTVOS: true,
   },
   {

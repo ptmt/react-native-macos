@@ -51,7 +51,7 @@ RCT_EXPORT_VIEW_PROPERTY(placeholder, NSString)
 RCT_EXPORT_VIEW_PROPERTY(placeholderTextColor, NSColor)
 RCT_REMAP_VIEW_PROPERTY(secureTextEntry, textView.secureTextEntry, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(selectTextOnFocus, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(selection, RCTTextSelection)
+// RCT_EXPORT_VIEW_PROPERTY(selection, RCTTextSelection)
 RCT_EXPORT_VIEW_PROPERTY(text, NSString)
 RCT_CUSTOM_VIEW_PROPERTY(fontSize, NSNumber, RCTMultilineTextInputView)
 {

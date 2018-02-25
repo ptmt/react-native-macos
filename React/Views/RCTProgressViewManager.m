@@ -35,7 +35,8 @@ RCT_EXPORT_MODULE()
 
 }
 
-//RCT_EXPORT_VIEW_PROPERTY(progressTintColor, NSColor)
+RCT_REMAP_VIEW_PROPERTY(progressTintColor, controlTint, NSColor)
+
 //RCT_EXPORT_VIEW_PROPERTY(trackTintColor, NSColor)
 //RCT_EXPORT_VIEW_PROPERTY(progressImage, NSImage)
 //RCT_EXPORT_VIEW_PROPERTY(trackImage, NSImage)

@@ -60,7 +60,6 @@ class RNTesterApp extends React.Component<Props, RNTesterNavigationState> {
           return;
         }
         this.setState(storedState);
-        console.log(storedState);
       });
     });
 
@@ -105,8 +104,6 @@ class RNTesterApp extends React.Component<Props, RNTesterNavigationState> {
   }
 
   render() {
-
-    console.log('this.state.openExample', this.state.openExample);
     return (
       <View
         style={styles.container}>
