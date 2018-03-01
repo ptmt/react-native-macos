@@ -41,13 +41,14 @@ class LayoutEventExample extends React.Component<{}, State> {
   };
 
   animateViewLayout = () => {
-    LayoutAnimation.configureNext(
-      LayoutAnimation.Presets.spring,
-      () => {
-        console.log('layout animation done.');
-        this.addWrapText();
-      }
-    );
+    // LayoutAnimation.configureNext(
+    //   LayoutAnimation.Presets.spring,
+    //   () => {
+    //     console.log('layout animation done.');
+    //     this.addWrapText();
+    //   }
+    // );
+    LayoutAnimation.easeInEaseOut();
     this.setState({
       viewStyle: {
         margin: this.state.viewStyle.margin > 20 ? 20 : 60,
@@ -122,9 +123,8 @@ class LayoutEventExample extends React.Component<{}, State> {
 var styles = StyleSheet.create({
   view: {
     padding: 12,
-    borderColor: 'black',
     borderWidth: 0.5,
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
   text: {
     alignSelf: 'flex-start',

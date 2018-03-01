@@ -41,10 +41,12 @@ static NSColor *defaultPlaceholderTextColor()
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if (self = [super initWithFrame:frame]) {
-    _placeholderView = [[NSTextField alloc] initWithFrame:self.bounds];
-//    _placeholderView.isAccessibilityElement = NO;
-//    _placeholderView.numberOfLines = 0;
-    [self addSubview:_placeholderView];
+//    _placeholderView = [[NSTextField alloc] initWithFrame:self.bounds];
+////    _placeholderView.isAccessibilityElement = NO;
+//    // _placeholderView. = 0;
+//    _placeholderView.textColor = defaultPlaceholderTextColor();
+//    _placeholderView.editable = NO;
+//    [self addSubview:_placeholderView];
   }
 
   return self;
@@ -121,6 +123,14 @@ static NSColor *defaultPlaceholderTextColor()
   CGFloat placeholderHeight = [_placeholderView sizeThatFits:textFrame.size].height;
   textFrame.size.height = MIN(placeholderHeight, textFrame.size.height);
   _placeholderView.frame = textFrame;
+}
+
+- (void)drawRect:(NSRect)rect
+{
+  if ([[self string] isEqualToString:@""] && self != [[self window] firstResponder]) {
+    [_placeholderView.attributedStringValue drawWithRect:rect options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+  }
+  [super drawRect:rect];
 }
 
 - (CGSize)sizeThatFits:(CGSize)size

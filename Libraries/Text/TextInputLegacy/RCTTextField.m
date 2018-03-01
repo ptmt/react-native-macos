@@ -36,6 +36,7 @@
     self.drawsBackground = NO;
     self.bordered = NO;
     self.bezeled = YES;
+    // self.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
 
     _eventDispatcher = eventDispatcher;
 
@@ -43,6 +44,8 @@
   }
   return self;
 }
+
+
 
 - (void)dealloc
 {
@@ -64,6 +67,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 -(void)keyUp:(NSEvent *)theEvent
 {
   [self sendKeyValueForString: [NSString stringWithFormat:@"%i", theEvent.keyCode ]];
+}
+
+- (void)setTextContainerInset:(NSEdgeInsets)textContainerInset
+{
+  _textContainerInset = textContainerInset;
+  [self setNeedsLayout:YES];
 }
 
 // TODO:
@@ -246,6 +255,19 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 }
 
+- (BOOL)textView:(NSTextView *)textView shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(nullable NSString *)replacementString
+{
+  if (_maxLength) {
+    NSUInteger allowedLength = _maxLength.integerValue - self.stringValue.length + affectedCharRange.length;
+    
+    if (replacementString.length > allowedLength) {
+      return NO;
+    }
+  }
+
+  return YES;
+}
+
 - (BOOL)resignFirstResponder
 {
   BOOL result = [super resignFirstResponder];
@@ -259,5 +281,37 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
   return result;
 }
+
+- (CGSize)contentSize
+{
+  // Returning size DOES contain `textContainerInset` (aka `padding`).
+  return self.intrinsicContentSize;
+}
+
+//- (CGSize)intrinsicContentSize
+//{
+//  // Note: `placeholder` defines intrinsic size for `<TextInput>`.
+//  NSString *text = self.placeholderString ?: @"";
+//  CGSize size = [text sizeWithAttributes:@{NSFontAttributeName: self.font}];
+//  size = CGSizeMake(RCTCeilPixelValue(size.width), RCTCeilPixelValue(size.height));
+//  size.width += _textContainerInset.left + _textContainerInset.right;
+//  size.height += _textContainerInset.top + _textContainerInset.bottom;
+//  // Returning size DOES contain `textContainerInset` (aka `padding`).
+//  return size;
+//}
+
+- (CGSize)sizeThatFits:(CGSize)size
+{
+  // All size values here contain `textContainerInset` (aka `padding`).
+  CGSize intrinsicSize = self.intrinsicContentSize;
+  return CGSizeMake(MIN(size.width, intrinsicSize.width), MIN(size.height, intrinsicSize.height));
+}
+
+//- (void)reactSetFrame:(CGRect)frame
+//{
+//  NSLog(@"frame height: %f %f", frame.size.height, frame.size.width);
+
+//  [self setFrame:NSMakeRect(0, 0, 100, 100)];
+//}
 
 @end

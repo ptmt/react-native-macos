@@ -387,7 +387,7 @@ const TextInput = createReactClass({
      * If `true`, the text input obscures the text entered so that sensitive text
      * like passwords stay secure. The default value is `false`. Does not work with 'multiline={true}'.
      */
-    secureTextEntry: PropTypes.bool,
+    password: PropTypes.bool,
     /**
     * The highlight and cursor color of the text input.
     */
@@ -658,6 +658,7 @@ const TextInput = createReactClass({
         <TextField
           ref={this._setNativeRef}
           {...props}
+          style={[{ minWidth: 100, height: NativeModules.TextFieldManager.ComponentHeight }, props.styles]}
           onFocus={this._onFocus}
           onBlur={this._onBlur}
           onChange={this._onChange}
@@ -877,10 +878,6 @@ const TextInput = createReactClass({
 });
 
 var styles = StyleSheet.create({
-  input: {
-    alignSelf: 'stretch',
-    height: NativeModules.ButtonManager.ComponentHeight,
-  },
   multilineInput: {
     // This default top inset makes RCTMultilineTextInputView seem as close as possible
     // to single-line RCTSinglelineTextInputView defaults, using the system defaults

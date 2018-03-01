@@ -54,19 +54,21 @@
     _bridge = bridge;
     _eventDispatcher = bridge.eventDispatcher;
     _blurOnSubmit = NO;
-
+   
     _textView = [[RCTUITextView alloc] initWithFrame:self.bounds];
-//    _textView.autoresizingMask = NSViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    _textView.backgroundColor = [NSColor clearColor];
+    _textView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    _textView.backgroundColor = [NSColor redColor];
     _textView.textColor = [NSColor blackColor];
     // This line actually removes 5pt (default value) left and right padding in UITextView.
     _textView.textContainer.lineFragmentPadding = 0;
     
     _textView.delegate = self;
     _textView.drawsBackground = NO;
+
     _textView.focusRingType = NSFocusRingTypeDefault;
 
     [self addSubview:_textView];
+   
   }
   return self;
 }

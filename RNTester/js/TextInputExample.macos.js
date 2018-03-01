@@ -348,7 +348,7 @@ var styles = StyleSheet.create({
   },
   multiline: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#0f0f0f',
+    borderColor: 'rgba(0, 0, 0, 0.1)',
     flex: 1,
     fontSize: 13,
     height: 50,
@@ -413,6 +413,7 @@ exports.examples = [
         <TextInput
           autoFocus={true}
           style={styles.default}
+          placeholder="text"
           accessibilityLabel="I am the accessibility label for text input"
         />
       );
@@ -424,12 +425,12 @@ exports.examples = [
       return <RewriteExample />;
     }
   },
-  // {
-  //   title: 'Live Re-Write (no spaces allowed)',
-  //   render: function() {
-  //     return <RewriteExampleInvalidCharacters />;
-  //   }
-  // },
+  {
+    title: 'Live Re-Write (no spaces allowed)',
+    render: function() {
+      return <RewriteExampleInvalidCharacters />;
+    }
+  },
   // {
   //   title: 'Auto-capitalize',
   //   render: function() {
@@ -570,22 +571,22 @@ exports.examples = [
   //     );
   //   }
   // },
-  // {
-  //   title: 'Secure text entry',
-  //   render: function() {
-  //     return (
-  //       <View>
-  //         <WithLabel label="true">
-  //           <TextInput secureTextEntry={true} style={styles.default} defaultValue="abc" />
-  //         </WithLabel>
-  //       </View>
-  //     );
-  //   }
-  // },
-  // {
-  //   title: 'Event handling',
-  //   render: function(): React.Element<any> { return <TextEventsExample />; },
-  // },
+  {
+    title: 'Password',
+    render: function() {
+      return (
+        <View>
+          <WithLabel label="true">
+            <TextInput password={true} style={styles.default} defaultValue="abc" />
+          </WithLabel>
+        </View>
+      );
+    }
+  },
+  {
+    title: 'Event handling',
+    render: function(): React.Element<any> { return <TextEventsExample />; },
+  },
   // {
   //   title: 'Colored input text',
   //   render: function() {
@@ -719,124 +720,124 @@ exports.examples = [
   //     );
   //   }
   // },
-  // {
-  //   title: 'Multiline',
-  //   render: function() {
-  //     return (
-  //       <View>
-  //         <TextInput
-  //           placeholder="multiline text input"
-  //           multiline={true}
-  //           style={styles.multiline}
-  //         />
-  //         <TextInput
-  //           placeholder="multiline text input with font styles and placeholder"
-  //           multiline={true}
-  //           clearTextOnFocus={true}
-  //           autoCorrect={true}
-  //           autoCapitalize="words"
-  //           placeholderTextColor="red"
-  //           keyboardType="url"
-  //           style={[styles.multiline, styles.multilineWithFontStyles]}
-  //         />
-  //         <TextInput
-  //           placeholder="multiline text input with max length"
-  //           maxLength={5}
-  //           multiline={true}
-  //           style={styles.multiline}
-  //         />
-  //         <TextInput
-  //           placeholder="uneditable multiline text input"
-  //           editable={false}
-  //           multiline={true}
-  //           style={styles.multiline}
-  //         />
-  //         <TextInput
-  //           defaultValue="uneditable multiline text input with phone number detection: 88888888."
-  //           editable={false}
-  //           multiline={true}
-  //           style={styles.multiline}
-  //           dataDetectorTypes="phoneNumber"
-  //         />
-  //         <TextInput
-  //           placeholder="multiline with children"
-  //           multiline={true}
-  //           enablesReturnKeyAutomatically={true}
-  //           returnKeyType="go"
-  //           style={styles.multiline}>
-  //           <View style={styles.multilineChild}/>
-  //         </TextInput>
-  //       </View>
-  //     );
-  //   }
-  // },
-  // {
-  //   title: 'TextInput Intrinsic Size',
-  //   render: function() {
-  //     return (
-  //       <View>
-  //         <Text>Singleline TextInput</Text>
-  //         <View style={{height: 80}}>
-  //           <TextInput
-  //             style={{
-  //               position: 'absolute',
-  //               fontSize: 16,
-  //               backgroundColor: '#eeeeee',
-  //               borderColor: '#666666',
-  //               borderWidth: 5,
-  //               borderTopWidth: 20,
-  //               borderRadius: 10,
-  //               borderBottomRightRadius: 20,
-  //               padding: 10,
-  //               paddingTop: 20,
-  //             }}
-  //             testID="singleline_textinput"
-  //             placeholder="Placeholder defines intrinsic size"
-  //           />
-  //         </View>
-  //         <Text>Multiline TextInput</Text>
-  //         <View style={{height: 130}}>
-  //           <TextInput
-  //             style={{
-  //               position: 'absolute',
-  //               fontSize: 16,
-  //               backgroundColor: '#eeeeee',
-  //               borderColor: '#666666',
-  //               borderWidth: 5,
-  //               borderTopWidth: 20,
-  //               borderRadius: 10,
-  //               borderBottomRightRadius: 20,
-  //               padding: 10,
-  //               paddingTop: 20,
-  //               maxHeight: 100
-  //             }}
-  //             testID="multiline_textinput"
-  //             multiline={true}
-  //             placeholder="Placeholder defines intrinsic size"
-  //           />
-  //         </View>
-  //         <View>
-  //           <TextInput
-  //             style={{
-  //               fontSize: 16,
-  //               backgroundColor: '#eeeeee',
-  //               borderColor: '#666666',
-  //               borderWidth: 5,
-  //               borderTopWidth: 20,
-  //               borderRadius: 10,
-  //               borderBottomRightRadius: 20,
-  //               padding: 10,
-  //               paddingTop: 20,
-  //             }}
-  //             testID="multiline_textinput_with_flex"
-  //             multiline={true}
-  //             placeholder="Placeholder defines intrinsic size"
-  //           />
-  //         </View>
-  //       </View>
-  //     );
-  //   }
-  // },
+  {
+    title: 'Multiline',
+    render: function() {
+      return (
+        <View>
+          <TextInput
+            placeholder="multiline text input"
+            multiline={true}
+            style={styles.multiline}
+          />
+          <TextInput
+            placeholder="multiline text input with font styles and placeholder"
+            multiline={true}
+            clearTextOnFocus={true}
+            autoCorrect={true}
+            autoCapitalize="words"
+            placeholderTextColor="red"
+            keyboardType="url"
+            style={[styles.multiline, styles.multilineWithFontStyles]}
+          />
+          <TextInput
+            placeholder="multiline text input with max length"
+            maxLength={5}
+            multiline={true}
+            style={styles.multiline}
+          />
+          <TextInput
+            placeholder="uneditable multiline text input"
+            editable={false}
+            multiline={true}
+            style={styles.multiline}
+          />
+          <TextInput
+            defaultValue="uneditable multiline text input with phone number detection: 88888888."
+            editable={false}
+            multiline={true}
+            style={styles.multiline}
+            dataDetectorTypes="phoneNumber"
+          />
+          <TextInput
+            placeholder="multiline with children"
+            multiline={true}
+            enablesReturnKeyAutomatically={true}
+            returnKeyType="go"
+            style={styles.multiline}>
+            <View style={styles.multilineChild}/>
+          </TextInput>
+        </View>
+      );
+    }
+  },
+  {
+    title: 'TextInput Intrinsic Size',
+    render: function() {
+      return (
+        <View>
+          <Text>Singleline TextInput</Text>
+          <View style={{height: 80}}>
+            <TextInput
+              style={{
+                position: 'absolute',
+                fontSize: 16,
+                backgroundColor: '#eeeeee',
+                borderColor: '#666666',
+                borderWidth: 5,
+                borderTopWidth: 20,
+                borderRadius: 10,
+                borderBottomRightRadius: 20,
+                padding: 10,
+                paddingTop: 20,
+              }}
+              testID="singleline_textinput"
+              placeholder="Placeholder defines intrinsic size"
+            />
+          </View>
+          <Text>Multiline TextInput</Text>
+          <View style={{height: 130}}>
+            <TextInput
+              style={{
+                position: 'absolute',
+                fontSize: 16,
+                backgroundColor: '#eeeeee',
+                borderColor: '#666666',
+                borderWidth: 5,
+                borderTopWidth: 20,
+                borderRadius: 10,
+                borderBottomRightRadius: 20,
+                padding: 10,
+                paddingTop: 20,
+                maxHeight: 100
+              }}
+              testID="multiline_textinput"
+              multiline={true}
+              placeholder="Placeholder defines intrinsic size"
+            />
+          </View>
+          <View>
+            <TextInput
+              style={{
+                fontSize: 16,
+                backgroundColor: '#eeeeee',
+                borderColor: '#666666',
+                borderWidth: 5,
+                borderTopWidth: 20,
+                borderRadius: 10,
+                borderBottomRightRadius: 20,
+                padding: 10,
+                paddingTop: 20,
+              }}
+              testID="multiline_textinput_with_flex"
+              multiline={true}
+              placeholder="Placeholder defines intrinsic size"
+            />
+          </View>
+        </View>
+      );
+    }
+  },
   // {
   //   title: 'Auto-expanding',
   //   render: function() {
@@ -854,12 +855,12 @@ exports.examples = [
   //     );
   //   }
   // },
-  // {
-  //   title: 'Attributed text',
-  //   render: function() {
-  //     return <TokenizedTextExample />;
-  //   }
-  // },
+  {
+    title: 'Attributed text',
+    render: function() {
+      return <TokenizedTextExample />;
+    }
+  },
   // {
   //   title: 'Text selection & cursor placement',
   //   render: function() {

@@ -21,6 +21,7 @@
 @property (nonatomic, assign) BOOL caretHidden;
 @property (nonatomic, assign) BOOL selectTextOnFocus;
 @property (nonatomic, assign) NSEdgeInsets contentInset;
+@property (nonatomic, assign) NSEdgeInsets textContainerInset;
 @property (nonatomic, strong) NSColor *placeholderTextColor;
 @property (nonatomic, strong) NSColor *selectionColor;
 @property (nonatomic, assign) NSInteger mostRecentEventCount;
