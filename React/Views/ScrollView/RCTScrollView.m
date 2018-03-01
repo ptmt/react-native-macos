@@ -37,6 +37,7 @@ CGFloat const ZINDEX_STICKY_HEADER = 50;
   NSScrollView *_scrollView;
   NSDictionary *_userData;
   uint16_t _coalescingKey;
+  NSDictionary *_body;
 }
 
 @synthesize viewTag = _viewTag;
@@ -56,7 +57,7 @@ CGFloat const ZINDEX_STICKY_HEADER = 50;
     _scrollView = scrollView;
     _userData = userData;
     _coalescingKey = coalescingKey;
-
+    _body = [self prepareBody];
   }
   return self;
 }
@@ -68,37 +69,41 @@ CGFloat const ZINDEX_STICKY_HEADER = 50;
 
 RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
-- (NSDictionary *)body
+-(NSDictionary *)prepareBody
 {
   NSDictionary *body = @{
-    @"contentOffset": @{
-      @"x": @([[_scrollView contentView] documentVisibleRect].origin.x),
-      @"y": @([[_scrollView contentView] documentVisibleRect].origin.y)
-    },
-    @"contentInset": @{
-      @"top": @(_scrollView.contentInsets.top),
-      @"left": @(_scrollView.contentInsets.left),
-      @"bottom": @(_scrollView.contentInsets.bottom),
-      @"right": @(_scrollView.contentInsets.right)
-    },
-    @"contentSize": @{
-      @"width": @([[_scrollView documentView] bounds].size.width),
-      @"height": @([[_scrollView documentView] bounds].size.height)
-    },
-    @"layoutMeasurement": @{
-      @"width": @(_scrollView.frame.size.width),
-      @"height": @(_scrollView.frame.size.height)
-    },
-    @"zoomScale": @(1),
-  };
-
+                         @"contentOffset": @{
+                             @"x": @([[_scrollView contentView] documentVisibleRect].origin.x),
+                             @"y": @([[_scrollView contentView] documentVisibleRect].origin.y)
+                             },
+                         @"contentInset": @{
+                             @"top": @(_scrollView.contentInsets.top),
+                             @"left": @(_scrollView.contentInsets.left),
+                             @"bottom": @(_scrollView.contentInsets.bottom),
+                             @"right": @(_scrollView.contentInsets.right)
+                             },
+                         @"contentSize": @{
+                             @"width": @([[_scrollView documentView] bounds].size.width),
+                             @"height": @([[_scrollView documentView] bounds].size.height)
+                             },
+                         @"layoutMeasurement": @{
+                             @"width": @(_scrollView.frame.size.width),
+                             @"height": @(_scrollView.frame.size.height)
+                             },
+                         @"zoomScale": @(1),
+                         };
+  
   if (_userData) {
     NSMutableDictionary *mutableBody = [body mutableCopy];
     [mutableBody addEntriesFromDictionary:_userData];
     body = mutableBody;
   }
-
+  
   return body;
+}
+- (NSDictionary *)body
+{
+  return _body;
 }
 
 - (BOOL)canCoalesce
