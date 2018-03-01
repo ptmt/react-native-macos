@@ -62,7 +62,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 - (void)updateScript
 {
   if (getenv("CI_USE_PACKAGER") || _useBundler) {
-    _scriptURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://localhost:8081/%@.bundle?platform=ios&dev=true", _appPath]];
+    _scriptURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://localhost:8081/%@.bundle?platform=macos&dev=true", _appPath]];
   } else {
     _scriptURL = [[NSBundle bundleForClass:[RCTBridge class]] URLForResource:@"main" withExtension:@"jsbundle"];
   }
@@ -191,7 +191,6 @@ expectErrorBlock:(BOOL(^)(NSString *error))expectErrorBlock
     }]];
 
     RCTAssert(nonLayoutSubviews.count == 0, @"There shouldn't be any other views: %@", nonLayoutSubviews);
-#endif
 
     if (expectErrorBlock) {
       RCTAssert(expectErrorBlock(errors[0]), @"Expected an error but the first one was missing or did not match.");

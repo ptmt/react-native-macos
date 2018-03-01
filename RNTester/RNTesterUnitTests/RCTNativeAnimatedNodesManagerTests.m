@@ -48,6 +48,17 @@ static const NSTimeInterval FRAME_LENGTH = 1.0 / 60.0;
   return _timestamp;
 }
 
+- (NSDate *)fireDate
+{
+  _timestamp += FRAME_LENGTH;
+  return [NSDate dateWithTimeIntervalSinceReferenceDate:_timestamp];
+}
+
+- (NSTimeInterval)timeIntervalSince1970
+{
+  return _timestamp;
+}
+
 @end
 
 @interface RCTFakeValueObserver : NSObject<RCTValueAnimatedNodeObserver>
@@ -172,14 +183,14 @@ static id RCTPropChecker(NSString *prop, NSNumber *value)
 
   for (NSNumber *frame in frames) {
     [[_uiManager expect] synchronouslyUpdateViewOnUIThread:@1000
-                                                  viewName:@"UIView"
+                                                  viewName:@"NSView"
                                                      props:RCTPropChecker(@"opacity", frame)];
     [_nodesManager stepAnimations:_displayLink];
     [_uiManager verify];
   }
 
   [[_uiManager expect] synchronouslyUpdateViewOnUIThread:@1000
-                                                viewName:@"UIView"
+                                                viewName:@"NSView"
                                                    props:RCTPropChecker(@"opacity", @1)];
   [_nodesManager stepAnimations:_displayLink];
   [_uiManager verify];
@@ -455,7 +466,7 @@ static id RCTPropChecker(NSString *prop, NSNumber *value)
                                       @"restDisplacementThreshold": @0.001,
                                       @"overshootClamping": @NO}
                         endCallback:nil];
-  
+
   BOOL didComeToRest = NO;
   CGFloat previousValue = 0;
   NSUInteger numberOfResets = 0;
@@ -465,32 +476,32 @@ static id RCTPropChecker(NSString *prop, NSNumber *value)
     [invocation getArgument:&props atIndex:4];
     currentValue = props[@"opacity"].doubleValue;
   }] synchronouslyUpdateViewOnUIThread:OCMOCK_ANY viewName:OCMOCK_ANY props:OCMOCK_ANY];
-  
+
   // Run for 3 seconds five times.
   for (NSUInteger i = 0; i < 3 * 60 * 5; i++) {
     [_nodesManager stepAnimations:_displayLink];
-    
+
     if (!didComeToRest) {
       // Verify that animation step is relatively small.
       XCTAssertLessThan(fabs(currentValue - previousValue), 0.12);
     }
-    
+
     // Test to see if it reset after coming to rest
     if (didComeToRest && currentValue == 0) {
       didComeToRest = NO;
       numberOfResets++;
     }
-    
+
     // Record that the animation did come to rest when it rests on toValue.
     didComeToRest = fabs(currentValue - 1) < 0.001 && fabs(currentValue - previousValue) < 0.001;
-    
+
     previousValue = currentValue;
   }
-  
+
   // Verify that value reset 4 times after finishing a full animation and is currently resting.
   XCTAssertEqual(numberOfResets, 4u);
   XCTAssertTrue(didComeToRest);
-  
+
   [[_uiManager reject] synchronouslyUpdateViewOnUIThread:OCMOCK_ANY viewName:OCMOCK_ANY props:OCMOCK_ANY];
   [_nodesManager stepAnimations:_displayLink];
   [_uiManager verify];
