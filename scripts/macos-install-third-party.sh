@@ -33,7 +33,7 @@ function fetch_and_unpack () {
 echo "Checking if third-party dir exists"
 mkdir -p third-party
 
-SCRIPTDIR=$(pwd)/scripts/
+SCRIPTDIR=$(pwd)/scripts
 
 fetch_and_unpack glog-0.3.4.tar.gz https://github.com/google/glog/archive/v0.3.4.tar.gz "$SCRIPTDIR/macos-configure-glog.sh"
 fetch_and_unpack double-conversion-1.1.5.tar.gz https://github.com/google/double-conversion/archive/v1.1.5.tar.gz
