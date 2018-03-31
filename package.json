@@ -98,6 +98,7 @@
     "flow",
     "init.sh",
     "scripts/macos-configure-glog.sh",
+    "scripts/macos-configure-folly.sh",
     "scripts/macos-install-third-party.sh",
     "scripts/launchPackager.bat",
     "scripts/launchPackager.command",
