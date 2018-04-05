@@ -30,7 +30,7 @@ export type ConfigT = MetroConfigT;
 
 function getProjectPath() {
   if (
-    __dirname.match(/node_modules[\/\\]react-native[\/\\]local-cli[\/\\]util$/)
+    __dirname.match(/node_modules[\/\\]react-native-macos[\/\\]local-cli[\/\\]util$/)
   ) {
     // Packager is running from node_modules.
     // This is the default case for all projects created using 'react-native init'.

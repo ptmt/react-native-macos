@@ -79,7 +79,7 @@ export type PushNotificationEventName = $Enum<{
  *
  * [Manually link](docs/linking-libraries-ios.html#manual-linking) the PushNotificationIOS library
  *
- * - Add the following to your Project: `node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj`
+ * - Add the following to your Project: `node_modules/react-native-macos/LibrariesPushNotificationIOS/RCTPushNotification.xcodeproj`
  * - Add the following to `Link Binary With Libraries`: `libRCTPushNotification.a`
  *
  * Finally, to enable support for `notification` and `register` events you need to augment your AppDelegate.
