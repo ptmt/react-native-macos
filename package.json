@@ -218,5 +218,9 @@
     "react-test-renderer": "16.2.0",
     "shelljs": "^0.7.8",
     "sinon": "^2.2.0"
+  },
+  "rnpm": {
+    "plugin": "./local-cli/index.js",
+    "platform": "./local-cli/platform.js"
   }
 }
