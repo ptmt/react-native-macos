@@ -46,7 +46,7 @@
 
 - (void)drawRect:(CGRect)rect
 {
-  CGContextRef context = UIGraphicsGetCurrentContext();
+  CGContextRef context = [NSGraphicsContext currentContext].CGContext;
   for (ARTNode *node in self.subviews) {
     [node renderTo:context];
   }
