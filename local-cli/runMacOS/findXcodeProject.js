@@ -12,12 +12,7 @@
 
 const path = require('path');
 
-type ProjectInfo = {
-  name: string;
-  isWorkspace: boolean;
-}
-
-function findXcodeProject(files: Array<string>): ?ProjectInfo {
+function findXcodeProject(files) {
   const sortedFiles = files.sort();
   for (let i = sortedFiles.length - 1; i >= 0; i--) {
     const fileName = files[i];

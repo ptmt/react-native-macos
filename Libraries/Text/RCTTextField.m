@@ -35,7 +35,7 @@
     self.delegate = self;
     self.drawsBackground = NO;
     self.bordered = NO;
-    self.bezeled = YES;
+    self.bezeled = NO;
 
     _eventDispatcher = eventDispatcher;
 
