@@ -165,7 +165,8 @@
   // Convert the frame so it works with anchorPoint = center.
   CGPoint position = {CGRectGetMidX(frame), CGRectGetMidY(frame)};
   CGRect bounds = {CGPointZero, frame.size};
-
+  CGPoint anchor = {0.5, 0.5};
+  
   // Avoid crashes due to nan coords
   if (isnan(position.x) || isnan(position.y) ||
       isnan(bounds.origin.x) || isnan(bounds.origin.y) ||
@@ -175,10 +176,12 @@
   }
 
   self.frame = frame;
-
+  
   // TODO: why position matters? It's only produce bugs
-  // self.layer.position = position;
+  // OSX requires position and anchor point to rotate from center
+  self.layer.position = position;
   self.layer.bounds = bounds;
+  self.layer.anchorPoint = anchor;
 }
 
 - (NSViewController *)reactViewController
