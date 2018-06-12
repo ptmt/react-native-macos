@@ -2,7 +2,7 @@
   "name": "react-native-macos",
   "version": "1000.0.0",
   "description": "A framework for building native macOS apps using React",
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git@github.com:ptmt/react-native-macos.git"
