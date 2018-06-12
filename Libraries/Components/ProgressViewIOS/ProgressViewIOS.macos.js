@@ -16,6 +16,7 @@ var NativeMethodsMixin = require('NativeMethodsMixin');
 var NativeModules = require('NativeModules');
 var PropTypes = require('prop-types');
 var React = require('React');
+var createReactClass = require('create-react-class');
 var StyleSheet = require('StyleSheet');
 
 var requireNativeComponent = require('requireNativeComponent');
@@ -23,50 +24,51 @@ var requireNativeComponent = require('requireNativeComponent');
 /**
  * Use `ProgressViewIOS` to render a UIProgressView on iOS.
  */
-var ProgressViewIOS = React.createClass({
-  mixins: [NativeMethodsMixin],
+var ProgressViewIOS = createReactClass({
+ displayName: 'ProgressViewIOS',
+ mixins: [NativeMethodsMixin],
 
-  propTypes: {
-    /**
-     * The progress bar style.
-     */
-    progressViewStyle: PropTypes.oneOf(['default', 'bar']),
+ propTypes: {
+   /**
+    * The progress bar style.
+    */
+   progressViewStyle: PropTypes.oneOf(['default', 'bar']),
 
-    /**
-     * The progress value (between 0 and 1).
-     */
-    progress: PropTypes.number,
+   /**
+    * The progress value (between 0 and 1).
+    */
+   progress: PropTypes.number,
 
-    /**
-     * The tint color of the progress bar itself.
-     */
-    progressTintColor: PropTypes.string,
+   /**
+    * The tint color of the progress bar itself.
+    */
+   progressTintColor: PropTypes.string,
 
-    /**
-     * The tint color of the progress bar track.
-     */
-    trackTintColor: PropTypes.string,
+   /**
+    * The tint color of the progress bar track.
+    */
+   trackTintColor: PropTypes.string,
 
-    /**
-     * A stretchable image to display as the progress bar.
-     */
-    progressImage: Image.propTypes.source,
+   /**
+    * A stretchable image to display as the progress bar.
+    */
+   progressImage: Image.propTypes.source,
 
-    /**
-     * A stretchable image to display behind the progress bar.
-     */
-    trackImage: Image.propTypes.source,
-    style: PropTypes.any,
-  },
+   /**
+    * A stretchable image to display behind the progress bar.
+    */
+   trackImage: Image.propTypes.source,
+   style: PropTypes.any,
+ },
 
-  render: function() {
-    return (
-      <RCTProgressView
-        {...this.props}
-        style={[styles.progressView, this.props.style]}
-      />
-    );
-  },
+ render: function() {
+   return (
+     <RCTProgressView
+       {...this.props}
+       style={[styles.progressView, this.props.style]}
+     />
+   );
+ },
 });
 
 var styles = StyleSheet.create({

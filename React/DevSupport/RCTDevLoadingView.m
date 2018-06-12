@@ -43,11 +43,9 @@ RCT_EXPORT_MODULE()
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (instancetype)init
++ (BOOL)requiresMainQueueSetup
 {
-  // We're only overriding this to ensure the module gets created at startup
-  // TODO (t11106126): Remove once we have more declarative control over module setup.
-  return [super init];
+  return YES;
 }
 
 - (void)setBridge:(RCTBridge *)bridge
@@ -93,7 +91,7 @@ RCT_EXPORT_METHOD(showMessage:(NSString *)message color:(NSColor *)color backgro
 
       _label = [[NSTextField alloc] initWithFrame:frame];
       _label.font = [NSFont systemFontOfSize:22.0];
-      _label.textColor = [NSColor blackColor];
+      _label.textColor = color;
       _label.bordered = NO;
       _label.editable = NO;
       _label.selectable = NO;
@@ -132,8 +130,10 @@ RCT_EXPORT_METHOD(hide)
     [[NSAnimationContext currentContext] setDuration:0.35];
     [_window setFrame: CGRectOffset(windowFrame, 0, -windowFrame.size.height) display:YES animate:YES];
     [NSAnimationContext endGrouping];
-    [_window setFrame: windowFrame display:NO animate:YES];
+    // [_window setFrame: windowFrame display:NO animate:YES];
+    
     _window = nil;
+    
 
   });
 }

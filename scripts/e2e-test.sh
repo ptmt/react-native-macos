@@ -20,7 +20,7 @@ TEMP=$(mktemp -d /tmp/react-native-XXXXXXXX)
 
 # When tests run on CI server, we won't be able to see logs
 # from packager because it runs in a separate window. This is
-# a simple workaround, see packager/packager.sh
+# a simple workaround, see scripts/packager.sh
 export REACT_PACKAGER_LOG="$TEMP/server.log"
 
 # To make sure we actually installed the local version
@@ -87,7 +87,7 @@ case $1 in
   cd macos
   # Make sure we installed local version of react-native
   ls EndToEndTest/`basename $MARKER_IOS` > /dev/null
-  ../node_modules/react-native-macos/packager/packager.sh --nonPersistent &
+  ../node_modules/react-native-macos/scripts/packager.sh --nonPersistent &
   SERVER_PID=$!
   # Start the app on the simulator
   xctool -scheme EndToEndTest -sdk iphonesimulator test
@@ -97,7 +97,7 @@ case $1 in
   cd ios
   # Make sure we installed local version of react-native
   ls EndToEndTest/`basename $MARKER_IOS` > /dev/null
-  ../node_modules/react-native/packager/packager.sh --nonPersistent &
+  ../node_modules/react-native/scripts/packager.sh --nonPersistent &
   SERVER_PID=$!
   # Start the app on the simulator
   xctool -scheme EndToEndTest -sdk iphonesimulator test
@@ -107,7 +107,7 @@ case $1 in
   cd android
   # Make sure we installed local version of react-native
   ls `basename $MARKER_ANDROID` > /dev/null
-  ../node_modules/react-native/packager/packager.sh --nonPersistent &
+  ../node_modules/react-native/scripts/packager.sh --nonPersistent &
   SERVER_PID=$!
   # TODO Start the app and check it renders "Welcome to React Native"
   echo "The Android e2e test is not implemented yet"

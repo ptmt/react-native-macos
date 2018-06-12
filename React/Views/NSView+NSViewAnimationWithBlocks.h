@@ -69,6 +69,13 @@ extern BOOL NSViewAnimationOptionIsSet(NSViewAnimationOptions options, NSViewAni
 
 + (void)animateWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay options:(NSViewAnimationOptions)options animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion;
 
++ (void)animateWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay
+     usingSpringWithDamping:(CGFloat)damping
+      initialSpringVelocity:(CGFloat)springVelocity
+                    options:(NSViewAnimationOptions)options
+                 animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion;
+
+
 + (void)animateWithDuration:(NSTimeInterval)duration animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion; // delay = 0.0, options = 0
 
 + (void)animateWithDuration:(NSTimeInterval)duration animations:(void (^)(void))animations; // delay = 0.0, options = 0, completion = NULL

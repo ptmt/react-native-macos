@@ -18,9 +18,6 @@
 #import "NSView+React.h"
 
 @implementation RCTRootContentView
-{
-  NSColor *_backgroundColor;
-}
 
 - (instancetype)initWithFrame:(CGRect)frame
                        bridge:(RCTBridge *)bridge
@@ -34,7 +31,6 @@
     _touchHandler = [[RCTTouchHandler alloc] initWithBridge:_bridge];
     [_touchHandler attachToView:self];
     [_bridge.uiManager registerRootView:self];
-    self.layer.backgroundColor = NULL;
   }
   return self;
 }
@@ -87,19 +83,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
   }
 
   [_bridge.uiManager setAvailableSize:self.availableSize forRootView:self];
-}
-
-- (void)setBackgroundColor:(NSColor *)backgroundColor
-{
-  _backgroundColor = backgroundColor;
-  if (self.reactTag && _bridge.isValid) {
-    [_bridge.uiManager setBackgroundColor:backgroundColor forView:self];
-  }
-}
-
-- (NSColor *)backgroundColor
-{
-  return _backgroundColor;
 }
 
 - (NSView *)hitTest:(CGPoint)point withEvent:(NSEvent *)event

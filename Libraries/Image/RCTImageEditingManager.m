@@ -14,12 +14,11 @@
 #import <React/RCTConvert.h>
 #import <React/RCTLog.h>
 #import <React/RCTUtils.h>
+#import <React/UIImageUtils.h>
 
 #import "RCTImageLoader.h"
 #import "RCTImageStoreManager.h"
 #import "RCTImageUtils.h"
-
-#import "React/UIImageUtils.h"
 
 @implementation RCTImageEditingManager
 

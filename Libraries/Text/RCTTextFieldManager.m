@@ -104,6 +104,11 @@ RCT_EXPORT_VIEW_PROPERTY(mostRecentEventCount, NSInteger)
 
 RCT_EXPORT_MODULE()
 
++ (BOOL)requiresMainQueueSetup
+{
+  return YES;
+}
+
 - (NSDictionary<NSString *, id> *)constantsToExport
 {
   RCTTextField *view = [[RCTTextField alloc] initWithEventDispatcher:self.bridge.eventDispatcher];

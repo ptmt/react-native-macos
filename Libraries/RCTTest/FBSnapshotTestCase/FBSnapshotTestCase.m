@@ -58,25 +58,11 @@
                    identifier:(NSString *)identifier
                         error:(NSError **)errorPtr
 {
-  return [self _compareSnapshotOfViewOrLayer:view
-                    referenceImagesDirectory:referenceImagesDirectory
-                                  identifier:identifier
-                                       error:errorPtr];
-}
-
-#pragma mark -
-#pragma mark Private API
-
-- (BOOL)_compareSnapshotOfViewOrLayer:(id)viewOrLayer
-             referenceImagesDirectory:(NSString *)referenceImagesDirectory
-                           identifier:(NSString *)identifier
-                                error:(NSError **)errorPtr
-{
   _snapshotController.referenceImagesDirectory = referenceImagesDirectory;
-  return [_snapshotController compareSnapshotOfViewOrLayer:viewOrLayer
-                                                  selector:self.invocation.selector
-                                                identifier:identifier
-                                                     error:errorPtr];
+  return [_snapshotController compareSnapshotOfView:view
+                                           selector:self.invocation.selector
+                                         identifier:identifier
+                                              error:errorPtr];
 }
 
 @end

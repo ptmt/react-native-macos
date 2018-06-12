@@ -274,7 +274,10 @@
 				134814211AA4EA7D00B7C361 /* Products */,
 				2D2A28201D9B03D100D4039D /* libRCTAnimation.a */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
+			usesTabs = 0;
 		};
 		94C129491D4069170025F25C /* Drivers */ = {
 			isa = PBXGroup;
@@ -600,6 +603,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RCTAnimation;
 			};
@@ -609,6 +613,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RCTAnimation;
 			};

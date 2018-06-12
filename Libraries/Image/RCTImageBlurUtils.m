@@ -7,9 +7,9 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+#import <React/UIImageUtils.h>
 #import "RCTImageBlurUtils.h"
 #import "RCTImageUtils.h"
-#import "React/UIImageUtils.h"
 
 NSImage *RCTBlurredImageWithRadius(NSImage *inputImage, CGFloat radius)
 {

@@ -10,6 +10,7 @@
 #import <AppKit/AppKit.h>
 
 #import <React/RCTComponent.h>
+#import <yoga/YGEnums.h>
 
 @class RCTShadowView;
 
@@ -24,6 +25,11 @@
 - (void)removeReactSubview:(NSView *)subview NS_REQUIRES_SUPER;
 
 /**
+ * The native id of the view, used to locate view from native codes
+ */
+@property (nonatomic, copy) NSString *nativeID;
+
+/**
  * Layout direction of the view.
  * Internally backed to `semanticContentAttribute` property.
  * Defaults to `LeftToRight` in case of ambiguity.
@@ -31,15 +37,22 @@
 @property (nonatomic, assign) NSUserInterfaceLayoutDirection reactLayoutDirection;
 
 /**
- * z-index, used to override sibling order in didUpdateReactSubviews.
+ * Yoga `display` style property. Can be `flex` or `none`.
+ * Defaults to `flex`.
+ * May be used to temporary hide the view in a very efficient way.
+ */
+@property (nonatomic, assign) YGDisplay reactDisplay;
+
+/**
+ * The z-index of the view.
  */
 @property (nonatomic, assign) NSInteger reactZIndex;
 
 /**
- * The reactSubviews array, sorted by zIndex. This value is cached and
- * automatically recalculated if views are added or removed.
+ * Subviews sorted by z-index. Note that this method doesn't do any caching (yet)
+ * and sorts all the views each call.
  */
-@property (nonatomic, copy, readonly) NSArray<NSView *> *sortedReactSubviews;
+- (NSArray<NSView *> *)reactZIndexSortedSubviews;
 
 /**
  * Updates the subviews array based on the reactSubviews. Default behavior is
@@ -48,15 +61,16 @@
 - (void)didUpdateReactSubviews;
 
 /**
+ * Called each time props have been set.
+ * The default implementation does nothing.
+ */
+- (void)didSetProps:(NSArray<NSString *> *)changedProps;
+
+/**
  * Used by the UIIManager to set the view frame.
  * May be overriden to disable animation, etc.
  */
 - (void)reactSetFrame:(CGRect)frame;
-
-/**
- * Used to improve performance when compositing views with translucent content.
- */
-- (void)reactSetInheritedBackgroundColor:(NSColor *)inheritedBackgroundColor;
 
 /**
  * This method finds and returns the containing view controller for the view.
@@ -79,18 +93,25 @@
 - (void)reactBlur;
 
 /**
- * UIView replacement
+ * Useful properties for computing layout.
  */
-@property (nonatomic, assign) BOOL clipsToBounds;
-
-#if RCT_DEV
+@property (nonatomic, readonly) NSEdgeInsets reactBorderInsets;
+@property (nonatomic, readonly) NSEdgeInsets reactPaddingInsets;
+@property (nonatomic, readonly) NSEdgeInsets reactCompoundInsets;
+@property (nonatomic, readonly) CGRect reactContentFrame;
 
 /**
- Tools for debugging
+ * The (sub)view which represents this view in terms of accessibility.
+ * ViewManager will apply all accessibility properties directly to this view.
+ * May be overriten in view subclass which needs to be accessiblitywise
+ * transparent in favour of some subview.
+ * Defaults to `self`.
  */
+@property (nonatomic, readonly) NSView *reactAccessibilityElement;
 
-@property (nonatomic, strong, setter=_DEBUG_setReactShadowView:) RCTShadowView *_DEBUG_reactShadowView;
-
-#endif
+/*
+ * UIKit replacement
+ */
+@property (nonatomic, assign) BOOL clipsToBounds;
 
 @end

@@ -18,6 +18,7 @@ var ReactNativeViewAttributes = {};
 ReactNativeViewAttributes.UIView = {
   pointerEvents: true,
   accessible: true,
+  accessibilityActions: true,
   accessibilityLabel: true,
   accessibilityComponentType: true,
   accessibilityLiveRegion: true,

@@ -13,7 +13,15 @@
 #import <React/RCTEventDispatcher.h>
 #import <React/RCTUtils.h>
 
-NSString *const RCTOpenURLNotification = @"RCTOpenURLNotification";
+static NSString *const kOpenURLNotification = @"RCTOpenURLNotification";
+
+static void postNotificationWithURL(NSURL *URL, id sender)
+{
+  NSDictionary<NSString *, id> *payload = @{@"url": URL.absoluteString};
+  [[NSNotificationCenter defaultCenter] postNotificationName:kOpenURLNotification
+                                                      object:sender
+                                                    userInfo:payload];
+}
 
 @implementation RCTLinkingManager
 
@@ -32,13 +40,18 @@ RCT_EXPORT_MODULE()
 
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(handleOpenURLNotification:)
-                                               name:RCTOpenURLNotification
+                                               name:kOpenURLNotification
                                              object:nil];
 }
 
 - (void)stopObserving
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
++ (BOOL)requiresMainQueueSetup
+{
+  return NO;
 }
 
 - (NSDictionary<NSString *, id> *)constantsToExport
@@ -57,10 +70,7 @@ RCT_EXPORT_MODULE()
   sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation
 {
-  NSDictionary<NSString *, id> *payload = @{@"url": URL.absoluteString};
-  [[NSNotificationCenter defaultCenter] postNotificationName:RCTOpenURLNotification
-                                                      object:self
-                                                    userInfo:payload];
+  postNotificationWithURL(URL, self);
   return YES;
 }
 
@@ -78,7 +88,7 @@ continueUserActivity:(NSUserActivity *)userActivity
 {
   if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb]) {
     NSDictionary *payload = @{@"url": userActivity.webpageURL.absoluteString};
-    [[NSNotificationCenter defaultCenter] postNotificationName:RCTOpenURLNotification
+    [[NSNotificationCenter defaultCenter] postNotificationName:kOpenURLNotification
                                                         object:self
                                                       userInfo:payload];
   }
@@ -121,21 +131,21 @@ RCT_EXPORT_METHOD(canOpenURL:(NSURL *)URL
   resolve(@(canOpen));
 }
 
-    /*
+
 RCT_EXPORT_METHOD(getInitialURL:(RCTPromiseResolveBlock)resolve
                   reject:(__unused RCTPromiseRejectBlock)reject)
 {
   NSURL *initialURL = nil;
-  if (self.bridge.launchOptions[UIApplicationLaunchOptionsURLKey]) {
-    initialURL = self.bridge.launchOptions[UIApplicationLaunchOptionsURLKey];
-  } else {
-    NSDictionary *userActivityDictionary =
-      self.bridge.launchOptions[UIApplicationLaunchOptionsUserActivityDictionaryKey];
-    if ([userActivityDictionary[UIApplicationLaunchOptionsUserActivityTypeKey] isEqual:NSUserActivityTypeBrowsingWeb]) {
-      initialURL = ((NSUserActivity *)userActivityDictionary[@"UIApplicationLaunchOptionsUserActivityKey"]).webpageURL;
-    }
-  }
+//  if (self.bridge.launchOptions[UIApplicationLaunchOptionsURLKey]) {
+//    initialURL = self.bridge.launchOptions[UIApplicationLaunchOptionsURLKey];
+//  } else {
+//    NSDictionary *userActivityDictionary =
+//      self.bridge.launchOptions[UIApplicationLaunchOptionsUserActivityDictionaryKey];
+//    if ([userActivityDictionary[UIApplicationLaunchOptionsUserActivityTypeKey] isEqual:NSUserActivityTypeBrowsingWeb]) {
+//      initialURL = ((NSUserActivity *)userActivityDictionary[@"UIApplicationLaunchOptionsUserActivityKey"]).webpageURL;
+//    }
+//  }
   resolve(RCTNullIfNil(initialURL.absoluteString));
 }
-*/
+
 @end

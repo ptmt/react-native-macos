@@ -107,6 +107,11 @@ RCT_CUSTOM_VIEW_PROPERTY(systemImage, NSString, __unused NSButton)
   }
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+  return YES;
+}
+
 - (NSDictionary<NSString *, id> *)constantsToExport
 {
   NSButton *view = (NSButton *)[self view];

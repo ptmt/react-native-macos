@@ -54,6 +54,7 @@ static RCTFontWeight weightOfFont(NSFont *font)
       }
     }
   }
+
   return weight;
 }
 
@@ -101,7 +102,7 @@ static NSFont *cachedSystemFont(CGFloat size, RCTFontWeight weight)
         font = [NSFont systemFontOfSize:size];
       }
     }
-    
+
 
     {
       std::lock_guard<std::mutex> lock(fontCacheMutex);
@@ -297,7 +298,7 @@ RCT_ARRAY_CONVERTER(RCTFontVariantDescriptor)
     }
 
   }
- 
+
   // If we still don't have a match at least return the first font in the fontFamily
   // This is to support built-in font Zapfino and other custom single font families like Impact
   if (!font) {

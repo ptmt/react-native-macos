@@ -10,8 +10,8 @@
 #import <React/RCTConvert.h>
 
 @interface RCTConvert (Text)
-
-+ (NSTextAutocorrectionType)UITextAutocorrectionType:(id)json;
-+ (NSTextSpellCheckingType)UITextSpellCheckingType:(id)json;
+//
+//+ (NSTextAutocorrectionType)NSTextAutocorrectionType:(id)json;
+//+ (NSTextSpellCheckingType)NSTextSpellCheckingType:(id)json;
 
 @end

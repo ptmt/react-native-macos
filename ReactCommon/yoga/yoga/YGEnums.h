@@ -77,13 +77,14 @@ typedef YG_ENUM_BEGIN(YGFlexDirection) {
 } YG_ENUM_END(YGFlexDirection);
 WIN_EXPORT const char *YGFlexDirectionToString(const YGFlexDirection value);
 
-#define YGJustifyCount 5
-typedef YG_ENUM_BEGIN(YGJustify) {
-  YGJustifyFlexStart,
-  YGJustifyCenter,
-  YGJustifyFlexEnd,
-  YGJustifySpaceBetween,
-  YGJustifySpaceAround,
+#define YGJustifyCount 6
+typedef YG_ENUM_BEGIN(YGJustify){
+    YGJustifyFlexStart,
+    YGJustifyCenter,
+    YGJustifyFlexEnd,
+    YGJustifySpaceBetween,
+    YGJustifySpaceAround,
+    YGJustifySpaceEvenly,
 } YG_ENUM_END(YGJustify);
 WIN_EXPORT const char *YGJustifyToString(const YGJustify value);
 
@@ -105,6 +106,13 @@ typedef YG_ENUM_BEGIN(YGMeasureMode) {
   YGMeasureModeAtMost,
 } YG_ENUM_END(YGMeasureMode);
 WIN_EXPORT const char *YGMeasureModeToString(const YGMeasureMode value);
+
+#define YGNodeTypeCount 2
+typedef YG_ENUM_BEGIN(YGNodeType) {
+  YGNodeTypeDefault,
+  YGNodeTypeText,
+} YG_ENUM_END(YGNodeType);
+WIN_EXPORT const char *YGNodeTypeToString(const YGNodeType value);
 
 #define YGOverflowCount 3
 typedef YG_ENUM_BEGIN(YGOverflow) {

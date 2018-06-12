@@ -33,7 +33,7 @@ function processTransform(transform: Array<Object>): Array<Object> | Array<numbe
   // Android & iOS implementations of transform property accept the list of
   // transform properties as opposed to a transform Matrix. This is necessary
   // to control transform property updates completely on the native thread.
-  if (Platform.OS === 'android' || Platform.OS === 'ios') {
+  if (Platform.OS === 'android' || Platform.OS === 'ios' || Platform.OS === 'macos') {
     return transform;
   }
 
