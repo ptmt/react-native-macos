@@ -44,11 +44,11 @@
 
     [[self window] setTitle:@"UIExplorerApp"];
     [[self window] setTitleVisibility:NSWindowTitleHidden];
-    [[self window] setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameVibrantLight ]];
+//    [[self window] setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameVibrantLight ]];
     [windowController showWindow:self.window];
 
     [windowController setShouldCascadeWindows:NO];
-    [windowController setWindowFrameAutosaveName:@"UIExplorer"];
+    [windowController setWindowFrameAutosaveName:@"RNTester"];
     [self setDefaultURL];
 
     // -- Init Toolbar
@@ -154,7 +154,6 @@
     RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:_bridge
                                                      moduleName:moduleName
                                               initialProperties:nil];
-    NSLog(@"moduleName: %@", moduleName);
     [self.window setContentView:rootView];
   } else {
     [_bridge.eventDispatcher sendDeviceEventWithName:@"onSearchExample"
