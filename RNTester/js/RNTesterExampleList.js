@@ -21,10 +21,11 @@ const TouchableOpacity = require('TouchableOpacity');
 const RNTesterActions = require('./RNTesterActions');
 const RNTesterStatePersister = require('./RNTesterStatePersister');
 const View = require('View');
+const RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 
 import type {
   RNTesterExample,
-} from './RNTesterList.ios';
+} from './RNTesterList.macos';
 import type {
   PassProps,
 } from './RNTesterStatePersister';
@@ -83,6 +84,12 @@ const renderSectionHeader = ({section}) =>
 
 class RNTesterExampleList extends React.Component<Props, $FlowFixMeState> {
 
+  componentDidMount() {
+    RCTDeviceEventEmitter.addListener(
+      'onSearchExample',
+      ({ query }) => this.props.persister.setState(() => ({filter: query}))
+    );
+  }
   render() {
     const filterText = this.props.persister.state.filter;
     const filterRegex = new RegExp(String(filterText), 'i');
