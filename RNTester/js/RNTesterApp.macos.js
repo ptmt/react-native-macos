@@ -29,6 +29,7 @@ const {
   View,
   Text,
   Dimensions,
+  Appearance,
 } = ReactNative;
 
 import type { RNTesterExample } from './RNTesterList.ios';
@@ -142,18 +143,15 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
   },
-  itemWrapper: {
-    backgroundColor: '#eaeaea',
-  },
   leftPanel: {
     width: 300,
   },
   rightPanel: {
     flex: 1,
-    backgroundColor: '#fff',
     width: '100%',
   },
   welcomeWrapper: {
+    backgroundColor: Appearance.colors.windowBackgroundColor,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',

@@ -36,9 +36,7 @@ RCT_EXPORT_MODULE()
   [indicator setUsesThreadedAnimation:YES];
   [indicator setDisplayedWhenStopped:NO];
   [indicator setHidden:YES];
-  [indicator setControlTint:NSClearControlTint];
-  [indicator.layer setBackgroundColor:[NSColor clearColor].CGColor];
-  // progressbar.layer?.backgroundColor = NSColor.clearColor().CGColor .
+
   return indicator;
 }
 

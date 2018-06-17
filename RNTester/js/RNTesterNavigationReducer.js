@@ -16,6 +16,7 @@ const RNTesterList = require('./RNTesterList');
 
 export type RNTesterNavigationState = {
   openExample: ?string,
+  query: string,
 };
 
 function RNTesterNavigationReducer(

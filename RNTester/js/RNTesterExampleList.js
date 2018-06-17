@@ -22,6 +22,7 @@ const RNTesterActions = require('./RNTesterActions');
 const RNTesterStatePersister = require('./RNTesterStatePersister');
 const View = require('View');
 const RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
+const Appearance = require('Appearance')
 
 import type {
   RNTesterExample,
@@ -102,12 +103,12 @@ class RNTesterExampleList extends React.Component<Props, $FlowFixMeState> {
     const sections = [
       {
         data: this.props.list.ComponentExamples.filter(filter),
-        title: 'COMPONENTS',
+        title: 'Components',
         key: 'c',
       },
       {
         data: this.props.list.APIExamples.filter(filter),
-        title: 'APIS',
+        title: 'APIs',
         key: 'a',
       },
     ];
@@ -117,7 +118,6 @@ class RNTesterExampleList extends React.Component<Props, $FlowFixMeState> {
         {this._renderTitleRow()}
         {/* {this._renderTextInput()} */}
         <SectionList
-          contentContainerStyle={{backgroundColor: 'white'}}
           style={styles.list}
           sections={sections}
           renderItem={this._renderItem}
@@ -205,16 +205,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   list: {
-    backgroundColor: '#eeeeee',
   },
   sectionHeader: {
-    backgroundColor: '#eeeeee',
+    // backgroundColor: Appearance.colors.windowBackgroundColor,
+    marginLeft: 4,
     padding: 5,
     fontWeight: '500',
     fontSize: 11,
+    color: Appearance.isDark ? "#A9ABAE" : "black"
   },
   row: {
-    backgroundColor: 'white',
     justifyContent: 'center',
     paddingHorizontal: 15,
     paddingVertical: 8,
@@ -231,10 +231,11 @@ const styles = StyleSheet.create({
   rowTitleText: {
     fontSize: 13,
     fontWeight: '500',
+    color: Appearance.colors.textColor
   },
   rowDetailText: {
     fontSize: 11,
-    color: '#888888',
+    color:  Appearance.isDark ? '#AAA' : '#888888',
     lineHeight: 15,
   },
   searchRow: {
@@ -251,7 +252,7 @@ const styles = StyleSheet.create({
     height: 35,
   },
   selectedRow: {
-    backgroundColor: 'rgba(0, 0, 0, 0.03)',
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
   },
 });
 

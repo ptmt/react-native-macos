@@ -95,19 +95,19 @@ exports.examples = [
         <View>
           <Button
             type={'switch'}
-            style={{ width: 200 }}
+            style={{ width: 250 }}
             title={'Single Checkbox'}
             state={0}
           />
           <Button
             type={'switch'}
-            style={{ width: 200 }}
+            style={{ width: 250 }}
             title={'Single Checkbox'}
             state={1}
           />
           <Button
             type={'switch'}
-            style={{ width: 200 }}
+            style={{ width: 250 }}
             title={'Single Checkbox'}
             allowsMixedState={true}
             state={-1}
@@ -182,7 +182,7 @@ exports.examples = [
 
 const styles = {
   icon: {
-    width: 40,
-    height: 40,
+    width: 60,
+    height: 60,
   },
 };

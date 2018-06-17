@@ -85,11 +85,7 @@ static NSDictionary *RCTExportedDimensions(RCTBridge *bridge)
 {
   return @{
     @"Dimensions": RCTExportedDimensions(_bridge),
-    // Note:
-    // This prop is deprecated and will be removed right after June 01, 2018.
-    // Please use this only for a quick and temporary solution.
-    // Use <SafeAreaView> instead.
-    @"isIPhoneX_deprecated": @(RCTIsIPhoneX()),
+   
   };
 }
 

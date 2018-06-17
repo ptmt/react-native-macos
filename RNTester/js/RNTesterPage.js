@@ -47,6 +47,7 @@ class RNTesterPage extends React.Component<{
       <RNTesterTitle title={this.props.title} /> :
       null;
     var spacer = this.props.noSpacer ? null : <View style={styles.spacer} />;
+
     return (
       <View style={styles.container}>
         {title}
@@ -65,7 +66,7 @@ class RNTesterPage extends React.Component<{
 
 var styles = StyleSheet.create({
   container: {
-    backgroundColor: '#e9eaed',
+    backgroundColor: 'transparent',
     flex: 1,
   },
   spacer: {

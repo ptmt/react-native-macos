@@ -16,6 +16,7 @@ const invariant = require('fbjs/lib/invariant');
 // Export React, plus some native additions.
 const ReactNative = {
   // Components
+  get Appearance() { return require('Appearance'); },
   get AccessibilityInfo() { return require('AccessibilityInfo'); },
   get ActivityIndicator() { return require('ActivityIndicator'); },
   get ART() { return require('ReactNativeART'); },

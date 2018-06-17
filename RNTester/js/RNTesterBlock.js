@@ -18,6 +18,7 @@ var {
   StyleSheet,
   Text,
   View,
+  Appearance,
 } = ReactNative;
 
 class RNTesterBlock extends React.Component<{
@@ -62,8 +63,8 @@ var styles = StyleSheet.create({
   container: {
     borderRadius: 3,
     borderWidth: 0.5,
-    borderColor: '#d6d7da',
-    backgroundColor: '#ffffff',
+    borderColor: Appearance.colors.shadowColor, //'#d6d7da',
+    backgroundColor: Appearance.isDark ? "#292A2F" : "white",
     margin: 10,
     marginVertical: 5,
     overflow: 'hidden',
@@ -73,7 +74,7 @@ var styles = StyleSheet.create({
     borderTopLeftRadius: 3,
     borderTopRightRadius: 2.5,
     borderBottomColor: '#d6d7da',
-    backgroundColor: '#f6f7f8',
+    backgroundColor: Appearance.colors.textBackgroundColor,
     paddingHorizontal: 10,
     paddingVertical: 5,
   },

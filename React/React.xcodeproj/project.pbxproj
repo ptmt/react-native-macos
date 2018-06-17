@@ -1086,6 +1086,8 @@
 		CF2731C11E7B8DE40044CA4F /* RCTDeviceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CF2731BF1E7B8DE40044CA4F /* RCTDeviceInfo.m */; };
 		CF2731C21E7B8DEF0044CA4F /* RCTDeviceInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = CF2731BE1E7B8DE40044CA4F /* RCTDeviceInfo.h */; };
 		CF2731C31E7B8DF30044CA4F /* RCTDeviceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CF2731BF1E7B8DE40044CA4F /* RCTDeviceInfo.m */; };
+		D426ACD020D57642003B4C4D /* RCTAppearance.h in Headers */ = {isa = PBXBuildFile; fileRef = D426ACCF20D57642003B4C4D /* RCTAppearance.h */; };
+		D426ACD220D57659003B4C4D /* RCTAppearance.m in Sources */ = {isa = PBXBuildFile; fileRef = D426ACD120D57659003B4C4D /* RCTAppearance.m */; };
 		D49593DE202C937C00A7694B /* RCTCursorManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D49593D8202C937B00A7694B /* RCTCursorManager.h */; };
 		D49593DF202C937C00A7694B /* RCTCursorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D49593D9202C937B00A7694B /* RCTCursorManager.m */; };
 		D49593E0202C937C00A7694B /* RCTMenuManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D49593DA202C937B00A7694B /* RCTMenuManager.h */; };
@@ -2120,6 +2122,8 @@
 		C6D380191F71D75B00621378 /* RAMBundleRegistry.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RAMBundleRegistry.cpp; sourceTree = "<group>"; };
 		CF2731BE1E7B8DE40044CA4F /* RCTDeviceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTDeviceInfo.h; sourceTree = "<group>"; };
 		CF2731BF1E7B8DE40044CA4F /* RCTDeviceInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTDeviceInfo.m; sourceTree = "<group>"; };
+		D426ACCF20D57642003B4C4D /* RCTAppearance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTAppearance.h; sourceTree = "<group>"; };
+		D426ACD120D57659003B4C4D /* RCTAppearance.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTAppearance.m; sourceTree = "<group>"; };
 		D49593D8202C937B00A7694B /* RCTCursorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTCursorManager.h; sourceTree = "<group>"; };
 		D49593D9202C937B00A7694B /* RCTCursorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTCursorManager.m; sourceTree = "<group>"; };
 		D49593DA202C937B00A7694B /* RCTMenuManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTMenuManager.h; sourceTree = "<group>"; };
@@ -2361,6 +2365,8 @@
 				59EB6DBA1EBD6FC90072A5E7 /* RCTUIManagerObserverCoordinator.mm */,
 				59500D411F71C63700B122B7 /* RCTUIManagerUtils.h */,
 				59500D421F71C63F00B122B7 /* RCTUIManagerUtils.m */,
+				D426ACCF20D57642003B4C4D /* RCTAppearance.h */,
+				D426ACD120D57659003B4C4D /* RCTAppearance.m */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -3292,6 +3298,7 @@
 				3D80DA541DF820620028D040 /* RCTI18nUtil.h in Headers */,
 				3D80DA561DF820620028D040 /* RCTRedBox.h in Headers */,
 				3D80DA571DF820620028D040 /* RCTSourceCode.h in Headers */,
+				D426ACD020D57642003B4C4D /* RCTAppearance.h in Headers */,
 				EBF21BBC1FC498270052F4D5 /* InspectorInterfaces.h in Headers */,
 				3D80DA591DF820620028D040 /* RCTTiming.h in Headers */,
 				3D80DA5A1DF820620028D040 /* RCTUIManager.h in Headers */,
@@ -4249,6 +4256,7 @@
 				1450FF871BCFF28A00208362 /* RCTProfileTrampoline-arm.S in Sources */,
 				131B6AF51AF1093D00FFC3E0 /* RCTSegmentedControlManager.m in Sources */,
 				58114A171AAE854800E7D092 /* RCTPickerManager.m in Sources */,
+				D426ACD220D57659003B4C4D /* RCTAppearance.m in Sources */,
 				657734911EE8354A00A0E9EA /* RCTInspectorPackagerConnection.m in Sources */,
 				68EFE4EE1CF6EB3900A1DE13 /* RCTBundleURLProvider.m in Sources */,
 				B95154321D1B34B200FE7B80 /* RCTActivityIndicatorView.m in Sources */,

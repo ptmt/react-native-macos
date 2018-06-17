@@ -72,7 +72,7 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
   }
 
   if (self = [super initWithFrame:CGRectZero]) {
-    self.backgroundColor = [NSColor whiteColor];
+    self.backgroundColor = [NSColor clearColor];
 
     [self setNeedsLayout:NO];
 
@@ -299,7 +299,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
                                             sizeFlexiblity:_sizeFlexibility];
   [self runApplication:bridge];
 
-  _contentView.layer.backgroundColor = self.layer.backgroundColor;
   _contentView.passThroughTouches = _passThroughTouches;
   [self addSubview:_contentView];
 
