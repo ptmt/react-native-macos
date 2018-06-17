@@ -65,7 +65,7 @@ const ActivityIndicator = createReactClass({
      * See http://facebook.github.io/react-native/docs/activityindicator.html#size
      */
     size: PropTypes.oneOfType([
-      PropTypes.oneOf([ 'small', 'large' ]),
+      PropTypes.oneOf([ 'small', 'large', 'huge' ]),
       PropTypes.number,
     ]),
     /**
@@ -97,6 +97,9 @@ const ActivityIndicator = createReactClass({
         break;
       case 'large':
         sizeStyle = styles.sizeLarge;
+        break;
+      case 'huge':
+        sizeStyle = styles.sizeHuge;
         break;
       default:
         sizeStyle = {height: props.size, width: props.size};
@@ -134,6 +137,10 @@ const styles = StyleSheet.create({
   sizeLarge: {
     width: 36,
     height: 36,
+  },
+  sizeHuge: {
+    width: 48,
+    height: 48,
   },
 });
 

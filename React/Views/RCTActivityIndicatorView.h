@@ -10,4 +10,7 @@
 #import <AppKit/AppKit.h>
 
 @interface RCTActivityIndicatorView : NSProgressIndicator
+
+-(void)workaroundForLayer;
+
 @end

@@ -19,10 +19,18 @@
   if ((self = [super initWithFrame:frame])) {
     [self setTarget:self];
     [self setAction:@selector(onPressHandler:)];
+    [self setAllowsMixedState:NO];
+
   }
   return self;
 }
+
 #endif
+
+-(BOOL)allowsVibrancy
+{
+  return NO;
+}
 
 -(void)onPressHandler:(__unused NSEvent *)theEvent
 {
@@ -34,6 +42,11 @@
 - (void)reactSetFrame:(CGRect)frame
 {
   [self setFrame:frame];
+}
+
+- (void)setBackgroundColor:(NSColor *)backgroundColor
+{
+  self.layer.backgroundColor = backgroundColor.CGColor;
 }
 
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)

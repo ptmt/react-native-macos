@@ -17,4 +17,14 @@
   [super setHidden: hidden];
 }
 
+-(void)workaroundForLayer {
+  CALayer *layer = [self layer];
+  CALayer *backgroundLayer = [[layer sublayers] firstObject];
+  [backgroundLayer setHidden:YES];
+}
+
+-(void)layout {
+  [self workaroundForLayer];
+}
+
 @end

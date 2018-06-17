@@ -64,7 +64,7 @@ exports.examples = [{
     );
   }
 }, {
-  title: 'System colors (NSColor)',
+  title: 'Dynamic system colors (NSColor)',
   render() {
     return (
       <ColorsExample />

@@ -59,7 +59,6 @@ RCT_EXPORT_MODULE()
     RCTButton *button = [RCTButton buttonWithTitle:@"Button" target:nil action:nil];
     [button setTarget:button];
     [button setAction:@selector(onPressHandler:)];
-
     return button;
   } else {
     return [RCTButton new];
@@ -115,16 +114,17 @@ RCT_CUSTOM_VIEW_PROPERTY(systemImage, NSString, __unused NSButton)
 - (NSDictionary<NSString *, id> *)constantsToExport
 {
   NSButton *view = (NSButton *)[self view];
-  if (view.frame.size.width > 0) {
-    return @{
-            @"ComponentHeight": @(view.frame.size.height),
-            @"ComponentWidth": @(view.frame.size.width)
-            };
-  } else {
+  if (view.intrinsicContentSize.width > 0) {
     return @{
              @"ComponentHeight": @(view.intrinsicContentSize.height),
              @"ComponentWidth": @(view.intrinsicContentSize.width)
              };
+  } else {
+    return @{
+             @"ComponentHeight": @(view.frame.size.height),
+             @"ComponentWidth": @(view.frame.size.width)
+             };
+    
   }
 
 }
