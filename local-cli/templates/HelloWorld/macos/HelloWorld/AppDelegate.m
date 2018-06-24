@@ -56,7 +56,6 @@
                                                       moduleName:@"HelloWorld"
                                                initialProperties:nil
                                                    launchOptions:@{@"argv": [self argv]}];
-  // try NSVisualEffectMaterialDark or NSVisualEffectMaterialMediumLight
   rootView.material = NSVisualEffectMaterialAppearanceBased;
   [self.window setContentView:rootView];
 }
