@@ -85,6 +85,7 @@ function generateProject(destinationRoot, newProjectName, options) {
   } else {
     console.log('Installing React...');
     execSync(`npm install react@${reactVersion} --save --save-exact`, {stdio: 'inherit'});
+    execSync(`npm install babel-plugin-module-resolver --save-dev`);
   }
   if (!options['skip-jest']) {
     const jestDeps = (

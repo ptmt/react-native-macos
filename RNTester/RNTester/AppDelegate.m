@@ -42,9 +42,8 @@
                                                   defer:NO];
     NSWindowController *windowController = [[NSWindowController alloc] initWithWindow:self.window];
 
-    [[self window] setTitle:@"UIExplorerApp"];
+    [[self window] setTitle:@"RNTester"];
     [[self window] setTitleVisibility:NSWindowTitleHidden];
-//    [[self window] setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameVibrantLight ]];
     [windowController showWindow:self.window];
 
     [windowController setShouldCascadeWindows:NO];

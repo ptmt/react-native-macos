@@ -50,7 +50,7 @@
 {
   NSURL *jsCodeLocation;
 
-  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.macos" fallbackResource:nil];
+  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"HelloWorld"
@@ -67,6 +67,10 @@
   [containerItem setSubmenu:rootMenu];
   [rootMenu addItemWithTitle:@"Quit HelloWorld" action:@selector(terminate:) keyEquivalent:@"q"];
   [[NSApp mainMenu] addItem:containerItem];
+}
+
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication * __unused)theApplication {
+  return YES;
 }
 
 @end
