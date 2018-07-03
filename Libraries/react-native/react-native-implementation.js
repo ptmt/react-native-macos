@@ -22,6 +22,7 @@ const ReactNative = {
   get ART() { return require('ReactNativeART'); },
   get Button() { return require('Button'); },
   get CheckBox() { return require('CheckBox'); },
+  get Cursor() { return require('Cursor'); },
   get DatePickerIOS() { return require('DatePickerIOS'); },
   get DrawerLayoutAndroid() { return require('DrawerLayoutAndroid'); },
   get FlatList() { return require('FlatList'); },
