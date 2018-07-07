@@ -13,10 +13,13 @@
 
 const Appearance = require('NativeModules').Appearance;
 const NativeEventEmitter = require('NativeEventEmitter');
+const processColor = require('processColor')
 
 const invariant = require('fbjs/lib/invariant');
 
 invariant(Appearance, 'Appearance native module is not installed correctly');
+
+type RGBColor = string | number;
 
 class AppearanceManager extends NativeEventEmitter {
 
@@ -39,9 +42,20 @@ class AppearanceManager extends NativeEventEmitter {
     this.removeListener(type, handler);
   }
 
-  static get colors() { return Appearance.colors }
-  static get currentAppearance() { return Appearance.currentAppearance }
-  static get isDark() { return Appearance.currentAppearance.toLowerCase().indexOf("dark") > -1}
+  static get initial() { 
+    return {
+      colors: Appearance.colors,
+      currentAppearance: Appearance.currentAppearance
+    };
+  }
+
+  static highlightWithLevel(color: RGBColor, level: Number): Promise<RGBColor> {
+    return Appearance.highlightWithLevel(processColor(color), level)
+  }
+
+  static shadowWithLevel(color: RGBColor, level: Number): Promise<RGBColor> {
+    return Appearance.shadowWithLevel(processColor(color), level)
+  }
 }
 
 module.exports = AppearanceManager;

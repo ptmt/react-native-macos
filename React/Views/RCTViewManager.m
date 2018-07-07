@@ -93,7 +93,7 @@ RCT_EXPORT_MODULE()
   if (!view.layer) {
     [view setWantsLayer:YES];
     CALayer *viewLayer = [CALayer layer];
-    viewLayer.delegate = view;
+    viewLayer.delegate = (id<CALayerDelegate>)view;
     [view setLayer:viewLayer];
   }
 }

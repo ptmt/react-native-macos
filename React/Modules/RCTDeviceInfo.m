@@ -50,7 +50,7 @@ static BOOL RCTIsIPhoneX() {
   return isIPhoneX;
 }
 
-static NSDictionary *RCTExportedDimensions(RCTBridge *bridge)
+static NSDictionary *RCTExportedDimensions(__unused RCTBridge *bridge)
 {
   RCTAssertMainQueue();
 

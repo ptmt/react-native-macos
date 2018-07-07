@@ -2,8 +2,6 @@
 
 @implementation RCTAppearance
 
-@synthesize bridge = _bridge;
-
 RCT_EXPORT_MODULE()
 
 - (dispatch_queue_t)methodQueue
@@ -13,45 +11,34 @@ RCT_EXPORT_MODULE()
 
 - (void)startObserving
 {
-  
-  [[NSNotificationCenter defaultCenter] addObserver:self forKeyPath:@"NSAppearance.currentAppearance" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
+  [NSApp addObserver:self
+          forKeyPath:@"effectiveAppearance" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
 
-//  [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
-//
-//  [[NSNotificationCenter defaultCenter] addObserver:self
-//                                           selector:@selector(handleOpenURLNotification:)
-//                                               name:kOpenURLNotification
-//                                             object:nil];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath
+- (void)observeValueForKeyPath:(__unused NSString *)keyPath
                       ofObject:(__unused id)object
-                        change:(NSDictionary *)change
+                        change:(__unused NSDictionary *)change
                        context:(__unused void *)context {
-  
-  NSLog(@"keyPath %@", keyPath);
-}
-
-- (void)handle:(NSNotification*)n {
-  
-  NSLog(@"keyPath %@", n);
+  [NSAppearance setCurrentAppearance:NSApp.effectiveAppearance];
+  [self sendEventWithName:@"onAppearanceChange" body:[self resolveConstants]];
 }
 
 - (void)stopObserving
 {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [NSApp removeObserver:self forKeyPath:@"effectiveAppearance"];
 }
 
 + (BOOL)requiresMainQueueSetup
 {
-  return YES;
+  return NO;
 }
 
-- (NSDictionary<NSString *, id> *)constantsToExport
+
+- (NSDictionary<NSString *, id> *)resolveConstants
 {
- 
   return @{
-           @"currentAppearance":  [NSAppearance currentAppearance].name,
+           @"currentAppearance": [NSAppearance currentAppearance].name,
            @"colors": @{
                @"textColor": [self rgba:[NSColor textColor]],
                @"textBackgroundColor": [self rgba:[NSColor textBackgroundColor]],
@@ -105,7 +92,12 @@ RCT_EXPORT_MODULE()
                @"systemPurpleColor": [self rgba:[NSColor systemPurpleColor]],
                @"systemGrayColor": [self rgba:[NSColor systemGrayColor]]
                }
-      };
+           };
+}
+
+- (NSDictionary<NSString *, id> *)constantsToExport
+{
+  return [self resolveConstants];
 }
 
 - (NSString *)rgba:(NSColor *)color
@@ -120,6 +112,22 @@ RCT_EXPORT_MODULE()
 - (NSArray<NSString *> *)supportedEvents
 {
   return @[@"onAppearanceChange"];
+}
+
+RCT_EXPORT_METHOD(highlightWithLevel:(NSColor *)color
+                  level:(NSNumber * _Nonnull)level
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(__unused RCTPromiseRejectBlock)reject)
+{
+  resolve([self rgba:[color highlightWithLevel:level.doubleValue]]);
+}
+
+RCT_EXPORT_METHOD(shadowWithLevel:(NSColor *)color
+                  level:(NSNumber * _Nonnull)level
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(__unused RCTPromiseRejectBlock)reject)
+{
+  resolve([self rgba:[color shadowWithLevel:level.doubleValue]]);
 }
 
 @end
