@@ -49,8 +49,8 @@ RCT_EXPORT_VIEW_PROPERTY(minimumTrackImage, NSImage);
 RCT_EXPORT_VIEW_PROPERTY(maximumTrackImage, NSImage);
 RCT_EXPORT_VIEW_PROPERTY(minimumValue, float);
 RCT_EXPORT_VIEW_PROPERTY(maximumValue, float);
-RCT_EXPORT_VIEW_PROPERTY(minimumTrackTintColor, NSColor);
-RCT_EXPORT_VIEW_PROPERTY(maximumTrackTintColor, NSColor);
+//RCT_EXPORT_VIEW_PROPERTY(minimumTrackTintColor, NSColor);
+//RCT_EXPORT_VIEW_PROPERTY(maximumTrackTintColor, NSColor);
 RCT_EXPORT_VIEW_PROPERTY(onValueChange, RCTBubblingEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onSlidingComplete, RCTBubblingEventBlock);
 
