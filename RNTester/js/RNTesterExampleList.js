@@ -22,7 +22,8 @@ const RNTesterActions = require('./RNTesterActions');
 const RNTesterStatePersister = require('./RNTesterStatePersister');
 const View = require('View');
 const RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
-const Appearance = require('Appearance')
+const { AppearanceConsumer } = require('./AppearanceContext')
+
 
 import type {
   RNTesterExample,
@@ -64,16 +65,20 @@ class RowComponent extends React.PureComponent<{
     const {item} = this.props;
 
     return (
-      <TouchableOpacity {...this.props} onPress={this._onPress}>
-        <View style={[styles.row, this.props.selected ? styles.selectedRow : {}]}>
-          <Text style={styles.rowTitleText}>
-            {item.module.title}
-          </Text>
-          <Text style={styles.rowDetailText}>
-            {item.module.description}
-          </Text>
-        </View>
-      </TouchableOpacity>
+      <AppearanceConsumer>
+        {appearance => (
+          <TouchableOpacity {...this.props} onPress={this._onPress}>
+            <View style={[styles.row, this.props.selected ? styles.selectedRow : {}]}>
+              <Text style={[styles.rowTitleText, { color: appearance.colors.textColor}]}>
+                {item.module.title}
+              </Text>
+              <Text style={styles.rowDetailText}>
+                {item.module.description}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
+      </AppearanceConsumer>
     );
   }
 }
@@ -212,7 +217,7 @@ const styles = StyleSheet.create({
     padding: 5,
     fontWeight: '500',
     fontSize: 11,
-    color: Appearance.isDark ? "#A9ABAE" : "black"
+    color: "#A9ABAE"// : "black"
   },
   row: {
     justifyContent: 'center',
@@ -231,11 +236,10 @@ const styles = StyleSheet.create({
   rowTitleText: {
     fontSize: 13,
     fontWeight: '500',
-    color: Appearance.colors.textColor
   },
   rowDetailText: {
     fontSize: 11,
-    color:  Appearance.isDark ? '#AAA' : '#888888',
+    color:  '#AAA', // : '#888888',
     lineHeight: 15,
   },
   searchRow: {

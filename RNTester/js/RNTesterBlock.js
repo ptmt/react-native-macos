@@ -18,8 +18,10 @@ var {
   StyleSheet,
   Text,
   View,
-  Appearance,
 } = ReactNative;
+
+import { AppearanceConsumer } from './AppearanceContext'
+
 
 class RNTesterBlock extends React.Component<{
   title?: string,
@@ -42,19 +44,23 @@ class RNTesterBlock extends React.Component<{
     }
 
     return (
-      <View style={styles.container}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.titleText}>
-            {this.props.title}
-          </Text>
-          {description}
-        </View>
-        <View style={styles.children}>
-          {
-            // $FlowFixMe found when converting React.createClass to ES6
-            this.props.children}
-        </View>
-      </View>
+      <AppearanceConsumer>
+        {appearance => (
+          <View style={[styles.container, { borderColor: appearance.colors.shadowColor, backgroundColor: appearance.currentAppearance.indexOf("Dark") > -1 ? "#292A2F" : "white"}]}>
+            <View style={[styles.titleContainer, {backgroundColor: appearance.colors.textBackgroundColor }]}>
+              <Text style={styles.titleText}>
+                {this.props.title}
+              </Text>
+              {description}
+            </View>
+            <View style={styles.children}>
+              {
+                // $FlowFixMe found when converting React.createClass to ES6
+                this.props.children}
+            </View>
+          </View>
+        )}
+      </AppearanceConsumer>
     );
   }
 }
@@ -63,8 +69,6 @@ var styles = StyleSheet.create({
   container: {
     borderRadius: 3,
     borderWidth: 0.5,
-    borderColor: Appearance.colors.shadowColor, //'#d6d7da',
-    backgroundColor: Appearance.isDark ? "#292A2F" : "white",
     margin: 10,
     marginVertical: 5,
     overflow: 'hidden',
@@ -74,7 +78,6 @@ var styles = StyleSheet.create({
     borderTopLeftRadius: 3,
     borderTopRightRadius: 2.5,
     borderBottomColor: '#d6d7da',
-    backgroundColor: Appearance.colors.textBackgroundColor,
     paddingHorizontal: 10,
     paddingVertical: 5,
   },

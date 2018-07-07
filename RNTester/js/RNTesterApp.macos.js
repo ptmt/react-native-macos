@@ -22,13 +22,15 @@ const RNTesterList = require('./RNTesterList.macos');
 const RNTesterNavigationReducer = require('./RNTesterNavigationReducer');
 const URIActionMap = require('./URIActionMap');
 
+import { AppearanceConsumer } from './AppearanceContext';
+
+
 const {
   AppRegistry,
   SnapshotViewIOS,
   StyleSheet,
   View,
   Text,
-  Dimensions,
   Appearance,
 } = ReactNative;
 
@@ -126,14 +128,19 @@ class RNTesterApp extends React.Component<Props, RNTesterNavigationState> {
   }
 }
 
-class Welcome extends React.Component {
+
+class Welcome extends React.Component<{}> {
   render() {
     return (
-      <View style={styles.welcomeWrapper}>
-        <Text style={styles.welcomeText}>
-          Choose an example on the left side
-        </Text>
-      </View>
+      <AppearanceConsumer>
+        {appearance => ( 
+          <View style={[styles.welcomeWrapper, { backgroundColor: appearance.colors.windowBackgroundColor }]}>
+            <Text style={styles.welcomeText}>
+              Choose an example on the left side
+            </Text>
+          </View>
+        )}
+      </AppearanceConsumer>
     );
   }
 }
@@ -151,7 +158,6 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   welcomeWrapper: {
-    backgroundColor: Appearance.colors.windowBackgroundColor,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',

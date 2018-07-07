@@ -41,11 +41,8 @@ class ColorHelpersExample extends React.Component<{}, { color: string, level: Nu
     this.setState({ level })
     
     const highlightedColor = await Appearance.highlightWithLevel(this.state.color, level);
-    
     this.setState({ highlightedColor })
-
     const shadowedColor = await Appearance.shadowWithLevel(this.state.color, level);
-    
     this.setState({ shadowedColor })
   }
   render() {

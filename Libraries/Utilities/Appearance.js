@@ -20,6 +20,12 @@ const invariant = require('fbjs/lib/invariant');
 invariant(Appearance, 'Appearance native module is not installed correctly');
 
 type RGBColor = string | number;
+export type AppearanceConfig = {
+  currentAppearance: String,
+  colors: {
+    [name: String]: RGBColor
+  }
+}
 
 class AppearanceManager extends NativeEventEmitter {
 
@@ -27,22 +33,19 @@ class AppearanceManager extends NativeEventEmitter {
     super(Appearance);
   }
 
-  /**
-   * Add a handler to Linking changes by listening to the `url` event type
-   * and providing the handler
-   */
   addEventListener(type: string, handler: Function) {
-    this.addListener(type, handler);
+    return this.addListener(type, handler);
   }
 
-  /**
-   * Remove a handler by passing the `url` event type and the handler
-   */
-  removeEventListener(type: string, handler: Function ) {
-    this.removeListener(type, handler);
+  removeSubscription(subscription: any) {
+    if (subscription.emitter !== this) {
+      subscription.emitter.removeSubscription(subscription);
+    } else {
+      super.removeSubscription(subscription);
+    }
   }
 
-  static get initial() { 
+  static get initial(): AppearanceConfig { 
     return {
       colors: Appearance.colors,
       currentAppearance: Appearance.currentAppearance
