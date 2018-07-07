@@ -34,6 +34,10 @@ class RNTesterBlock extends React.Component<{
 
   state = {description: (null: ?string)};
 
+  backgroundColor(appearance: any) {
+    return appearance.currentAppearance.indexOf("Dark") > -1 ? "#292A2F" : "white"
+  }
+
   render() {
     var description;
     if (this.props.description) {
@@ -44,9 +48,9 @@ class RNTesterBlock extends React.Component<{
     }
 
     return (
-      <AppearanceConsumer>
-        {appearance => (
-          <View style={[styles.container, { borderColor: appearance.colors.shadowColor, backgroundColor: appearance.currentAppearance.indexOf("Dark") > -1 ? "#292A2F" : "white"}]}>
+      <AppearanceConsumer resolveColors={(a, utils) => ({ borderColor: utils.tint(0.85, utils.shade(0.85, this.backgroundColor(a))) })}>
+        {(appearance, { borderColor }) => (
+          <View style={[styles.container, { borderColor, backgroundColor: this.backgroundColor(appearance)}]}>
             <View style={[styles.titleContainer, {backgroundColor: appearance.colors.textBackgroundColor }]}>
               <Text style={styles.titleText}>
                 {this.props.title}

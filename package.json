@@ -213,6 +213,7 @@
     "eslint-plugin-react": "^7.2.1",
     "flow-bin": "^0.63.0",
     "jest": "22.0.0",
+    "polished": "^1.9.3",
     "prettier": "1.9.1",
     "react": "16.2.0",
     "react-test-renderer": "16.2.0",

@@ -2,6 +2,8 @@
 import React from 'react';
 import { Appearance } from 'react-native';
 
+import * as colorUtils from 'polished'
+
 // TODO: after upgrading to React 16.3+ move to React Context APIs
 // export const AppearanceContext = React.createContext(
 //   Appearance.initial
@@ -10,18 +12,30 @@ import { Appearance } from 'react-native';
 // export const AppearanceContextConsumer = AppearanceContext.Consumer;
 const AppearanceManager = new Appearance();
 
-export class AppearanceConsumer extends React.Component<any> {
-  state: Appearance.AppearanceConfig = Appearance.initial
+
+export class AppearanceConsumer extends React.Component<any, Appearance.AppearanceConfig> {
   listener: any;
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      ...Appearance.initial,
+      resolvedColors: props.resolveColors ? props.resolveColors(Appearance.initial, colorUtils) : {},
+    }
+  }
   componentDidMount() {
-    this.listener = AppearanceManager.addEventListener("onAppearanceChange", e => this.setState(e));
-    console.log('added listener', this.listener)
+    this.listener = AppearanceManager.addEventListener("onAppearanceChange", async e => {
+      this.setState(e)
+      if (this.props.resolveColors) {
+        const resolvedColors = this.props.resolveColors(e, colorUtils);
+        console.log("resolvedColors", resolvedColors)
+        this.setState({ resolvedColors })
+      }
+    }); 
   }
   componentWillUnmount() {
-    console.log('removing', this.listener)
     AppearanceManager.removeSubscription(this.listener);
   }
   render() {
-    return this.props.children(this.state);
+    return this.props.children(this.state, this.state.resolvedColors);
   }
 }

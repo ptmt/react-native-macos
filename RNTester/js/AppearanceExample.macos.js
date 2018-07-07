@@ -78,7 +78,7 @@ class ColorsExample extends React.Component<{}> {
           <View key={key} style={{ marginVertical: 6 }}>
             <Text>{key}</Text> 
             <Text style={{ fontSize: 11, color: "gray" }} >{this.state.colors[key]}</Text>
-            <View style={{ borderWidth: 0.5, borderColor: "gray", width: 100, height: 20, backgroundColor: this.state.colors[key] }} />
+            <View style={{ borderWidth: 0.5, borderColor: "gray", width: "100%", height: 30, marginVertical: 5, backgroundColor: this.state.colors[key] }} />
           </View>
         )}
       </View>
