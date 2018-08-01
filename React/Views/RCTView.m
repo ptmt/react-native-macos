@@ -161,6 +161,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   return YES;
 }
 
+-(void) drawRect:(__unused NSRect)dirtyRect {}
+
 - (BOOL)wantsDefaultClipping
 {
   return self.clipsToBounds;
@@ -175,6 +177,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 //  if (pointerEvents == RCTPointerEventsBoxNone) {
 //    self.accessibilityViewIsModal = NO;
 //  }
+}
+
+- (void)setTransform:(CATransform3D)transform
+{
+  _transform = transform;
 }
 
 - (NSView *)hitTest:(CGPoint)point
@@ -392,11 +399,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
   [super layout];
 
-  if (self.shouldBeTransformed && self.layer) {
-    self.layer.transform = self.transform;
-    self.shouldBeTransformed = NO;
-  }
-
   if (_removeClippedSubviews) {
     [self updateClippedSubviews];
   }
@@ -566,6 +568,11 @@ static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x) {
 
 - (void)displayLayer:(CALayer *)layer
 {
+  if (self.shouldBeTransformed) {
+    self.layer.transform = self.transform;
+    self.shouldBeTransformed = NO;
+  }
+  
   if (CGSizeEqualToSize(layer.bounds.size, CGSizeZero)) {
     return;
   }

@@ -18,7 +18,7 @@
 
 @class RCTView;
 
-@interface RCTView : NSView
+@interface RCTView : NSView <CALayerDelegate>
 
 /**
  * Accessibility event handlers

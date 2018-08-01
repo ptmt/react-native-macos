@@ -75,7 +75,7 @@ class Flip extends React.Component<{}, $FlowFixMeState> {
 
 var styles = StyleSheet.create({
   container: {
-    height: 500,
+    height: 300,
   },
   box1: {
     left: 0,
@@ -155,7 +155,7 @@ var styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     transform: [
-      {translate: [200, 350]},
+      {translate: [200, 35]},
       {scale: 2.5},
       {rotate: '-0.2rad'},
     ],
@@ -177,13 +177,13 @@ var styles = StyleSheet.create({
     ],
   },
   flipCardContainer: {
-    marginVertical: 40,
+    marginVertical: 100,
     flex: 1,
     alignSelf: 'center',
   },
   flipCard: {
-    width: 200,
-    height: 200,
+    width: 100,
+    height: 100,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'blue',
