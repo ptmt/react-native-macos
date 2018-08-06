@@ -72,7 +72,7 @@ class RowComponent extends React.PureComponent<{
               <Text style={[styles.rowTitleText, { color: appearance.colors.textColor}]}>
                 {item.module.title}
               </Text>
-              <Text style={styles.rowDetailText}>
+              <Text style={[styles.rowDetailText, { color: appearance.colors.secondaryLabelColor}]}>
                 {item.module.description}
               </Text>
             </View>
@@ -84,9 +84,17 @@ class RowComponent extends React.PureComponent<{
 }
 
 const renderSectionHeader = ({section}) =>
-  <Text style={styles.sectionHeader}>
-    {section.title}
-  </Text>;
+  <AppearanceConsumer>
+    {appearance => (
+      <View style={{ backgroundColor: "transparent" }} >
+      <Text style={[styles.sectionHeader, 
+      { color: appearance.colors.secondaryLabelColor }]}>
+        {section.title}
+      </Text>
+      </View>)
+    }
+  </AppearanceConsumer>;
+
 
 class RNTesterExampleList extends React.Component<Props, $FlowFixMeState> {
 
@@ -212,12 +220,10 @@ const styles = StyleSheet.create({
   list: {
   },
   sectionHeader: {
-    // backgroundColor: Appearance.colors.windowBackgroundColor,
     marginLeft: 4,
     padding: 5,
     fontWeight: '500',
     fontSize: 11,
-    color: "#A9ABAE"// : "black"
   },
   row: {
     justifyContent: 'center',

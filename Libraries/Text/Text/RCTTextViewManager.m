@@ -58,6 +58,7 @@ RCT_EXPORT_MODULE(RCTText)
 #pragma mark - Shadow properties
 
 RCT_EXPORT_SHADOW_PROPERTY(color, NSColor)
+RCT_EXPORT_SHADOW_PROPERTY(backgroundColor, NSColor)
 RCT_EXPORT_SHADOW_PROPERTY(fontFamily, NSString)
 RCT_EXPORT_SHADOW_PROPERTY(fontSize, CGFloat)
 RCT_EXPORT_SHADOW_PROPERTY(fontWeight, NSString)

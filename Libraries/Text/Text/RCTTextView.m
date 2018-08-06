@@ -145,7 +145,6 @@ static void collectNonTextDescendants(RCTTextView *view, NSMutableArray *nonText
 {
   if (self.wantsLayer == NO) {
     self.wantsLayer = YES;
-    self.layer = [[CALayer alloc] init];
   }
   self.layer.backgroundColor = [inheritedBackgroundColor CGColor];
 }

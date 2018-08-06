@@ -38,6 +38,11 @@ class RNTesterBlock extends React.Component<{
     return appearance.currentAppearance.indexOf("Dark") > -1 ? "#292A2F" : "white"
   }
 
+  borderColor(appearance: any, utils) {
+    const isDark = appearance.currentAppearance.indexOf("Dark") > -1;
+    return isDark ? utils.tint(0.86, this.backgroundColor(appearance)) : utils.shade(0.85, this.backgroundColor(appearance))
+  }
+
   render() {
     var description;
     if (this.props.description) {
@@ -48,11 +53,11 @@ class RNTesterBlock extends React.Component<{
     }
 
     return (
-      <AppearanceConsumer resolveColors={(a, utils) => ({ borderColor: utils.tint(0.85, utils.shade(0.85, this.backgroundColor(a))) })}>
+      <AppearanceConsumer resolveColors={(a, utils) => ({ borderColor: this.borderColor(a, utils) })}>
         {(appearance, { borderColor }) => (
           <View style={[styles.container, { borderColor, backgroundColor: this.backgroundColor(appearance)}]}>
-            <View style={[styles.titleContainer, {backgroundColor: appearance.colors.textBackgroundColor }]}>
-              <Text style={styles.titleText}>
+            <View style={[styles.titleContainer, {backgroundColor: appearance.colors.textBackgroundColor, borderBottomColor: borderColor }]}>
+              <Text style={[styles.titleText, { color: appearance.colors.textColor } ]}>
                 {this.props.title}
               </Text>
               {description}
@@ -81,7 +86,7 @@ var styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderTopLeftRadius: 3,
     borderTopRightRadius: 2.5,
-    borderBottomColor: '#d6d7da',
+    
     paddingHorizontal: 10,
     paddingVertical: 5,
   },

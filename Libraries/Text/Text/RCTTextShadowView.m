@@ -254,7 +254,7 @@ static YGSize RCTMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, f
                                     fontWeight:nil
                                      fontStyle:nil
                                  letterSpacing:nil
-                            useBackgroundColor:NO
+                            useBackgroundColor:YES
                                foregroundColor:self.color ?: [NSColor textColor]
                                backgroundColor:self.backgroundColor
                                        opacity:self.opacity];

@@ -24,10 +24,9 @@ export class AppearanceConsumer extends React.Component<any, Appearance.Appearan
   }
   componentDidMount() {
     this.listener = AppearanceManager.addEventListener("onAppearanceChange", async e => {
-      this.setState(e)
+      this.setState(e);
       if (this.props.resolveColors) {
         const resolvedColors = this.props.resolveColors(e, colorUtils);
-        console.log("resolvedColors", resolvedColors)
         this.setState({ resolvedColors })
       }
     }); 

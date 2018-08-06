@@ -15,6 +15,10 @@ const {
   Slider,
 } = ReactNative;
 
+
+import { AppearanceConsumer } from './AppearanceContext'
+
+
 class AppearanceListenerExample extends React.Component<{}> {
   
   componentDidMount() {
@@ -25,7 +29,10 @@ class AppearanceListenerExample extends React.Component<{}> {
    
     return (
       <View style={styles.container}>
-        <Text>Current appearance name: <Text style={{ fontWeight: "bold"}} >{this.state.currentAppearance}</Text></Text>
+        <AppearanceConsumer>{appearance => (
+            <Text>Current appearance name: <Text style={{ fontWeight: "bold"}} >{this.state.currentAppearance}</Text></Text>
+          )}
+        </AppearanceConsumer>
       </View>
     );
   }
@@ -47,20 +54,23 @@ class ColorHelpersExample extends React.Component<{}, { color: string, level: Nu
   }
   render() {
     return (
-      <View style={styles.container}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between"}}>
-          <Text>Input color</Text>
-          <TextInput value={this.state.color} style={{ width: "50%"}} onChangeText={color => this.setState({ color }, () => this.changeHighlightColor(this.state.level))} />
-        </View>
-       
-        <Text>Level {this.state.level} </Text>
-        <Slider step={0.1} minimumValue={0} maximumValue={1} onValueChange={this.changeHighlightColor} />
+      <AppearanceConsumer>{appearance => (
+        <View style={styles.container}>
+          <View style={{ flexDirection: "row", justifyContent: "space-between"}}>
+            <Text style={{ color: appearance.colors.textColor}}>Input color</Text>
+            <TextInput value={this.state.color} style={{ width: "50%"}} onChangeText={color => this.setState({ color }, () => this.changeHighlightColor(this.state.level))} />
+          </View>
         
-        <View style={{ flexDirection: "row", justifyContent: "space-between"}}>
-          {this.state.highlightedColor && <View style={[{ backgroundColor: this.state.highlightedColor }, styles.colorBlock]}><Text>highlighted</Text></View>}
-          {this.state.highlightedColor && <View style={[{ backgroundColor: this.state.shadowedColor}, styles.colorBlock]}><Text>shadowed</Text></View>}
+          <Text style={{ color: appearance.colors.textColor}}>Level {this.state.level} </Text>
+          <Slider step={0.1} minimumValue={0} maximumValue={1} onValueChange={this.changeHighlightColor} />
+          
+          <View style={{ flexDirection: "row", justifyContent: "space-between"}}>
+            {this.state.highlightedColor && <View style={[{ backgroundColor: this.state.highlightedColor }, styles.colorBlock]}><Text>highlighted</Text></View>}
+            {this.state.highlightedColor && <View style={[{ backgroundColor: this.state.shadowedColor}, styles.colorBlock]}><Text>shadowed</Text></View>}
+          </View>
         </View>
-      </View>
+        )}
+      </AppearanceConsumer>
     );
   }
 }
@@ -73,15 +83,18 @@ class ColorsExample extends React.Component<{}> {
   state: any = Appearance.initial;
   render() {
     return (
-      <View style={styles.container}>
-        {Object.keys(this.state.colors).sort((a, b) => a > b ? 1 : -1).map(key =>
-          <View key={key} style={{ marginVertical: 6 }}>
-            <Text>{key}</Text> 
-            <Text style={{ fontSize: 11, color: "gray" }} >{this.state.colors[key]}</Text>
-            <View style={{ borderWidth: 0.5, borderColor: "gray", width: "100%", height: 30, marginVertical: 5, backgroundColor: this.state.colors[key] }} />
-          </View>
-        )}
-      </View>
+      <AppearanceConsumer>{appearance => (
+        <View style={styles.container}>
+          {Object.keys(this.state.colors).sort((a, b) => a > b ? 1 : -1).map(key =>
+            <View key={key} style={{ marginVertical: 6 }}>
+              <Text style={{ color: appearance.colors.textColor}}>{key}</Text> 
+              <Text style={{ fontSize: 11, color: appearance.colors.secondaryLabelColor }} >{this.state.colors[key]}</Text>
+              <View style={{ borderWidth: 0.5, borderColor: "gray", width: "100%", height: 30, marginVertical: 5, backgroundColor: this.state.colors[key] }} />
+            </View>
+          )}
+        </View>
+      )}
+      </AppearanceConsumer>
     );
   }
 }
