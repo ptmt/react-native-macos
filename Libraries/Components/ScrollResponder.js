@@ -440,7 +440,7 @@ const ScrollResponderMixin = {
 
     UIManager.dispatchViewManagerCommand(
       nullthrows(this.scrollResponderGetScrollableNode()),
-      UIManager.RCTScrollView.Commands.scrollTo,
+      commandID,
       [x || 0, y || 0, animated !== false]
     );
   },
