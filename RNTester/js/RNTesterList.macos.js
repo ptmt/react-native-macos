@@ -276,11 +276,11 @@ const APIExamples: Array<RNTesterExample> = [
     module: require('./ClipboardExample'),
     supportsTVOS: false,
   },
-  // {
-  //   key: 'Dimensions',
-  //   module: require('./DimensionsExample'),
-  //   supportsTVOS: true,
-  // },
+  {
+    key: 'Dimensions',
+    module: require('./DimensionsExample'),
+    supportsTVOS: true,
+  },
   // {
   //   key: 'GeolocationExample',
   //   module: require('./GeolocationExample'),

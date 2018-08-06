@@ -16,6 +16,7 @@
 #import "RCTUtils.h"
 
 @implementation RCTDeviceInfo {
+  id subscription;
 }
 
 @synthesize bridge = _bridge;
@@ -35,6 +36,13 @@ RCT_EXPORT_MODULE()
 - (void)setBridge:(RCTBridge *)bridge
 {
   _bridge = bridge;
+  
+  NSWindow *currentWindow = RCTKeyWindow();
+  
+  subscription = [[NSNotificationCenter defaultCenter] addObserverForName:NSWindowDidResizeNotification
+                                                                   object:currentWindow queue:nil usingBlock:^(__unused NSNotification * n){
+    [self didReceiveNewContentSizeMultiplier];
+  }];
 }
 
 static BOOL RCTIsIPhoneX() {
@@ -62,8 +70,16 @@ static NSDictionary *RCTExportedDimensions(__unused RCTBridge *bridge)
                          @"scale": @(RCTScreenScale()),
                          @"fontScale": @(1) // TODO: fix accessibility bridge.accessibilityManager.multiplier)
                          };
+  
+  CGRect windowSize = RCTKeyWindow().frame;
+  NSDictionary *windowDims = @{
+                         @"width": @(windowSize.size.width),
+                         @"height": @(windowSize.size.height),
+                         @"scale": @(RCTScreenScale()),
+                         @"fontScale": @(1) // TODO: fix accessibility bridge.accessibilityManager.multiplier)
+                         };
   return @{
-           @"window": dims,
+           @"window": windowDims,
            @"screen": dims
            };
 }
@@ -85,7 +101,6 @@ static NSDictionary *RCTExportedDimensions(__unused RCTBridge *bridge)
 {
   return @{
     @"Dimensions": RCTExportedDimensions(_bridge),
-   
   };
 }
 
