@@ -82,6 +82,7 @@ function generateProject(destinationRoot, newProjectName, options) {
   if (yarnVersion) {
     console.log('Adding React...');
     execSync(`yarn add react@${reactVersion}`, {stdio: 'inherit'});
+    execSync(`yarn add babel-plugin-module-resolver`, {stdio: 'inherit'});
   } else {
     console.log('Installing React...');
     execSync(`npm install react@${reactVersion} --save --save-exact`, {stdio: 'inherit'});

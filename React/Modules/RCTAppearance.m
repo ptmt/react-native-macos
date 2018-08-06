@@ -20,7 +20,7 @@ RCT_EXPORT_MODULE()
                       ofObject:(__unused id)object
                         change:(__unused NSDictionary *)change
                        context:(__unused void *)context {
-  [NSAppearance setCurrentAppearance:NSApp.effectiveAppearance];
+  [NSAppearance setCurrentAppearance:[NSApp mainWindow].effectiveAppearance];
   [self sendEventWithName:@"onAppearanceChange" body:[self resolveConstants]];
 }
 
