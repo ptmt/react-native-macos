@@ -12,6 +12,7 @@
 'use strict';
 
 const Dimensions = require('Dimensions');
+const Platform = require('Platform');
 const FrameRateLogger = require('FrameRateLogger');
 const Keyboard = require('Keyboard');
 const ReactNative = require('ReactNative');
