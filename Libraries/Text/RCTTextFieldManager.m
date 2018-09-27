@@ -47,6 +47,8 @@ RCT_EXPORT_MODULE()
     return textField;
 }
 
+RCT_EXPORT_VIEW_PROPERTY(bezeled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(bordered, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(caretHidden, BOOL)
 RCT_REMAP_VIEW_PROPERTY(editable, enabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(placeholder, NSString)
