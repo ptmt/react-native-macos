@@ -132,6 +132,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)updatePlaceholder
 {
+  [self setPlaceholderString:_placeholderString];
   if (_placeholderTextColor && _placeholderString) {
     NSAttributedString *attrString = [[NSAttributedString alloc]
                                       initWithString:_placeholderString attributes: @{
