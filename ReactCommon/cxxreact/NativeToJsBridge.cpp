@@ -34,6 +34,10 @@ public:
     return m_registry;
   }
 
+  bool isBatchActive() {
+    return m_batchHadNativeModuleCalls;
+  }
+
   void callNativeModules(
       JSExecutor& executor, folly::dynamic&& calls, bool isEndOfBatch) override {
 
@@ -213,6 +217,10 @@ void* NativeToJsBridge::getJavaScriptContext() {
 
 bool NativeToJsBridge::isInspectable() {
   return m_executor->isInspectable();
+}
+
+bool NativeToJsBridge::isBatchActive() {
+  return m_delegate->isBatchActive();
 }
 
 #ifdef WITH_JSC_MEMORY_PRESSURE
