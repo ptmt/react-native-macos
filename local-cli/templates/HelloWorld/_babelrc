@@ -3,7 +3,7 @@
   "plugins": [
     ["module-resolver", {
       "alias": {
-        "react-native": "react-native-macos",
+        "react-native": "react-native-macos"
       }
     }]
   ]
