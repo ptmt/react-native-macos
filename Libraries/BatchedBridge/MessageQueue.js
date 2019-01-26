@@ -219,35 +219,63 @@ class MessageQueue {
       // folly-convertible.  As a special case, if a prop value is a
       // function it is permitted here, and special-cased in the
       // conversion.
-      const isValidArgument = val => {
+      const seen = [];
+      const isValid = (function validate(val) {
         const t = typeof val;
         if (
           t === 'undefined' ||
-          t === 'null' ||
           t === 'boolean' ||
-          t === 'number' ||
           t === 'string'
         ) {
           return true;
         }
+        if (t === 'number') {
+          return isFinite(val);
+        }
         if (t === 'function' || t !== 'object') {
           return false;
         }
+        if (seen.indexOf(val) >= 0) {
+          return false;
+        }
+        seen.push(val);
         if (Array.isArray(val)) {
-          return val.every(isValidArgument);
+          return val.every(validate);
         }
         for (const k in val) {
-          if (typeof val[k] !== 'function' && !isValidArgument(val[k])) {
+          if (!validate(val[k])) {
             return false;
           }
         }
         return true;
+      })(params);
+
+      // Stringify the invalid params for easier debugging.
+      const stringify = val => {
+        const seen = [];
+        return JSON.stringify(params, (key, val) => {
+          const t = typeof val;
+          if (t === 'function') {
+            return '[Function' + (val.name ? ': ' + val.name : '') + ']';
+          }
+          if (t === 'number' && !isFinite(val)) {
+            return '[Number: ' + val + ']';
+          }
+          if (t !== 'object') {
+            return val;
+          }
+          if (seen.indexOf(val) >= 0) {
+            return '[Circular]';
+          }
+          seen.push(val);
+          return val;
+        });
       };
 
       invariant(
-        isValidArgument(params),
-        '%s is not usable as a native method argument',
-        params,
+        isValid,
+        'Argument to native method cannot be serialized: %s',
+        isValid || stringify(params),
       );
 
       // The params object should not be mutated after being queued
