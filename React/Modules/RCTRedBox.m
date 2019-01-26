@@ -155,9 +155,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (void)showErrorMessage:(NSString *)message withStack:(NSArray<RCTJSStackFrame *> *)stack isUpdate:(BOOL)isUpdate
 {
-  if (!self.isVisible || isUpdate) {
+  if (!self.isVisible || (isUpdate && [message isEqualToString:_lastErrorMessage])) {
     _lastStackTrace = stack;
-    _lastErrorMessage = [message substringToIndex:MIN((NSUInteger)10000, message.length)];
+    _lastErrorMessage = message;
 
     [_stackTraceTableView reloadData];
     [_stackTraceTableView sizeToFit];
@@ -207,7 +207,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   }
 
   NSPasteboard *pb = [NSPasteboard generalPasteboard];
-  [pb writeObjects:[NSArray arrayWithObject:fullStackTrace]];
+  [pb clearContents];
+  [pb setString:fullStackTrace forType:NSPasteboardTypeString];
 }
 
 - (NSString *)formatFrameSource:(RCTJSStackFrame *)stackFrame
@@ -236,6 +237,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return [self reuseCell:cell forStackFrame:stackFrame];
 }
 
+- (NSString *)truncateErrorMessage:(NSString *)message
+{
+  message = [message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+  return [message substringToIndex:MIN((NSUInteger)10000, message.length)];
+}
+
 - (NSTextField *)reuseCell:(NSTextField *)cell forErrorMessage:(NSString *)message
 {
   if (!cell) {
@@ -248,7 +255,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     cell.bordered = false;
     cell.editable = false;
   }
-  [cell setStringValue:message];
+  [cell setStringValue:[self truncateErrorMessage:message]];
   return cell;
 }
 
@@ -280,12 +287,21 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row
 {
   if (row == 0) {
+    NSString *message = [self truncateErrorMessage:_lastErrorMessage];
+    
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-
-    NSDictionary *attributes = @{NSFontAttributeName: [NSFont boldSystemFontOfSize:16],
-                                 NSParagraphStyleAttributeName: paragraphStyle};
-    CGRect boundingRect = [_lastErrorMessage boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil];
+    
+    NSDictionary *attributes = @{
+      NSFontAttributeName: [NSFont boldSystemFontOfSize:16],
+      NSParagraphStyleAttributeName: paragraphStyle,
+    };
+    
+    CGRect boundingRect = [message boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
+                                                options:NSStringDrawingUsesLineFragmentOrigin
+                                             attributes:attributes
+                                                context:nil];
+    
     return ceil(boundingRect.size.height) + 40;
   } else {
     return 50;
