@@ -12,6 +12,7 @@
 'use strict';
 
 const BatchedBridge = require('BatchedBridge');
+const ExceptionsManager = require('ExceptionsManager');
 
 const invariant = require('fbjs/lib/invariant');
 
@@ -104,7 +105,11 @@ function genMethod(moduleID: number, methodID: number, type: MethodType) {
       const onFail = hasErrorCallback ? secondLastArg : null;
       const callbackCount = hasSuccessCallback + hasErrorCallback;
       args = args.slice(0, args.length - callbackCount);
-      BatchedBridge.enqueueNativeCall(moduleID, methodID, args, onFail, onSuccess);
+      try {
+        BatchedBridge.enqueueNativeCall(moduleID, methodID, args, onFail, onSuccess);
+      } catch(e) {
+        ExceptionsManager.handleException(e, true);
+      }
     };
   }
   fn.type = type;
