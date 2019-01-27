@@ -252,7 +252,7 @@ void _RCTLogNativeInternal(RCTLogLevel level, const char *fileName, int lineNumb
       dispatch_async(dispatch_get_main_queue(), ^{
         // red box is thread safe, but by deferring to main queue we avoid a startup
         // race condition that causes the module to be accessed before it has loaded
-       // [[RCTBridge currentBridge].redBox showErrorMessage:message withStack:stack];
+        [[RCTBridge currentBridge].redBox showErrorMessage:message withStack:stack];
       });
     }
 
