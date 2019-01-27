@@ -242,8 +242,7 @@ void _RCTLogNativeInternal(RCTLogLevel level, const char *fileName, int lineNumb
         }
 
         if (idx == 1 && fileName) {
-          NSString *file = [@(fileName) componentsSeparatedByString:@"/"].lastObject;
-          [stack addObject:@{@"methodName": methodName, @"file": file, @"lineNumber": @(lineNumber)}];
+          [stack addObject:@{@"methodName": methodName, @"file": @(fileName), @"lineNumber": @(lineNumber)}];
         } else {
           [stack addObject:@{@"methodName": methodName}];
         }
