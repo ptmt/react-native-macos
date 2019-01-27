@@ -323,8 +323,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)tableViewSelectionDidChange:(__unused NSNotification *)notification
 {
   NSInteger row = _stackTraceTableView.selectedRow;
-  [_actionDelegate redBoxWindow:self openStackFrameInEditor:_lastStackTrace[row - 1]];
-  [_stackTraceTableView deselectRow:row];
+  if (row > 0) {
+    [_stackTraceTableView deselectRow:row];
+    [_actionDelegate redBoxWindow:self openStackFrameInEditor:_lastStackTrace[row - 1]];
+  }
 }
 
 #pragma mark - Key commands
