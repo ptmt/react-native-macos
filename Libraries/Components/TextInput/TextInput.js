@@ -195,13 +195,13 @@ const TextInput = createReactClass({
     /**
      * If false, disables auto-correct. The default value is true.
      */
-    autoCorrect: PropTypes.bool,
+    // autoCorrect: PropTypes.bool,
     /**
      * If `false`, disables spell-check style (i.e. red underlines).
      * The default value is inherited from `autoCorrect`.
      * @platform ios
      */
-    spellCheck: PropTypes.bool,
+    // spellCheck: PropTypes.bool,
     /**
      * If `true`, focuses the input on `componentDidMount`.
      * The default value is `false`.
