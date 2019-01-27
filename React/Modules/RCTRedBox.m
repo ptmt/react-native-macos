@@ -156,7 +156,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 - (void)showErrorMessage:(NSString *)message withStack:(NSArray<RCTJSStackFrame *> *)stack isUpdate:(BOOL)isUpdate
 {
   if (!self.isVisible || (isUpdate && [message isEqualToString:_lastErrorMessage])) {
-    _lastStackTrace = stack;
+    _lastStackTrace = [stack filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(RCTJSStackFrame *stackFrame, __unused NSDictionary *bindings) {
+      return stackFrame.file != nil;
+    }]];
     _lastErrorMessage = message;
 
     [_stackTraceTableView reloadData];
@@ -213,7 +215,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (NSString *)formatFrameSource:(RCTJSStackFrame *)stackFrame
 {
-  NSString *fileName = RCTNilIfNull(stackFrame.file) ? [stackFrame.file lastPathComponent] : @"<unknown file>";
+  NSString *fileName = stackFrame.file ? [stackFrame.file lastPathComponent] : @"<unknown file>";
   NSString *lineInfo = [NSString stringWithFormat:@"%@:%lld",
                         fileName,
                         (long long)stackFrame.lineNumber];
@@ -233,8 +235,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     return [self reuseCell:cell forErrorMessage:_lastErrorMessage];
   }
   NSTextField *cell = [tableView makeViewWithIdentifier:@"cell" owner:self];
-  NSDictionary *stackFrame = [_lastStackTrace[row - 1] toDictionary];
-  return [self reuseCell:cell forStackFrame:stackFrame];
+  return [self reuseCell:cell forStackFrame:_lastStackTrace[row - 1]];
 }
 
 - (NSString *)truncateErrorMessage:(NSString *)message
@@ -259,7 +260,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   return cell;
 }
 
-- (NSTextField *)reuseCell:(NSTextField *)cell forStackFrame:(NSDictionary *)stackFrame
+- (NSTextField *)reuseCell:(NSTextField *)cell forStackFrame:(RCTJSStackFrame *)stackFrame
 {
   if (!cell) {
     cell = [[NSTextField alloc] initWithFrame:self.contentView.frame];
@@ -271,16 +272,12 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     cell.bordered = false;
     cell.editable = false;
   }
-
-  if (stackFrame[@"file"]) {
-    [cell setStringValue:[NSString stringWithFormat:@"%@ @ %zd:%zd",
-                        [stackFrame[@"file"] lastPathComponent],
-                        [stackFrame[@"lineNumber"] integerValue],
-                        [stackFrame[@"column"] integerValue]]];
-  } else {
-    [cell setStringValue:@""];
-  }
-
+  
+  [cell setStringValue:[NSString stringWithFormat:@"%@ @ %zd:%zd",
+                      stackFrame.file.lastPathComponent,
+                      stackFrame.lineNumber,
+                      stackFrame.column]];
+  
   return cell;
 }
 
