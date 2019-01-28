@@ -32,15 +32,15 @@ RCT_EXPORT_MODULE()
   NSEvent *event = [[NSApplication sharedApplication] currentEvent];
   BOOL endingDrag = event.type == NSLeftMouseUp;
   if (!endingDrag) {
-    sender.onValueChange(@{@"value": @(value)});
+    if (sender.onValueChange) {
+      sender.onValueChange(@{@"value": @(value)});
+    }
   } else {
     if (sender.onSlidingComplete) {
       sender.onSlidingComplete(@{@"value": @(value)});
     }
   }
 }
-
-
 
 RCT_EXPORT_VIEW_PROPERTY(value, float);
 RCT_EXPORT_VIEW_PROPERTY(step, float);
