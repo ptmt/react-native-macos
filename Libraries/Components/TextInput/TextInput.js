@@ -520,10 +520,11 @@ const TextInput = createReactClass({
      *
      * @platform ios
      */
-    dataDetectorTypes: PropTypes.oneOfType([
-      PropTypes.oneOf(DataDetectorTypes),
-      PropTypes.arrayOf(PropTypes.oneOf(DataDetectorTypes)),
-    ]),
+    // dataDetectorTypes: PropTypes.oneOfType([
+    //   PropTypes.oneOf(DataDetectorTypes),
+    //   PropTypes.arrayOf(PropTypes.oneOf(DataDetectorTypes)),
+    // ]),
+
     /**
      * If `true`, caret is hidden. The default value is `false`.
      */
