@@ -168,7 +168,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     [app setActivationPolicy:NSApplicationActivationPolicyRegular];
     
     [self makeKeyAndOrderFront:nil];
-    [self becomeFirstResponder];
+    [self makeFirstResponder:self];
   }
 }
 

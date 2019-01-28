@@ -230,21 +230,23 @@
 }
 
 - (void)reactFocus {
-  if (![self becomeFirstResponder]) {
+  if (![self.window makeFirstResponder:self]) {
     self.reactIsFocusNeeded = YES;
   }
 }
 
 - (void)reactFocusIfNeeded {
   if (self.reactIsFocusNeeded) {
-    if ([self becomeFirstResponder]) {
+    if ([self.window makeFirstResponder:self]) {
       self.reactIsFocusNeeded = NO;
     }
   }
 }
 
 - (void)reactBlur {
-  [self resignFirstResponder];
+  if (self == self.window.firstResponder) {
+    [self.window makeFirstResponder:nil];
+  }
 }
 
 #pragma mark - Layout
