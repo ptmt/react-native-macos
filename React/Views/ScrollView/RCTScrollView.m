@@ -667,6 +667,14 @@ for (NSObject<UIScrollViewDelegate> *scrollViewListener in _scrollListeners) { \
   return [_scrollView getter];                            \
 }
 
+- (void)setPagingEnabled:(__unused BOOL)pagingEnabled
+{
+  if (!pagingEnabled) {
+    // Paging is always enabled on macOS.
+    RCTLogError(@"[RCTScrollView pagingEnabled] cannot be false");
+  }
+}
+
 - (void)sendScrollEventWithName:(NSString *)eventName
                      scrollView:(NSScrollView *)scrollView
                        userData:(NSDictionary *)userData
