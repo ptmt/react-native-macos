@@ -221,12 +221,11 @@ class MessageQueue {
       // conversion.
       const seen = [];
       const isValid = (function validate(val) {
+        if (val == null) {
+          return true;
+        }
         const t = typeof val;
-        if (
-          t === 'undefined' ||
-          t === 'boolean' ||
-          t === 'string'
-        ) {
+        if (t === 'boolean' || t === 'string') {
           return true;
         }
         if (t === 'number') {
@@ -254,6 +253,9 @@ class MessageQueue {
       const stringify = val => {
         const seen = [];
         return JSON.stringify(params, (key, val) => {
+          if (val == null) {
+            return val;
+          }
           const t = typeof val;
           if (t === 'function') {
             return '[Function' + (val.name ? ': ' + val.name : '') + ']';
