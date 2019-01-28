@@ -61,8 +61,8 @@ const View = createReactClass({
 
   render: function() {
     invariant(
-      !(this.context.isInAParentText && Platform.OS === 'android'),
-      'Nesting of <View> within <Text> is not supported on Android.');
+      !this.context.isInAParentText,
+      'Nesting of <View> within <Text> is not currently supported.');
 
     // WARNING: This method will not be used in production mode as in that mode we
     // replace wrapper component View with generated native wrapper RCTView. Avoid
