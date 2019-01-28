@@ -33,9 +33,9 @@ RCT_EXPORT_MODULE()
   return [[RCTMultilineTextInputView alloc] initWithBridge:self.bridge];
 }
 
-RCT_REMAP_VIEW_PROPERTY(autoCapitalize, textView.autocapitalizationType, UITextAutocapitalizationType)
-RCT_REMAP_VIEW_PROPERTY(autoCorrect, autocorrectionType, UITextAutocorrectionType)
-RCT_REMAP_VIEW_PROPERTY(spellCheck, spellCheckingType, UITextSpellCheckingType)
+// RCT_REMAP_VIEW_PROPERTY(autoCapitalize, textView.autocapitalizationType, UITextAutocapitalizationType)
+// RCT_REMAP_VIEW_PROPERTY(autoCorrect, autocorrectionType, UITextAutocorrectionType)
+// RCT_REMAP_VIEW_PROPERTY(spellCheck, spellCheckingType, UITextSpellCheckingType)
 RCT_EXPORT_VIEW_PROPERTY(blurOnSubmit, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(clearTextOnFocus, BOOL)
 RCT_REMAP_VIEW_PROPERTY(editable, textView.editable, BOOL)

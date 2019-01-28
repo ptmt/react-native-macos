@@ -56,9 +56,9 @@ class TextEventsExample extends React.Component<{}, $FlowFixMeState> {
     return (
       <View>
         <TextInput
-          autoCapitalize="none"
+          //autoCapitalize="none"
           placeholder="Enter text to see events"
-          autoCorrect={false}
+          //autoCorrect={false}
           onFocus={() => this.updateText('onFocus')}
           onBlur={() => this.updateText('onBlur')}
           onChange={(event) => this.updateText(
@@ -734,8 +734,8 @@ exports.examples = [
             placeholder="multiline text input with font styles and placeholder"
             multiline={true}
             clearTextOnFocus={true}
-            autoCorrect={true}
-            autoCapitalize="words"
+            //autoCorrect={true}
+            //autoCapitalize="words"
             placeholderTextColor="red"
             keyboardType="url"
             style={[styles.multiline, styles.multilineWithFontStyles]}
