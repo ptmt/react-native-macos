@@ -85,12 +85,10 @@ class AnExSet extends React.Component<Object, any> {
             inputRange: [0, 300],                      // and interpolate pixel distance
             outputRange: [1, 0],                       // to a fraction.
           }),
-          useNativeDriver: true,
         }).start();
       },
       onPanResponderMove: Animated.event(
         [null, {dy: this.state.dismissY}],             // track pan gesture
-        {useNativeDriver: true}
       ),
       onPanResponderRelease: (e, gestureState) => {
         if (gestureState.dy > 100) {
@@ -98,7 +96,6 @@ class AnExSet extends React.Component<Object, any> {
         } else {
           Animated.spring(this.props.openVal, {
             toValue: 1,                           // animate back open if released early
-            useNativeDriver: true,
           }).start();
         }
       },
