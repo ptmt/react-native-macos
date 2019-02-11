@@ -102,13 +102,12 @@
 
 #pragma mark - Overrides
 
-- (void)setSelectedTextRange:(UITextRange *)selectedTextRange
+- (NSRange)selectedTextRange
 {
-  [super setSelectedTextRange:selectedTextRange];
-  [_textInputDelegateAdapter selectedTextRangeWasSet];
+  return self.currentEditor.selectedRange;
 }
 
-- (void)setSelectedTextRange:(UITextRange *)selectedTextRange notifyDelegate:(BOOL)notifyDelegate
+- (void)setSelectedTextRange:(NSRange)selectedTextRange notifyDelegate:(BOOL)notifyDelegate
 {
   if (!notifyDelegate) {
     // We have to notify an adapter that following selection change was initiated programmatically,
@@ -116,7 +115,8 @@
     [_textInputDelegateAdapter skipNextTextInputDidChangeSelectionEventWithTextRange:selectedTextRange];
   }
 
-  [super setSelectedTextRange:selectedTextRange];
+  self.currentEditor.selectedRange = selectedTextRange;
+  [_textInputDelegateAdapter selectedTextRangeWasSet];
 }
 
 - (void)paste:(id)sender

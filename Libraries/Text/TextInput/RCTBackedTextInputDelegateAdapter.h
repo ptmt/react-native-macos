@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithTextField:(NSTextField<RCTBackedTextInputViewProtocol> *)backedTextInputView;
 
-- (void)skipNextTextInputDidChangeSelectionEventWithTextRange:(UITextRange *)textRange;
+- (void)skipNextTextInputDidChangeSelectionEventWithTextRange:(NSRange)textRange;
 - (void)selectedTextRangeWasSet;
 
 @end
@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithTextView:(NSTextView<RCTBackedTextInputViewProtocol> *)backedTextInputView;
 
-- (void)skipNextTextInputDidChangeSelectionEventWithTextRange:(UITextRange *)textRange;
+- (void)skipNextTextInputDidChangeSelectionEventWithTextRange:(NSRange)textRange;
 
 @end
 

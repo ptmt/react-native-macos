@@ -124,15 +124,14 @@ static NSColor *defaultPlaceholderColor()
 
 #pragma mark - Overrides
 
-- (void)setSelectedTextRange:(UITextRange *)selectedTextRange notifyDelegate:(BOOL)notifyDelegate
+- (void)setSelectedTextRange:(NSRange)selectedTextRange notifyDelegate:(BOOL)notifyDelegate
 {
   if (!notifyDelegate) {
     // We have to notify an adapter that following selection change was initiated programmatically,
     // so the adapter must not generate a notification for it.
     [_textInputDelegateAdapter skipNextTextInputDidChangeSelectionEventWithTextRange:selectedTextRange];
   }
-
-  [super setSelectedTextRange:selectedTextRange];
+  [super setSelectedRange:selectedTextRange];
 }
 
 - (void)paste:(id)sender

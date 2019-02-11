@@ -103,22 +103,22 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
   NSInteger eventLag = _nativeEventCount - _mostRecentEventCount;
 
   if (eventLag == 0 && ![attributedText isEqualToAttributedString:self.backedTextInputView.attributedText]) {
-    UITextRange *selection = self.backedTextInputView.selectedTextRange;
+    NSRange selection = self.backedTextInputView.selectedTextRange;
     NSInteger oldTextLength = self.backedTextInputView.attributedText.string.length;
 
     self.backedTextInputView.attributedText = attributedText;
 
-    if (selection.empty) {
+    if (selection.length == 0) {
       // Maintaining a cursor position relative to the end of the old text.
-      NSInteger offsetStart =
-        [self.backedTextInputView offsetFromPosition:self.backedTextInputView.beginningOfDocument
-                                          toPosition:selection.start];
+      NSInteger offsetStart = selection.location;
+//        [self.backedTextInputView offsetFromPosition:self.backedTextInputView.beginningOfDocument
+//                                          toPosition:selection.start];
       NSInteger offsetFromEnd = oldTextLength - offsetStart;
       NSInteger newOffset = attributedText.string.length - offsetFromEnd;
-      UITextPosition *position =
-        [self.backedTextInputView positionFromPosition:self.backedTextInputView.beginningOfDocument
-                                                offset:newOffset];
-      [self.backedTextInputView setSelectedTextRange:[self.backedTextInputView textRangeFromPosition:position toPosition:position]
+//      UITextPosition *position =
+//        [self.backedTextInputView positionFromPosition:self.backedTextInputView.beginningOfDocument
+//                                                offset:newOffset];
+      [self.backedTextInputView setSelectedTextRange:(NSRange){newOffset, 0}
                                       notifyDelegate:YES];
     }
 
@@ -131,9 +131,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
 - (RCTTextSelection *)selection
 {
   id<RCTBackedTextInputViewProtocol> backedTextInputView = self.backedTextInputView;
-  UITextRange *selectedTextRange = backedTextInputView.selectedTextRange;
-  return [[RCTTextSelection new] initWithStart:[backedTextInputView offsetFromPosition:backedTextInputView.beginningOfDocument toPosition:selectedTextRange.start]
-                                           end:[backedTextInputView offsetFromPosition:backedTextInputView.beginningOfDocument toPosition:selectedTextRange.end]];
+  NSRange selectedTextRange = [backedTextInputView selectedTextRange];
+  return [[RCTTextSelection new] initWithStart:selectedTextRange.location
+                                           end:selectedTextRange.location + selectedTextRange.length];
 }
 
 - (void)setSelection:(RCTTextSelection *)selection
@@ -144,13 +144,13 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
 
   id<RCTBackedTextInputViewProtocol> backedTextInputView = self.backedTextInputView;
 
-  UITextRange *previousSelectedTextRange = backedTextInputView.selectedTextRange;
-  UITextPosition *start = [backedTextInputView positionFromPosition:backedTextInputView.beginningOfDocument offset:selection.start];
-  UITextPosition *end = [backedTextInputView positionFromPosition:backedTextInputView.beginningOfDocument offset:selection.end];
-  UITextRange *selectedTextRange = [backedTextInputView textRangeFromPosition:start toPosition:end];
+  NSRange previousSelectedTextRange = [backedTextInputView selectedTextRange];
+  NSRange selectedTextRange = (NSRange){selection.start, selection.end - selection.start};
+
+
 
   NSInteger eventLag = _nativeEventCount - _mostRecentEventCount;
-  if (eventLag == 0 && ![previousSelectedTextRange isEqual:selectedTextRange]) {
+  if (eventLag == 0 && !NSEqualRanges(previousSelectedTextRange, selectedTextRange)) {
     [backedTextInputView setSelectedTextRange:selectedTextRange notifyDelegate:NO];
   } else if (eventLag > RCTTextUpdateLagWarningThreshold) {
     RCTLogWarn(@"Native TextInput(%@) is %lld events ahead of JS - try to make your JS faster.", backedTextInputView.attributedText.string, (long long)eventLag);
@@ -248,10 +248,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
         _predictedText = newAttributedText.string;
 
         // Collapse selection at end of insert to match normal paste behavior.
-        UITextPosition *insertEnd = [backedTextInputView positionFromPosition:backedTextInputView.beginningOfDocument
-                                                                       offset:(range.location + allowedLength)];
-        [backedTextInputView setSelectedTextRange:[backedTextInputView textRangeFromPosition:insertEnd toPosition:insertEnd]
+        [backedTextInputView setSelectedTextRange:(NSRange){range.location + allowedLength, 0}
                                    notifyDelegate:YES];
+
+
 
         [self textInputDidChange];
       }

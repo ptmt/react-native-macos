@@ -19,7 +19,7 @@ static void *TextFieldSelectionObservingContext = &TextFieldSelectionObservingCo
 @implementation RCTBackedTextFieldDelegateAdapter {
   __weak UITextField<RCTBackedTextInputViewProtocol> *_backedTextInputView;
   BOOL _textDidChangeIsComing;
-  UITextRange *_previousSelectedTextRange;
+  NSRange _previousSelectedTextRange;
 }
 
 - (instancetype)initWithTextField:(UITextField<RCTBackedTextInputViewProtocol> *)backedTextInputView
@@ -112,7 +112,7 @@ static void *TextFieldSelectionObservingContext = &TextFieldSelectionObservingCo
 
 #pragma mark - Public Interface
 
-- (void)skipNextTextInputDidChangeSelectionEventWithTextRange:(UITextRange *)textRange
+- (void)skipNextTextInputDidChangeSelectionEventWithTextRange:(NSRange)textRange
 {
   _previousSelectedTextRange = textRange;
 }
@@ -126,7 +126,7 @@ static void *TextFieldSelectionObservingContext = &TextFieldSelectionObservingCo
 
 - (void)textFieldProbablyDidChangeSelection
 {
-  if ([_backedTextInputView.selectedTextRange isEqual:_previousSelectedTextRange]) {
+  if (NSEqualRanges(_backedTextInputView.selectedTextRange, _previousSelectedTextRange)) {
     return;
   }
 
@@ -144,7 +144,7 @@ static void *TextFieldSelectionObservingContext = &TextFieldSelectionObservingCo
 @implementation RCTBackedTextViewDelegateAdapter {
   __weak UITextView<RCTBackedTextInputViewProtocol> *_backedTextInputView;
   BOOL _textDidChangeIsComing;
-  UITextRange *_previousSelectedTextRange;
+  NSRange _previousSelectedTextRange;
 }
 
 - (instancetype)initWithTextView:(UITextView<RCTBackedTextInputViewProtocol> *)backedTextInputView
@@ -217,7 +217,7 @@ static void *TextFieldSelectionObservingContext = &TextFieldSelectionObservingCo
 
 #pragma mark - Public Interface
 
-- (void)skipNextTextInputDidChangeSelectionEventWithTextRange:(UITextRange *)textRange
+- (void)skipNextTextInputDidChangeSelectionEventWithTextRange:(NSRange)textRange
 {
   _previousSelectedTextRange = textRange;
 }
@@ -226,7 +226,7 @@ static void *TextFieldSelectionObservingContext = &TextFieldSelectionObservingCo
 
 - (void)textViewProbablyDidChangeSelection
 {
-  if ([_backedTextInputView.selectedTextRange isEqual:_previousSelectedTextRange]) {
+  if (NSEqualRanges(_backedTextInputView.selectedTextRange, _previousSelectedTextRange)) {
     return;
   }
 
