@@ -120,7 +120,7 @@ typedef NS_OPTIONS(NSInteger, RCTTextSizeComparisonOptions) {
                    inRange:(NSRange){0, self.length}
                    options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired
                 usingBlock:
-    ^(UIFont *_Nullable font, NSRange range, BOOL *_Nonnull stop) {
+    ^(NSFont *_Nullable font, NSRange range, BOOL *_Nonnull stop) {
       if (!font) {
         return;
       }
@@ -128,7 +128,7 @@ typedef NS_OPTIONS(NSInteger, RCTTextSizeComparisonOptions) {
       CGFloat fontSize = MAX(MIN(font.pointSize * ratio, maximumFontSize), minimumFontSize);
 
       [self addAttribute:NSFontAttributeName
-                   value:[font fontWithSize:fontSize]
+                   value:[NSFont fontWithDescriptor:font.fontDescriptor size:fontSize]
                    range:range];
     }
   ];

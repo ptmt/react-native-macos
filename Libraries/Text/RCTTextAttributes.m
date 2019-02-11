@@ -73,7 +73,7 @@ NSString *const RCTTextAttributesTagAttributeName = @"RCTTextAttributesTagAttrib
   // Special
   _isHighlighted = textAttributes->_isHighlighted || _isHighlighted;  // *
   _tag = textAttributes->_tag ?: _tag;
-  _layoutDirection = textAttributes->_layoutDirection != UIUserInterfaceLayoutDirectionLeftToRight ? textAttributes->_layoutDirection : _layoutDirection;
+  _layoutDirection = textAttributes->_layoutDirection != NSUserInterfaceLayoutDirectionLeftToRight ? textAttributes->_layoutDirection : _layoutDirection;
 }
 
 - (NSDictionary<NSAttributedStringKey, id> *)effectiveTextAttributes
@@ -82,13 +82,13 @@ NSString *const RCTTextAttributesTagAttributeName = @"RCTTextAttributesTagAttrib
     [NSMutableDictionary dictionaryWithCapacity:10];
 
   // Font
-  UIFont *font = self.effectiveFont;
+  NSFont *font = self.effectiveFont;
   if (font) {
     attributes[NSFontAttributeName] = font;
   }
 
   // Colors
-  UIColor *effectiveForegroundColor = self.effectiveForegroundColor;
+  NSColor *effectiveForegroundColor = self.effectiveForegroundColor;
 
   if (_foregroundColor || !isnan(_opacity)) {
     attributes[NSForegroundColorAttributeName] = effectiveForegroundColor;
@@ -108,7 +108,7 @@ NSString *const RCTTextAttributesTagAttributeName = @"RCTTextAttributesTagAttrib
   BOOL isParagraphStyleUsed = NO;
   if (_alignment != NSTextAlignmentNatural) {
     NSTextAlignment alignment = _alignment;
-    if (_layoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
+    if (_layoutDirection == NSUserInterfaceLayoutDirectionRightToLeft) {
       if (alignment == NSTextAlignmentRight) {
         alignment = NSTextAlignmentLeft;
       } else if (alignment == NSTextAlignmentLeft) {
@@ -176,7 +176,7 @@ NSString *const RCTTextAttributesTagAttributeName = @"RCTTextAttributesTagAttrib
   return [attributes copy];
 }
 
-- (UIFont *)effectiveFont
+- (NSFont *)effectiveFont
 {
   // FIXME: RCTFont has thread-safety issues and must be rewritten.
   return [RCTFont updateFont:nil
@@ -193,9 +193,9 @@ NSString *const RCTTextAttributesTagAttributeName = @"RCTTextAttributesTagAttrib
   return _allowFontScaling && !isnan(_fontSizeMultiplier) ? _fontSizeMultiplier : 1.0;
 }
 
-- (UIColor *)effectiveForegroundColor
+- (NSColor *)effectiveForegroundColor
 {
-  UIColor *effectiveForegroundColor = _foregroundColor ?: [UIColor blackColor];
+  NSColor *effectiveForegroundColor = _foregroundColor ?: [NSColor blackColor];
 
   if (!isnan(_opacity)) {
     effectiveForegroundColor = [effectiveForegroundColor colorWithAlphaComponent:CGColorGetAlpha(effectiveForegroundColor.CGColor) * _opacity];
@@ -204,15 +204,15 @@ NSString *const RCTTextAttributesTagAttributeName = @"RCTTextAttributesTagAttrib
   return effectiveForegroundColor;
 }
 
-- (UIColor *)effectiveBackgroundColor
+- (NSColor *)effectiveBackgroundColor
 {
-  UIColor *effectiveBackgroundColor = _backgroundColor;// ?: [[UIColor whiteColor] colorWithAlphaComponent:0];
+  NSColor *effectiveBackgroundColor = _backgroundColor;// ?: [[NSColor whiteColor] colorWithAlphaComponent:0];
 
   if (effectiveBackgroundColor && !isnan(_opacity)) {
     effectiveBackgroundColor = [effectiveBackgroundColor colorWithAlphaComponent:CGColorGetAlpha(effectiveBackgroundColor.CGColor) * _opacity];
   }
 
-  return effectiveBackgroundColor ?: [UIColor clearColor];
+  return effectiveBackgroundColor ?: [NSColor clearColor];
 }
 
 - (RCTTextAttributes *)copyWithZone:(NSZone *)zone

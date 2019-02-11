@@ -10,7 +10,7 @@
 #import "RCTUITextView.h"
 
 #import <React/RCTUtils.h>
-#import <React/UIView+React.h>
+#import <React/NSView+React.h>
 
 #import "RCTBackedTextInputDelegateAdapter.h"
 
@@ -21,15 +21,15 @@
   RCTBackedTextViewDelegateAdapter *_textInputDelegateAdapter;
 }
 
-static UIFont *defaultPlaceholderFont()
+static NSFont *defaultPlaceholderFont()
 {
-  return [UIFont systemFontOfSize:17];
+  return [NSFont systemFontOfSize:17];
 }
 
-static UIColor *defaultPlaceholderColor()
+static NSColor *defaultPlaceholderColor()
 {
   // Default placeholder color from UITextField.
-  return [UIColor colorWithRed:0 green:0 blue:0.0980392 alpha:0.22];
+  return [NSColor colorWithRed:0 green:0 blue:0.0980392 alpha:0.22];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -37,7 +37,7 @@ static UIColor *defaultPlaceholderColor()
   if (self = [super initWithFrame:frame]) {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(textDidChange)
-                                                 name:UITextViewTextDidChangeNotification
+                                                 name:NSControlTextDidChangeNotification
                                                object:self];
 
     _placeholderView = [[UILabel alloc] initWithFrame:self.bounds];
@@ -84,7 +84,7 @@ static UIColor *defaultPlaceholderColor()
   _placeholderView.text = _placeholder;
 }
 
-- (void)setPlaceholderColor:(UIColor *)placeholderColor
+- (void)setPlaceholderColor:(NSColor *)placeholderColor
 {
   _placeholderColor = placeholderColor;
   _placeholderView.textColor = _placeholderColor ?: defaultPlaceholderColor();
@@ -98,7 +98,7 @@ static UIColor *defaultPlaceholderColor()
 
 #pragma mark - Overrides
 
-- (void)setFont:(UIFont *)font
+- (void)setFont:(NSFont *)font
 {
   [super setFont:font];
   _placeholderView.font = font ?: defaultPlaceholderFont();
@@ -158,7 +158,7 @@ static UIColor *defaultPlaceholderColor()
 
 - (CGSize)placeholderSize
 {
-  UIEdgeInsets textContainerInset = self.textContainerInset;
+  NSEdgeInsets textContainerInset = self.textContainerInset;
   NSString *placeholder = self.placeholder ?: @"";
   CGSize placeholderSize = [placeholder sizeWithAttributes:@{NSFontAttributeName: self.font ?: defaultPlaceholderFont()}];
   placeholderSize = CGSizeMake(RCTCeilPixelValue(placeholderSize.width), RCTCeilPixelValue(placeholderSize.height));
@@ -184,7 +184,7 @@ static UIColor *defaultPlaceholderColor()
 {
   [super layoutSubviews];
 
-  CGRect textFrame = UIEdgeInsetsInsetRect(self.bounds, self.textContainerInset);
+  CGRect textFrame = NSEdgeInsetsInsetRect(self.bounds, self.textContainerInset);
   CGFloat placeholderHeight = [_placeholderView sizeThatFits:textFrame.size].height;
   textFrame.size.height = MIN(placeholderHeight, textFrame.size.height);
   _placeholderView.frame = textFrame;
@@ -220,7 +220,7 @@ static UIColor *defaultPlaceholderColor()
   }
 
   if (!_detachedTextView) {
-    _detachedTextView = [UITextView new];
+    _detachedTextView = [NSTextView new];
   }
 
   _detachedTextView.attributedText = self.attributedText;

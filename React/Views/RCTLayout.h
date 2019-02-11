@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import <React/RCTDefines.h>
 #import <yoga/Yoga.h>
@@ -25,9 +25,9 @@ typedef NS_ENUM(NSInteger, RCTDisplayType) {
 struct RCTLayoutMetrics {
   CGRect frame;
   CGRect contentFrame;
-  UIEdgeInsets borderWidth;
+  NSEdgeInsets borderWidth;
   RCTDisplayType displayType;
-  UIUserInterfaceLayoutDirection layoutDirection;
+  NSUserInterfaceLayoutDirection layoutDirection;
 };
 typedef struct CG_BOXABLE RCTLayoutMetrics RCTLayoutMetrics;
 
@@ -43,7 +43,7 @@ static inline BOOL RCTLayoutMetricsEqualToLayoutMetrics(RCTLayoutMetrics a, RCTL
   return
     CGRectEqualToRect(a.frame, b.frame) &&
     CGRectEqualToRect(a.contentFrame, b.contentFrame) &&
-    UIEdgeInsetsEqualToEdgeInsets(a.borderWidth, b.borderWidth) &&
+    NSEdgeInsetsEqual(a.borderWidth, b.borderWidth) &&
     a.displayType == b.displayType &&
     a.layoutDirection == b.layoutDirection;
 }
@@ -65,8 +65,8 @@ RCT_EXTERN CGFloat RCTCoreGraphicsFloatFromYogaValue(YGValue value, CGFloat base
 /**
  * Converts `YGDirection` to `UIUserInterfaceLayoutDirection` and vise versa.
  */
-RCT_EXTERN YGDirection RCTYogaLayoutDirectionFromUIKitLayoutDirection(UIUserInterfaceLayoutDirection direction);
-RCT_EXTERN UIUserInterfaceLayoutDirection RCTUIKitLayoutDirectionFromYogaLayoutDirection(YGDirection direction);
+RCT_EXTERN YGDirection RCTYogaLayoutDirectionFromUIKitLayoutDirection(NSUserInterfaceLayoutDirection direction);
+RCT_EXTERN NSUserInterfaceLayoutDirection RCTUIKitLayoutDirectionFromYogaLayoutDirection(YGDirection direction);
 
 /**
  * Converts `YGDisplay` to `RCTDisplayType` and vise versa.

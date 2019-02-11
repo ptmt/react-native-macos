@@ -180,7 +180,7 @@ typedef void (^RCTApplierBlock)(NSDictionary<NSNumber *, NSView *> *viewRegistry
  */
 - (void)layoutWithMinimumSize:(CGSize)minimumSize
                   maximumSize:(CGSize)maximumSize
-              layoutDirection:(UIUserInterfaceLayoutDirection)layoutDirection
+              layoutDirection:(NSUserInterfaceLayoutDirection)layoutDirection
                 layoutContext:(RCTLayoutContext)layoutContext;
 
 /**

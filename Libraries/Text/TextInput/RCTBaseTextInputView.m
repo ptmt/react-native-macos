@@ -15,7 +15,7 @@
 #import <React/RCTEventDispatcher.h>
 #import <React/RCTUIManager.h>
 #import <React/RCTUtils.h>
-#import <React/UIView+React.h>
+#import <React/NSView+React.h>
 
 #import "RCTTextAttributes.h"
 #import "RCTTextSelection.h"
@@ -44,7 +44,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)decoder)
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
 
-- (UIView<RCTBackedTextInputViewProtocol> *)backedTextInputView
+- (NSView<RCTBackedTextInputViewProtocol> *)backedTextInputView
 {
   RCTAssert(NO, @"-[RCTBaseTextInputView backedTextInputView] must be implemented in subclass.");
   return nil;
@@ -77,7 +77,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
   backedTextInputView.textAlignment = _textAttributes.alignment;
 }
 
-- (void)setReactPaddingInsets:(UIEdgeInsets)reactPaddingInsets
+- (void)setReactPaddingInsets:(NSEdgeInsets)reactPaddingInsets
 {
   _reactPaddingInsets = reactPaddingInsets;
   // We apply `paddingInsets` as `backedTextInputView`'s `textContainerInset`.
@@ -85,11 +85,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
   [self setNeedsLayout];
 }
 
-- (void)setReactBorderInsets:(UIEdgeInsets)reactBorderInsets
+- (void)setReactBorderInsets:(NSEdgeInsets)reactBorderInsets
 {
   _reactBorderInsets = reactBorderInsets;
   // We apply `borderInsets` as `backedTextInputView` layout offset.
-  self.backedTextInputView.frame = UIEdgeInsetsInsetRect(self.bounds, reactBorderInsets);
+  self.backedTextInputView.frame = NSEdgeInsetsInsetRect(self.bounds, reactBorderInsets);
   [self setNeedsLayout];
 }
 
@@ -381,7 +381,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
 
 #pragma mark - Accessibility
 
-- (UIView *)reactAccessibilityElement
+- (NSView *)reactAccessibilityElement
 {
   return self.backedTextInputView;
 }
@@ -413,7 +413,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
 - (void)invalidateInputAccessoryView
 {
 #if !TARGET_OS_TV
-  UIView<RCTBackedTextInputViewProtocol> *textInputView = self.backedTextInputView;
+  NSView<RCTBackedTextInputViewProtocol> *textInputView = self.backedTextInputView;
   UIKeyboardType keyboardType = textInputView.keyboardType;
 
   // These keyboard types (all are number pads) don't have a "Done" button by default,

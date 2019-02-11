@@ -18,7 +18,7 @@
 - (void)layoutWithMetrics:(RCTLayoutMetrics)layoutMetrics
             layoutContext:(RCTLayoutContext)layoutContext
 {
-  if (layoutMetrics.layoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
+  if (layoutMetrics.layoutDirection == NSUserInterfaceLayoutDirectionRightToLeft) {
     // Motivation:
     // Yoga place `contentView` on the right side of `scrollView` when RTL layout is enfoced.
     // That breaks everything; it is completely pointless to (re)position `contentView`

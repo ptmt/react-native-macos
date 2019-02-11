@@ -13,7 +13,7 @@
 
 RCT_EXPORT_MODULE(RCTBaseText)
 
-- (UIView *)view
+- (NSView *)view
 {
   RCTAssert(NO, @"The `-[RCTBaseTextViewManager view]` property must be overridden in subclass.");
   return nil;
@@ -28,8 +28,8 @@ RCT_EXPORT_MODULE(RCTBaseText)
 #pragma mark - Text Attributes
 
 // Color
-RCT_REMAP_SHADOW_PROPERTY(color, textAttributes.foregroundColor, UIColor)
-RCT_REMAP_SHADOW_PROPERTY(backgroundColor, textAttributes.backgroundColor, UIColor)
+RCT_REMAP_SHADOW_PROPERTY(color, textAttributes.foregroundColor, NSColor)
+RCT_REMAP_SHADOW_PROPERTY(backgroundColor, textAttributes.backgroundColor, NSColor)
 RCT_REMAP_SHADOW_PROPERTY(opacity, textAttributes.opacity, CGFloat)
 // Font
 RCT_REMAP_SHADOW_PROPERTY(fontFamily, textAttributes.fontFamily, NSString)
@@ -44,13 +44,13 @@ RCT_REMAP_SHADOW_PROPERTY(lineHeight, textAttributes.lineHeight, CGFloat)
 RCT_REMAP_SHADOW_PROPERTY(textAlign, textAttributes.alignment, NSTextAlignment)
 RCT_REMAP_SHADOW_PROPERTY(writingDirection, textAttributes.baseWritingDirection, NSWritingDirection)
 // Decoration
-RCT_REMAP_SHADOW_PROPERTY(textDecorationColor, textAttributes.textDecorationColor, UIColor)
+RCT_REMAP_SHADOW_PROPERTY(textDecorationColor, textAttributes.textDecorationColor, NSColor)
 RCT_REMAP_SHADOW_PROPERTY(textDecorationStyle, textAttributes.textDecorationStyle, NSUnderlineStyle)
 RCT_REMAP_SHADOW_PROPERTY(textDecorationLine, textAttributes.textDecorationLine, RCTTextDecorationLineType)
 // Shadow
 RCT_REMAP_SHADOW_PROPERTY(textShadowOffset, textAttributes.textShadowOffset, CGSize)
 RCT_REMAP_SHADOW_PROPERTY(textShadowRadius, textAttributes.textShadowRadius, CGFloat)
-RCT_REMAP_SHADOW_PROPERTY(textShadowColor, textAttributes.textShadowColor, UIColor)
+RCT_REMAP_SHADOW_PROPERTY(textShadowColor, textAttributes.textShadowColor, NSColor)
 // Special
 RCT_REMAP_SHADOW_PROPERTY(isHighlighted, textAttributes.isHighlighted, BOOL)
 

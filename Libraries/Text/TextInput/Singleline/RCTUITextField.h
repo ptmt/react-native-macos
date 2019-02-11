@@ -7,16 +7,16 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import "RCTBackedTextInputViewProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 /*
- * Just regular UITextField... but much better!
+ * Just regular NSTextField... but much better!
  */
-@interface RCTUITextField : UITextField <RCTBackedTextInputViewProtocol>
+@interface RCTUITextField : NSTextField <RCTBackedTextInputViewProtocol>
 
 - (instancetype)initWithCoder:(NSCoder *)decoder NS_UNAVAILABLE;
 
@@ -24,8 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL caretHidden;
 @property (nonatomic, assign, readonly) BOOL textWasPasted;
-@property (nonatomic, strong, nullable) UIColor *placeholderColor;
-@property (nonatomic, assign) UIEdgeInsets textContainerInset;
+@property (nonatomic, strong, nullable) NSColor *placeholderColor;
+@property (nonatomic, assign) NSEdgeInsets textContainerInset;
 @property (nonatomic, assign, getter=isEditable) BOOL editable;
 
 @end

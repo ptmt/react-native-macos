@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 @protocol RCTBackedTextInputDelegate;
 
@@ -15,15 +15,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol RCTBackedTextInputViewProtocol <UITextInput>
 
-@property (nonatomic, strong, nullable) UIColor *textColor;
-@property (nonatomic, strong, nullable) UIFont *font;
+@property (nonatomic, strong, nullable) NSColor *textColor;
+@property (nonatomic, strong, nullable) NSFont *font;
 @property (nonatomic, copy, nullable) NSAttributedString *attributedText;
 @property (nonatomic, copy, nullable) NSString *placeholder;
-@property (nonatomic, strong, nullable) UIColor *placeholderColor;
+@property (nonatomic, strong, nullable) NSColor *placeholderColor;
 @property (nonatomic, assign) NSTextAlignment textAlignment;
 @property (nonatomic, assign, readonly) BOOL textWasPasted;
-@property (nonatomic, assign) UIEdgeInsets textContainerInset;
-@property (nonatomic, strong, nullable) UIView *inputAccessoryView;
+@property (nonatomic, assign) NSEdgeInsets textContainerInset;
+@property (nonatomic, strong, nullable) NSView *inputAccessoryView;
 @property (nonatomic, weak, nullable) id<RCTBackedTextInputDelegate> textInputDelegate;
 @property (nonatomic, readonly) CGSize contentSize;
 

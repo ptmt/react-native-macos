@@ -25,9 +25,9 @@
     self.blurOnSubmit = NO;
 
     _backedTextInputView = [[RCTUITextView alloc] initWithFrame:self.bounds];
-    _backedTextInputView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    _backedTextInputView.backgroundColor = [UIColor clearColor];
-    _backedTextInputView.textColor = [UIColor blackColor];
+    _backedTextInputView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    _backedTextInputView.backgroundColor = [NSColor clearColor];
+    _backedTextInputView.textColor = [NSColor blackColor];
     // This line actually removes 5pt (default value) left and right padding in UITextView.
     _backedTextInputView.textContainer.lineFragmentPadding = 0;
 #if !TARGET_OS_TV
@@ -50,9 +50,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)coder)
   return _backedTextInputView;
 }
 
-#pragma mark - UIScrollViewDelegate
+#pragma mark - NSScrollViewDelegate
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+- (void)scrollViewDidScroll:(NSScrollView *)scrollView
 {
   RCTDirectEventBlock onScroll = self.onScroll;
 
@@ -60,7 +60,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)coder)
     CGPoint contentOffset = scrollView.contentOffset;
     CGSize contentSize = scrollView.contentSize;
     CGSize size = scrollView.bounds.size;
-    UIEdgeInsets contentInset = scrollView.contentInset;
+    NSEdgeInsets contentInset = scrollView.contentInset;
 
     onScroll(@{
       @"contentOffset": @{

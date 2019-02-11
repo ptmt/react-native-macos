@@ -86,16 +86,16 @@
    }
   ];
 
-  [_bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+  [_bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, NSView *> *viewRegistry) {
     RCTTextView *textView = (RCTTextView *)viewRegistry[tag];
     if (!textView) {
       return;
     }
 
-    NSMutableArray<UIView *> *descendantViews =
+    NSMutableArray<NSView *> *descendantViews =
       [NSMutableArray arrayWithCapacity:descendantViewTags.count];
     [descendantViewTags enumerateObjectsUsingBlock:^(NSNumber *_Nonnull descendantViewTag, NSUInteger index, BOOL *_Nonnull stop) {
-      UIView *descendantView = viewRegistry[descendantViewTag];
+      NSView *descendantView = viewRegistry[descendantViewTag];
       if (!descendantView) {
         return;
       }
@@ -140,7 +140,7 @@
                              inRange:NSMakeRange(0, attributedText.length)
                              options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired
                           usingBlock:
-    ^(UIFont *font, NSRange range, __unused BOOL *stop) {
+    ^(NSFont *font, NSRange range, __unused BOOL *stop) {
       if (!font) {
         return;
       }
@@ -280,7 +280,7 @@
 
       CGSize attachmentSize = attachment.bounds.size;
 
-      UIFont *font = [textStorage attribute:NSFontAttributeName atIndex:range.location effectiveRange:nil];
+      NSFont *font = [textStorage attribute:NSFontAttributeName atIndex:range.location effectiveRange:nil];
 
       CGRect frame = {{
         RCTRoundPixelValue(glyphRect.origin.x),

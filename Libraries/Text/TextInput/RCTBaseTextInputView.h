@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import <React/RCTView.h>
 
@@ -29,11 +29,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithCoder:(NSCoder *)decoder NS_UNAVAILABLE;
 - (instancetype)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
 
-@property (nonatomic, readonly) UIView<RCTBackedTextInputViewProtocol> *backedTextInputView;
+@property (nonatomic, readonly) NSView<RCTBackedTextInputViewProtocol> *backedTextInputView;
 
 @property (nonatomic, strong, nullable) RCTTextAttributes *textAttributes;
-@property (nonatomic, assign) UIEdgeInsets reactPaddingInsets;
-@property (nonatomic, assign) UIEdgeInsets reactBorderInsets;
+@property (nonatomic, assign) NSEdgeInsets reactPaddingInsets;
+@property (nonatomic, assign) NSEdgeInsets reactBorderInsets;
 
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onContentSizeChange;
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onSelectionChange;

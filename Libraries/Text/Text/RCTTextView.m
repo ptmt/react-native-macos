@@ -12,7 +12,7 @@
 #import <MobileCoreServices/UTCoreTypes.h>
 
 #import <React/RCTUtils.h>
-#import <React/UIView+React.h>
+#import <React/NSView+React.h>
 
 #import "RCTTextShadowView.h"
 
@@ -21,7 +21,7 @@
   CAShapeLayer *_highlightLayer;
   UILongPressGestureRecognizer *_longPressGestureRecognizer;
 
-  NSArray<UIView *> *_Nullable _descendantViews;
+  NSArray<NSView *> *_Nullable _descendantViews;
   NSTextStorage *_Nullable _textStorage;
   CGRect _contentFrame;
 }
@@ -77,19 +77,19 @@
 
 - (void)setTextStorage:(NSTextStorage *)textStorage
           contentFrame:(CGRect)contentFrame
-       descendantViews:(NSArray<UIView *> *)descendantViews
+       descendantViews:(NSArray<NSView *> *)descendantViews
 {
   _textStorage = textStorage;
   _contentFrame = contentFrame;
 
   // FIXME: Optimize this.
-  for (UIView *view in _descendantViews) {
+  for (NSView *view in _descendantViews) {
     [view removeFromSuperview];
   }
 
   _descendantViews = descendantViews;
 
-  for (UIView *view in descendantViews) {
+  for (NSView *view in descendantViews) {
     [self addSubview:view];
   }
 
@@ -140,7 +140,7 @@
   if (highlightPath) {
     if (!_highlightLayer) {
       _highlightLayer = [CAShapeLayer layer];
-      _highlightLayer.fillColor = [UIColor colorWithWhite:0 alpha:0.25].CGColor;
+      _highlightLayer.fillColor = [NSColor colorWithWhite:0 alpha:0.25].CGColor;
       [self.layer addSublayer:_highlightLayer];
     }
     _highlightLayer.position = _contentFrame.origin;
@@ -172,9 +172,9 @@
   return reactTag;
 }
 
-- (void)didMoveToWindow
+- (void)viewDidMoveToWindow
 {
-  [super didMoveToWindow];
+  [super viewDidMoveToWindow];
 
   if (!self.window) {
     self.layer.contents = nil;
@@ -235,34 +235,20 @@
   return _selectable;
 }
 
-- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
+- (BOOL)tryToPerform:(SEL)action with:(id)object
 {
   if (_selectable && action == @selector(copy:)) {
     return YES;
   }
   
-  return [self.nextResponder canPerformAction:action withSender:sender];
+  return [self.nextResponder tryToPerform:action with:object];
 }
 
 - (void)copy:(id)sender
 {
 #if !TARGET_OS_TV
-  NSAttributedString *attributedText = _textStorage;
-
-  NSMutableDictionary *item = [NSMutableDictionary new];
-
-  NSData *rtf = [attributedText dataFromRange:NSMakeRange(0, attributedText.length)
-                           documentAttributes:@{NSDocumentTypeDocumentAttribute: NSRTFDTextDocumentType}
-                                        error:nil];
-
-  if (rtf) {
-    [item setObject:rtf forKey:(id)kUTTypeFlatRTFD];
-  }
-
-  [item setObject:attributedText.string forKey:(id)kUTTypeUTF8PlainText];
-
-  UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-  pasteboard.items = @[item];
+  NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+  [pasteboard clearContents]; [pasteboard writeObjects:@[_textStorage]];
 #endif
 }
 

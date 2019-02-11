@@ -15,9 +15,9 @@
 
 RCT_EXPORT_MODULE(RCTVirtualText)
 
-- (UIView *)view
+- (NSView *)view
 {
-  return [UIView new];
+  return [NSView new];
 }
 
 - (RCTShadowView *)shadowView

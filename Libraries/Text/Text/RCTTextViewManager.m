@@ -55,7 +55,7 @@ RCT_EXPORT_VIEW_PROPERTY(selectable, BOOL)
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (UIView *)view
+- (NSView *)view
 {
   return [RCTTextView new];
 }

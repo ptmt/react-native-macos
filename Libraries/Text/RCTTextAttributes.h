@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 #import <React/RCTTextDecorationLineType.h>
 
@@ -24,8 +24,8 @@ extern NSString *const RCTTextAttributesTagAttributeName;
 @interface RCTTextAttributes : NSObject <NSCopying>
 
 // Color
-@property (nonatomic, strong, nullable) UIColor *foregroundColor;
-@property (nonatomic, strong, nullable) UIColor *backgroundColor;
+@property (nonatomic, strong, nullable) NSColor *foregroundColor;
+@property (nonatomic, strong, nullable) NSColor *backgroundColor;
 @property (nonatomic, assign) CGFloat opacity;
 // Font
 @property (nonatomic, copy, nullable) NSString *fontFamily;
@@ -41,17 +41,17 @@ extern NSString *const RCTTextAttributesTagAttributeName;
 @property (nonatomic, assign) NSTextAlignment alignment;
 @property (nonatomic, assign) NSWritingDirection baseWritingDirection;
 // Decoration
-@property (nonatomic, strong, nullable) UIColor *textDecorationColor;
+@property (nonatomic, strong, nullable) NSColor *textDecorationColor;
 @property (nonatomic, assign) NSUnderlineStyle textDecorationStyle;
 @property (nonatomic, assign) RCTTextDecorationLineType textDecorationLine;
 // Shadow
 @property (nonatomic, assign) CGSize textShadowOffset;
 @property (nonatomic, assign) CGFloat textShadowRadius;
-@property (nonatomic, strong, nullable) UIColor *textShadowColor;
+@property (nonatomic, strong, nullable) NSColor *textShadowColor;
 // Special
 @property (nonatomic, assign) BOOL isHighlighted;
 @property (nonatomic, strong, nullable) NSNumber *tag;
-@property (nonatomic, assign) UIUserInterfaceLayoutDirection layoutDirection;
+@property (nonatomic, assign) NSUserInterfaceLayoutDirection layoutDirection;
 
 #pragma mark - Inheritance
 
@@ -67,7 +67,7 @@ extern NSString *const RCTTextAttributesTagAttributeName;
 /**
  * Constructed font.
  */
-- (UIFont *)effectiveFont;
+- (NSFont *)effectiveFont;
 
 /**
  * Font size multiplier reflects `allowFontScaling` and `fontSizeMultiplier`.
@@ -77,8 +77,8 @@ extern NSString *const RCTTextAttributesTagAttributeName;
 /**
  * Foreground and background colors with opacity and right defaults.
  */
-- (UIColor *)effectiveForegroundColor;
-- (UIColor *)effectiveBackgroundColor;
+- (NSColor *)effectiveForegroundColor;
+- (NSColor *)effectiveBackgroundColor;
 
 @end
 

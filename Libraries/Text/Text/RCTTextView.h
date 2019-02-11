@@ -7,17 +7,17 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <AppKit/AppKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RCTTextView : UIView
+@interface RCTTextView : NSView
 
 @property (nonatomic, assign) BOOL selectable;
 
 - (void)setTextStorage:(NSTextStorage *)textStorage
           contentFrame:(CGRect)contentFrame
-       descendantViews:(NSArray<UIView *> *)descendantViews;
+       descendantViews:(NSArray<NSView *> *)descendantViews;
 
 @end
 

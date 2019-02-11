@@ -9,7 +9,7 @@
 
 #import "RCTBackedTextInputDelegateAdapter.h"
 
-#pragma mark - RCTBackedTextFieldDelegateAdapter (for UITextField)
+#pragma mark - RCTBackedTextFieldDelegateAdapter (for NSTextField)
 
 static void *TextFieldSelectionObservingContext = &TextFieldSelectionObservingContext;
 
@@ -41,7 +41,7 @@ static void *TextFieldSelectionObservingContext = &TextFieldSelectionObservingCo
   [_backedTextInputView removeTarget:self action:nil forControlEvents:UIControlEventEditingDidEndOnExit];
 }
 
-#pragma mark - UITextFieldDelegate
+#pragma mark - NSTextFieldDelegate
 
 - (BOOL)textFieldShouldBeginEditing:(__unused UITextField *)textField
 {
