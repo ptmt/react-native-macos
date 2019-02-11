@@ -79,26 +79,26 @@
 
 #pragma mark - Caret Manipulation
 
-- (CGRect)caretRectForPosition:(UITextPosition *)position
-{
-  if (_caretHidden) {
-    return CGRectZero;
-  }
-
-  return [super caretRectForPosition:position];
-}
+//- (CGRect)caretRectForPosition:(UITextPosition *)position
+//{
+//  if (_caretHidden) {
+//    return CGRectZero;
+//  }
+//
+//  return [super caretRectForPosition:position];
+//}
 
 #pragma mark - Positioning Overrides
 
-- (CGRect)textRectForBounds:(CGRect)bounds
-{
-  return NSEdgeInsetsInsetRect([super textRectForBounds:bounds], _textContainerInset);
-}
+//- (CGRect)textRectForBounds:(CGRect)bounds
+//{
+//  return NSEdgeInsetsInsetRect([super textRectForBounds:bounds], _textContainerInset);
+//}
 
-- (CGRect)editingRectForBounds:(CGRect)bounds
-{
-  return [self textRectForBounds:bounds];
-}
+//- (CGRect)editingRectForBounds:(CGRect)bounds
+//{
+//  return [self textRectForBounds:bounds];
+//}
 
 #pragma mark - Overrides
 
