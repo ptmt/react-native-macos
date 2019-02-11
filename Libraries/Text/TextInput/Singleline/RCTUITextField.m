@@ -47,7 +47,7 @@
 - (void)setTextContainerInset:(NSEdgeInsets)textContainerInset
 {
   _textContainerInset = textContainerInset;
-  [self setNeedsLayout];
+  [self setNeedsLayout:YES];
 }
 
 - (void)setPlaceholder:(NSString *)placeholder
