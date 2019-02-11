@@ -77,16 +77,6 @@
                                                                attributes:attributes];
 }
 
-- (BOOL)isEditable
-{
-  return self.isEnabled;
-}
-
-- (void)setEditable:(BOOL)editable
-{
-  self.enabled = editable;
-}
-
 #pragma mark - Caret Manipulation
 
 - (CGRect)caretRectForPosition:(UITextPosition *)position
