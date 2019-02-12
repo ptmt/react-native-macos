@@ -9,12 +9,13 @@
 
 #import "RCTTextView.h"
 
-#import <MobileCoreServices/UTCoreTypes.h>
+#import <QuartzCore/QuartzCore.h>
 
 #import <React/RCTUtils.h>
 #import <React/NSView+React.h>
 
 #import "RCTTextShadowView.h"
+#import "NSBezierPath+CGPath.h"
 
 @implementation RCTTextView
 {
@@ -110,7 +111,7 @@
   [layoutManager drawBackgroundForGlyphRange:glyphRange atPoint:_contentFrame.origin];
   [layoutManager drawGlyphsForGlyphRange:glyphRange atPoint:_contentFrame.origin];
 
-  __block UIBezierPath *highlightPath = nil;
+  __block NSBezierPath *highlightPath = nil;
   NSRange characterRange = [layoutManager characterRangeForGlyphRange:glyphRange
                                                      actualGlyphRange:NULL];
   [_textStorage enumerateAttribute:RCTTextAttributesIsHighlightedAttributeName
@@ -127,9 +128,9 @@
                                           inTextContainer:textContainer
                                                usingBlock:
         ^(CGRect enclosingRect, __unused BOOL *anotherStop) {
-          UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(enclosingRect, -2, -2) cornerRadius:2];
+          NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:CGRectInset(enclosingRect, -2, -2) xRadius:2 yRadius:2];
           if (highlightPath) {
-            [highlightPath appendPath:path];
+            [highlightPath appendBezierPath:path];
           } else {
             highlightPath = path;
           }
