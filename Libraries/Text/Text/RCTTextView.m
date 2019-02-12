@@ -32,7 +32,6 @@
   if (self = [super initWithFrame:frame]) {
     self.isAccessibilityElement = YES;
     self.accessibilityTraits |= UIAccessibilityTraitStaticText;
-    self.opaque = NO;
     self.contentMode = UIViewContentModeRedraw;
   }
   return self;
