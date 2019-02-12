@@ -93,7 +93,7 @@
     [self addSubview:view];
   }
 
-  [self setNeedsDisplay];
+  [self setNeedsDisplay:YES];
 }
 
 - (void)drawRect:(CGRect)rect
@@ -183,7 +183,7 @@
       _highlightLayer = nil;
     }
   } else if (_textStorage) {
-    [self setNeedsDisplay];
+    [self setNeedsDisplay:YES];
   }
 }
 
