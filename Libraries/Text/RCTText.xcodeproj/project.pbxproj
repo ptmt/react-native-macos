@@ -105,6 +105,8 @@
 		5956B1A8200FF35C008D9D16 /* RCTVirtualTextViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5956B12B200FEBAA008D9D16 /* RCTVirtualTextViewManager.m */; };
 		705EDE3022132863000CAA67 /* NSBezierPath+CGPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 705EDE2F22132863000CAA67 /* NSBezierPath+CGPath.m */; };
 		70DB420B2225E4470019CAF9 /* NSBezierPath+CGPath.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 705EDE2E22132863000CAA67 /* NSBezierPath+CGPath.h */; };
+		705EDE3D221378CC000CAA67 /* NSFont+LineHeight.m in Sources */ = {isa = PBXBuildFile; fileRef = 705EDE3C221378CC000CAA67 /* NSFont+LineHeight.m */; };
+		70588F392227118900CD1EEA /* NSFont+LineHeight.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 705EDE3B221378CC000CAA67 /* NSFont+LineHeight.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -114,6 +116,7 @@
 			dstPath = include/RCTText;
 			dstSubfolderSpec = 16;
 			files = (
+				70588F392227118900CD1EEA /* NSFont+LineHeight.h in Copy Headers */,
 				70DB420B2225E4470019CAF9 /* NSBezierPath+CGPath.h in Copy Headers */,
 				5956B160200FF324008D9D16 /* RCTBaseTextShadowView.h in Copy Headers */,
 				5956B161200FF324008D9D16 /* RCTBaseTextViewManager.h in Copy Headers */,
@@ -234,12 +237,16 @@
 		5956B12F200FEBAA008D9D16 /* RCTConvert+Text.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+Text.m"; sourceTree = "<group>"; };
 		705EDE2E22132863000CAA67 /* NSBezierPath+CGPath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSBezierPath+CGPath.h"; sourceTree = "<group>"; };
 		705EDE2F22132863000CAA67 /* NSBezierPath+CGPath.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBezierPath+CGPath.m"; sourceTree = "<group>"; };
+		705EDE3B221378CC000CAA67 /* NSFont+LineHeight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSFont+LineHeight.h"; sourceTree = "<group>"; };
+		705EDE3C221378CC000CAA67 /* NSFont+LineHeight.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSFont+LineHeight.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		58B511921A9E6C1200147676 = {
 			isa = PBXGroup;
 			children = (
+				705EDE3B221378CC000CAA67 /* NSFont+LineHeight.h */,
+				705EDE3C221378CC000CAA67 /* NSFont+LineHeight.m */,
 				705EDE2E22132863000CAA67 /* NSBezierPath+CGPath.h */,
 				705EDE2F22132863000CAA67 /* NSBezierPath+CGPath.m */,
 				5956B11B200FEBA9008D9D16 /* BaseText */,
@@ -485,6 +492,7 @@
 				5956B144200FEBAA008D9D16 /* RCTVirtualTextViewManager.m in Sources */,
 				5956B13B200FEBAA008D9D16 /* RCTMultilineTextInputViewManager.m in Sources */,
 				5956B134200FEBAA008D9D16 /* RCTSinglelineTextInputViewManager.m in Sources */,
+				705EDE3D221378CC000CAA67 /* NSFont+LineHeight.m in Sources */,
 				5956B139200FEBAA008D9D16 /* RCTBaseTextInputViewManager.m in Sources */,
 				5956B138200FEBAA008D9D16 /* RCTTextSelection.m in Sources */,
 				5956B130200FEBAA008D9D16 /* RCTRawTextShadowView.m in Sources */,
