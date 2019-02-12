@@ -9,7 +9,7 @@
 
 #import "RCTTextViewManager.h"
 
-#import <React/RCTAccessibilityManager.h>
+//#import <React/RCTAccessibilityManager.h>
 #import <React/RCTShadowView+Layout.h>
 #import <React/RCTShadowView.h>
 #import <React/RCTUIManager.h>
@@ -44,10 +44,10 @@ RCT_EXPORT_VIEW_PROPERTY(selectable, BOOL)
 
   [bridge.uiManager.observerCoordinator addObserver:self];
 
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(handleDidUpdateMultiplierNotification)
-                                               name:RCTAccessibilityManagerDidUpdateMultiplierNotification
-                                             object:bridge.accessibilityManager];
+//  [[NSNotificationCenter defaultCenter] addObserver:self
+//                                           selector:@selector(handleDidUpdateMultiplierNotification)
+//                                               name:RCTAccessibilityManagerDidUpdateMultiplierNotification
+//                                             object:bridge.accessibilityManager];
 }
 
 - (void)dealloc
@@ -63,7 +63,7 @@ RCT_EXPORT_VIEW_PROPERTY(selectable, BOOL)
 - (RCTShadowView *)shadowView
 {
   RCTTextShadowView *shadowView = [[RCTTextShadowView alloc] initWithBridge:self.bridge];
-  shadowView.textAttributes.fontSizeMultiplier = self.bridge.accessibilityManager.multiplier;
+//  shadowView.textAttributes.fontSizeMultiplier = self.bridge.accessibilityManager.multiplier;
   [_shadowViews addObject:shadowView];
   return shadowView;
 }
@@ -79,16 +79,16 @@ RCT_EXPORT_VIEW_PROPERTY(selectable, BOOL)
 
 #pragma mark - Font Size Multiplier
 
-- (void)handleDidUpdateMultiplierNotification
-{
-  CGFloat fontSizeMultiplier = self.bridge.accessibilityManager.multiplier;
-
-  for (RCTTextShadowView *shadowView in _shadowViews) {
-    shadowView.textAttributes.fontSizeMultiplier = fontSizeMultiplier;
-    [shadowView dirtyLayout];
-  }
-
-  [self.bridge.uiManager setNeedsLayout];
-}
+//- (void)handleDidUpdateMultiplierNotification
+//{
+//  CGFloat fontSizeMultiplier = self.bridge.accessibilityManager.multiplier;
+//
+//  for (RCTTextShadowView *shadowView in _shadowViews) {
+//    shadowView.textAttributes.fontSizeMultiplier = fontSizeMultiplier;
+//    [shadowView dirtyLayout];
+//  }
+//
+//  [self.bridge.uiManager setNeedsLayout];
+//}
 
 @end

@@ -9,7 +9,7 @@
 
 #import "RCTBaseTextInputViewManager.h"
 
-#import <React/RCTAccessibilityManager.h>
+//#import <React/RCTAccessibilityManager.h>
 #import <React/RCTBridge.h>
 #import <React/RCTConvert.h>
 #import <React/RCTFont.h>
@@ -70,7 +70,7 @@ RCT_EXPORT_SHADOW_PROPERTY(onContentSizeChange, RCTBubblingEventBlock)
 - (RCTShadowView *)shadowView
 {
   RCTBaseTextInputShadowView *shadowView = [[RCTBaseTextInputShadowView alloc] initWithBridge:self.bridge];
-  shadowView.textAttributes.fontSizeMultiplier = self.bridge.accessibilityManager.multiplier;
+//  shadowView.textAttributes.fontSizeMultiplier = self.bridge.accessibilityManager.multiplier;
   [_shadowViews addObject:shadowView];
   return shadowView;
 }
@@ -83,10 +83,10 @@ RCT_EXPORT_SHADOW_PROPERTY(onContentSizeChange, RCTBubblingEventBlock)
 
   [bridge.uiManager.observerCoordinator addObserver:self];
 
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(handleDidUpdateMultiplierNotification)
-                                               name:RCTAccessibilityManagerDidUpdateMultiplierNotification
-                                             object:bridge.accessibilityManager];
+//  [[NSNotificationCenter defaultCenter] addObserver:self
+//                                           selector:@selector(handleDidUpdateMultiplierNotification)
+//                                               name:RCTAccessibilityManagerDidUpdateMultiplierNotification
+//                                             object:bridge.accessibilityManager];
 }
 
 - (void)dealloc
@@ -105,16 +105,16 @@ RCT_EXPORT_SHADOW_PROPERTY(onContentSizeChange, RCTBubblingEventBlock)
 
 #pragma mark - Font Size Multiplier
 
-- (void)handleDidUpdateMultiplierNotification
-{
-  CGFloat fontSizeMultiplier = self.bridge.accessibilityManager.multiplier;
-
-  for (RCTBaseTextInputShadowView *shadowView in _shadowViews) {
-    shadowView.textAttributes.fontSizeMultiplier = fontSizeMultiplier;
-    [shadowView dirtyLayout];
-  }
-
-  [self.bridge.uiManager setNeedsLayout];
-}
+//- (void)handleDidUpdateMultiplierNotification
+//{
+//  CGFloat fontSizeMultiplier = self.bridge.accessibilityManager.multiplier;
+//
+//  for (RCTBaseTextInputShadowView *shadowView in _shadowViews) {
+//    shadowView.textAttributes.fontSizeMultiplier = fontSizeMultiplier;
+//    [shadowView dirtyLayout];
+//  }
+//
+//  [self.bridge.uiManager setNeedsLayout];
+//}
 
 @end

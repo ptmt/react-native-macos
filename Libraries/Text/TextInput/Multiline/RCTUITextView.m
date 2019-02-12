@@ -41,7 +41,7 @@ static NSColor *defaultPlaceholderColor()
                                                object:self];
 
     _placeholderView = [[UILabel alloc] initWithFrame:self.bounds];
-    _placeholderView.isAccessibilityElement = NO;
+//    _placeholderView.isAccessibilityElement = NO;
     _placeholderView.numberOfLines = 0;
     _placeholderView.textColor = defaultPlaceholderColor();
     [self addSubview:_placeholderView];

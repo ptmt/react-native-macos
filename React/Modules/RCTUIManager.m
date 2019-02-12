@@ -12,7 +12,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <Foundation/Foundation.h>
 
-#import "RCTAccessibilityManager.h"
+//#import "RCTAccessibilityManager.h"
 #import "RCTAssert.h"
 #import "RCTBridge+Private.h"
 #import "RCTBridge.h"
@@ -175,8 +175,8 @@ RCT_EXPORT_MODULE()
   // Report the event across the bridge.
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-  [_bridge.eventDispatcher sendDeviceEventWithName:@"didUpdateContentSizeMultiplier"
-                                              body:@([_bridge.accessibilityManager multiplier])];
+//  [_bridge.eventDispatcher sendDeviceEventWithName:@"didUpdateContentSizeMultiplier"
+//                                              body:@([_bridge.accessibilityManager multiplier])];
 #pragma clang diagnostic pop
 
   RCTExecuteOnUIManagerQueue(^{

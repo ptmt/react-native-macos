@@ -9,7 +9,7 @@
 
 #import "RCTBaseTextInputView.h"
 
-#import <React/RCTAccessibilityManager.h>
+//#import <React/RCTAccessibilityManager.h>
 #import <React/RCTBridge.h>
 #import <React/RCTConvert.h>
 #import <React/RCTEventDispatcher.h>
