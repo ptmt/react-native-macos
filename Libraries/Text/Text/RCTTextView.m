@@ -19,7 +19,7 @@
 @implementation RCTTextView
 {
   CAShapeLayer *_highlightLayer;
-  UILongPressGestureRecognizer *_longPressGestureRecognizer;
+
 
   NSArray<NSView *> *_Nullable _descendantViews;
   NSTextStorage *_Nullable _textStorage;
@@ -45,21 +45,21 @@
   return [superDescription stringByReplacingCharactersInRange:semicolonRange withString:replacement];
 }
 
-- (void)setSelectable:(BOOL)selectable
-{
-  if (_selectable == selectable) {
-    return;
-  }
 
-  _selectable = selectable;
 
-  if (_selectable) {
-    [self enableContextMenu];
-  }
-  else {
-    [self disableContextMenu];
-  }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 - (void)reactSetFrame:(CGRect)frame
 {
@@ -198,37 +198,37 @@
   return _textStorage.string;
 }
 
-#pragma mark - Context Menu
 
-- (void)enableContextMenu
-{
-  _longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-  [self addGestureRecognizer:_longPressGestureRecognizer];
-}
 
-- (void)disableContextMenu
-{
-  [self removeGestureRecognizer:_longPressGestureRecognizer];
-  _longPressGestureRecognizer = nil;
-}
 
-- (void)handleLongPress:(UILongPressGestureRecognizer *)gesture
-{
-#if !TARGET_OS_TV
-  UIMenuController *menuController = [UIMenuController sharedMenuController];
 
-  if (menuController.isMenuVisible) {
-    return;
-  }
 
-  if (!self.isFirstResponder) {
-    [self becomeFirstResponder];
-  }
 
-  [menuController setTargetRect:self.bounds inView:self];
-  [menuController setMenuVisible:YES animated:YES];
-#endif
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 - (BOOL)canBecomeFirstResponder
 {
