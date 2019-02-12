@@ -9,7 +9,7 @@
 
 #import "NSView+React.h"
 #import <AppKit/AppKit.h>
-#import <Foundation/Foundation.h>
+#import <QuartzCore/CoreAnimation.h>
 
 #import <objc/runtime.h>
 
@@ -304,6 +304,17 @@ static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
     view = view.superview;
   }
   return view;
+}
+
+#pragma mark - UIKit parity
+
++ (void)performWithoutAnimation:(void (^)(void))actionsWithoutAnimation
+{
+  [CATransaction begin];
+  [CATransaction setValue:(id)kCFBooleanTrue
+                   forKey:kCATransactionDisableActions];
+  actionsWithoutAnimation();
+  [CATransaction commit];
 }
 
 @end

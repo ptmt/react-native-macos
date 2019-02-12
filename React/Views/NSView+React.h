@@ -116,4 +116,6 @@
 
 - (NSView *)reactHitTest:(NSPoint)point;
 
++ (void)performWithoutAnimation:(void (^)(void))actionsWithoutAnimation;
+
 @end
