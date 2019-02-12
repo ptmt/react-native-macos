@@ -121,7 +121,7 @@
 
 - (void)paste:(id)sender
 {
-  [super paste:sender];
+  [self.currentEditor paste:sender];
   _textWasPasted = YES;
 }
 
