@@ -23,7 +23,7 @@
 @implementation RCTBaseTextInputView {
   __weak RCTBridge *_bridge;
   __weak RCTEventDispatcher *_eventDispatcher;
-  BOOL _hasInputAccesoryView;
+//  BOOL _hasInputAccesoryView;
   NSString *_Nullable _predictedText;
   NSInteger _nativeEventCount;
 }
@@ -405,65 +405,65 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
 
 #pragma mark - Custom Input Accessory View
 
-- (void)didSetProps:(NSArray<NSString *> *)changedProps
-{
-  [self invalidateInputAccessoryView];
-}
-
-- (void)invalidateInputAccessoryView
-{
-#if !TARGET_OS_TV
-  NSView<RCTBackedTextInputViewProtocol> *textInputView = self.backedTextInputView;
-  UIKeyboardType keyboardType = textInputView.keyboardType;
-
-  // These keyboard types (all are number pads) don't have a "Done" button by default,
-  // so we create an `inputAccessoryView` with this button for them.
-  BOOL shouldHaveInputAccesoryView =
-    (
-      keyboardType == UIKeyboardTypeNumberPad ||
-      keyboardType == UIKeyboardTypePhonePad ||
-      keyboardType == UIKeyboardTypeDecimalPad ||
-      keyboardType == UIKeyboardTypeASCIICapableNumberPad
-    ) &&
-    textInputView.returnKeyType == UIReturnKeyDone;
-
-  if (_hasInputAccesoryView == shouldHaveInputAccesoryView) {
-    return;
-  }
-
-  _hasInputAccesoryView = shouldHaveInputAccesoryView;
-
-  if (shouldHaveInputAccesoryView) {
-    UIToolbar *toolbarView = [[UIToolbar alloc] init];
-    [toolbarView sizeToFit];
-    UIBarButtonItem *flexibleSpace =
-      [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-                                                    target:nil
-                                                    action:nil];
-    UIBarButtonItem *doneButton =
-      [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                    target:self
-                                                    action:@selector(handleInputAccessoryDoneButton)];
-    toolbarView.items = @[flexibleSpace, doneButton];
-    textInputView.inputAccessoryView = toolbarView;
-  }
-  else {
-    textInputView.inputAccessoryView = nil;
-  }
-
-  // We have to call `reloadInputViews` for focused text inputs to update an accessory view.
-  if (textInputView.isFirstResponder) {
-    [textInputView reloadInputViews];
-  }
-#endif
-}
-
-- (void)handleInputAccessoryDoneButton
-{
-  if ([self textInputShouldReturn]) {
-    [self.backedTextInputView endEditing:YES];
-  }
-}
+//- (void)didSetProps:(NSArray<NSString *> *)changedProps
+//{
+//  [self invalidateInputAccessoryView];
+//}
+//
+//- (void)invalidateInputAccessoryView
+//{
+//#if !TARGET_OS_TV
+//  NSView<RCTBackedTextInputViewProtocol> *textInputView = self.backedTextInputView;
+//  UIKeyboardType keyboardType = textInputView.keyboardType;
+//
+//  // These keyboard types (all are number pads) don't have a "Done" button by default,
+//  // so we create an `inputAccessoryView` with this button for them.
+//  BOOL shouldHaveInputAccesoryView =
+//    (
+//      keyboardType == UIKeyboardTypeNumberPad ||
+//      keyboardType == UIKeyboardTypePhonePad ||
+//      keyboardType == UIKeyboardTypeDecimalPad ||
+//      keyboardType == UIKeyboardTypeASCIICapableNumberPad
+//    ) &&
+//    textInputView.returnKeyType == UIReturnKeyDone;
+//
+//  if (_hasInputAccesoryView == shouldHaveInputAccesoryView) {
+//    return;
+//  }
+//
+//  _hasInputAccesoryView = shouldHaveInputAccesoryView;
+//
+//  if (shouldHaveInputAccesoryView) {
+//    UIToolbar *toolbarView = [[UIToolbar alloc] init];
+//    [toolbarView sizeToFit];
+//    UIBarButtonItem *flexibleSpace =
+//      [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+//                                                    target:nil
+//                                                    action:nil];
+//    UIBarButtonItem *doneButton =
+//      [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+//                                                    target:self
+//                                                    action:@selector(handleInputAccessoryDoneButton)];
+//    toolbarView.items = @[flexibleSpace, doneButton];
+//    textInputView.inputAccessoryView = toolbarView;
+//  }
+//  else {
+//    textInputView.inputAccessoryView = nil;
+//  }
+//
+//  // We have to call `reloadInputViews` for focused text inputs to update an accessory view.
+//  if (textInputView.isFirstResponder) {
+//    [textInputView reloadInputViews];
+//  }
+//#endif
+//}
+//
+//- (void)handleInputAccessoryDoneButton
+//{
+//  if ([self textInputShouldReturn]) {
+//    [self.backedTextInputView endEditing:YES];
+//  }
+//}
 
 #pragma mark - Helpers
 

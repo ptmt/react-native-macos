@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSTextAlignment textAlignment;
 @property (nonatomic, assign, readonly) BOOL textWasPasted;
 @property (nonatomic, assign) NSEdgeInsets textContainerInset;
-@property (nonatomic, strong, nullable) NSView *inputAccessoryView;
+//@property (nonatomic, strong, nullable) NSView *inputAccessoryView;
 @property (nonatomic, weak, nullable) id<RCTBackedTextInputDelegate> textInputDelegate;
 @property (nonatomic, readonly) CGSize contentSize;
 
