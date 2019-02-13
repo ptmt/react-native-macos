@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL caretHidden;
 @property (nonatomic, assign, readonly) BOOL textWasPasted;
-@property (nonatomic, strong, nullable) NSColor *placeholderColor;
+// @property (nonatomic, strong, nullable) NSColor *placeholderColor;
 @property (nonatomic, assign) NSEdgeInsets textContainerInset;
 
 @end

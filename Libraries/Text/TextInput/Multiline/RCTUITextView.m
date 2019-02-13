@@ -16,20 +16,7 @@
 
 @implementation RCTUITextView
 {
-  UILabel *_placeholderView;
-
   RCTBackedTextViewDelegateAdapter *_textInputDelegateAdapter;
-}
-
-static NSFont *defaultPlaceholderFont()
-{
-  return [NSFont systemFontOfSize:17];
-}
-
-static NSColor *defaultPlaceholderColor()
-{
-  // Default placeholder color from UITextField.
-  return [NSColor colorWithRed:0 green:0 blue:0.0980392 alpha:0.22];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -39,12 +26,6 @@ static NSColor *defaultPlaceholderColor()
                                              selector:@selector(textDidChange)
                                                  name:NSControlTextDidChangeNotification
                                                object:self];
-
-    _placeholderView = [[UILabel alloc] initWithFrame:self.bounds];
-//    _placeholderView.isAccessibilityElement = NO;
-    _placeholderView.numberOfLines = 0;
-    _placeholderView.textColor = defaultPlaceholderColor();
-    [self addSubview:_placeholderView];
 
     _textInputDelegateAdapter = [[RCTBackedTextViewDelegateAdapter alloc] initWithTextView:self];
   }
@@ -60,55 +41,23 @@ static NSColor *defaultPlaceholderColor()
 - (NSString *)accessibilityLabel
 {
   NSMutableString *accessibilityLabel = [NSMutableString new];
-  
+
   NSString *superAccessibilityLabel = [super accessibilityLabel];
   if (superAccessibilityLabel.length > 0) {
     [accessibilityLabel appendString:superAccessibilityLabel];
   }
-  
-  if (self.placeholder.length > 0 && self.attributedText.string.length == 0) {
-    if (accessibilityLabel.length > 0) {
-      [accessibilityLabel appendString:@" "];
-    }
-    [accessibilityLabel appendString:self.placeholder];
-  }
-  
+
   return accessibilityLabel;
 }
 
 #pragma mark - Properties
 
-- (void)setPlaceholder:(NSString *)placeholder
-{
-  _placeholder = placeholder;
-  _placeholderView.text = _placeholder;
-}
-
-- (void)setPlaceholderColor:(NSColor *)placeholderColor
-{
-  _placeholderColor = placeholderColor;
-  _placeholderView.textColor = _placeholderColor ?: defaultPlaceholderColor();
-}
-
 - (void)textDidChange
 {
   _textWasPasted = NO;
-  [self invalidatePlaceholderVisibility];
 }
 
 #pragma mark - Overrides
-
-- (void)setFont:(NSFont *)font
-{
-  [super setFont:font];
-  _placeholderView.font = font ?: defaultPlaceholderFont();
-}
-
-- (void)setTextAlignment:(NSTextAlignment)textAlignment
-{
-  [super setTextAlignment:textAlignment];
-  _placeholderView.textAlignment = textAlignment;
-}
 
 - (void)setText:(NSString *)text
 {
@@ -149,28 +98,10 @@ static NSColor *defaultPlaceholderColor()
 
 #pragma mark - Layout
 
-- (CGFloat)preferredMaxLayoutWidth
-{
-  // Returning size DOES contain `textContainerInset` (aka `padding`).
-  return _preferredMaxLayoutWidth ?: self.placeholderSize.width;
-}
-
-- (CGSize)placeholderSize
-{
-  NSEdgeInsets textContainerInset = self.textContainerInset;
-  NSString *placeholder = self.placeholder ?: @"";
-  CGSize placeholderSize = [placeholder sizeWithAttributes:@{NSFontAttributeName: self.font ?: defaultPlaceholderFont()}];
-  placeholderSize = CGSizeMake(RCTCeilPixelValue(placeholderSize.width), RCTCeilPixelValue(placeholderSize.height));
-  placeholderSize.width += textContainerInset.left + textContainerInset.right;
-  placeholderSize.height += textContainerInset.top + textContainerInset.bottom;
-  // Returning size DOES contain `textContainerInset` (aka `padding`; as `sizeThatFits:` does).
-  return placeholderSize;
-}
-
 - (CGSize)contentSize
 {
   CGSize contentSize = super.contentSize;
-  CGSize placeholderSize = self.placeholderSize;
+  CGSize placeholderSize = CGSizeZero;
   // When a text input is empty, it actually displays a placehoder.
   // So, we have to consider `placeholderSize` as a minimum `contentSize`.
   // Returning size DOES contain `textContainerInset` (aka `padding`).
@@ -200,42 +131,9 @@ static NSColor *defaultPlaceholderColor()
   // Returned fitting size depends on text size and placeholder size.
   [self.layoutManager ensureLayoutForTextContainer:self.textContainer];
   CGSize textSize = [self.layoutManager usedRectForTextContainer:self.textContainer].size;
-  CGSize placeholderSize = self.placeholderSize;
+  CGSize placeholderSize = CGSizeZero;
   // Returning size DOES contain `textContainerInset` (aka `padding`).
   return CGSizeMake(MAX(textSize.width, placeholderSize.width), MAX(textSize.height, placeholderSize.height));
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#pragma mark - Placeholder
-
-- (void)invalidatePlaceholderVisibility
-{
-  BOOL isVisible = _placeholder.length != 0 && self.attributedText.length == 0;
-  _placeholderView.hidden = !isVisible;
 }
 
 @end

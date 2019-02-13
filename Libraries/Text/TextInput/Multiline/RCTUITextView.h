@@ -26,8 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak) id<RCTBackedTextInputDelegate> textInputDelegate;
 
 @property (nonatomic, assign, readonly) BOOL textWasPasted;
-@property (nonatomic, copy, nullable) NSString *placeholder;
-@property (nonatomic, strong, nullable) NSColor *placeholderColor;
+// @property (nonatomic, copy, nullable) NSString *placeholder;
+// @property (nonatomic, strong, nullable) NSColor *placeholderColor;
 
 @property (nonatomic, assign) CGFloat preferredMaxLayoutWidth;
 

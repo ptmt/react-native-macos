@@ -50,33 +50,6 @@
   [self setNeedsLayout:YES];
 }
 
-- (void)setPlaceholder:(NSString *)placeholder
-{
-  [super setPlaceholder:placeholder];
-  [self _updatePlaceholder];
-}
-
-- (void)setPlaceholderColor:(NSColor *)placeholderColor
-{
-  _placeholderColor = placeholderColor;
-  [self _updatePlaceholder];
-}
-
-- (void)_updatePlaceholder
-{
-  if (self.placeholder == nil) {
-    return;
-  }
-
-  NSMutableDictionary *attributes = [NSMutableDictionary new];
-  if (_placeholderColor) {
-    [attributes setObject:_placeholderColor forKey:NSForegroundColorAttributeName];
-  }
-
-  self.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.placeholder
-                                                               attributes:attributes];
-}
-
 #pragma mark - Caret Manipulation
 
 //- (CGRect)caretRectForPosition:(UITextPosition *)position
@@ -123,33 +96,6 @@
 {
   [self.currentEditor paste:sender];
   _textWasPasted = YES;
-}
-
-#pragma mark - Layout
-
-- (CGSize)contentSize
-{
-  // Returning size DOES contain `textContainerInset` (aka `padding`).
-  return self.intrinsicContentSize;
-}
-
-- (CGSize)intrinsicContentSize
-{
-  // Note: `placeholder` defines intrinsic size for `<TextInput>`.
-  NSString *text = self.placeholder ?: @"";
-  CGSize size = [text sizeWithAttributes:@{NSFontAttributeName: self.font}];
-  size = CGSizeMake(RCTCeilPixelValue(size.width), RCTCeilPixelValue(size.height));
-  size.width += _textContainerInset.left + _textContainerInset.right;
-  size.height += _textContainerInset.top + _textContainerInset.bottom;
-  // Returning size DOES contain `textContainerInset` (aka `padding`).
-  return size;
-}
-
-- (CGSize)sizeThatFits:(CGSize)size
-{
-  // All size values here contain `textContainerInset` (aka `padding`).
-  CGSize intrinsicSize = self.intrinsicContentSize;
-  return CGSizeMake(MIN(size.width, intrinsicSize.width), MIN(size.height, intrinsicSize.height));
 }
 
 @end

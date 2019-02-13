@@ -48,6 +48,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) RCTTextSelection *selection;
 @property (nonatomic, strong, nullable) NSNumber *maxLength;
 @property (nonatomic, copy) NSAttributedString *attributedText;
+@property (nonatomic, copy, nullable) NSString *placeholder;
+@property (nonatomic, strong, nullable) NSColor *placeholderColor;
 
 @end
 
