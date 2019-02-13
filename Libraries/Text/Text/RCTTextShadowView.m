@@ -15,6 +15,7 @@
 #import <yoga/Yoga.h>
 
 #import "NSTextStorage+FontScaling.h"
+#import "NSValue+CoreGraphics.h"
 #import "NSFont+LineHeight.h"
 #import "RCTTextView.h"
 
