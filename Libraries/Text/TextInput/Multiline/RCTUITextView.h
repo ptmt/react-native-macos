@@ -33,4 +33,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface NSTextView (EditingControl)
+
+- (BOOL)endEditing:(BOOL)force;
+
+@end
+
 NS_ASSUME_NONNULL_END

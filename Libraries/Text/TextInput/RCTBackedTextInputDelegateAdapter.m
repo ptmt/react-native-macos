@@ -8,6 +8,7 @@
  */
 
 #import "RCTBackedTextInputDelegateAdapter.h"
+#import "RCTUITextView.h"
 
 #pragma mark - RCTBackedTextFieldDelegateAdapter (for NSTextField)
 
