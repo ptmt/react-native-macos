@@ -59,19 +59,34 @@
 
 #pragma mark - Overrides
 
+- (NSString *)text
+{
+  return self.string;
+}
+
 - (void)setText:(NSString *)text
 {
-  [super setText:text];
+  [self setString:text];
   [self textDidChange];
+}
+
+- (NSAttributedString *)attributedText
+{
+  return self.textStorage;
 }
 
 - (void)setAttributedText:(NSAttributedString *)attributedText
 {
-  [super setAttributedText:attributedText];
+  [self.textStorage setAttributedString:attributedText];
   [self textDidChange];
 }
 
 #pragma mark - Overrides
+
+- (NSRange)selectedTextRange
+{
+  return self.selectedRange;
+}
 
 - (void)setSelectedTextRange:(NSRange)selectedTextRange notifyDelegate:(BOOL)notifyDelegate
 {
