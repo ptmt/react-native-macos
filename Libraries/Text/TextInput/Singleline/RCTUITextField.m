@@ -18,6 +18,8 @@
   RCTBackedTextFieldDelegateAdapter *_textInputDelegateAdapter;
 }
 
+@dynamic font, alignment; // NSTextField provides these properties
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if (self = [super initWithFrame:frame]) {
@@ -96,6 +98,28 @@
 {
   [self.currentEditor paste:sender];
   _textWasPasted = YES;
+}
+
+#pragma mark - RCTBackedTextInputViewProtocol
+
+- (NSString *)text
+{
+  return self.stringValue;
+}
+
+- (void)setText:(NSString *)text
+{
+  self.stringValue = text;
+}
+
+- (NSAttributedString *)attributedText
+{
+  return self.attributedStringValue;
+}
+
+- (void)setAttributedText:(NSAttributedString *)attributedText
+{
+  self.attributedStringValue = attributedText;
 }
 
 @end
