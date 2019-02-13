@@ -151,4 +151,20 @@
   return CGSizeMake(MAX(textSize.width, placeholderSize.width), MAX(textSize.height, placeholderSize.height));
 }
 
+#pragma mark - Padding
+
+- (void)setPaddingInsets:(NSEdgeInsets)paddingInsets
+{
+  _paddingInsets = paddingInsets;
+  self.textContainerInset = (NSSize){paddingInsets.right, paddingInsets.bottom};
+}
+
+- (NSPoint)textContainerOrigin
+{
+  return (NSPoint){
+    _paddingInsets.left - _paddingInsets.right,
+    _paddingInsets.top - _paddingInsets.bottom
+  };
+}
+
 @end

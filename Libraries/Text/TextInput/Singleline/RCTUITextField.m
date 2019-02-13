@@ -46,9 +46,9 @@
 
 #pragma mark - Properties
 
-- (void)setTextContainerInset:(NSEdgeInsets)textContainerInset
+- (void)setPaddingInsets:(NSEdgeInsets)paddingInsets
 {
-  _textContainerInset = textContainerInset;
+  _paddingInsets = paddingInsets;
   [self setNeedsLayout:YES];
 }
 
