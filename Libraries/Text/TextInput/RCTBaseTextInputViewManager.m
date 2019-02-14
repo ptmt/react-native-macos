@@ -35,8 +35,8 @@ RCT_EXPORT_MODULE()
 
 #pragma mark - Unified <TextInput> properties
 
-RCT_REMAP_VIEW_PROPERTY(autoCapitalize, backedTextInputView.autocapitalizationType, UITextAutocapitalizationType)
-RCT_REMAP_VIEW_PROPERTY(autoCorrect, backedTextInputView.autocorrectionType, UITextAutocorrectionType)
+//RCT_REMAP_VIEW_PROPERTY(autoCapitalize, backedTextInputView.autocapitalizationType, UITextAutocapitalizationType)
+//RCT_REMAP_VIEW_PROPERTY(autoCorrect, backedTextInputView.autocorrectionType, UITextAutocorrectionType)
 RCT_REMAP_VIEW_PROPERTY(editable, backedTextInputView.editable, BOOL)
 
 
@@ -45,9 +45,9 @@ RCT_EXPORT_VIEW_PROPERTY(placeholder, NSString)
 RCT_REMAP_VIEW_PROPERTY(placeholderTextColor, placeholderColor, NSColor)
 
 RCT_REMAP_VIEW_PROPERTY(secureTextEntry, backedTextInputView.secureTextEntry, BOOL)
-RCT_REMAP_VIEW_PROPERTY(selectionColor, backedTextInputView.tintColor, NSColor)
-RCT_REMAP_VIEW_PROPERTY(spellCheck, backedTextInputView.spellCheckingType, UITextSpellCheckingType)
-RCT_REMAP_VIEW_PROPERTY(caretHidden, backedTextInputView.caretHidden, BOOL)
+//RCT_REMAP_VIEW_PROPERTY(selectionColor, backedTextInputView.tintColor, NSColor)
+//RCT_REMAP_VIEW_PROPERTY(spellCheck, backedTextInputView.spellCheckingType, UITextSpellCheckingType)
+//RCT_REMAP_VIEW_PROPERTY(caretHidden, backedTextInputView.caretHidden, BOOL)
 
 RCT_EXPORT_VIEW_PROPERTY(blurOnSubmit, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(clearTextOnFocus, BOOL)
@@ -58,7 +58,7 @@ RCT_EXPORT_VIEW_PROPERTY(selection, RCTTextSelection)
 RCT_EXPORT_VIEW_PROPERTY(onChange, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onSelectionChange, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onTextInput, RCTDirectEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onScroll, RCTDirectEventBlock)
+//RCT_EXPORT_VIEW_PROPERTY(onScroll, RCTDirectEventBlock)
 
 RCT_EXPORT_VIEW_PROPERTY(mostRecentEventCount, NSInteger)
 
