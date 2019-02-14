@@ -32,7 +32,7 @@
   if (self = [super initWithFrame:frame]) {
 //    self.isAccessibilityElement = YES;
 //    self.accessibilityTraits |= UIAccessibilityTraitStaticText;
-    self.contentMode = UIViewContentModeRedraw;
+//    self.contentMode = UIViewContentModeRedraw;
   }
   return self;
 }
