@@ -104,6 +104,14 @@
   _textWasPasted = YES;
 }
 
+- (void)textDidEndEditing:(NSNotification *)notification
+{
+  [super textDidEndEditing:notification];
+  if (self.currentEditor == nil) {
+    [_textInputDelegateAdapter textFieldDidBlur];
+  }
+}
+
 - (BOOL)becomeFirstResponder
 {
   if ([super becomeFirstResponder]) {

@@ -58,7 +58,7 @@ static void *TextFieldSelectionObservingContext = &TextFieldSelectionObservingCo
   return [_backedTextInputView.textInputDelegate textInputShouldEndEditing];
 }
 
-- (void)controlTextDidEndEditing:(__unused NSNotification *)notification
+- (void)textFieldDidBlur
 {
   if (_textDidChangeIsComing) {
     // iOS does't call `textViewDidChange:` delegate method if the change was happened because of autocorrection

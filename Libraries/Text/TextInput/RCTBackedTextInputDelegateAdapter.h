@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)skipNextTextInputDidChangeSelectionEventWithTextRange:(NSRange)textRange;
 - (void)selectedTextRangeWasSet;
 - (void)textFieldDidFocus;
+- (void)textFieldDidBlur;
 
 @end
 
