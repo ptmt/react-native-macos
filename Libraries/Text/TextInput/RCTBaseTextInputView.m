@@ -307,7 +307,7 @@ static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
   [self updateLocalData];
   [self updatePlaceholderVisibility];
 
-  id<RCTBackedTextInputViewProtocol> backedTextInputView = self.backedTextInputView;
+  NSString *text = self.attributedText.string;
 
   // Detect when `backedTextInputView` updates happend that didn't invoke `shouldChangeTextInRange`
   // (e.g. typing simplified chinese in pinyin will insert and remove spaces without
@@ -315,19 +315,19 @@ static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
   // update the mismatched range.
   NSRange currentRange;
   NSRange predictionRange;
-  if (findMismatch(backedTextInputView.attributedText.string, _predictedText, &currentRange, &predictionRange)) {
-    NSString *replacement = [backedTextInputView.attributedText.string substringWithRange:currentRange];
+  if (findMismatch(text, _predictedText, &currentRange, &predictionRange)) {
+    NSString *replacement = [text substringWithRange:currentRange];
     [self textInputShouldChangeTextInRange:predictionRange replacementText:replacement];
     // JS will assume the selection changed based on the location of our shouldChangeTextInRange, so reset it.
     [self textInputDidChangeSelection];
-    _predictedText = backedTextInputView.attributedText.string;
+    _predictedText = text;
   }
 
   _nativeEventCount++;
 
   if (_onChange) {
     _onChange(@{
-       @"text": self.attributedText.string,
+       @"text": text,
        @"target": self.reactTag,
        @"eventCount": @(_nativeEventCount),
     });
