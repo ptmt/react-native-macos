@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)selectedTextRangeWasSet;
 - (void)textFieldDidFocus;
 - (void)textFieldDidBlur;
+- (BOOL)shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text;
 
 @end
 

@@ -104,6 +104,14 @@
   _textWasPasted = YES;
 }
 
+- (BOOL)textView:(NSTextView *)textView shouldChangeTextInRange:(NSRange)range replacementString:(NSString *)string
+{
+  if ([super textView:textView shouldChangeTextInRange:range replacementString:string]) {
+    return [_textInputDelegateAdapter shouldChangeTextInRange:range replacementText:string];
+  }
+  return NO;
+}
+
 - (void)textDidEndEditing:(NSNotification *)notification
 {
   [super textDidEndEditing:notification];
