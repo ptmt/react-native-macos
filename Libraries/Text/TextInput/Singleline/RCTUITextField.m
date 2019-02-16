@@ -14,6 +14,10 @@
 
 #import "RCTBackedTextInputDelegateAdapter.h"
 
+// The "field editor" is a NSTextView whose delegate is this NSTextField.
+@interface NSTextField () <NSTextViewDelegate>
+@end
+
 @implementation RCTUITextField {
   RCTBackedTextFieldDelegateAdapter *_textInputDelegateAdapter;
 }
