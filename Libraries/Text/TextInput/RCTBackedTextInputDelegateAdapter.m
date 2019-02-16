@@ -212,7 +212,9 @@ static void *TextFieldSelectionObservingContext = &TextFieldSelectionObservingCo
 
 - (void)textViewDidChangeSelection:(__unused NSNotification *)notification
 {
-  [self textViewProbablyDidChangeSelection];
+  if (_backedTextInputView == _backedTextInputView.window.firstResponder) {
+    [self textViewProbablyDidChangeSelection];
+  }
 }
 
 #pragma mark - Public Interface
