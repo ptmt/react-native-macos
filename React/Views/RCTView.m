@@ -646,6 +646,7 @@ static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x) {
   }
 
   layer.contents = (id)image;
+  layer.contentsScale = [image recommendedLayerContentsScale:0.0];
   layer.contentsCenter = contentsCenter;
   layer.magnificationFilter = kCAFilterNearest;
   layer.needsDisplayOnBoundsChange = YES;
