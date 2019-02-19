@@ -73,8 +73,10 @@ RCT_EXPORT_MODULE()
     @"touchEnd",
 
     // Mouse events
+    @"mouseMove",
     @"mouseOver",
     @"mouseOut",
+    @"contextMenu",
   ];
 }
 
