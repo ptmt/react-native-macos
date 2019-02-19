@@ -42,7 +42,7 @@ class DragExample extends React.Component {
           padding: 40, alignItems: 'center'}}
         draggedTypes={['NSFilenamesPboardType']}
         onMouseOver={() => this.setState({mouseOver: true})}
-        onMouseLeave={() => this.setState({mouseOver: false})}
+        onMouseOut={() => this.setState({mouseOver: false})}
         onDragEnter={() => this.setState({dragOver: true})}
         onDragLeave={() => this.setState({dragOver: false})}
         onDrop={(e) => this.setState({files: e.nativeEvent.files, dragOver: false})}>

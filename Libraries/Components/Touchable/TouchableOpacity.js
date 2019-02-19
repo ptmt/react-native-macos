@@ -260,7 +260,7 @@ var TouchableOpacity = createReactClass({
         onResponderRelease={this.touchableHandleResponderRelease}
         onResponderTerminate={this.touchableHandleResponderTerminate}
         onMouseOver={this.props.onMouseOver}
-        onMouseLeave={this.props.onMouseLeave}
+        onMouseOut={this.props.onMouseOut}
         onContextMenuItemClick={this.props.onContextMenuItemClick}
         contextMenu={this.props.contextMenu}>
         {this.props.children}

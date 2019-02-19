@@ -74,7 +74,7 @@ RCT_EXPORT_MODULE()
 
     // Mouse events
     @"mouseOver",
-    @"mouseLeave",
+    @"mouseOut",
   ];
 }
 
