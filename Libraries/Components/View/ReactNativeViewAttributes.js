@@ -30,6 +30,7 @@ ReactNativeViewAttributes.UIView = {
   renderToHardwareTextureAndroid: true,
   shouldRasterizeIOS: true,
   onLayout: true,
+  onMouseMove: true,
   onMouseOver: true,
   onMouseOut: true,
   onAccessibilityTap: true,
