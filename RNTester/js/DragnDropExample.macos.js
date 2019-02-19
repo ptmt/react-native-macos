@@ -41,7 +41,7 @@ class DragExample extends React.Component {
             this.state.mouseOver ? 'orange' : 'white',
           padding: 40, alignItems: 'center'}}
         draggedTypes={['NSFilenamesPboardType']}
-        onMouseEnter={() => this.setState({mouseOver: true})}
+        onMouseOver={() => this.setState({mouseOver: true})}
         onMouseLeave={() => this.setState({mouseOver: false})}
         onDragEnter={() => this.setState({dragOver: true})}
         onDragLeave={() => this.setState({dragOver: false})}

@@ -433,7 +433,7 @@ module.exports = {
    * Desktop specific events
    * @platform macos
    */
-  onMouseEnter: PropTypes.func,
+  onMouseOver: PropTypes.func,
   onMouseLeave: PropTypes.func,
   onDragEnter: PropTypes.func,
   onDragLeave: PropTypes.func,

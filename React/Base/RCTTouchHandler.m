@@ -47,7 +47,7 @@
   CFTimeInterval _mostRecentEnqueueJS;
   
   /*
-   * Storing tag to dispatch mouseEnter and mouseLeave events
+   * Storing tag to dispatch mouseOver and mouseLeave events
    */
   NSNumber *_currentMouseOverTag;
 }
@@ -338,11 +338,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithTarget:(id)target action:(SEL)action
     [_bridge enqueueJSCall:@"RCTEventEmitter.receiveEvent"
                       args:@[_currentMouseOverTag, @"topMouseLeave"]];
     [_bridge enqueueJSCall:@"RCTEventEmitter.receiveEvent"
-                      args:@[reactTag, @"topMouseEnter"]];
+                      args:@[reactTag, @"topMouseOver"]];
     _currentMouseOverTag = reactTag;
   } else if (_currentMouseOverTag == 0) {
     [_bridge enqueueJSCall:@"RCTEventEmitter.receiveEvent"
-                      args:@[reactTag, @"topMouseEnter"]];
+                      args:@[reactTag, @"topMouseOver"]];
     _currentMouseOverTag = reactTag;
   }
 }
