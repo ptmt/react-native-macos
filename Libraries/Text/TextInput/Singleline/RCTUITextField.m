@@ -11,11 +11,16 @@
 
 #import <React/RCTUtils.h>
 #import <React/NSView+React.h>
+#import <objc/runtime.h>
 
 #import "RCTBackedTextInputDelegateAdapter.h"
 
 // The "field editor" is a NSTextView whose delegate is this NSTextField.
 @interface NSTextField () <NSTextViewDelegate>
+@end
+
+@interface RCTUITextFieldCell : NSTextFieldCell
+@property (nullable, assign) RCTUITextField *controlView;
 @end
 
 @implementation RCTUITextField {
@@ -32,6 +37,17 @@
                                                  name:NSControlTextDidChangeNotification
                                                object:self];
 
+    self.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    self.allowsEditingTextAttributes = NO;
+    self.drawsBackground = NO;
+    self.focusRingType = NSFocusRingTypeNone;
+    self.bordered = NO;
+    self.bezeled = NO;
+
+    self.cell.scrollable = YES;
+    self.cell.usesSingleLineMode = YES;
+    object_setClass(self.cell, RCTUITextFieldCell.class);
+
     _textInputDelegateAdapter = [[RCTBackedTextFieldDelegateAdapter alloc] initWithTextField:self];
   }
 
@@ -46,14 +62,6 @@
 - (void)_textDidChange
 {
   _textWasPasted = NO;
-}
-
-#pragma mark - Properties
-
-- (void)setPaddingInsets:(NSEdgeInsets)paddingInsets
-{
-  _paddingInsets = paddingInsets;
-  [self setNeedsLayout:YES];
 }
 
 #pragma mark - Caret Manipulation
@@ -129,6 +137,7 @@
 - (BOOL)becomeFirstResponder
 {
   if ([super becomeFirstResponder]) {
+    self.currentEditor.textContainerInset = (NSSize){_paddingInsets.left, _paddingInsets.top};
     [_textInputDelegateAdapter textFieldDidFocus];
     return YES;
   }
@@ -155,6 +164,43 @@
 - (void)setAttributedText:(NSAttributedString *)attributedText
 {
   self.attributedStringValue = attributedText;
+}
+
+- (void)setPaddingInsets:(NSEdgeInsets)paddingInsets
+{
+  // Account for strange rendering offset. (NSTextView doesn't have this issue)
+  paddingInsets.top -= 1;
+  paddingInsets.left -= 2;
+
+  _paddingInsets = paddingInsets;
+}
+
+@end
+
+@implementation RCTUITextFieldCell
+
+@dynamic controlView;
+
+static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
+  rect.origin.x    += insets.left;
+  rect.origin.y    += insets.top;
+  rect.size.width  -= (insets.left + insets.right);
+  rect.size.height -= (insets.top  + insets.bottom);
+  return rect;
+}
+
+- (NSRect)drawingRectForBounds:(NSRect)bounds
+{
+  NSRect rect = [super drawingRectForBounds:bounds];
+  return NSEdgeInsetsInsetRect(rect, self.controlView.paddingInsets);
+}
+
+- (NSText *)setUpFieldEditorAttributes:(NSTextView *)fieldEditor
+{
+  fieldEditor.font = self.font;
+  fieldEditor.textColor = self.textColor;
+  fieldEditor.backgroundColor = NSColor.clearColor;
+  return fieldEditor;
 }
 
 @end

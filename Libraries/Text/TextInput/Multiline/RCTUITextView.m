@@ -125,15 +125,7 @@
 - (void)setPaddingInsets:(NSEdgeInsets)paddingInsets
 {
   _paddingInsets = paddingInsets;
-  self.textContainerInset = (NSSize){paddingInsets.right, paddingInsets.bottom};
-}
-
-- (NSPoint)textContainerOrigin
-{
-  return (NSPoint){
-    _paddingInsets.left - _paddingInsets.right,
-    _paddingInsets.top - _paddingInsets.bottom
-  };
+  self.textContainerInset = (NSSize){paddingInsets.left, paddingInsets.top};
 }
 
 @end
