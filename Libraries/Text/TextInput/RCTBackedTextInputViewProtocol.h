@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSEdgeInsets paddingInsets;
 //@property (nonatomic, strong, nullable) NSView *inputAccessoryView;
 @property (nonatomic, weak, nullable) id<RCTBackedTextInputDelegate> textInputDelegate;
-@property (nonatomic, readonly) CGSize contentSize;
+//@property (nonatomic, readonly) CGSize contentSize;
 
 // This protocol disallows direct access to `selectedTextRange` property because
 // unwise usage of it can break the `delegate` behavior. So, we always have to
@@ -39,8 +39,6 @@ NS_ASSUME_NONNULL_BEGIN
 // unwise usage of it can break the `attributeText` behavior.
 // Use `attributedText.string` instead.
 @property (nonatomic, copy, nullable) NSString *text NS_UNAVAILABLE;
-
-- (CGSize)sizeThatFits:(CGSize)size;
 
 @end
 

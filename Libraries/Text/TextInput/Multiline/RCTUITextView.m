@@ -120,46 +120,6 @@
 //  [super setContentOffset:contentOffset animated:NO];
 //}
 
-#pragma mark - Layout
-
-- (CGSize)contentSize
-{
-  CGSize contentSize = super.contentSize;
-  CGSize placeholderSize = CGSizeZero;
-  // When a text input is empty, it actually displays a placehoder.
-  // So, we have to consider `placeholderSize` as a minimum `contentSize`.
-  // Returning size DOES contain `textContainerInset` (aka `padding`).
-  return CGSizeMake(
-    MAX(contentSize.width, placeholderSize.width),
-    MAX(contentSize.height, placeholderSize.height));
-}
-
-- (void)layoutSubviews
-{
-  [super layoutSubviews];
-
-  CGRect textFrame = NSEdgeInsetsInsetRect(self.bounds, self.textContainerInset);
-  CGFloat placeholderHeight = [_placeholderView sizeThatFits:textFrame.size].height;
-  textFrame.size.height = MIN(placeholderHeight, textFrame.size.height);
-  _placeholderView.frame = textFrame;
-}
-
-- (CGSize)intrinsicContentSize
-{
-  // Returning size DOES contain `textContainerInset` (aka `padding`).
-  return [self sizeThatFits:CGSizeMake(self.preferredMaxLayoutWidth, CGFLOAT_MAX)];
-}
-
-- (CGSize)sizeThatFits:(CGSize)size
-{
-  // Returned fitting size depends on text size and placeholder size.
-  [self.layoutManager ensureLayoutForTextContainer:self.textContainer];
-  CGSize textSize = [self.layoutManager usedRectForTextContainer:self.textContainer].size;
-  CGSize placeholderSize = CGSizeZero;
-  // Returning size DOES contain `textContainerInset` (aka `padding`).
-  return CGSizeMake(MAX(textSize.width, placeholderSize.width), MAX(textSize.height, placeholderSize.height));
-}
-
 #pragma mark - Padding
 
 - (void)setPaddingInsets:(NSEdgeInsets)paddingInsets

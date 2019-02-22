@@ -369,24 +369,24 @@ static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
   return size;
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
-  CGFloat compoundHorizontalBorderInset = _reactBorderInsets.left + _reactBorderInsets.right;
-  CGFloat compoundVerticalBorderInset = _reactBorderInsets.top + _reactBorderInsets.bottom;
-
-  size.width -= compoundHorizontalBorderInset;
-  size.height -= compoundVerticalBorderInset;
-
-  // Note: `paddingInsets` was already included in `backedTextInputView` size
-  // because it was applied as `textContainerInset`.
-  CGSize fittingSize = [self.backedTextInputView sizeThatFits:size];
-
-  fittingSize.width += compoundHorizontalBorderInset;
-  fittingSize.height += compoundVerticalBorderInset;
-
-  // Returning value DOES include border and padding insets.
-  return fittingSize;
-}
+//- (CGSize)sizeThatFits:(CGSize)size
+//{
+//  CGFloat compoundHorizontalBorderInset = _reactBorderInsets.left + _reactBorderInsets.right;
+//  CGFloat compoundVerticalBorderInset = _reactBorderInsets.top + _reactBorderInsets.bottom;
+//
+//  size.width -= compoundHorizontalBorderInset;
+//  size.height -= compoundVerticalBorderInset;
+//
+//  // Note: `paddingInsets` was already included in `backedTextInputView` size
+//  // because it was applied as `textContainerInset`.
+//  CGSize fittingSize = [self.backedTextInputView sizeThatFits:size];
+//
+//  fittingSize.width += compoundHorizontalBorderInset;
+//  fittingSize.height += compoundVerticalBorderInset;
+//
+//  // Returning value DOES include border and padding insets.
+//  return fittingSize;
+//}
 
 #pragma mark - Accessibility
 
