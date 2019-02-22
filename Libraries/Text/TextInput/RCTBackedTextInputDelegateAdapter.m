@@ -183,6 +183,9 @@ static void *TextFieldSelectionObservingContext = &TextFieldSelectionObservingCo
     [_backedTextInputView.textInputDelegate textInputDidChange];
   }
 
+  // Silently clear the selection when editing ends.
+  [_backedTextInputView setSelectedTextRange:(NSRange){0, 0} notifyDelegate:NO];
+
   [_backedTextInputView.textInputDelegate textInputDidEndEditing];
 }
 
