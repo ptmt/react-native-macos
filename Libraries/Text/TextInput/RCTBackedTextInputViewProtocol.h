@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSAttributedString *attributedText;
 // @property (nonatomic, copy, nullable) NSString *placeholder;
 // @property (nonatomic, strong, nullable) NSColor *placeholderColor;
-@property (nonatomic, assign) NSTextAlignment textAlignment;
+@property (nonatomic, assign) NSTextAlignment alignment;
 @property (nonatomic, assign, readonly) BOOL textWasPasted;
 @property (nonatomic, assign) NSEdgeInsets textContainerInset;
 //@property (nonatomic, strong, nullable) NSView *inputAccessoryView;
