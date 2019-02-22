@@ -37,6 +37,8 @@
   if (self = [super initWithFrame:CGRectZero]) {
     _bridge = bridge;
     _eventDispatcher = bridge.eventDispatcher;
+
+    self.clipsToBounds = YES;
   }
 
   return self;
