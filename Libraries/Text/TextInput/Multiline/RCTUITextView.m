@@ -98,6 +98,15 @@
   [super setSelectedRange:selectedTextRange];
 }
 
+- (BOOL)becomeFirstResponder
+{
+  if ([super becomeFirstResponder]) {
+    [_textInputDelegateAdapter performSelector:@selector(textViewDidFocus) withObject:nil afterDelay:0.0];
+    return YES;
+  }
+  return NO;
+}
+
 - (void)paste:(id)sender
 {
   [super paste:sender];

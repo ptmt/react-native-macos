@@ -35,6 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithTextView:(NSTextView<RCTBackedTextInputViewProtocol> *)backedTextInputView;
 
 - (void)skipNextTextInputDidChangeSelectionEventWithTextRange:(NSRange)textRange;
+- (void)textViewDidFocus;
 
 @end
 

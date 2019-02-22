@@ -164,7 +164,7 @@ static void *TextFieldSelectionObservingContext = &TextFieldSelectionObservingCo
   return [_backedTextInputView.textInputDelegate textInputShouldBeginEditing];
 }
 
-- (void)textDidBeginEditing:(__unused NSNotification *)notification
+- (void)textViewDidFocus
 {
   [_backedTextInputView.textInputDelegate textInputDidBeginEditing];
 }
