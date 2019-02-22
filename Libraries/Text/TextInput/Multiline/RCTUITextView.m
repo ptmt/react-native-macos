@@ -107,6 +107,20 @@
   return NO;
 }
 
+- (void)keyDown:(NSEvent *)event
+{
+  // Intercept "tab" key for focus control.
+  if (event.keyCode == 48) {
+    if (event.modifierFlags & NSShiftKeyMask) {
+      [self.window selectPreviousKeyView:nil];
+    } else {
+      [self.window selectNextKeyView:nil];
+    }
+  } else {
+    [super keyDown:event];
+  }
+}
+
 - (void)paste:(id)sender
 {
   [super paste:sender];

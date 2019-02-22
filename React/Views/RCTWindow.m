@@ -46,6 +46,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithContentRect:(NSRect)contentRect styl
     _mouseInfo[@"changedTouches"] = @[]; // Required for "mouseMove" events
     _mouseInfo[@"identifier"] = @0; // Required for "touch*" events
 
+    self.initialFirstResponder = nil;
+    self.autorecalculatesKeyViewLoop = YES;
+
     // The owner must set "contentView" manually.
     super.contentView = nil;
 
