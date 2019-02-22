@@ -22,7 +22,6 @@ const createReactClass = require('create-react-class');
 const PropTypes = require('prop-types');
 const NativeModules = require('NativeModules');
 const ReactNative = require('ReactNative');
-const StyleSheet = require('StyleSheet');
 const Text = require('Text');
 const TextInputState = require('TextInputState');
 /* $FlowFixMe(>=0.54.0 site=react_native_oss) This comment suppresses an error
@@ -698,7 +697,6 @@ const TextInput = createReactClass({
       if (props.inputView) {
         children = [children, props.inputView];
       }
-      props.style.unshift(styles.multilineInput);
       textContainer = (
         <RCTMultilineTextInputView
           ref={this._setNativeRef}
@@ -747,10 +745,6 @@ const TextInput = createReactClass({
     const RCTTextInputView = props.multiline
       ? RCTMultilineTextInputView
       : RCTSinglelineTextInputView;
-
-    if (props.multiline) {
-      props.style.unshift(styles.multilineInput);
-    }
 
     const textContainer = (
       <RCTTextInputView
@@ -941,15 +935,6 @@ const TextInput = createReactClass({
 
   _onScroll: function(event: Event) {
     this.props.onScroll && this.props.onScroll(event);
-  },
-});
-
-var styles = StyleSheet.create({
-  multilineInput: {
-    // This default top inset makes RCTMultilineTextInputView seem as close as possible
-    // to single-line RCTSinglelineTextInputView defaults, using the system defaults
-    // of font size 17 and a height of 31 points.
-    paddingTop: 5,
   },
 });
 
