@@ -138,7 +138,7 @@
 {
   if ([super becomeFirstResponder]) {
     self.currentEditor.textContainerInset = (NSSize){_paddingInsets.left, _paddingInsets.top};
-    [_textInputDelegateAdapter textFieldDidFocus];
+    [_textInputDelegateAdapter performSelector:@selector(textFieldDidFocus) withObject:nil afterDelay:0.0];
     return YES;
   }
   return NO;
