@@ -40,6 +40,8 @@ NS_ASSUME_NONNULL_BEGIN
 // Use `attributedText.string` instead.
 @property (nonatomic, copy, nullable) NSString *text NS_UNAVAILABLE;
 
+- (void)selectAll:(nullable id)sender;
+
 @end
 
 NS_ASSUME_NONNULL_END

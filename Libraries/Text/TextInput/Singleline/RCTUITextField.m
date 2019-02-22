@@ -175,6 +175,11 @@
   _paddingInsets = paddingInsets;
 }
 
+- (void)selectAll:(nullable id)sender
+{
+  [self.currentEditor selectAll:sender];
+}
+
 @end
 
 @implementation RCTUITextFieldCell
