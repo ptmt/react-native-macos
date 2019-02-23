@@ -114,6 +114,9 @@
 - (BOOL)becomeFirstResponder
 {
   if ([super becomeFirstResponder]) {
+    // Move the cursor to the end of the current text. Note: Mouse clicks override this selection (which is intended).
+    self.currentEditor.selectedRange = NSMakeRange(self.stringValue.length, 0);
+
     self.currentEditor.textContainerInset = (NSSize){_paddingInsets.left, _paddingInsets.top};
     [_textInputDelegateAdapter performSelector:@selector(textFieldDidFocus) withObject:nil afterDelay:0.0];
     return YES;
