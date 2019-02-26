@@ -951,20 +951,17 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithBundleURL:(__unused NSURL *)bundleUR
     // wrappers) or we may have invalid pointers still in flight.
     dispatch_group_t moduleInvalidation = dispatch_group_create();
     for (RCTModuleData *moduleData in self->_moduleDataByID) {
+      [moduleData invalidate];
+
       // Be careful when grabbing an instance here, we don't want to instantiate
       // any modules just to invalidate them.
-      if (![moduleData hasInstance]) {
-        continue;
-      }
-
-      if ([moduleData.instance respondsToSelector:@selector(invalidate)]) {
+      if (moduleData.hasInstance && [moduleData.instance respondsToSelector:@selector(invalidate)]) {
         dispatch_group_enter(moduleInvalidation);
         [self dispatchBlock:^{
           [(id<RCTInvalidating>)moduleData.instance invalidate];
           dispatch_group_leave(moduleInvalidation);
         } queue:moduleData.methodQueue];
       }
-      [moduleData invalidate];
     }
 
     if (dispatch_group_wait(moduleInvalidation, dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC))) {

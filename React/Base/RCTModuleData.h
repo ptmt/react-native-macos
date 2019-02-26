@@ -53,6 +53,7 @@ typedef id<RCTBridgeModule>(^RCTBridgeModuleProvider)(void);
 
 @property (nonatomic, strong, readonly) Class moduleClass;
 @property (nonatomic, copy, readonly) NSString *name;
+@property (nonatomic, assign, readonly) BOOL valid;
 
 /**
  * Returns the module methods. Note that this will gather the methods the first

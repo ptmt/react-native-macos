@@ -27,6 +27,7 @@
   RCTBridgeModuleProvider _moduleProvider;
   std::mutex _instanceLock;
   BOOL _setupComplete;
+  BOOL _valid;
 }
 
 @synthesize methods = _methods;
@@ -84,6 +85,7 @@
                              bridge:(RCTBridge *)bridge
 {
   if (self = [super init]) {
+    _valid = YES;
     _bridge = bridge;
     _moduleClass = moduleClass;
     _moduleProvider = [moduleProvider copy];
@@ -96,6 +98,7 @@
                                 bridge:(RCTBridge *)bridge
 {
   if (self = [super init]) {
+    _valid = YES;
     _bridge = bridge;
     _instance = instance;
     _moduleClass = [instance class];
@@ -372,15 +375,17 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init);
 
 - (dispatch_queue_t)methodQueue
 {
-  (void)[self instance];
-  RCTAssert(_methodQueue != nullptr, @"Module %@ has no methodQueue (instance: %@, bridge.valid: %d)",
-            self, _instance, _bridge.valid);
+  if (_bridge.valid) {
+    id instance = self.instance;
+    RCTAssert(_methodQueue != nullptr, @"Module %@ has no methodQueue (instance: %@)",
+              self, instance);
+  }
   return _methodQueue;
 }
 
 - (void)invalidate
 {
-  _methodQueue = nil;
+  _valid = NO;
 }
 
 - (NSString *)description
