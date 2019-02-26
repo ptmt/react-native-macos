@@ -29,18 +29,10 @@ static void *TextFieldSelectionObservingContext = &TextFieldSelectionObservingCo
   if (self = [super init]) {
     _backedTextInputView = backedTextInputView;
     backedTextInputView.delegate = self;
-
-
   }
 
   return self;
 }
-
-
-
-
-
-
 
 #pragma mark - NSTextFieldDelegate
 
@@ -90,11 +82,6 @@ static void *TextFieldSelectionObservingContext = &TextFieldSelectionObservingCo
   // `selectedTextRangeWasSet` isn't triggered during typing.
   [self textFieldProbablyDidChangeSelection];
 }
-
-
-
-
-
 
 #pragma mark - UIKeyboardInput (private UIKit protocol)
 
