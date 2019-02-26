@@ -665,9 +665,8 @@ const TextInput = createReactClass({
           }
         }
       }
-      var TextField = props.password ? RCTSecureTextField : RCTSinglelineTextInputView;
       textContainer = (
-        <TextField
+        <RCTSinglelineTextInputView
           ref={this._setNativeRef}
           {...props}
           style={[{ minWidth: 100, height: NativeModules.TextFieldManager.ComponentHeight }, props.styles]}
