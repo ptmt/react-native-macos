@@ -60,6 +60,9 @@ class TextEventsExample extends React.Component<{}, $FlowFixMeState> {
           onChange={event =>
             this.updateText('onChange text: ' + event.nativeEvent.text)
           }
+          onTextInput={event =>
+            this.updateText('onTextInput: ' + JSON.stringify(event.nativeEvent))
+          }
           onEndEditing={event =>
             this.updateText('onEndEditing text: ' + event.nativeEvent.text)
           }
@@ -487,6 +490,47 @@ class AutogrowingTextInputExample extends React.Component<
       </View>
     );
   }
+}
+
+class ControlledResetExample extends React.Component<
+  $FlowFixMeProps,
+  $FlowFixMeState,
+> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      text: '',
+      keys: '',
+    };
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <TextInput
+          style={styles.default}
+          value={this.state.text}
+          onChangeText={this.onChangeText}
+          onKeyPress={this.onKeyPress}
+        />
+        <Button title="Reset" onPress={this.onReset} />
+        <Text>Text: {this.state.text}</Text>
+        <Text>Keys: {this.state.keys}</Text>
+      </View>
+    );
+  }
+
+  onChangeText = (text: string) => {
+    this.setState({text});
+  };
+
+  onKeyPress = ({nativeEvent}: Object) => {
+    this.setState({keys: this.state.keys + nativeEvent.key + ', '});
+  };
+
+  onReset = () => {
+    this.setState({text: '', keys: ''});
+  };
 }
 
 const styles = StyleSheet.create({
@@ -1102,6 +1146,12 @@ exports.examples = [
           </WithLabel>
         </View>
       );
+    },
+  },
+  {
+    title: 'Controlled reset',
+    render: function() {
+      return <ControlledResetExample />;
     },
   },
 ];
