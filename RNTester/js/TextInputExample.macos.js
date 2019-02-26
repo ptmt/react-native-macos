@@ -605,12 +605,14 @@ exports.examples = [
     },
   },
   {
+    unsupported: true,
     title: 'Keyboard Accessory View',
     render: function() {
       return <TextInputAccessoryViewExample />;
     },
   },
   {
+    unsupported: true,
     title: 'Auto-capitalize',
     render: function() {
       return (
@@ -632,6 +634,7 @@ exports.examples = [
     },
   },
   {
+    unsupported: true,
     title: 'Auto-correct',
     render: function() {
       return (
@@ -673,6 +676,7 @@ exports.examples = [
     },
   },
   {
+    unsupported: true,
     title: 'Keyboard types',
     render: function() {
       const keyboardTypes = [
@@ -700,6 +704,7 @@ exports.examples = [
     },
   },
   {
+    unsupported: true,
     title: 'Keyboard appearance',
     render: function() {
       const keyboardAppearance = ['default', 'light', 'dark'];
@@ -714,6 +719,7 @@ exports.examples = [
     },
   },
   {
+    unsupported: true,
     title: 'Return key types',
     render: function() {
       const returnKeyTypes = [
@@ -740,6 +746,7 @@ exports.examples = [
     },
   },
   {
+    unsupported: true,
     title: 'Enable return key automatically',
     render: function() {
       return (
@@ -784,6 +791,7 @@ exports.examples = [
     },
   },
   {
+    unsupported: true,
     title: 'Colored highlight/cursor for text input',
     render: function() {
       return (
@@ -803,6 +811,7 @@ exports.examples = [
     },
   },
   {
+    unsupported: true,
     title: 'Clear button mode',
     render: function() {
       const clearButtonModes = [
@@ -870,12 +879,14 @@ exports.examples = [
     },
   },
   {
+    unsupported: true,
     title: 'Blur on submit',
     render: function(): React.Element<any> {
       return <BlurOnSubmitExample />;
     },
   },
   {
+    unsupported: true,
     title: 'Multiline blur on submit',
     render: function() {
       return (
