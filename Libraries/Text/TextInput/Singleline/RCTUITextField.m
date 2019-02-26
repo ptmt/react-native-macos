@@ -88,12 +88,6 @@
   [_textInputDelegateAdapter selectedTextRangeWasSet];
 }
 
-- (void)paste:(id)sender
-{
-  [self.currentEditor paste:sender];
-  _textWasPasted = YES;
-}
-
 - (void)textViewDidChangeSelection:(NSNotification *)notification
 {
   [super textViewDidChangeSelection:notification];
@@ -163,6 +157,13 @@
 - (void)selectAll:(nullable id)sender
 {
   [self.currentEditor selectAll:sender];
+}
+
+#pragma mark - RCTFieldEditorDelegate
+
+- (void)fieldEditor:(RCTFieldEditor *)editor didPaste:(NSString *)text
+{
+  _textWasPasted = YES;
 }
 
 @end

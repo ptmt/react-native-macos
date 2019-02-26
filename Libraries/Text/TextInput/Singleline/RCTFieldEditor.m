@@ -21,4 +21,16 @@
   return self;
 }
 
+- (void)paste:(id)sender
+{
+  NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+  NSString *text = [pasteboard stringForType:NSPasteboardTypeString];
+
+  if (text && [self.delegate respondsToSelector:@selector(fieldEditor:didPaste:)]) {
+    [self.delegate fieldEditor:self didPaste:text];
+  }
+
+  [super paste:sender];
+}
+
 @end

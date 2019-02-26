@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 @class RCTFieldEditor;
 
 @protocol RCTFieldEditorDelegate <NSTextViewDelegate>
+@optional
+- (void)fieldEditor:(RCTFieldEditor *)editor didPaste:(NSString *)text;
 @end
 
 @interface RCTFieldEditor : NSTextView
