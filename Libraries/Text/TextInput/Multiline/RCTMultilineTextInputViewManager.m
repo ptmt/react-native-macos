@@ -22,9 +22,9 @@ RCT_EXPORT_MODULE()
 
 #pragma mark - Multiline <TextInput> (aka TextView) specific properties
 
-#if !TARGET_OS_TV
-RCT_REMAP_VIEW_PROPERTY(dataDetectorTypes, backedTextInputView.dataDetectorTypes, UIDataDetectorTypes)
-#endif
+//#if !TARGET_OS_TV
+//RCT_REMAP_VIEW_PROPERTY(dataDetectorTypes, backedTextInputView.dataDetectorTypes, UIDataDetectorTypes)
+//#endif
 
 RCT_EXPORT_VIEW_PROPERTY(onScroll, RCTDirectEventBlock)
 
