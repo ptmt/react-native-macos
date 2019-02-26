@@ -11,7 +11,7 @@
 'use strict';
 
 const Button = require('Button');
-const InputAccessoryView = require('InputAccessoryView');
+// const InputAccessoryView = require('InputAccessoryView');
 const React = require('react');
 const ReactNative = require('react-native');
 const {Text, TextInput, View, StyleSheet, Slider, Switch, Alert} = ReactNative;
@@ -91,37 +91,37 @@ class TextEventsExample extends React.Component<{}, $FlowFixMeState> {
   }
 }
 
-class TextInputAccessoryViewExample extends React.Component<{}, *> {
-  /* $FlowFixMe(>=0.85.0 site=react_native_ios_fb) This comment suppresses an
-   * error found when Flow v0.85 was deployed. To see the error, delete this
-   * comment and run Flow. */
-  constructor(props) {
-    super(props);
-    this.state = {text: 'Placeholder Text'};
-  }
-
-  render() {
-    const inputAccessoryViewID = 'inputAccessoryView1';
-    return (
-      <View>
-        <TextInput
-          style={styles.default}
-          inputAccessoryViewID={inputAccessoryViewID}
-          onChangeText={text => this.setState({text})}
-          value={this.state.text}
-        />
-        <InputAccessoryView nativeID={inputAccessoryViewID}>
-          <View style={{backgroundColor: 'white'}}>
-            <Button
-              onPress={() => this.setState({text: 'Placeholder Text'})}
-              title="Reset Text"
-            />
-          </View>
-        </InputAccessoryView>
-      </View>
-    );
-  }
-}
+// class TextInputAccessoryViewExample extends React.Component<{}, *> {
+//   /* $FlowFixMe(>=0.85.0 site=react_native_ios_fb) This comment suppresses an
+//    * error found when Flow v0.85 was deployed. To see the error, delete this
+//    * comment and run Flow. */
+//   constructor(props) {
+//     super(props);
+//     this.state = {text: 'Placeholder Text'};
+//   }
+//
+//   render() {
+//     const inputAccessoryViewID = 'inputAccessoryView1';
+//     return (
+//       <View>
+//         <TextInput
+//           style={styles.default}
+//           inputAccessoryViewID={inputAccessoryViewID}
+//           onChangeText={text => this.setState({text})}
+//           value={this.state.text}
+//         />
+//         <InputAccessoryView nativeID={inputAccessoryViewID}>
+//           <View style={{backgroundColor: 'white'}}>
+//             <Button
+//               onPress={() => this.setState({text: 'Placeholder Text'})}
+//               title="Reset Text"
+//             />
+//           </View>
+//         </InputAccessoryView>
+//       </View>
+//     );
+//   }
+// }
 
 class RewriteExample extends React.Component<$FlowFixMeProps, any> {
   /* $FlowFixMe(>=0.85.0 site=react_native_ios_fb) This comment suppresses an
@@ -206,49 +206,25 @@ class RewriteExampleKana extends React.Component<$FlowFixMeProps, any> {
   }
 }
 
-class SecureEntryExample extends React.Component<$FlowFixMeProps, any> {
+class PasswordExample extends React.Component<$FlowFixMeProps, any> {
   /* $FlowFixMe(>=0.85.0 site=react_native_ios_fb) This comment suppresses an
    * error found when Flow v0.85 was deployed. To see the error, delete this
    * comment and run Flow. */
   constructor(props) {
     super(props);
-    this.state = {
-      text: '',
-      password: '',
-      isSecureTextEntry: true,
-    };
+    this.state = {text: ''};
   }
   render() {
     return (
       <View>
         <TextInput
-          secureTextEntry={true}
+          password={true}
           style={styles.default}
           defaultValue="abc"
           onChangeText={text => this.setState({text})}
           value={this.state.text}
         />
         <Text>Current text is: {this.state.text}</Text>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-          }}>
-          <TextInput
-            style={styles.default}
-            defaultValue="cde"
-            onChangeText={text => this.setState({password: text})}
-            secureTextEntry={this.state.isSecureTextEntry}
-            value={this.state.password}
-          />
-          <Switch
-            onValueChange={value => {
-              this.setState({isSecureTextEntry: value});
-            }}
-            style={{marginLeft: 4}}
-            value={this.state.isSecureTextEntry}
-          />
-        </View>
       </View>
     );
   }
@@ -762,9 +738,9 @@ exports.examples = [
     },
   },
   {
-    title: 'Secure text entry',
+    title: 'Password',
     render: function() {
-      return <SecureEntryExample />;
+      return <PasswordExample />;
     },
   },
   {
@@ -936,13 +912,6 @@ exports.examples = [
             editable={false}
             multiline={true}
             style={styles.multiline}
-          />
-          <TextInput
-            defaultValue="uneditable multiline text input with phone number detection: 88888888."
-            editable={false}
-            multiline={true}
-            style={styles.multiline}
-            dataDetectorTypes="phoneNumber"
           />
         </View>
       );
