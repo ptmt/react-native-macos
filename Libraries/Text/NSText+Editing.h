@@ -11,16 +11,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class RCTFieldEditor;
+@interface NSText (Editing)
 
-@protocol RCTFieldEditorDelegate <NSTextViewDelegate>
-@optional
-- (void)fieldEditor:(RCTFieldEditor *)editor didPaste:(NSString *)text;
-- (void)fieldEditorDidReturn:(RCTFieldEditor *)editor;
-@end
+- (BOOL)endEditing:(BOOL)force;
 
-@interface RCTFieldEditor : NSTextView
-@property (nullable, weak) id<RCTFieldEditorDelegate> delegate;
 @end
 
 NS_ASSUME_NONNULL_END

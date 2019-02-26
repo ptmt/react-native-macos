@@ -62,6 +62,8 @@
 		70588F6922273F2300CD1EEA /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70588F6822273F2300CD1EEA /* AppKit.framework */; };
 		70588F6C222741ED00CD1EEA /* RCTFieldEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 70588F6B222741EC00CD1EEA /* RCTFieldEditor.m */; };
 		70588F6D222741F600CD1EEA /* RCTFieldEditor.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 70588F6A222741EC00CD1EEA /* RCTFieldEditor.h */; };
+		70588F702227427700CD1EEA /* NSText+Editing.m in Sources */ = {isa = PBXBuildFile; fileRef = 70588F6E2227427600CD1EEA /* NSText+Editing.m */; };
+		70588F712227428000CD1EEA /* NSText+Editing.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 70588F6F2227427700CD1EEA /* NSText+Editing.h */; };
 		705EDE3022132863000CAA67 /* NSBezierPath+CGPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 705EDE2F22132863000CAA67 /* NSBezierPath+CGPath.m */; };
 		705EDE3D221378CC000CAA67 /* NSFont+LineHeight.m in Sources */ = {isa = PBXBuildFile; fileRef = 705EDE3C221378CC000CAA67 /* NSFont+LineHeight.m */; };
 		705EDE4022137BE7000CAA67 /* NSValue+CoreGraphics.m in Sources */ = {isa = PBXBuildFile; fileRef = 705EDE3F22137BE7000CAA67 /* NSValue+CoreGraphics.m */; };
@@ -75,6 +77,7 @@
 			dstPath = include/RCTText;
 			dstSubfolderSpec = 16;
 			files = (
+				70588F712227428000CD1EEA /* NSText+Editing.h in Copy Headers */,
 				70588F6D222741F600CD1EEA /* RCTFieldEditor.h in Copy Headers */,
 				70588F642227335B00CD1EEA /* NSLabel.h in Copy Headers */,
 				70588F3A222715DD00CD1EEA /* NSValue+CoreGraphics.h in Copy Headers */,
@@ -164,6 +167,8 @@
 		70588F6822273F2300CD1EEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		70588F6A222741EC00CD1EEA /* RCTFieldEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTFieldEditor.h; sourceTree = "<group>"; };
 		70588F6B222741EC00CD1EEA /* RCTFieldEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTFieldEditor.m; sourceTree = "<group>"; };
+		70588F6E2227427600CD1EEA /* NSText+Editing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSText+Editing.m"; sourceTree = "<group>"; };
+		70588F6F2227427700CD1EEA /* NSText+Editing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSText+Editing.h"; sourceTree = "<group>"; };
 		705EDE2E22132863000CAA67 /* NSBezierPath+CGPath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSBezierPath+CGPath.h"; sourceTree = "<group>"; };
 		705EDE2F22132863000CAA67 /* NSBezierPath+CGPath.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBezierPath+CGPath.m"; sourceTree = "<group>"; };
 		705EDE3B221378CC000CAA67 /* NSFont+LineHeight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSFont+LineHeight.h"; sourceTree = "<group>"; };
@@ -189,6 +194,8 @@
 		58B511921A9E6C1200147676 = {
 			isa = PBXGroup;
 			children = (
+				70588F6F2227427700CD1EEA /* NSText+Editing.h */,
+				70588F6E2227427600CD1EEA /* NSText+Editing.m */,
 				705EDE4422138919000CAA67 /* NSLabel.h */,
 				705EDE422213890E000CAA67 /* NSLabel.m */,
 				705EDE3E22137BE7000CAA67 /* NSValue+CoreGraphics.h */,
@@ -408,6 +415,7 @@
 				5956B138200FEBAA008D9D16 /* RCTTextSelection.m in Sources */,
 				5956B130200FEBAA008D9D16 /* RCTRawTextShadowView.m in Sources */,
 				5956B141200FEBAA008D9D16 /* NSTextStorage+FontScaling.m in Sources */,
+				70588F702227427700CD1EEA /* NSText+Editing.m in Sources */,
 				5956B132200FEBAA008D9D16 /* RCTSinglelineTextInputView.m in Sources */,
 				5956B13A200FEBAA008D9D16 /* RCTMultilineTextInputView.m in Sources */,
 				5956B133200FEBAA008D9D16 /* RCTUITextField.m in Sources */,

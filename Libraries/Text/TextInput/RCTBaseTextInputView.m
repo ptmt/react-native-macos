@@ -213,23 +213,16 @@ static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
 
 - (BOOL)textInputShouldReturn
 {
-  // We send `submit` event here, in `textInputShouldReturn`
-  // (not in `textInputDidReturn)`, because of semantic of the event:
-  // `onSubmitEditing` is called when "Submit" button
-  // (the blue key on onscreen keyboard) did pressed
-  // (no connection to any specific "submitting" process).
-  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeSubmit
-                                 reactTag:self.reactTag
-                                     text:self.backedTextInputView.attributedText.string
-                                      key:nil
-                               eventCount:_nativeEventCount];
-
   return _blurOnSubmit;
 }
 
 - (void)textInputDidReturn
 {
-  // Does nothing.
+  [_eventDispatcher sendTextEventWithType:RCTTextEventTypeSubmit
+                                 reactTag:self.reactTag
+                                     text:self.backedTextInputView.attributedText.string
+                                      key:nil
+                               eventCount:_nativeEventCount];
 }
 
 - (BOOL)textInputShouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text

@@ -22,11 +22,6 @@
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if (self = [super initWithFrame:frame]) {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(textDidChange)
-                                                 name:NSControlTextDidChangeNotification
-                                               object:self];
-
     _textInputDelegateAdapter = [[RCTBackedTextViewDelegateAdapter alloc] initWithTextView:self];
   }
 
@@ -50,13 +45,6 @@
   return accessibilityLabel;
 }
 
-#pragma mark - Properties
-
-- (void)textDidChange
-{
-  _textWasPasted = NO;
-}
-
 #pragma mark - Overrides
 
 - (NSString *)text
@@ -78,7 +66,6 @@
 - (void)setAttributedText:(NSAttributedString *)attributedText
 {
   [self.textStorage setAttributedString:attributedText];
-  [self textDidChange];
 }
 
 #pragma mark - Overrides
@@ -126,8 +113,8 @@
 
 - (void)paste:(id)sender
 {
-  [super paste:sender];
   _textWasPasted = YES;
+  [super paste:sender];
 }
 
 //- (void)setContentOffset:(CGPoint)contentOffset animated:(__unused BOOL)animated
@@ -145,20 +132,12 @@
   self.textContainerInset = (NSSize){paddingInsets.left, paddingInsets.top};
 }
 
-@end
-
-@implementation NSTextView (EditingControl)
-
-- (BOOL)endEditing:(BOOL)force
+- (void)didChangeText
 {
-  if (self != self.window.firstResponder) {
-    return YES;
-  }
-  if (force || [self.delegate textShouldEndEditing:self]) {
-    [self.window makeFirstResponder:nil];
-    return YES;
-  }
-  return NO;
+  [super didChangeText];
+
+  _textWasPasted = NO;
+  [self invalidateIntrinsicContentSize];
 }
 
 @end

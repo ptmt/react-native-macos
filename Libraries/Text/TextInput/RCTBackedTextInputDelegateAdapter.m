@@ -9,6 +9,7 @@
 
 #import "RCTBackedTextInputDelegateAdapter.h"
 #import "RCTUITextView.h"
+#import "NSText+Editing.h"
 
 #pragma mark - RCTBackedTextFieldDelegateAdapter (for NSTextField)
 
@@ -78,11 +79,6 @@ static void *TextFieldSelectionObservingContext = &TextFieldSelectionObservingCo
   }
   return result;
 }
-
-//- (BOOL)textFieldShouldReturn:(__unused NSTextField *)textField
-//{
-//  return [_backedTextInputView.textInputDelegate textInputShouldReturn];
-//}
 
 #pragma mark - UIControlEventEditing* Family Events
 

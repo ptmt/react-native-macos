@@ -15,6 +15,7 @@
 
 #import "RCTBackedTextInputDelegateAdapter.h"
 #import "RCTFieldEditor.h"
+#import "NSText+Editing.h"
 
 // The "field editor" is a NSTextView whose delegate is this NSTextField.
 @interface NSTextField () <NSTextViewDelegate>
@@ -164,6 +165,14 @@
 - (void)fieldEditor:(RCTFieldEditor *)editor didPaste:(NSString *)text
 {
   _textWasPasted = YES;
+}
+
+- (void)fieldEditorDidReturn:(RCTFieldEditor *)editor
+{
+  if ([self.textInputDelegate textInputShouldReturn]) {
+    [self.textInputDelegate textInputDidReturn];
+    [self.currentEditor endEditing:NO];
+  }
 }
 
 @end
