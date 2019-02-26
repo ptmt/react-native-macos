@@ -14,6 +14,7 @@
 #import <objc/runtime.h>
 
 #import "RCTBackedTextInputDelegateAdapter.h"
+#import "RCTFieldEditor.h"
 
 // The "field editor" is a NSTextView whose delegate is this NSTextField.
 @interface NSTextField () <NSTextViewDelegate>
@@ -21,6 +22,10 @@
 
 @interface RCTUITextFieldCell : NSTextFieldCell
 @property (nullable, assign) RCTUITextField *controlView;
+@end
+
+@interface RCTUITextField (RCTFieldEditor) <RCTFieldEditorDelegate>
+- (RCTFieldEditor *)currentEditor;
 @end
 
 @implementation RCTUITextField {
@@ -163,6 +168,9 @@
 @end
 
 @implementation RCTUITextFieldCell
+{
+  RCTFieldEditor *_fieldEditor;
+}
 
 @dynamic controlView;
 
@@ -178,6 +186,14 @@ static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
 {
   NSRect rect = [super drawingRectForBounds:bounds];
   return NSEdgeInsetsInsetRect(rect, self.controlView.paddingInsets);
+}
+
+- (NSTextView *)fieldEditorForView:(NSView *)controlView
+{
+  if (_fieldEditor == nil) {
+    _fieldEditor = [RCTFieldEditor new];
+  }
+  return _fieldEditor;
 }
 
 - (NSText *)setUpFieldEditorAttributes:(NSTextView *)fieldEditor
