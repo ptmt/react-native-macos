@@ -95,8 +95,6 @@ static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
 - (void)setReactBorderInsets:(NSEdgeInsets)reactBorderInsets
 {
   _reactBorderInsets = reactBorderInsets;
-  // We apply `borderInsets` as `backedTextInputView` layout offset.
-  self.backedTextInputView.frame = NSEdgeInsetsInsetRect(self.bounds, reactBorderInsets);
   [self updatePlaceholderFrame];
   [self setNeedsLayout:YES];
 }
