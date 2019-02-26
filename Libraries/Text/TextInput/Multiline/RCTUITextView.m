@@ -33,6 +33,8 @@
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+#pragma mark - Properties
+
 - (NSString *)accessibilityLabel
 {
   NSMutableString *accessibilityLabel = [NSMutableString new];
@@ -45,19 +47,6 @@
   return accessibilityLabel;
 }
 
-#pragma mark - Overrides
-
-- (NSString *)text
-{
-  return self.string;
-}
-
-- (void)setText:(NSString *)text
-{
-  [self setString:text];
-  [self textDidChange];
-}
-
 - (NSAttributedString *)attributedText
 {
   return self.textStorage;
@@ -67,8 +56,6 @@
 {
   [self.textStorage setAttributedString:attributedText];
 }
-
-#pragma mark - Overrides
 
 - (NSRange)selectedTextRange
 {
@@ -84,6 +71,8 @@
   }
   [super setSelectedRange:selectedTextRange];
 }
+
+#pragma mark - Overrides
 
 - (BOOL)becomeFirstResponder
 {

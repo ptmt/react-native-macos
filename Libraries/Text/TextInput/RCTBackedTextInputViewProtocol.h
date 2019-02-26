@@ -38,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 // This protocol disallows direct access to `text` property because
 // unwise usage of it can break the `attributeText` behavior.
 // Use `attributedText.string` instead.
-@property (nonatomic, copy, nullable) NSString *text NS_UNAVAILABLE;
+//@property (nonatomic, copy, nullable) NSString *text NS_UNAVAILABLE;
 
 - (void)selectAll:(nullable id)sender;
 
