@@ -140,12 +140,12 @@ static NSColor *defaultPlaceholderColor()
   _textWasPasted = YES;
 }
 
-- (void)setContentOffset:(CGPoint)contentOffset animated:(__unused BOOL)animated
-{
-  // Turning off scroll animation.
-  // This fixes the problem also known as "flaky scrolling".
-  [super setContentOffset:contentOffset animated:NO];
-}
+//- (void)setContentOffset:(CGPoint)contentOffset animated:(__unused BOOL)animated
+//{
+//  // Turning off scroll animation.
+//  // This fixes the problem also known as "flaky scrolling".
+//  [super setContentOffset:contentOffset animated:NO];
+//}
 
 #pragma mark - Layout
 

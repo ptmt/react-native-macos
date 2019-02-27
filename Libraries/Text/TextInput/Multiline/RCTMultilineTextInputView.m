@@ -30,10 +30,10 @@
     _backedTextInputView.textColor = [NSColor blackColor];
     // This line actually removes 5pt (default value) left and right padding in UITextView.
     _backedTextInputView.textContainer.lineFragmentPadding = 0;
-#if !TARGET_OS_TV
-    _backedTextInputView.scrollsToTop = NO;
-#endif
-    _backedTextInputView.scrollEnabled = YES;
+//#if !TARGET_OS_TV
+//    _backedTextInputView.scrollsToTop = NO;
+//#endif
+//    _backedTextInputView.scrollEnabled = YES;
     _backedTextInputView.textInputDelegate = self;
 
     [self addSubview:_backedTextInputView];
@@ -52,38 +52,38 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)coder)
 
 #pragma mark - NSScrollViewDelegate
 
-- (void)scrollViewDidScroll:(NSScrollView *)scrollView
-{
-  RCTDirectEventBlock onScroll = self.onScroll;
-
-  if (onScroll) {
-    CGPoint contentOffset = scrollView.contentOffset;
-    CGSize contentSize = scrollView.contentSize;
-    CGSize size = scrollView.bounds.size;
-    NSEdgeInsets contentInset = scrollView.contentInset;
-
-    onScroll(@{
-      @"contentOffset": @{
-        @"x": @(contentOffset.x),
-        @"y": @(contentOffset.y)
-      },
-      @"contentInset": @{
-        @"top": @(contentInset.top),
-        @"left": @(contentInset.left),
-        @"bottom": @(contentInset.bottom),
-        @"right": @(contentInset.right)
-      },
-      @"contentSize": @{
-        @"width": @(contentSize.width),
-        @"height": @(contentSize.height)
-      },
-      @"layoutMeasurement": @{
-        @"width": @(size.width),
-        @"height": @(size.height)
-      },
-      @"zoomScale": @(scrollView.zoomScale ?: 1),
-    });
-  }
-}
+//- (void)scrollViewDidScroll:(NSScrollView *)scrollView
+//{
+//  RCTDirectEventBlock onScroll = self.onScroll;
+//
+//  if (onScroll) {
+//    CGPoint contentOffset = scrollView.contentOffset;
+//    CGSize contentSize = scrollView.contentSize;
+//    CGSize size = scrollView.bounds.size;
+//    NSEdgeInsets contentInset = scrollView.contentInset;
+//
+//    onScroll(@{
+//      @"contentOffset": @{
+//        @"x": @(contentOffset.x),
+//        @"y": @(contentOffset.y)
+//      },
+//      @"contentInset": @{
+//        @"top": @(contentInset.top),
+//        @"left": @(contentInset.left),
+//        @"bottom": @(contentInset.bottom),
+//        @"right": @(contentInset.right)
+//      },
+//      @"contentSize": @{
+//        @"width": @(contentSize.width),
+//        @"height": @(contentSize.height)
+//      },
+//      @"layoutMeasurement": @{
+//        @"width": @(size.width),
+//        @"height": @(size.height)
+//      },
+//      @"zoomScale": @(scrollView.zoomScale ?: 1),
+//    });
+//  }
+//}
 
 @end
