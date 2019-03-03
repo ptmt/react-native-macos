@@ -73,7 +73,11 @@ static NSURL *serverRootWithHost(NSString *host)
   NSURL *url = [serverRootWithHost(host) URLByAppendingPathComponent:@"status"];
   NSURLRequest *request = [NSURLRequest requestWithURL:url];
   NSURLResponse *response;
-  NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:NULL];
+  NSError *error;
+  NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+  if (error) {
+    RCTLogWarn(@"The packager is unreachable: %@", error.localizedDescription);
+  }
   NSString *status = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
   return [status isEqualToString:@"packager-status:running"];
 }
