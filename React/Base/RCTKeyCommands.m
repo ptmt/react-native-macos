@@ -81,17 +81,21 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 
 @implementation NSWindow (RCTKeyCommands)
-- (void)keyDown:(NSEvent *)theEvent {
-  [super keyDown:theEvent];
+
+- (void)keyDown:(NSEvent *)theEvent
+{
   for (RCTKeyCommand *command in [RCTKeyCommands sharedInstance].commands) {
     if ([command.keyCommand isEqualToString:theEvent.characters] &&
         command.modifierFlags == (theEvent.modifierFlags & NSDeviceIndependentModifierFlagsMask)) {
       if (command.block) {
         command.block(theEvent);
       }
+      return;
     }
   }
- }
+
+  [super keyDown:theEvent];
+}
 
 @end
 
