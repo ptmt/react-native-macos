@@ -11,16 +11,48 @@
 
 #import <React/RCTUtils.h>
 #import <React/NSView+React.h>
+#import <objc/runtime.h>
 
 #import "RCTBackedTextInputDelegateAdapter.h"
+#import "RCTFieldEditor.h"
+#import "NSText+Editing.h"
+
+// The "field editor" is a NSTextView whose delegate is this NSTextField.
+@interface NSTextField () <NSTextViewDelegate>
+@end
+
+@interface RCTUITextFieldCell : NSTextFieldCell
+@property (nullable, assign) RCTUITextField *controlView;
+@end
+
+@interface RCTUITextField (RCTFieldEditor) <RCTFieldEditorDelegate>
+- (RCTFieldEditor *)currentEditor;
+@end
 
 @implementation RCTUITextField {
   RCTBackedTextFieldDelegateAdapter *_textInputDelegateAdapter;
 }
 
+@dynamic font, alignment; // NSTextField provides these properties
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if (self = [super initWithFrame:frame]) {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(_textDidChange)
+                                                 name:NSControlTextDidChangeNotification
+                                               object:self];
+
+    self.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    self.allowsEditingTextAttributes = NO;
+    self.drawsBackground = NO;
+    self.focusRingType = NSFocusRingTypeNone;
+    self.bordered = NO;
+    self.bezeled = NO;
+
+    self.cell.scrollable = YES;
+    self.cell.usesSingleLineMode = YES;
+    object_setClass(self.cell, RCTUITextFieldCell.class);
 
     _textInputDelegateAdapter = [[RCTBackedTextFieldDelegateAdapter alloc] initWithTextField:self];
   }
@@ -38,92 +70,11 @@
   _textWasPasted = NO;
 }
 
-#pragma mark - Properties
-
-- (void)setTextContainerInset:(NSEdgeInsets)textContainerInset
-{
-  _textContainerInset = textContainerInset;
-  [self setNeedsLayout:YES];
-}
-
-- (void)setPlaceholder:(NSString *)placeholder
-{
-  if (placeholder != nil && ![_placeholder isEqual:placeholder]) {
-    _placeholder = placeholder;
-    [self updatePlaceholder];
-  }
-}
-
-- (void)setPlaceholderColor:(NSColor *)placeholderColor
-{
-  _placeholderColor = placeholderColor;
-  [self _updatePlaceholder];
-}
-
-- (void)_updatePlaceholder
-{
-  if (self.placeholder == nil) {
-    return;
-  }
-
-  NSMutableDictionary *attributes = [NSMutableDictionary new];
-  if (_placeholderColor) {
-    [attributes setObject:_placeholderColor forKey:NSForegroundColorAttributeName];
-  }
-  
-  
-
-  self.placeholderAttributedString = [[NSAttributedString alloc] initWithString:self.placeholder
-                                                               attributes:attributes];
-}
-
-- (BOOL)isEditable
-{
-  return self.isEnabled;
-}
-
-- (void)setEditable:(BOOL)editable
-{
-  self.enabled = editable;
-}
-
-#pragma mark - Caret Manipulation
-
-//- (CGRect)caretRectForPosition:(UITextPosition *)position
-//{
-//  if (_caretHidden) {
-//    return CGRectZero;
-//  }
-//
-//  return [super caretRectForPosition:position];
-//}
-
-#pragma mark - Positioning Overrides
-
-static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
-  rect.origin.x    += insets.left;
-  rect.origin.y    += insets.top;
-  rect.size.width  -= (insets.left + insets.right);
-  rect.size.height -= (insets.top  + insets.bottom);
-  return rect;
-}
-
-//- (CGRect)textRectForBounds:(CGRect)bounds
-//{
-//  return NSEdgeInsetsInsetRect([super textRectForBounds:bounds], _textContainerInset);
-//}
-
-//- (CGRect)editingRectForBounds:(CGRect)bounds
-//{
-//  return [self textRectForBounds:bounds];
-//}
-
 #pragma mark - Overrides
 
-- (void)setSelectedTextRange:(NSRange)selectedTextRange
+- (NSRange)selectedTextRange
 {
-  [[super currentEditor] setSelectedRange:selectedTextRange];
-  [_textInputDelegateAdapter selectedTextRangeWasSet];
+  return self.currentEditor.selectedRange;
 }
 
 - (void)setSelectedTextRange:(NSRange)selectedTextRange notifyDelegate:(BOOL)notifyDelegate
@@ -134,40 +85,123 @@ static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
     [_textInputDelegateAdapter skipNextTextInputDidChangeSelectionEventWithTextRange:selectedTextRange];
   }
 
-  [[super currentEditor] setSelectedRange:selectedTextRange];
+  self.currentEditor.selectedRange = selectedTextRange;
+  [_textInputDelegateAdapter selectedTextRangeWasSet];
 }
 
-- (void)paste:(id)sender
+- (void)textViewDidChangeSelection:(NSNotification *)notification
 {
-  [[super currentEditor] paste:sender];
+  [super textViewDidChangeSelection:notification];
+  [_textInputDelegateAdapter selectedTextRangeWasSet];
+}
+
+- (BOOL)textView:(NSTextView *)textView shouldChangeTextInRange:(NSRange)range replacementString:(NSString *)string
+{
+  if ([super textView:textView shouldChangeTextInRange:range replacementString:string]) {
+    return [_textInputDelegateAdapter shouldChangeTextInRange:range replacementText:string];
+  }
+  return NO;
+}
+
+- (void)textDidEndEditing:(NSNotification *)notification
+{
+  [super textDidEndEditing:notification];
+  if (self.currentEditor == nil) {
+    [_textInputDelegateAdapter textFieldDidBlur];
+  }
+}
+
+- (BOOL)becomeFirstResponder
+{
+  if ([super becomeFirstResponder]) {
+    // Move the cursor to the end of the current text. Note: Mouse clicks override this selection (which is intended).
+    self.currentEditor.selectedRange = NSMakeRange(self.stringValue.length, 0);
+
+    self.currentEditor.textContainerInset = (NSSize){_paddingInsets.left, _paddingInsets.top};
+    [_textInputDelegateAdapter performSelector:@selector(textFieldDidFocus) withObject:nil afterDelay:0.0];
+    return YES;
+  }
+  return NO;
+}
+
+#pragma mark - RCTBackedTextInputViewProtocol
+
+- (NSAttributedString *)attributedText
+{
+  return self.attributedStringValue;
+}
+
+- (void)setAttributedText:(NSAttributedString *)attributedText
+{
+  self.attributedStringValue = attributedText;
+}
+
+- (void)setPaddingInsets:(NSEdgeInsets)paddingInsets
+{
+  // Account for strange rendering offset. (NSTextView doesn't have this issue)
+  paddingInsets.top -= 1;
+  paddingInsets.left -= 2;
+
+  _paddingInsets = paddingInsets;
+}
+
+- (void)selectAll:(nullable id)sender
+{
+  [self.currentEditor selectAll:sender];
+}
+
+#pragma mark - RCTFieldEditorDelegate
+
+- (void)fieldEditor:(RCTFieldEditor *)editor didPaste:(NSString *)text
+{
   _textWasPasted = YES;
 }
 
-#pragma mark - Layout
-
-- (CGSize)contentSize
+- (void)fieldEditorDidReturn:(RCTFieldEditor *)editor
 {
-  // Returning size DOES contain `textContainerInset` (aka `padding`).
-  return self.intrinsicContentSize;
+  if ([self.textInputDelegate textInputShouldReturn]) {
+    [self.textInputDelegate textInputDidReturn];
+    [self.currentEditor endEditing:NO];
+  }
 }
 
-- (CGSize)intrinsicContentSize
+@end
+
+@implementation RCTUITextFieldCell
 {
-  // Note: `placeholder` defines intrinsic size for `<TextInput>`.
-  NSString *text = self.placeholder ?: @"";
-  CGSize size = [text sizeWithAttributes:@{NSFontAttributeName: self.font}];
-  size = CGSizeMake(RCTCeilPixelValue(size.width), RCTCeilPixelValue(size.height));
-  size.width += _textContainerInset.left + _textContainerInset.right;
-  size.height += _textContainerInset.top + _textContainerInset.bottom;
-  // Returning size DOES contain `textContainerInset` (aka `padding`).
-  return size;
+  RCTFieldEditor *_fieldEditor;
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
+@dynamic controlView;
+
+static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
+  rect.origin.x    += insets.left;
+  rect.origin.y    += insets.top;
+  rect.size.width  -= (insets.left + insets.right);
+  rect.size.height -= (insets.top  + insets.bottom);
+  return rect;
+}
+
+- (NSRect)drawingRectForBounds:(NSRect)bounds
 {
-  // All size values here contain `textContainerInset` (aka `padding`).
-  CGSize intrinsicSize = self.intrinsicContentSize;
-  return CGSizeMake(MIN(size.width, intrinsicSize.width), MIN(size.height, intrinsicSize.height));
+  NSRect rect = [super drawingRectForBounds:bounds];
+  return NSEdgeInsetsInsetRect(rect, self.controlView.paddingInsets);
+}
+
+- (NSTextView *)fieldEditorForView:(NSView *)controlView
+{
+  if (_fieldEditor == nil) {
+    _fieldEditor = [RCTFieldEditor new];
+  }
+  return _fieldEditor;
+}
+
+- (NSText *)setUpFieldEditorAttributes:(NSTextView *)fieldEditor
+{
+  fieldEditor.font = self.font;
+  fieldEditor.textColor = self.textColor;
+  fieldEditor.backgroundColor = NSColor.clearColor;
+  return fieldEditor;
 }
 
 @end

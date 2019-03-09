@@ -114,4 +114,8 @@
  */
 @property (nonatomic, assign) BOOL clipsToBounds;
 
+- (NSView *)reactHitTest:(NSPoint)point;
+
++ (void)performWithoutAnimation:(void (^)(void))actionsWithoutAnimation;
+
 @end

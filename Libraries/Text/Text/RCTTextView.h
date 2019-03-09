@@ -9,14 +9,16 @@
 
 #import <AppKit/AppKit.h>
 
-CGRect UIEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets);
+NS_ASSUME_NONNULL_BEGIN
 
 @interface RCTTextView : NSView
 
-@property (nonatomic, assign) NSEdgeInsets contentInset;
-@property (nonatomic, strong) NSTextStorage *textStorage;
-@property (nonatomic, assign) CGRect textFrame;
 @property (nonatomic, assign) BOOL selectable;
 
-@property (nonatomic, assign) BOOL respondsToLiveResizing;
+- (void)setTextStorage:(NSTextStorage *)textStorage
+          contentFrame:(CGRect)contentFrame
+       descendantViews:(NSArray<NSView *> *)descendantViews;
+
 @end
+
+NS_ASSUME_NONNULL_END

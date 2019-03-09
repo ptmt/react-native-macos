@@ -8,6 +8,7 @@
  *
  * @providesModule TextInput
  * @flow
+ * @format
  */
 'use strict';
 
@@ -21,7 +22,6 @@ const createReactClass = require('create-react-class');
 const PropTypes = require('prop-types');
 const NativeModules = require('NativeModules');
 const ReactNative = require('ReactNative');
-const StyleSheet = require('StyleSheet');
 const Text = require('Text');
 const TextInputState = require('TextInputState');
 /* $FlowFixMe(>=0.54.0 site=react_native_oss) This comment suppresses an error
@@ -31,6 +31,7 @@ const TimerMixin = require('react-timer-mixin');
 const TouchableWithoutFeedback = require('TouchableWithoutFeedback');
 const UIManager = require('UIManager');
 const ViewPropTypes = require('ViewPropTypes');
+const {ViewContextTypes} = require('ViewContext');
 
 /* $FlowFixMe(>=0.54.0 site=react_native_oss) This comment suppresses an error
  * found when Flow v0.54 was deployed. To see the error delete this comment and
@@ -48,12 +49,19 @@ const onlyMultiline = {
   children: true,
 };
 
+import type {ViewChildContext} from 'ViewContext';
+
 if (Platform.OS === 'android') {
   var AndroidTextInput = requireNativeComponent('AndroidTextInput', null);
 } else if (Platform.OS === 'ios' || Platform.OS === 'macos') {
-  var RCTMultilineTextInputView = requireNativeComponent('RCTMultilineTextInputView', null);
-  var RCTSinglelineTextInputView = requireNativeComponent('RCTTextField', null);
-  var RCTSecureTextField = requireNativeComponent('RCTSecureTextField', null);
+  var RCTMultilineTextInputView = requireNativeComponent(
+    'RCTMultilineTextInputView',
+    null,
+  );
+  var RCTSinglelineTextInputView = requireNativeComponent(
+    'RCTSinglelineTextInputView',
+    null,
+  );
 }
 
 type Event = Object;
@@ -389,8 +397,8 @@ const TextInput = createReactClass({
      */
     password: PropTypes.bool,
     /**
-    * The highlight and cursor color of the text input.
-    */
+     * The highlight and cursor color of the text input.
+     */
     selectionColor: ColorPropType,
     /**
      * An instance of `DocumentSelectionState`, this is some state that is responsible for
@@ -551,11 +559,6 @@ const TextInput = createReactClass({
     );
   },
 
-  contextTypes: {
-    onFocusRequested: PropTypes.func,
-    focusEmitter: PropTypes.instanceOf(EventEmitter),
-  },
-
   _inputRef: (undefined: any),
   _focusSubscription: (undefined: ?Function),
   _lastNativeText: (undefined: ?string),
@@ -577,7 +580,7 @@ const TextInput = createReactClass({
         } else if (this.isFocused()) {
           this.blur();
         }
-      }
+      },
     );
     if (this.props.autoFocus) {
       this.context.onFocusRequested(this);
@@ -591,24 +594,32 @@ const TextInput = createReactClass({
     }
   },
 
-  getChildContext: function(): Object {
-    return { isInAParentText: true };
+  getChildContext(): ViewChildContext {
+    return {
+      isInAParentText: true,
+    };
   },
 
-  childContextTypes: {
-    isInAParentText: PropTypes.bool,
+  childContextTypes: ViewContextTypes,
+
+  contextTypes: {
+    ...ViewContextTypes,
+    onFocusRequested: PropTypes.func,
+    focusEmitter: PropTypes.instanceOf(EventEmitter),
   },
 
   /**
    * Removes all text from the `TextInput`.
    */
   clear: function() {
-    this.setNativeProps({ text: '' });
+    this.setNativeProps({text: ''});
   },
 
   render: function() {
     if (Platform.OS === 'ios') {
-      return this._renderIOS();
+      return UIManager.RCTVirtualText
+        ? this._renderIOS()
+        : this._renderIOSLegacy();
     } else if (Platform.OS === 'macos') {
       return this._renderIOS();
     } else if (Platform.OS === 'android') {
@@ -620,15 +631,15 @@ const TextInput = createReactClass({
     return typeof this.props.value === 'string'
       ? this.props.value
       : typeof this.props.defaultValue === 'string'
-          ? this.props.defaultValue
-          : '';
+        ? this.props.defaultValue
+        : '';
   },
 
   _setNativeRef: function(ref: any) {
     this._inputRef = ref;
   },
 
-  _renderIOS: function() {
+  _renderIOSLegacy: function() {
     var textContainer;
 
     var props = Object.assign({}, this.props);
@@ -648,15 +659,14 @@ const TextInput = createReactClass({
             const error = new Error(
               'TextInput prop `' +
                 propKey +
-                '` is only supported with multiline.'
+                '` is only supported with multiline.',
             );
             warning(false, '%s', error.stack);
           }
         }
       }
-      var TextField = props.password ? RCTSecureTextField : RCTSinglelineTextInputView;
       textContainer = (
-        <TextField
+        <RCTSinglelineTextInputView
           ref={this._setNativeRef}
           {...props}
           style={[{ minWidth: 100, height: NativeModules.TextFieldManager.ComponentHeight }, props.styles]}
@@ -674,15 +684,18 @@ const TextInput = createReactClass({
       React.Children.forEach(children, () => ++childCount);
       invariant(
         !(props.value && childCount),
-        'Cannot specify both value and children.'
+        'Cannot specify both value and children.',
       );
       if (childCount >= 1) {
-        children = <Text style={props.style} allowFontScaling={props.allowFontScaling}>{children}</Text>;
+        children = (
+          <Text style={props.style} allowFontScaling={props.allowFontScaling}>
+            {children}
+          </Text>
+        );
       }
       if (props.inputView) {
         children = [children, props.inputView];
       }
-      props.style.unshift(styles.multilineInput);
       textContainer = (
         <RCTMultilineTextInputView
           ref={this._setNativeRef}
@@ -717,6 +730,52 @@ const TextInput = createReactClass({
     );
   },
 
+  _renderIOS: function() {
+    var props = Object.assign({}, this.props);
+    props.style = [this.props.style];
+
+    if (props.selection && props.selection.end == null) {
+      props.selection = {
+        start: props.selection.start,
+        end: props.selection.start,
+      };
+    }
+
+    const RCTTextInputView = props.multiline
+      ? RCTMultilineTextInputView
+      : RCTSinglelineTextInputView;
+
+    const textContainer = (
+      <RCTTextInputView
+        ref={this._setNativeRef}
+        {...props}
+        onFocus={this._onFocus}
+        onBlur={this._onBlur}
+        onChange={this._onChange}
+        onContentSizeChange={this.props.onContentSizeChange}
+        onSelectionChange={this._onSelectionChange}
+        onTextInput={this._onTextInput}
+        onSelectionChangeShouldSetResponder={emptyFunction.thatReturnsTrue}
+        text={this._getText()}
+        onScroll={this._onScroll}
+      />
+    );
+
+    return (
+      <TouchableWithoutFeedback
+        onLayout={props.onLayout}
+        onPress={this._onPress}
+        rejectResponderTermination={true}
+        accessible={props.accessible}
+        accessibilityLabel={props.accessibilityLabel}
+        accessibilityTraits={props.accessibilityTraits}
+        nativeID={this.props.nativeID}
+        testID={props.testID}>
+        {textContainer}
+      </TouchableWithoutFeedback>
+    );
+  },
+
   _renderAndroid: function() {
     const props = Object.assign({}, this.props);
     props.style = [this.props.style];
@@ -732,7 +791,7 @@ const TextInput = createReactClass({
     React.Children.forEach(children, () => ++childCount);
     invariant(
       !(this.props.value && childCount),
-      'Cannot specify both value and children.'
+      'Cannot specify both value and children.',
     );
     if (childCount > 1) {
       children = <Text>{children}</Text>;
@@ -843,7 +902,7 @@ const TextInput = createReactClass({
 
     // Selection is also a controlled prop, if the native value doesn't match
     // JS, update to the JS value.
-    const { selection } = this.props;
+    const {selection} = this.props;
     if (
       this._lastNativeSelection &&
       selection &&
@@ -875,15 +934,6 @@ const TextInput = createReactClass({
 
   _onScroll: function(event: Event) {
     this.props.onScroll && this.props.onScroll(event);
-  },
-});
-
-var styles = StyleSheet.create({
-  multilineInput: {
-    // This default top inset makes RCTMultilineTextInputView seem as close as possible
-    // to single-line RCTSinglelineTextInputView defaults, using the system defaults
-    // of font size 17 and a height of 31 points.
-    paddingTop: 5,
   },
 });
 

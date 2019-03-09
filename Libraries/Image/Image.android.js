@@ -18,23 +18,19 @@ var NativeModules = require('NativeModules');
 var React = require('React');
 var PropTypes = require('prop-types');
 var ReactNativeViewAttributes = require('ReactNativeViewAttributes');
-var Set = require('Set');
 var StyleSheet = require('StyleSheet');
 var StyleSheetPropType = require('StyleSheetPropType');
-var View = require('View');
 var ViewPropTypes = require('ViewPropTypes');
-var ViewStylePropTypes = require('ViewStylePropTypes');
 
 var createReactClass = require('create-react-class');
-var filterObject = require('fbjs/lib/filterObject');
 var flattenStyle = require('flattenStyle');
 var merge = require('merge');
 var requireNativeComponent = require('requireNativeComponent');
 var resolveAssetSource = require('resolveAssetSource');
 
-var {
-  ImageLoader,
-} = NativeModules;
+const {ViewContextTypes} = require('ViewContext');
+
+var {ImageLoader} = NativeModules;
 
 let _requestId = 1;
 function generateRequestId() {
@@ -63,19 +59,6 @@ function generateRequestId() {
  *
  * More example code in ImageExample.js
  */
-
-var ImageViewAttributes = merge(ReactNativeViewAttributes.UIView, {
-  src: true,
-  loadingIndicatorSrc: true,
-  resizeMethod: true,
-  resizeMode: true,
-  progressiveRenderingEnabled: true,
-  fadeDuration: true,
-  shouldNotifyLoadEvents: true,
-});
-
-var ViewStyleKeys = new Set(Object.keys(ViewStylePropTypes));
-var ImageSpecificStyleKeys = new Set(Object.keys(ImageStylePropTypes).filter(x => !ViewStyleKeys.has(x)));
 
 var Image = createReactClass({
   displayName: 'Image',
@@ -254,9 +237,7 @@ var Image = createReactClass({
     validAttributes: ReactNativeViewAttributes.RCTView,
   },
 
-  contextTypes: {
-    isInAParentText: PropTypes.bool
-  },
+  contextTypes: ViewContextTypes,
 
   render: function() {
     const source = resolveAssetSource(this.props.source);

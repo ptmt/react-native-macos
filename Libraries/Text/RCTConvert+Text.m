@@ -11,20 +11,20 @@
 
 @implementation RCTConvert (Text)
 
-+ (UITextAutocorrectionType)UITextAutocorrectionType:(id)json
-{
-  return
-    json == nil ? UITextAutocorrectionTypeDefault :
-    [RCTConvert BOOL:json] ? UITextAutocorrectionTypeYes :
-    UITextAutocorrectionTypeNo;
-}
-
-+ (UITextSpellCheckingType)UITextSpellCheckingType:(id)json
-{
-  return
-    json == nil ? UITextSpellCheckingTypeDefault :
-    [RCTConvert BOOL:json] ? UITextSpellCheckingTypeYes :
-    UITextSpellCheckingTypeNo;
-}
+//+ (UITextAutocorrectionType)UITextAutocorrectionType:(id)json
+//{
+//  return
+//    json == nil ? UITextAutocorrectionTypeDefault :
+//    [RCTConvert BOOL:json] ? UITextAutocorrectionTypeYes :
+//    UITextAutocorrectionTypeNo;
+//}
+//
+//+ (UITextSpellCheckingType)UITextSpellCheckingType:(id)json
+//{
+//  return
+//    json == nil ? UITextSpellCheckingTypeDefault :
+//    [RCTConvert BOOL:json] ? UITextSpellCheckingTypeYes :
+//    UITextSpellCheckingTypeNo;
+//}
 
 @end

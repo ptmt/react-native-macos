@@ -11,25 +11,37 @@
 
 @protocol RCTBackedTextInputDelegate;
 
-@protocol RCTBackedTextInputViewProtocol <NSTextInput>
+NS_ASSUME_NONNULL_BEGIN
 
-@property (nonatomic, copy, nullable) NSString *text;
+@protocol RCTBackedTextInputViewProtocol
+
 @property (nonatomic, strong, nullable) NSColor *textColor;
-@property (nonatomic, copy, nullable) NSString *placeholder;
-@property (nonatomic, strong, nullable) NSColor *placeholderColor;
-@property (nonatomic, assign, readonly) BOOL textWasPasted;
 @property (nonatomic, strong, nullable) NSFont *font;
-@property (nonatomic, assign) NSEdgeInsets textContainerInset;
-@property (nonatomic, strong, nullable) NSView *inputAccessoryView;
+@property (nonatomic, copy, nullable) NSAttributedString *attributedText;
+// @property (nonatomic, copy, nullable) NSString *placeholder;
+// @property (nonatomic, strong, nullable) NSColor *placeholderColor;
+@property (nonatomic, assign) NSTextAlignment alignment;
+@property (nonatomic, assign, readonly) BOOL textWasPasted;
+@property (nonatomic, assign) NSEdgeInsets paddingInsets;
+//@property (nonatomic, strong, nullable) NSView *inputAccessoryView;
 @property (nonatomic, weak, nullable) id<RCTBackedTextInputDelegate> textInputDelegate;
-@property (nonatomic, readonly) CGSize contentSize;
+//@property (nonatomic, readonly) CGSize contentSize;
 
 // This protocol disallows direct access to `selectedTextRange` property because
 // unwise usage of it can break the `delegate` behavior. So, we always have to
 // explicitly specify should `delegate` be notified about the change or not.
 // If the change was initiated programmatically, we must NOT notify the delegate.
 // If the change was a result of user actions (like typing or touches), we MUST notify the delegate.
-- (void)setSelectedTextRange:(NSRange)selectedTextRange NS_UNAVAILABLE;
+@property (nonatomic, readonly) NSRange selectedTextRange;
 - (void)setSelectedTextRange:(NSRange)selectedTextRange notifyDelegate:(BOOL)notifyDelegate;
 
+// This protocol disallows direct access to `text` property because
+// unwise usage of it can break the `attributeText` behavior.
+// Use `attributedText.string` instead.
+//@property (nonatomic, copy, nullable) NSString *text NS_UNAVAILABLE;
+
+- (void)selectAll:(nullable id)sender;
+
 @end
+
+NS_ASSUME_NONNULL_END

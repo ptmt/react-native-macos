@@ -9,7 +9,7 @@
 
 #import "NSView+React.h"
 #import <AppKit/AppKit.h>
-#import <Foundation/Foundation.h>
+#import <QuartzCore/CoreAnimation.h>
 
 #import <objc/runtime.h>
 
@@ -293,6 +293,28 @@ static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
 - (NSView *)reactAccessibilityElement
 {
   return self;
+}
+
+#pragma mark - Interaction
+
+- (NSView *)reactHitTest:(NSPoint)point
+{
+  NSView *view = [self hitTest:point];
+  while (view && !view.reactTag) {
+    view = view.superview;
+  }
+  return view;
+}
+
+#pragma mark - UIKit parity
+
++ (void)performWithoutAnimation:(void (^)(void))actionsWithoutAnimation
+{
+  [CATransaction begin];
+  [CATransaction setValue:(id)kCFBooleanTrue
+                   forKey:kCATransactionDisableActions];
+  actionsWithoutAnimation();
+  [CATransaction commit];
 }
 
 @end

@@ -9,24 +9,11 @@
 
 #import "RCTMultilineTextInputViewManager.h"
 
-#import <React/RCTBridge.h>
-#import <React/RCTConvert.h>
-#import <React/RCTFont.h>
-#import <React/RCTShadowView+Layout.h>
-#import <React/RCTShadowView.h>
-
-#import "RCTConvert+Text.h"
-#import "RCTMultilineTextInputShadowView.h"
 #import "RCTMultilineTextInputView.h"
 
 @implementation RCTMultilineTextInputViewManager
 
 RCT_EXPORT_MODULE()
-
-- (RCTShadowView *)shadowView
-{
-  return [RCTMultilineTextInputShadowView new];
-}
 
 - (NSView *)view
 {
@@ -35,14 +22,10 @@ RCT_EXPORT_MODULE()
 
 #pragma mark - Multiline <TextInput> (aka TextView) specific properties
 
-RCT_EXPORT_VIEW_PROPERTY(onChange, RCTBubblingEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onContentSizeChange, RCTBubblingEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onSelectionChange, RCTDirectEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onScroll, RCTDirectEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onTextInput, RCTDirectEventBlock)
+//#if !TARGET_OS_TV
+//RCT_REMAP_VIEW_PROPERTY(dataDetectorTypes, backedTextInputView.dataDetectorTypes, UIDataDetectorTypes)
+//#endif
 
-#if !TARGET_OS_TV
-RCT_REMAP_VIEW_PROPERTY(dataDetectorTypes, backedTextInputView.dataDetectorTypes, UIDataDetectorTypes)
-#endif
+RCT_EXPORT_VIEW_PROPERTY(onScroll, RCTDirectEventBlock)
 
 @end

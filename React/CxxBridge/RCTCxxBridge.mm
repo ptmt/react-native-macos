@@ -156,8 +156,8 @@ struct RCTInstanceCallback : public InstanceCallback {
 
 @implementation RCTCxxBridge
 {
-  BOOL _wasBatchActive;
   BOOL _didInvalidate;
+  BOOL _moduleRegistryCreated;
 
   NSMutableArray<RCTPendingCall> *_pendingCalls;
   std::atomic<NSInteger> _pendingCount;
@@ -172,6 +172,7 @@ struct RCTInstanceCallback : public InstanceCallback {
   // JS thread management
   NSThread *_jsThread;
   std::shared_ptr<RCTMessageThread> _jsMessageThread;
+  std::mutex _moduleRegistryLock;
 
   // This is uniquely owned, but weak_ptr is used.
   std::shared_ptr<Instance> _reactInstance;
@@ -191,11 +192,12 @@ struct RCTInstanceCallback : public InstanceCallback {
 
 - (JSGlobalContextRef)jsContextRef
 {
-  return (JSGlobalContextRef)(self->_reactInstance ? self->_reactInstance->getJavaScriptContext() : nullptr);
+  return (JSGlobalContextRef)(_reactInstance ? _reactInstance->getJavaScriptContext() : nullptr);
 }
 
-- (BOOL)isInspectable {
-  return self->_reactInstance->isInspectable();
+- (BOOL)isInspectable
+{
+  return _reactInstance ? _reactInstance->isInspectable() : NO;
 }
 
 - (instancetype)initWithParentBridge:(RCTBridge *)bridge
@@ -218,9 +220,9 @@ struct RCTInstanceCallback : public InstanceCallback {
      */
     _valid = YES;
     _loading = YES;
+    _moduleRegistryCreated = NO;
     _pendingCalls = [NSMutableArray new];
     _displayLink = [RCTDisplayLink new];
-
     _moduleDataByName = [NSMutableDictionary new];
     _moduleClassesByID = [NSMutableArray new];
     _moduleDataByID = [NSMutableArray new];
@@ -309,7 +311,7 @@ struct RCTInstanceCallback : public InstanceCallback {
 
   [self registerExtraModules];
   // Initialize all native modules that cannot be loaded lazily
-  [self _initModules:RCTGetModuleClasses() withDispatchGroup:prepareBridge lazilyDiscovered:NO];
+  (void)[self _initializeModules:RCTGetModuleClasses() withDispatchGroup:prepareBridge lazilyDiscovered:NO];
 
   [_performanceLogger markStopForTag:RCTPLNativeModuleInit];
 
@@ -455,7 +457,7 @@ struct RCTInstanceCallback : public InstanceCallback {
   return _moduleDataByName[RCTBridgeModuleNameForClass(moduleClass)].hasInstance;
 }
 
-- (std::shared_ptr<ModuleRegistry>)_buildModuleRegistry
+- (std::shared_ptr<ModuleRegistry>)_buildModuleRegistryUnlocked
 {
   if (!self.valid) {
     return {};
@@ -502,12 +504,7 @@ struct RCTInstanceCallback : public InstanceCallback {
     executorFactory = std::make_shared<GetDescAdapter>(self, executorFactory);
 #endif
 
-    // This is async, but any calls into JS are blocked by the m_syncReady CV in Instance
-    _reactInstance->initializeBridge(
-      std::make_unique<RCTInstanceCallback>(self),
-      executorFactory,
-      _jsMessageThread,
-      [self _buildModuleRegistry]);
+    [self _initializeBridgeLocked:executorFactory];
 
 #if RCT_PROFILE
     if (RCTProfileIsProfiling()) {
@@ -521,6 +518,19 @@ struct RCTInstanceCallback : public InstanceCallback {
   RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"");
 }
 
+- (void)_initializeBridgeLocked:(std::shared_ptr<JSExecutorFactory>)executorFactory
+{
+  std::lock_guard<std::mutex> guard(_moduleRegistryLock);
+
+  // This is async, but any calls into JS are blocked by the m_syncReady CV in Instance
+  _reactInstance->initializeBridge(
+                                   std::make_unique<RCTInstanceCallback>(self),
+                                   executorFactory,
+                                   _jsMessageThread,
+                                   [self _buildModuleRegistryUnlocked]);
+  _moduleRegistryCreated = YES;
+}
+
 - (NSArray *)configForModuleName:(NSString *)moduleName
 {
   return _moduleDataByName[moduleName].config;
@@ -531,8 +541,9 @@ struct RCTInstanceCallback : public InstanceCallback {
   RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways,
                           @"-[RCTCxxBridge initModulesWithDispatchGroup:] autoexported moduleData", nil);
 
-  NSMutableArray<RCTModuleData *> *moduleDataByID = [NSMutableArray arrayWithCapacity:moduleClasses.count];
-  for (Class moduleClass in moduleClasses) {
+  NSArray *moduleClassesCopy = [moduleClasses copy];
+  NSMutableArray<RCTModuleData *> *moduleDataByID = [NSMutableArray arrayWithCapacity:moduleClassesCopy.count];
+  for (Class moduleClass in moduleClassesCopy) {
     NSString *moduleName = RCTBridgeModuleNameForClass(moduleClass);
 
     // Don't initialize the old executor in the new bridge.
@@ -622,9 +633,9 @@ struct RCTInstanceCallback : public InstanceCallback {
   RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"");
 }
 
-- (void)_initModules:(NSArray<id<RCTBridgeModule>> *)modules
-   withDispatchGroup:(dispatch_group_t)dispatchGroup
-    lazilyDiscovered:(BOOL)lazilyDiscovered
+- (NSArray<RCTModuleData *> *)_initializeModules:(NSArray<id<RCTBridgeModule>> *)modules
+                               withDispatchGroup:(dispatch_group_t)dispatchGroup
+                                lazilyDiscovered:(BOOL)lazilyDiscovered
 {
   RCTAssert(!(RCTIsMainQueue() && lazilyDiscovered), @"Lazy discovery can only happen off the Main Queue");
 
@@ -675,11 +686,19 @@ struct RCTInstanceCallback : public InstanceCallback {
     RCTProfileHookModules(self);
   }
 #endif
+  return moduleDataById;
 }
 
 - (void)registerAdditionalModuleClasses:(NSArray<Class> *)modules
 {
-  [self _initModules:modules withDispatchGroup:NULL lazilyDiscovered:YES];
+  std::lock_guard<std::mutex> guard(_moduleRegistryLock);
+  if (_moduleRegistryCreated) {
+    NSArray<RCTModuleData *> *newModules = [self _initializeModules:modules withDispatchGroup:NULL lazilyDiscovered:YES];
+    assert(_reactInstance); // at this point you must have reactInstance as you already called reactInstance->initialzeBridge
+    _reactInstance->getModuleRegistry().registerModules(createNativeModules(newModules, self, _reactInstance));
+  } else {
+    [self registerModulesForClasses:modules];
+  }
 }
 
 - (void)_prepareModulesWithDispatchGroup:(dispatch_group_t)dispatchGroup
@@ -817,6 +836,7 @@ struct RCTInstanceCallback : public InstanceCallback {
 
   _loading = NO;
   _valid = NO;
+  _moduleRegistryCreated = NO;
 
   dispatch_async(dispatch_get_main_queue(), ^{
     if (self->_jsMessageThread) {
@@ -910,6 +930,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithBundleURL:(__unused NSURL *)bundleUR
   _loading = NO;
   _valid = NO;
   _didInvalidate = YES;
+  _moduleRegistryCreated = NO;
 
   if ([RCTBridge currentBridge] == self) {
     [RCTBridge setCurrentBridge:nil];
@@ -930,20 +951,17 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithBundleURL:(__unused NSURL *)bundleUR
     // wrappers) or we may have invalid pointers still in flight.
     dispatch_group_t moduleInvalidation = dispatch_group_create();
     for (RCTModuleData *moduleData in self->_moduleDataByID) {
+      [moduleData invalidate];
+
       // Be careful when grabbing an instance here, we don't want to instantiate
       // any modules just to invalidate them.
-      if (![moduleData hasInstance]) {
-        continue;
-      }
-
-      if ([moduleData.instance respondsToSelector:@selector(invalidate)]) {
+      if (moduleData.hasInstance && [moduleData.instance respondsToSelector:@selector(invalidate)]) {
         dispatch_group_enter(moduleInvalidation);
         [self dispatchBlock:^{
           [(id<RCTInvalidating>)moduleData.instance invalidate];
           dispatch_group_leave(moduleInvalidation);
         } queue:moduleData.methodQueue];
       }
-      [moduleData invalidate];
     }
 
     if (dispatch_group_wait(moduleInvalidation, dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC))) {
@@ -1286,7 +1304,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithBundleURL:(__unused NSURL *)bundleUR
 
 - (BOOL)isBatchActive
 {
-  return _wasBatchActive;
+  return _reactInstance ? _reactInstance->isBatchActive() : NO;
 }
 
 @end

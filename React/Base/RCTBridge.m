@@ -98,6 +98,9 @@ void RCTVerifyAllModulesExported(NSArray *extraModules)
 
   for (unsigned int i = 0; i < classCount; i++) {
     Class cls = classes[i];
+    if (strncmp(class_getName(cls), "RCTCxxModule", strlen("RCTCxxModule")) == 0) {
+      continue;
+    }
     Class superclass = cls;
     while (superclass) {
       if (class_conformsToProtocol(superclass, @protocol(RCTBridgeModule))) {
@@ -235,7 +238,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 - (NSArray *)modulesConformingToProtocol:(Protocol *)protocol
 {
   NSMutableArray *modules = [NSMutableArray new];
-  for (Class moduleClass in self.moduleClasses) {
+  for (Class moduleClass in [self.moduleClasses copy]) {
     if ([moduleClass conformsToProtocol:protocol]) {
       id module = [self moduleForClass:moduleClass];
       if (module) {

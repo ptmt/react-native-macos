@@ -73,19 +73,11 @@ RCT_EXPORT_MODULE()
     @"touchEnd",
 
     // Mouse events
-    @"mouseEnter",
-    @"mouseLeave",
+    @"mouseMove",
+    @"mouseOver",
+    @"mouseOut",
+    @"contextMenu",
   ];
-}
-
-- (RCTViewManagerUIBlock)uiBlockToAmendWithShadowView:(__unused RCTShadowView *)shadowView
-{
-  return nil;
-}
-
-- (RCTViewManagerUIBlock)uiBlockToAmendWithShadowViewRegistry:(__unused NSDictionary<NSNumber *, RCTShadowView *> *)shadowViewRegistry
-{
-  return nil;
 }
 
 - (void)checkLayerExists:(NSView *)view

@@ -12,23 +12,31 @@
 #import "RCTBackedTextInputViewProtocol.h"
 #import "RCTBackedTextInputDelegate.h"
 
-#pragma mark - RCTBackedTextFieldDelegateAdapter (for UITextField)
+NS_ASSUME_NONNULL_BEGIN
+
+#pragma mark - RCTBackedTextFieldDelegateAdapter (for NSTextField)
 
 @interface RCTBackedTextFieldDelegateAdapter : NSObject
 
-- (instancetype)initWithTextField:(NSTextField<RCTBackedTextInputViewProtocol> *)backedTextInput;
+- (instancetype)initWithTextField:(NSTextField<RCTBackedTextInputViewProtocol> *)backedTextInputView;
 
-- (void)skipNextTextInputDidChangeSelectionEventWithTextRange:(NSRange *)textRange;
+- (void)skipNextTextInputDidChangeSelectionEventWithTextRange:(NSRange)textRange;
 - (void)selectedTextRangeWasSet;
+- (void)textFieldDidFocus;
+- (void)textFieldDidBlur;
+- (BOOL)shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text;
 
 @end
 
-#pragma mark - RCTBackedTextViewDelegateAdapter (for UITextView)
+#pragma mark - RCTBackedTextViewDelegateAdapter (for NSTextView)
 
 @interface RCTBackedTextViewDelegateAdapter : NSObject
 
-- (instancetype)initWithTextView:(NSTextView<RCTBackedTextInputViewProtocol> *)backedTextInput;
+- (instancetype)initWithTextView:(NSTextView<RCTBackedTextInputViewProtocol> *)backedTextInputView;
 
-- (void)skipNextTextInputDidChangeSelectionEventWithTextRange:(NSRange *)textRange;
+- (void)skipNextTextInputDidChangeSelectionEventWithTextRange:(NSRange)textRange;
+- (void)textViewDidFocus;
 
 @end
+
+NS_ASSUME_NONNULL_END

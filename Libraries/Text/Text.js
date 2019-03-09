@@ -8,42 +8,29 @@
  *
  * @providesModule Text
  * @flow
+ * @format
  */
 'use strict';
 
 const ColorPropType = require('ColorPropType');
 const EdgeInsetsPropType = require('EdgeInsetsPropType');
 const NativeMethodsMixin = require('NativeMethodsMixin');
-const Platform = require('Platform');
 const React = require('React');
 const PropTypes = require('prop-types');
-const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const StyleSheetPropType = require('StyleSheetPropType');
 const TextStylePropTypes = require('TextStylePropTypes');
 const Touchable = require('Touchable');
+const UIManager = require('UIManager');
 
 const createReactClass = require('create-react-class');
-const createReactNativeComponentClass = require('createReactNativeComponentClass');
+const requireNativeComponent = require('requireNativeComponent');
 const mergeFast = require('mergeFast');
 const processColor = require('processColor');
+const {ViewContextTypes} = require('ViewContext');
 
 const stylePropType = StyleSheetPropType(TextStylePropTypes);
 
-const viewConfig = {
-  validAttributes: mergeFast(ReactNativeViewAttributes.UIView, {
-    isHighlighted: true,
-    numberOfLines: true,
-    ellipsizeMode: true,
-    allowFontScaling: true,
-    disabled: true,
-    selectable: true,
-    selectionColor: true,
-    adjustsFontSizeToFit: true,
-    minimumFontScale: true,
-    textBreakStrategy: true,
-  }),
-  uiViewClassName: 'RCTText',
-};
+import type {ViewChildContext} from 'ViewContext';
 
 /**
  * A React component for displaying text.
@@ -418,16 +405,13 @@ const Text = createReactClass({
     });
   },
   mixins: [NativeMethodsMixin],
-  viewConfig: viewConfig,
-  getChildContext(): Object {
-    return {isInAParentText: true};
+  getChildContext(): ViewChildContext {
+    return {
+      isInAParentText: true,
+    };
   },
-  childContextTypes: {
-    isInAParentText: PropTypes.bool
-  },
-  contextTypes: {
-    isInAParentText: PropTypes.bool
-  },
+  childContextTypes: ViewContextTypes,
+  contextTypes: ViewContextTypes,
   /**
    * Only assigned if touch is needed.
    */
@@ -449,10 +433,11 @@ const Text = createReactClass({
     if (this.props.onStartShouldSetResponder || this._hasPressHandler()) {
       if (!this._handlers) {
         this._handlers = {
-          onStartShouldSetResponder: (): bool => {
-            const shouldSetFromProps = this.props.onStartShouldSetResponder &&
-                // $FlowFixMe(>=0.41.0)
-                this.props.onStartShouldSetResponder();
+          onStartShouldSetResponder: (): boolean => {
+            const shouldSetFromProps =
+              this.props.onStartShouldSetResponder &&
+              // $FlowFixMe(>=0.41.0)
+              this.props.onStartShouldSetResponder();
             const setResponder = shouldSetFromProps || this._hasPressHandler();
             if (setResponder && !this.touchableHandleActivePressIn) {
               // Attach and bind all the other handlers only the first time a touch
@@ -463,7 +448,10 @@ const Text = createReactClass({
                 }
               }
               this.touchableHandleActivePressIn = () => {
-                if (this.props.suppressHighlighting || !this._hasPressHandler()) {
+                if (
+                  this.props.suppressHighlighting ||
+                  !this._hasPressHandler()
+                ) {
                   return;
                 }
                 this.setState({
@@ -472,7 +460,10 @@ const Text = createReactClass({
               };
 
               this.touchableHandleActivePressOut = () => {
-                if (this.props.suppressHighlighting || !this._hasPressHandler()) {
+                if (
+                  this.props.suppressHighlighting ||
+                  !this._hasPressHandler()
+                ) {
                   return;
                 }
                 this.setState({
@@ -514,12 +505,15 @@ const Text = createReactClass({
             this.props.onResponderTerminate &&
               this.props.onResponderTerminate.apply(this, arguments);
           }.bind(this),
-          onResponderTerminationRequest: function(): bool {
+          onResponderTerminationRequest: function(): boolean {
             // Allow touchable or props.onResponderTerminationRequest to deny
             // the request
             var allowTermination = this.touchableHandleResponderTerminationRequest();
             if (allowTermination && this.props.onResponderTerminationRequest) {
-              allowTermination = this.props.onResponderTerminationRequest.apply(this, arguments);
+              allowTermination = this.props.onResponderTerminationRequest.apply(
+                this,
+                arguments,
+              );
             }
             return allowTermination;
           }.bind(this),
@@ -534,7 +528,7 @@ const Text = createReactClass({
     if (newProps.selectionColor != null) {
       newProps = {
         ...newProps,
-        selectionColor: processColor(newProps.selectionColor)
+        selectionColor: processColor(newProps.selectionColor),
       };
     }
     if (Touchable.TOUCH_TARGET_DEBUG && newProps.onPress) {
@@ -556,23 +550,13 @@ type RectOffset = {
   left: number,
   right: number,
   bottom: number,
-}
+};
 
-var PRESS_RECT_OFFSET = {top: 20, left: 20, right: 20, bottom: 30};
+const PRESS_RECT_OFFSET = {top: 20, left: 20, right: 20, bottom: 30};
 
-var RCTText = createReactNativeComponentClass(
-  viewConfig.uiViewClassName,
-  () => viewConfig
-);
-var RCTVirtualText = RCTText;
-
-if (Platform.OS === 'android') {
-  RCTVirtualText = createReactNativeComponentClass('RCTVirtualText', () => ({
-    validAttributes: mergeFast(ReactNativeViewAttributes.UIView, {
-      isHighlighted: true,
-    }),
-    uiViewClassName: 'RCTVirtualText',
-  }));
-}
+const RCTText = requireNativeComponent('RCTText');
+const RCTVirtualText = UIManager.RCTVirtualText
+  ? requireNativeComponent('RCTVirtualText')
+  : RCTText;
 
 module.exports = Text;

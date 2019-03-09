@@ -73,11 +73,16 @@ void RCTNativeModule::invoke(unsigned int methodId, folly::dynamic &&params, int
     invokeInner(weakBridge, weakModuleData, methodId, std::move(params));
   };
 
-  dispatch_queue_t queue = m_moduleData.methodQueue;
-  if (queue == RCTJSThread) {
-    block();
-  } else if (queue) {
-    dispatch_async(queue, block);
+  if (m_moduleData.valid) {
+    dispatch_queue_t queue = m_moduleData.methodQueue;
+    if (queue == RCTJSThread) {
+      block();
+    } else if (queue) {
+      dispatch_async(queue, block);
+    }
+  } else {
+    RCTLogWarn(@"Attempted to invoke `%u` (method ID) on `%@` (NativeModule name) after the module was invalidated.",
+               methodId, m_moduleData.name);
   }
 }
 

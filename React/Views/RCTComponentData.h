@@ -34,6 +34,4 @@
 
 - (NSDictionary<NSString *, id> *)viewConfig;
 
-- (RCTViewManagerUIBlock)uiBlockToAmendWithShadowViewRegistry:(NSDictionary<NSNumber *, RCTShadowView *> *)registry;
-
 @end

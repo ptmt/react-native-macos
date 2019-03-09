@@ -14,7 +14,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*
- * Just regular UITextField... but much better!
+ * Just regular NSTextField... but much better!
  */
 @interface RCTUITextField : NSTextField <RCTBackedTextInputViewProtocol>
 
@@ -24,9 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL caretHidden;
 @property (nonatomic, assign, readonly) BOOL textWasPasted;
-@property (nonatomic, copy, nullable) NSString *placeholder;
-@property (nonatomic, strong, nullable) NSColor *placeholderColor;
-@property (nonatomic, assign) NSEdgeInsets textContainerInset;
+// @property (nonatomic, strong, nullable) NSColor *placeholderColor;
+@property (nonatomic, assign) NSEdgeInsets paddingInsets;
 
 @end
 

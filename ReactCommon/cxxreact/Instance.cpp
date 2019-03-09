@@ -147,6 +147,10 @@ bool Instance::isInspectable() {
   return nativeToJsBridge_ ? nativeToJsBridge_->isInspectable() : false;
 }
 
+bool Instance::isBatchActive() {
+  return nativeToJsBridge_ ? nativeToJsBridge_->isBatchActive() : false;
+}
+
 void Instance::callJSFunction(std::string &&module, std::string &&method,
                               folly::dynamic &&params) {
   callback_->incrementPendingJSCalls();

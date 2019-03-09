@@ -16,22 +16,19 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*
- * Just regular UITextView... but much better!
+ * Just regular NSTextView... but much better!
  */
-
 @interface RCTUITextView : NSTextView <RCTBackedTextInputViewProtocol>
 
 - (instancetype)initWithFrame:(CGRect)frame textContainer:(nullable NSTextContainer *)textContainer NS_UNAVAILABLE;
-- (instancetype)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
+- (instancetype)initWithCoder:(NSCoder *)decoder NS_UNAVAILABLE;
 
 @property (nonatomic, weak) id<RCTBackedTextInputDelegate> textInputDelegate;
-// - (void)setText:(NSString *)text;
-- (void)setAttributedText:(NSAttributedString *)attributedText;
 
-@property (nonatomic, strong) NSAttributedString *placeholderAttributedString;
-@property (nonatomic, assign) BOOL textWasPasted;
-@property (nonatomic, copy, nullable) NSString *placeholderText;
-@property (nonatomic, assign, nullable) NSColor *placeholderTextColor;
+@property (nonatomic, assign, readonly) BOOL textWasPasted;
+// @property (nonatomic, copy, nullable) NSString *placeholder;
+// @property (nonatomic, strong, nullable) NSColor *placeholderColor;
+@property (nonatomic, assign) NSEdgeInsets paddingInsets;
 @property (nonatomic, assign) CGFloat preferredMaxLayoutWidth;
 
 @end

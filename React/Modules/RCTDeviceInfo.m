@@ -10,7 +10,7 @@
 #import "RCTDeviceInfo.h"
 #import <AppKit/AppKit.h>
 
-#import "RCTAccessibilityManager.h"
+//#import "RCTAccessibilityManager.h"
 #import "RCTAssert.h"
 #import "RCTEventDispatcher.h"
 #import "RCTUtils.h"

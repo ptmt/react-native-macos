@@ -102,6 +102,7 @@ public:
   void setGlobalVariable(std::string propName, std::unique_ptr<const JSBigString> jsonValue);
   void* getJavaScriptContext();
   bool isInspectable();
+  bool isBatchActive();
 
   #ifdef WITH_JSC_MEMORY_PRESSURE
   void handleMemoryPressure(int pressureLevel);
@@ -122,6 +123,11 @@ private:
   std::shared_ptr<JsToNativeBridge> m_delegate;
   std::unique_ptr<JSExecutor> m_executor;
   std::shared_ptr<MessageQueueThread> m_executorMessageQueueThread;
+
+  // Keep track of whether the JS bundle containing the application logic causes
+  // exception when evaluated initially. If so, more calls to JS will very
+  // likely fail as well, so this flag can help prevent them.
+  bool m_applicationScriptHasFailure = false;
 
   #ifdef WITH_FBSYSTRACE
   std::atomic_uint_least32_t m_systraceCookie = ATOMIC_VAR_INIT();
