@@ -15,6 +15,7 @@
 #import "RCTRootViewInternal.h"
 #import "RCTTouchHandler.h"
 #import "RCTUIManager.h"
+#import "RCTWindow.h"
 #import "NSView+React.h"
 
 @implementation RCTRootContentView
@@ -28,8 +29,6 @@
     _bridge = bridge;
     self.reactTag = reactTag;
     _sizeFlexibility = sizeFlexibility;
-    _touchHandler = [[RCTTouchHandler alloc] initWithBridge:_bridge];
-    [_touchHandler attachToView:self];
     [_bridge.uiManager registerRootView:self];
   }
   return self;
@@ -106,6 +105,23 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
                       args:@[self.reactTag]
                 completion:NULL];
   //}
+}
+
+- (void)viewDidMoveToWindow
+{
+  if (self.window == nil) {
+    return;
+  }
+  // RCTWindow handles all touches within
+  if ([self.window isKindOfClass:RCTWindow.class] == NO) {
+    if (_touchHandler == nil) {
+      _touchHandler = [[RCTTouchHandler alloc] initWithBridge:_bridge];
+      [_touchHandler attachToView:self];
+    }
+  } else if (_touchHandler) {
+    [_touchHandler detachFromView:self];
+    _touchHandler = nil;
+  }
 }
 
 @end
