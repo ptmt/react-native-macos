@@ -209,6 +209,7 @@ static inline BOOL hasFlag(NSUInteger flags, NSUInteger flag) {
   _mouseInfo[@"locationY"] = @(RCTSanitizeNaNValue(relativeLocation.x, @"touchData.locationY"));
   _mouseInfo[@"timestamp"] = @(event.timestamp * 1000); // in ms, for JS
   _mouseInfo[@"target"] = view.reactTag;
+  _mouseInfo[@"relatedTarget"] = nil;
 
   NSUInteger flags = event.modifierFlags & NSEventModifierFlagDeviceIndependentFlagsMask;
   _mouseInfo[@"altKey"] = @(hasFlag(flags, NSEventModifierFlagOption));
@@ -219,19 +220,30 @@ static inline BOOL hasFlag(NSUInteger flags, NSUInteger flag) {
 
 - (void)_setHoveredView:(NSView *)view
 {
-  if (_hoveredView && !(view && view == _hoveredView)) {
-    _mouseInfo[@"target"] = _hoveredView.reactTag;
-    _hoveredView = nil;
+  NSNumber *target = view.reactTag;
+  NSNumber *relatedTarget;
 
-    [self _sendMouseEvent:@"mouseOut"];
+  if (_hoveredView) {
+    relatedTarget = view == _hoveredView ? nil : _hoveredView.reactTag;
+    if (relatedTarget) {
+      _mouseInfo[@"target"] = relatedTarget;
+      _mouseInfo[@"relatedTarget"] = target;
+
+      _hoveredView = nil;
+      [self _sendMouseEvent:@"mouseOut"];
+    }
   }
 
   if (view) {
-    _mouseInfo[@"target"] = view.reactTag;
+    _mouseInfo[@"target"] = target;
+    _mouseInfo[@"relatedTarget"] = relatedTarget;
 
     if (_hoveredView == nil) {
       _hoveredView = view;
       [self _sendMouseEvent:@"mouseOver"];
+
+      // Ensure "mouseMove" events have no "relatedTarget" property.
+      _mouseInfo[@"relatedTarget"] = nil;
     }
 
     [self _sendMouseEvent:@"mouseMove"];
