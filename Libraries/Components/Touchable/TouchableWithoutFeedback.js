@@ -111,6 +111,8 @@ const TouchableWithoutFeedback = createReactClass({
      */
     hitSlop: EdgeInsetsPropType,
     onMouseMove: PropTypes.func,
+    onMouseEnter: PropTypes.func,
+    onMouseLeave: PropTypes.func,
     onMouseOver: PropTypes.func,
     onMouseOut: PropTypes.func,
     onContextMenu: PropTypes.func,
@@ -216,6 +218,8 @@ const TouchableWithoutFeedback = createReactClass({
       onResponderRelease: this.touchableHandleResponderRelease,
       onResponderTerminate: this.touchableHandleResponderTerminate,
       onMouseMove: this.props.onMouseMove,
+      onMouseEnter: this.props.onMouseEnter,
+      onMouseLeave: this.props.onMouseLeave,
       onMouseOver: this.props.onMouseOver,
       onMouseOut: this.props.onMouseOut,
       onContextMenu: this.props.onContextMenu,

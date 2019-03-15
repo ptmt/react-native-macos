@@ -31,6 +31,8 @@ ReactNativeViewAttributes.UIView = {
   shouldRasterizeIOS: true,
   onLayout: true,
   onMouseMove: true,
+  onMouseEnter: true,
+  onMouseLeave: true,
   onMouseOver: true,
   onMouseOut: true,
   onContextMenu: true,

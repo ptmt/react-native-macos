@@ -434,6 +434,8 @@ module.exports = {
    * @platform macos
    */
   onMouseMove: PropTypes.func,
+  onMouseEnter: PropTypes.func,
+  onMouseLeave: PropTypes.func,
   onMouseOver: PropTypes.func,
   onMouseOut: PropTypes.func,
   onDragEnter: PropTypes.func,
