@@ -91,6 +91,7 @@
     "testEnvironment": "node"
   },
   "main": "Libraries/react-native/react-native-implementation.js",
+  "types": "./@types/index.d.ts",
   "files": [
     ".flowconfig",
     "android",
@@ -146,6 +147,8 @@
     "react": "16.2.0"
   },
   "dependencies": {
+    "@types/prop-types": "^15.7.0",
+    "@types/react": "^16.8.10",
     "absolute-path": "^0.0.0",
     "art": "^0.10.0",
     "babel-core": "^6.24.1",
