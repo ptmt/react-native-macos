@@ -197,7 +197,7 @@ const TouchableWithoutFeedback = createReactClass({
       ? [child.props.style, { color: 'red' }]
       : child.props.style;
 
-    return (React: any).cloneElement(child, {
+    const overrides = {
       accessible: this.props.accessible !== false,
       accessibilityLabel: this.props.accessibilityLabel,
       accessibilityComponentType: this.props.accessibilityComponentType,
@@ -206,6 +206,14 @@ const TouchableWithoutFeedback = createReactClass({
       testID: this.props.testID,
       onLayout: this.props.onLayout,
       hitSlop: this.props.hitSlop,
+      onMouseEnter: this.props.onMouseEnter,
+      onMouseLeave: this.props.onMouseLeave,
+      onContextMenuItemClick: this.props.onContextMenuItemClick,
+      contextMenu: this.props.contextMenu,
+    };
+
+    return (React: any).cloneElement(child, {
+      ...onlyDefinedValues(overrides),
       onStartShouldSetResponder: this.touchableHandleStartShouldSetResponder,
       onResponderTerminationRequest: this
         .touchableHandleResponderTerminationRequest,
@@ -213,14 +221,20 @@ const TouchableWithoutFeedback = createReactClass({
       onResponderMove: this.touchableHandleResponderMove,
       onResponderRelease: this.touchableHandleResponderRelease,
       onResponderTerminate: this.touchableHandleResponderTerminate,
-      onMouseEnter: this.props.onMouseEnter,
-      onMouseLeave: this.props.onMouseLeave,
-      onContextMenuItemClick: this.props.onContextMenuItemClick,
-      contextMenu: this.props.contextMenu,
       style,
       children,
     });
   },
 });
+
+function onlyDefinedValues(base) {
+  const copy = {};
+  for (const key in base) {
+    if (base[key] !== undefined) {
+      copy[key] = base[key];
+    }
+  }
+  return copy;
+}
 
 module.exports = TouchableWithoutFeedback;
