@@ -433,11 +433,15 @@ module.exports = {
    * Desktop specific events
    * @platform macos
    */
+  onMouseMove: PropTypes.func,
   onMouseEnter: PropTypes.func,
   onMouseLeave: PropTypes.func,
+  onMouseOver: PropTypes.func,
+  onMouseOut: PropTypes.func,
   onDragEnter: PropTypes.func,
   onDragLeave: PropTypes.func,
   onDrop: PropTypes.func,
+  onContextMenu: PropTypes.func,
   onContextMenuItemClick: PropTypes.func,
   /**
    * Mapped to toolTip property of NSView. Used to show extra information when

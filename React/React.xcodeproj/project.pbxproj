@@ -1038,6 +1038,12 @@
 		66CD94B71F1045E700CB3C7C /* RCTMaskedViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CD94B01F1045E700CB3C7C /* RCTMaskedViewManager.m */; };
 		66CD94B81F1045E700CB3C7C /* RCTMaskedViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CD94B01F1045E700CB3C7C /* RCTMaskedViewManager.m */; };
 		68EFE4EE1CF6EB3900A1DE13 /* RCTBundleURLProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 68EFE4ED1CF6EB3900A1DE13 /* RCTBundleURLProvider.m */; };
+		702B7FF8221C88AF0027174A /* RCTWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 702B7FF6221C88AF0027174A /* RCTWindow.h */; };
+		702B7FF9221C88AF0027174A /* RCTWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 702B7FF7221C88AF0027174A /* RCTWindow.m */; };
+		702B7FFC221C88BB0027174A /* RCTMouseEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 702B7FFA221C88BB0027174A /* RCTMouseEvent.h */; };
+		702B7FFD221C88BB0027174A /* RCTMouseEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 702B7FFB221C88BB0027174A /* RCTMouseEvent.m */; };
+		702B7FFE221C88CE0027174A /* RCTMouseEvent.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 702B7FFA221C88BB0027174A /* RCTMouseEvent.h */; };
+		702B7FFF221C88D70027174A /* RCTWindow.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 702B7FF6221C88AF0027174A /* RCTWindow.h */; };
 		830A229E1A66C68A008503DA /* RCTRootView.m in Sources */ = {isa = PBXBuildFile; fileRef = 830A229D1A66C68A008503DA /* RCTRootView.m */; };
 		83392EB31B6634E10013B15F /* RCTModalHostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83392EB21B6634E10013B15F /* RCTModalHostViewController.m */; };
 		83A1FE8C1B62640A00BE0E65 /* RCTModalHostView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83A1FE8B1B62640A00BE0E65 /* RCTModalHostView.m */; };
@@ -1469,6 +1475,8 @@
 			dstPath = include/React;
 			dstSubfolderSpec = 16;
 			files = (
+				702B7FFF221C88D70027174A /* RCTWindow.h in Copy Headers */,
+				702B7FFE221C88CE0027174A /* RCTMouseEvent.h in Copy Headers */,
 				D4EEE3542020933B00C4CBB6 /* UIImageUtils.h in Copy Headers */,
 				59EDBCBD1FDF4E43003573DE /* RCTScrollableProtocol.h in Copy Headers */,
 				59EDBCBE1FDF4E43003573DE /* RCTScrollContentShadowView.h in Copy Headers */,
@@ -2064,6 +2072,10 @@
 		68EFE4EC1CF6EB3000A1DE13 /* RCTBundleURLProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTBundleURLProvider.h; sourceTree = "<group>"; };
 		68EFE4ED1CF6EB3900A1DE13 /* RCTBundleURLProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTBundleURLProvider.m; sourceTree = "<group>"; };
 		6A15FB0C1BDF663500531DFB /* RCTRootViewInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTRootViewInternal.h; sourceTree = "<group>"; };
+		702B7FF6221C88AF0027174A /* RCTWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTWindow.h; sourceTree = "<group>"; };
+		702B7FF7221C88AF0027174A /* RCTWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTWindow.m; sourceTree = "<group>"; };
+		702B7FFA221C88BB0027174A /* RCTMouseEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTMouseEvent.h; sourceTree = "<group>"; };
+		702B7FFB221C88BB0027174A /* RCTMouseEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTMouseEvent.m; sourceTree = "<group>"; };
 		830213F31A654E0800B993E6 /* RCTBridgeModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTBridgeModule.h; sourceTree = "<group>"; };
 		830A229C1A66C68A008503DA /* RCTRootView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTRootView.h; sourceTree = "<group>"; };
 		830A229D1A66C68A008503DA /* RCTRootView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTRootView.m; sourceTree = "<group>"; };
@@ -2445,6 +2457,8 @@
 				13C156021AB1A2840079392D /* RCTWebView.m */,
 				13C156031AB1A2840079392D /* RCTWebViewManager.h */,
 				13C156041AB1A2840079392D /* RCTWebViewManager.m */,
+				702B7FF6221C88AF0027174A /* RCTWindow.h */,
+				702B7FF7221C88AF0027174A /* RCTWindow.m */,
 				59D031E41F8353D3008361F0 /* SafeAreaView */,
 				59EDBC9B1FDF4E0C003573DE /* ScrollView */,
 				83F15A171B7CC46900F10295 /* NSView+Private.h */,
@@ -2768,6 +2782,8 @@
 				14C2CA731B3AC64300E6CBB2 /* RCTModuleData.mm */,
 				14C2CA6F1B3AC63800E6CBB2 /* RCTModuleMethod.h */,
 				C606692D1F3CC60500E67165 /* RCTModuleMethod.mm */,
+				702B7FFA221C88BB0027174A /* RCTMouseEvent.h */,
+				702B7FFB221C88BB0027174A /* RCTMouseEvent.m */,
 				006FC4121D9B20820057AAAD /* RCTMultipartDataTask.h */,
 				006FC4131D9B20820057AAAD /* RCTMultipartDataTask.m */,
 				001BFCCE1D8381DE008E587E /* RCTMultipartStreamReader.h */,
@@ -3212,6 +3228,7 @@
 				3D80DA221DF820620028D040 /* RCTBridge+Private.h in Headers */,
 				599FAA461FB274980058CCF6 /* RCTSurfaceStage.h in Headers */,
 				599FAA361FB274980058CCF6 /* RCTSurface.h in Headers */,
+				702B7FFC221C88BB0027174A /* RCTMouseEvent.h in Headers */,
 				3D80DA231DF820620028D040 /* RCTBridgeDelegate.h in Headers */,
 				3D80DA241DF820620028D040 /* RCTBridgeMethod.h in Headers */,
 				3D7BFD151EA8E351008DFB7A /* RCTPackagerClient.h in Headers */,
@@ -3323,6 +3340,7 @@
 				3DF1BE831F26576400068F1A /* JSCTracing.h in Headers */,
 				3D80DA721DF820620028D040 /* RCTModalHostViewManager.h in Headers */,
 				13134C9C1E296B2A00B9F3CB /* RCTCxxModule.h in Headers */,
+				702B7FF8221C88AF0027174A /* RCTWindow.h in Headers */,
 				594F0A321FD23228007FBE96 /* RCTSurfaceHostingView.h in Headers */,
 				3D80DA771DF820620028D040 /* RCTPicker.h in Headers */,
 				3D80DA781DF820620028D040 /* RCTPickerManager.h in Headers */,
@@ -4142,6 +4160,7 @@
 				001BFCD01D8381DE008E587E /* RCTMultipartStreamReader.m in Sources */,
 				133CAE8E1B8E5CFD00F6AD92 /* RCTDatePicker.m in Sources */,
 				14C2CA761B3AC64F00E6CBB2 /* RCTFrameUpdate.m in Sources */,
+				702B7FF9221C88AF0027174A /* RCTWindow.m in Sources */,
 				D49593E6202C96FF00A7694B /* YGNode.cpp in Sources */,
 				594F0A341FD23228007FBE96 /* RCTSurfaceHostingView.mm in Sources */,
 				13134C861E296B2A00B9F3CB /* RCTCxxBridge.mm in Sources */,
@@ -4255,6 +4274,7 @@
 				135A9BFC1E7B0EAE00587AEB /* RCTJSCErrorHandling.mm in Sources */,
 				83392EB31B6634E10013B15F /* RCTModalHostViewController.m in Sources */,
 				83CBBA691A601EF300E9B192 /* RCTEventDispatcher.m in Sources */,
+				702B7FFD221C88BB0027174A /* RCTMouseEvent.m in Sources */,
 				83A1FE8F1B62643A00BE0E65 /* RCTModalHostViewManager.m in Sources */,
 				13E0674A1A70F434002CDEE1 /* RCTUIManager.m in Sources */,
 				1384E2091E806D4E00545659 /* RCTNativeModule.mm in Sources */,

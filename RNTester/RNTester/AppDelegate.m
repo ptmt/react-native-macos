@@ -21,6 +21,7 @@
 #import <React/RCTLinkingManager.h>
 #import <React/RCTRootView.h>
 #import <React/RCTEventDispatcher.h>
+#import <React/RCTWindow.h>
 
 @interface AppDelegate() <RCTBridgeDelegate, NSSearchFieldDelegate>
 
@@ -28,54 +29,33 @@
 
 
 @implementation AppDelegate
-
--(id)init
 {
-  if(self = [super init]) {
-
-    // -- Init Window
-    NSRect contentSize = NSMakeRect(200, 500, 1000, 500); 
-
-    self.window = [[NSWindow alloc] initWithContentRect:contentSize
-                                              styleMask:NSTitledWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask 
-                                                backing:NSBackingStoreBuffered
-                                                  defer:NO];
-    NSWindowController *windowController = [[NSWindowController alloc] initWithWindow:self.window];
-
-    [[self window] setTitle:@"RNTester"];
-    [[self window] setTitleVisibility:NSWindowTitleHidden];
-    [windowController showWindow:self.window];
-
-    [windowController setShouldCascadeWindows:NO];
-    [windowController setWindowFrameAutosaveName:@"RNTester"];
-    [self setDefaultURL];
-
-    // -- Init Toolbar
-    NSToolbar *toolbar = [[NSToolbar alloc] initWithIdentifier:@"mainToolbar"];
-    [toolbar setDelegate:self];
-    [toolbar setSizeMode:NSToolbarSizeModeRegular];
-
-    [self.window setToolbar:toolbar];
-
-    // -- Init Menu
-    [self setUpMainMenu];
-  }
-  return self;
+  NSToolbar *_toolbar;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification * __unused)aNotification
 {
+  [self setDefaultURL];
 
   _bridge = [[RCTBridge alloc] initWithDelegate:self
                                   launchOptions:@{@"argv": [self argv]}];
 
-  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:_bridge
-                                                   moduleName:@"RNTesterApp"
-                                            initialProperties:nil];
+  _window = [[RCTWindow alloc] initWithBridge:_bridge
+                                  contentRect:NSMakeRect(200, 500, 1000, 500)
+                                    styleMask:(NSTitledWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask)
+                                        defer:NO];
 
+  _window.title = @"RNTester";
+  _window.titleVisibility = NSWindowTitleHidden;
 
+  [self setUpToolbar];
+  [self setUpMainMenu];
 
-  [self.window setContentView:rootView];
+  _window.contentView = [[RCTRootView alloc] initWithBridge:_bridge
+                                                 moduleName:@"RNTesterApp"
+                                          initialProperties:nil];
+
+  [_window makeKeyAndOrderFront:nil];
 }
 
 - (void)setDefaultURL
@@ -103,6 +83,14 @@
   [RCTJavaScriptLoader loadBundleAtURL:[self sourceURLForBridge:bridge]
                             onProgress:onProgress
                             onComplete:loadCallback];
+}
+
+- (void)setUpToolbar
+{
+  NSToolbar *toolbar = [[NSToolbar alloc] initWithIdentifier:@"mainToolbar"];
+  toolbar.delegate = self;
+  toolbar.sizeMode = NSToolbarSizeModeRegular;
+  _window.toolbar = toolbar;
 }
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(__unused NSToolbar *)toolbar
