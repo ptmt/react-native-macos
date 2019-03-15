@@ -27,7 +27,7 @@
 {
   if (self = [super init]) {
     _viewTag = target;
-    _userInfo = userInfo;
+    _userInfo = [NSDictionary dictionaryWithDictionary:userInfo];
     _eventName = eventName;
     _coalescingKey = coalescingKey;
   }
