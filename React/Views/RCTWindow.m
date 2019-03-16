@@ -9,6 +9,7 @@
 
 #import "RCTWindow.h"
 
+#import "RCTUtils.h"
 #import "RCTMouseEvent.h"
 #import "RCTTouchEvent.h"
 #import "NSView+React.h"
@@ -65,6 +66,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithContentRect:(NSRect)contentRect styl
 
 @dynamic contentView;
 
+- (NSView *)rootView
+{
+  return self.contentView.contentView;
+}
+
 - (void)sendEvent:(NSEvent *)event
 {
   [super sendEvent:event];
@@ -109,8 +115,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithContentRect:(NSRect)contentRect styl
     return;
   }
 
-  NSView *targetView = [self.contentView reactHitTest:event.locationInWindow];
-  [self _readMouseEvent:event withTarget:targetView];
+  NSView *targetView = [self _prepareForMouseEvent:event];
 
   if (_clickedView) {
     if (type == NSEventTypeLeftMouseDragged) {
@@ -137,7 +142,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithContentRect:(NSRect)contentRect styl
       // When the "firstResponder" is a NSTextView, "mouseUp" and "mouseDragged" events are swallowed,
       // so we should skip tracking of "mouseDown" events in order to avoid corrupted state.
       if ([self.firstResponder isKindOfClass:NSTextView.class]) {
-        NSView *clickedView = [self.contentView hitTest:event.locationInWindow];
+        NSView *clickedView = [self.rootView hitTest:event.locationInWindow];
         NSView *fieldEditor = (NSView *)self.firstResponder;
         if ([clickedView isDescendantOf:fieldEditor]) {
           return;
@@ -191,30 +196,28 @@ static inline BOOL hasFlag(NSUInteger flags, NSUInteger flag) {
   return (flags & flag) == flag;
 }
 
-- (void)_readMouseEvent:(NSEvent *)event withTarget:(NSView *)view
+- (NSView *)_prepareForMouseEvent:(NSEvent *)event
 {
-  NSView *rootView = view;
-  while (rootView && ![rootView isReactRootView]) {
-    rootView = rootView.superview;
-  }
-
   // By convention, all coordinates, whether they be touch coordinates, or
   // measurement coordinates are with respect to the root view.
-  CGPoint absoluteLocation = [self.contentView convertPoint:event.locationInWindow toView:rootView];
-  CGPoint relativeLocation = [rootView convertPoint:absoluteLocation toView:view];
+  CGPoint absoluteLocation = [self.rootView convertPoint:event.locationInWindow fromView:nil];
+  NSView *targetView = [self.rootView reactHitTest:absoluteLocation];
+  CGPoint relativeLocation = [self.rootView convertPoint:absoluteLocation toView:targetView];
 
   _mouseInfo[@"pageX"] = @(RCTSanitizeNaNValue(absoluteLocation.x, @"pageX"));
   _mouseInfo[@"pageY"] = @(RCTSanitizeNaNValue(absoluteLocation.y, @"pageY"));
   _mouseInfo[@"locationX"] = @(RCTSanitizeNaNValue(relativeLocation.x, @"locationX"));
   _mouseInfo[@"locationY"] = @(RCTSanitizeNaNValue(relativeLocation.y, @"locationY"));
   _mouseInfo[@"timestamp"] = @(event.timestamp * 1000); // in ms, for JS
-  _mouseInfo[@"target"] = view.reactTag;
+  _mouseInfo[@"target"] = targetView.reactTag;
 
   NSUInteger flags = event.modifierFlags & NSEventModifierFlagDeviceIndependentFlagsMask;
   _mouseInfo[@"altKey"] = @(hasFlag(flags, NSEventModifierFlagOption));
   _mouseInfo[@"ctrlKey"] = @(hasFlag(flags, NSEventModifierFlagControl));
   _mouseInfo[@"metaKey"] = @(hasFlag(flags, NSEventModifierFlagCommand));
   _mouseInfo[@"shiftKey"] = @(hasFlag(flags, NSEventModifierFlagShift));
+
+  return targetView;
 }
 
 - (void)_setHoveredView:(NSView *)view
@@ -255,7 +258,7 @@ static inline BOOL hasFlag(NSUInteger flags, NSUInteger flag) {
 - (void)_sendTouchEvent:(NSString *)eventName
 {
   RCTTouchEvent *event = [[RCTTouchEvent alloc] initWithEventName:eventName
-                                                         reactTag:self.contentView.reactTag
+                                                         reactTag:self.rootView.reactTag
                                                      reactTouches:@[_mouseInfo]
                                                    changedIndexes:@[@0]
                                                     coalescingKey:_coalescingKey];
