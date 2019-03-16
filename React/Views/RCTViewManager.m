@@ -171,7 +171,7 @@ RCT_CUSTOM_VIEW_PROPERTY(opacity, float, RCTView)
         [self checkLayerExists:view];
         [view.layer setOpacity:[RCTConvert float:json]];
     } else {
-        [view.layer setOpacity:defaultView.layer.opacity];
+        [view.layer setOpacity:1];
     }
 }
 
