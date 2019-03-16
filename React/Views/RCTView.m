@@ -124,6 +124,7 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
     _borderBottomStartRadius = -1;
     _borderBottomEndRadius = -1;
     _borderStyle = RCTBorderStyleSolid;
+    _hitTestEdgeInsets = NSEdgeInsetsZero;
     self.clipsToBounds = NO;
   }
 
@@ -196,21 +197,71 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (NSView *)hitTest:(CGPoint)point
 {
-  // TODO: implement pointerEvents
+  // TODO: implement "isUserInteractionEnabled"
+//  BOOL canReceiveTouchEvents = ([self isUserInteractionEnabled] && ![self isHidden]);
+//  if(!canReceiveTouchEvents) {
+//    return nil;
+//  }
+
+  if (self.isHidden) {
+    return nil;
+  }
+
+  // `hitSubview` is the topmost subview which was hit. The hit point can
+  // be outside the bounds of `view` (e.g., if -clipsToBounds is NO).
+  NSView *hitSubview = nil;
+  BOOL isPointInside = [self pointInside:point];
+  BOOL needsHitSubview = !(_pointerEvents == RCTPointerEventsNone || _pointerEvents == RCTPointerEventsBoxOnly);
+  if (needsHitSubview && (![self clipsToBounds] || isPointInside)) {
+    // Take z-index into account when calculating the touch target.
+    NSArray<NSView *> *sortedSubviews = [self reactZIndexSortedSubviews];
+
+    // The default behaviour of UIKit is that if a view does not contain a point,
+    // then no subviews will be returned from hit testing, even if they contain
+    // the hit point. By doing hit testing directly on the subviews, we bypass
+    // the strict containment policy (i.e., UIKit guarantees that every ancestor
+    // of the hit view will return YES from -pointInside:withEvent:). See:
+    //  - https://developer.apple.com/library/ios/qa/qa2013/qa1812.html
+    for (NSView *subview in [sortedSubviews reverseObjectEnumerator]) {
+      CGPoint convertedPoint = [subview convertPoint:point fromView:self];
+      hitSubview = [subview hitTest:convertedPoint];
+      if (hitSubview != nil) {
+        break;
+      }
+    }
+  }
+
+  NSView *hitView = (isPointInside ? self : nil);
+  return hitSubview ?: hitView;
+
+  // TODO: implement "pointerEvents"
 //  switch (_pointerEvents) {
 //    case RCTPointerEventsNone:
 //      return nil;
 //    case RCTPointerEventsUnspecified:
-//      return RCTViewHitTest(self, point, event) ?: [super hitTest:point withEvent:event];
+//      return hitSubview ?: hitView;
 //    case RCTPointerEventsBoxOnly:
-//      return [super hitTest:point withEvent:event] ? self: nil;
+//      return hitView;
 //    case RCTPointerEventsBoxNone:
-//      return RCTViewHitTest(self, point, event);
+//      return hitSubview;
 //    default:
-//      RCTLogError(@"Invalid pointer-events specified %zd on %@", _pointerEvents, self);
-//      return [super hitTest:point withEvent:event];
+//      RCTLogError(@"Invalid pointer-events specified %lld on %@", (long long)_pointerEvents, self);
+//      return hitSubview ?: hitView;
 //  }
-  return [super hitTest:point];
+}
+
+static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
+  rect.origin.x    += insets.left;
+  rect.origin.y    += insets.top;
+  rect.size.width  -= (insets.left + insets.right);
+  rect.size.height -= (insets.top  + insets.bottom);
+  return rect;
+}
+
+- (BOOL)pointInside:(CGPoint)point
+{
+  CGRect hitFrame = NSEdgeInsetsInsetRect(self.bounds, self.hitTestEdgeInsets);
+  return CGRectContainsPoint(hitFrame, point);
 }
 
 - (NSView *)reactAccessibilityElement
