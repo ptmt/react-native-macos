@@ -114,4 +114,7 @@
  */
 @property (nonatomic, assign) BOOL clipsToBounds;
 
+/** Populate the `layer` ivar when nil */
+- (void)ensureLayerExists;
+
 @end
