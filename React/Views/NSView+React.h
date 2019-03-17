@@ -113,6 +113,7 @@
  * UIKit replacement
  */
 @property (nonatomic, assign) BOOL clipsToBounds;
+@property (nonatomic, assign) CATransform3D transform;
 
 /** Populate the `layer` ivar when nil */
 - (void)ensureLayerExists;

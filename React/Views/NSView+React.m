@@ -305,4 +305,16 @@ static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
   }
 }
 
+- (CATransform3D)transform
+{
+  return CATransform3DIdentity;
+}
+
+- (void)setTransform:(__unused CATransform3D)transform
+{
+  // Do nothing by default.
+  // Native views must synthesize their own "transform" property,
+  // override "displayLayer:", and apply the transform there.
+}
+
 @end
