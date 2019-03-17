@@ -175,10 +175,10 @@
     return;
   }
 
+  [self ensureLayerExists];
   self.frame = frame;
-  
-  // TODO: why position matters? It's only produce bugs
-  // OSX requires position and anchor point to rotate from center
+
+  // Ensure the anchorPoint is in the center.
   self.layer.position = position;
   self.layer.bounds = bounds;
   self.layer.anchorPoint = anchor;
