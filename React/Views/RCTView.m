@@ -586,6 +586,10 @@ static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x) {
     layer.edgeAntialiasingMask = !(_transform.m34 == 0.0f);
   }
 
+  // Ensure the anchorPoint is in the center.
+  layer.position = (CGPoint){CGRectGetMidX(self.frame), CGRectGetMidY(self.frame)};
+  layer.anchorPoint = (CGPoint){0.5, 0.5};
+
   if (CGSizeEqualToSize(layer.bounds.size, CGSizeZero)) {
     return;
   }
