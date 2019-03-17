@@ -132,6 +132,16 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
 
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
+- (void)setReactTag:(NSNumber *)reactTag
+{
+  // The default view has no reactTag.
+  if (!reactTag && !self.reactTag) {
+    [self ensureLayerExists];
+  }
+
+  super.reactTag = reactTag;
+}
+
 - (void)setReactLayoutDirection:(NSUserInterfaceLayoutDirection)layoutDirection
 {
   if (_reactLayoutDirection != layoutDirection) {
@@ -563,6 +573,18 @@ static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x) {
   [super reactSetFrame:frame];
   if (!CGSizeEqualToSize(self.bounds.size, oldSize)) {
     [self.layer setNeedsDisplay];
+  }
+}
+
+- (void)ensureLayerExists
+{
+  if (!self.layer) {
+    // Set `wantsLayer` first to create a "layer-backed view" instead of a "layer-hosting view".
+    self.wantsLayer = YES;
+
+    CALayer *layer = [CALayer layer];
+    layer.delegate = self;
+    self.layer = layer;
   }
 }
 
