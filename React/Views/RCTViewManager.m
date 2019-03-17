@@ -128,6 +128,9 @@ RCT_CUSTOM_VIEW_PROPERTY(overflow, YGOverflow, RCTView)
 }
 RCT_CUSTOM_VIEW_PROPERTY(shouldRasterizeIOS, BOOL, RCTView)
 {
+  if (json) {
+    [view ensureLayerExists];
+  }
   view.layer.shouldRasterize = json ? [RCTConvert BOOL:json] : defaultView.layer.shouldRasterize;
   view.layer.rasterizationScale = view.layer.shouldRasterize ? [NSScreen mainScreen].backingScaleFactor : defaultView.layer.rasterizationScale;
 }
@@ -150,17 +153,18 @@ RCT_CUSTOM_VIEW_PROPERTY(pointerEvents, RCTPointerEvents, RCTView)
     return;
   }
 }
-
-
 RCT_CUSTOM_VIEW_PROPERTY(removeClippedSubviews, BOOL, RCTView)
 {
   if ([view respondsToSelector:@selector(setRemoveClippedSubviews:)]) {
     view.removeClippedSubviews = json ? [RCTConvert BOOL:json] : defaultView.removeClippedSubviews;
   }
 }
-RCT_CUSTOM_VIEW_PROPERTY(borderRadius, CGFloat, RCTView) {
-  if ([view respondsToSelector:@selector(setBorderRadius:)]) {
+RCT_CUSTOM_VIEW_PROPERTY(borderRadius, CGFloat, RCTView)
+{
+  if (json) {
     [view ensureLayerExists];
+  }
+  if ([view respondsToSelector:@selector(setBorderRadius:)]) {
     view.borderRadius = json ? [RCTConvert CGFloat:json] : defaultView.borderRadius;
   } else {
     view.layer.cornerRadius = json ? [RCTConvert CGFloat:json] : defaultView.layer.cornerRadius;
@@ -168,8 +172,10 @@ RCT_CUSTOM_VIEW_PROPERTY(borderRadius, CGFloat, RCTView) {
 }
 RCT_CUSTOM_VIEW_PROPERTY(borderColor, CGColor, RCTView)
 {
-  if ([view respondsToSelector:@selector(setBorderColor:)]) {
+  if (json) {
     [view ensureLayerExists];
+  }
+  if ([view respondsToSelector:@selector(setBorderColor:)]) {
     view.borderColor = json ? [RCTConvert CGColor:json] : defaultView.borderColor;
   } else {
     view.layer.borderColor = json ? [RCTConvert CGColor:json] : defaultView.layer.borderColor;
@@ -177,8 +183,10 @@ RCT_CUSTOM_VIEW_PROPERTY(borderColor, CGColor, RCTView)
 }
 RCT_CUSTOM_VIEW_PROPERTY(borderWidth, float, RCTView)
 {
-  if ([view respondsToSelector:@selector(setBorderWidth:)]) {
+  if (json) {
     [view ensureLayerExists];
+  }
+  if ([view respondsToSelector:@selector(setBorderWidth:)]) {
     view.borderWidth = json ? [RCTConvert CGFloat:json] : defaultView.borderWidth;
   } else {
     view.layer.borderWidth = json ? [RCTConvert CGFloat:json] : defaultView.layer.borderWidth;
@@ -186,6 +194,9 @@ RCT_CUSTOM_VIEW_PROPERTY(borderWidth, float, RCTView)
 }
 RCT_CUSTOM_VIEW_PROPERTY(borderStyle, RCTBorderStyle, RCTView)
 {
+  if (json) {
+    [view ensureLayerExists];
+  }
   if ([view respondsToSelector:@selector(setBorderStyle:)]) {
     view.borderStyle = json ? [RCTConvert RCTBorderStyle:json] : defaultView.borderStyle;
   }
