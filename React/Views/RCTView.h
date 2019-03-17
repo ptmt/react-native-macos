@@ -113,11 +113,7 @@
 @property (nonatomic, assign) CGFloat borderEndWidth;
 @property (nonatomic, assign) CGFloat borderWidth;
 
-/**
- * Initial tranformation for a view which is not rendered yet
- */
 @property (nonatomic, assign) CATransform3D transform;
-@property (nonatomic, assign) bool shouldBeTransformed;
 
 @property (nonatomic, copy) RCTDirectEventBlock onDragEnter;
 @property (nonatomic, copy) RCTDirectEventBlock onDragLeave;

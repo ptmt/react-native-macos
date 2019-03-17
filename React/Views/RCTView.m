@@ -124,6 +124,7 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
     _borderBottomStartRadius = -1;
     _borderBottomEndRadius = -1;
     _borderStyle = RCTBorderStyleSolid;
+    _transform = CATransform3DIdentity;
     self.clipsToBounds = NO;
   }
 
@@ -192,6 +193,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 - (void)setTransform:(CATransform3D)transform
 {
   _transform = transform;
+  [self setNeedsDisplay:YES];
 }
 
 - (NSView *)hitTest:(CGPoint)point
@@ -578,11 +580,12 @@ static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x) {
 
 - (void)displayLayer:(CALayer *)layer
 {
-  if (self.shouldBeTransformed) {
-    self.layer.transform = self.transform;
-    self.shouldBeTransformed = NO;
+  if (!CATransform3DEqualToTransform(_transform, layer.transform)) {
+    layer.transform = _transform;
+    // Enable edge antialiasing in perspective transforms
+    layer.edgeAntialiasingMask = !(_transform.m34 == 0.0f);
   }
-  
+
   if (CGSizeEqualToSize(layer.bounds.size, CGSizeZero)) {
     return;
   }
