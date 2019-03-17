@@ -111,11 +111,12 @@ RCT_EXPORT_VIEW_PROPERTY(nativeID, NSString)
 RCT_REMAP_VIEW_PROPERTY(testID, reactAccessibilityElement.accessibilityIdentifier, NSString)
 
 RCT_EXPORT_VIEW_PROPERTY(backgroundColor, NSColor)
-RCT_REMAP_VIEW_PROPERTY(backfaceVisibility, layer.doubleSided, css_backface_visibility_t)
-RCT_REMAP_VIEW_PROPERTY(shadowColor, layer.shadowColor, CGColor)
-RCT_REMAP_VIEW_PROPERTY(shadowOffset, layer.shadowOffset, CGSize)
-RCT_REMAP_VIEW_PROPERTY(shadowOpacity, layer.shadowOpacity, float)
-RCT_REMAP_VIEW_PROPERTY(shadowRadius, layer.shadowRadius, CGFloat)
+RCT_REMAP_LAYER_PROPERTY(backfaceVisibility, doubleSided, css_backface_visibility_t)
+RCT_EXPORT_LAYER_PROPERTY(opacity, float)
+RCT_EXPORT_LAYER_PROPERTY(shadowColor, CGColor)
+RCT_EXPORT_LAYER_PROPERTY(shadowOffset, CGSize)
+RCT_EXPORT_LAYER_PROPERTY(shadowOpacity, float)
+RCT_EXPORT_LAYER_PROPERTY(shadowRadius, CGFloat)
 RCT_REMAP_VIEW_PROPERTY(toolTip, toolTip, NSString)
 RCT_CUSTOM_VIEW_PROPERTY(overflow, YGOverflow, RCTView)
 {
@@ -142,18 +143,6 @@ RCT_CUSTOM_VIEW_PROPERTY(draggedTypes, NSArray*<NSString *>, RCTView)
         [view registerForDraggedTypes:defaultView.registeredDraggedTypes];
     }
 }
-
-RCT_CUSTOM_VIEW_PROPERTY(opacity, float, RCTView)
-{
-    if (json) {
-        [view ensureLayerExists];
-        [view.layer setOpacity:[RCTConvert float:json]];
-    } else {
-        [view.layer setOpacity:1];
-    }
-}
-
-
 RCT_CUSTOM_VIEW_PROPERTY(pointerEvents, RCTPointerEvents, RCTView)
 {
   if ([view respondsToSelector:@selector(setPointerEvents:)]) {
