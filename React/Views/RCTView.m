@@ -575,16 +575,24 @@ static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x) {
   [super reactSetFrame:frame];
   if (!CGSizeEqualToSize(self.bounds.size, oldSize)) {
     [self.layer setNeedsDisplay];
+  } else if (!CATransform3DIsIdentity(_transform)) {
+    [self applyTransform:self.layer];
   }
 }
 
-- (void)displayLayer:(CALayer *)layer
+- (void)applyTransform:(CALayer *)layer
 {
   if (!CATransform3DEqualToTransform(_transform, layer.transform)) {
     layer.transform = _transform;
     // Enable edge antialiasing in perspective transforms
     layer.edgeAntialiasingMask = !(_transform.m34 == 0.0f);
   }
+}
+
+- (void)displayLayer:(CALayer *)layer
+{
+  // Applying the transform here ensures it's not overridden by AppKit internals.
+  [self applyTransform:layer];
 
   // Ensure the anchorPoint is in the center.
   layer.position = (CGPoint){CGRectGetMidX(self.frame), CGRectGetMidY(self.frame)};
