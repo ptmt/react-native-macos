@@ -115,7 +115,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithContentRect:(NSRect)contentRect styl
     return;
   }
 
-  NSView *targetView = [self _prepareForMouseEvent:event];
+  NSView *targetView = [self hitTest:event.locationInWindow withEvent:event];
 
   if (_clickedView) {
     if (type == NSEventTypeLeftMouseDragged) {
@@ -196,13 +196,13 @@ static inline BOOL hasFlag(NSUInteger flags, NSUInteger flag) {
   return (flags & flag) == flag;
 }
 
-- (NSView *)_prepareForMouseEvent:(NSEvent *)event
+- (NSView *)hitTest:(NSPoint)point withEvent:(NSEvent *)event
 {
-  NSView *targetView = [self.rootView reactHitTest:event.locationInWindow];
+  NSView *targetView = [self.rootView reactHitTest:point];
 
   // By convention, all coordinates, whether they be touch coordinates, or
   // measurement coordinates are with respect to the root view.
-  CGPoint absoluteLocation = [self.rootView convertPoint:event.locationInWindow fromView:nil];
+  CGPoint absoluteLocation = [self.rootView convertPoint:point fromView:nil];
   CGPoint relativeLocation = [self.rootView convertPoint:absoluteLocation toView:targetView];
 
   _mouseInfo[@"pageX"] = @(RCTSanitizeNaNValue(absoluteLocation.x, @"pageX"));
