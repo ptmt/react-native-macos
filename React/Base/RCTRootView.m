@@ -333,15 +333,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   _contentView.sizeFlexibility = _sizeFlexibility;
 }
 
-- (NSView *)hitTest:(CGPoint)point withEvent:(NSEvent *)event
+- (NSView *)hitTest:(CGPoint)point
 {
   // The root view itself should never receive touches
-//  NSView *hitView = [super hitTest:point withEvent:event];
-//  if (self.passThroughTouches && hitView == self) {
-//    return nil;
-//  }
-//  return hitView;
-  return nil;
+  NSView *hitView = [super hitTest:point];
+  if (self.passThroughTouches && hitView == self) {
+    return nil;
+  }
+  return hitView;
 }
 
 - (void)setAppProperties:(NSDictionary *)appProperties

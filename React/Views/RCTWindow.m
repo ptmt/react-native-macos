@@ -198,10 +198,11 @@ static inline BOOL hasFlag(NSUInteger flags, NSUInteger flag) {
 
 - (NSView *)_prepareForMouseEvent:(NSEvent *)event
 {
+  NSView *targetView = [self.rootView reactHitTest:event.locationInWindow];
+
   // By convention, all coordinates, whether they be touch coordinates, or
   // measurement coordinates are with respect to the root view.
   CGPoint absoluteLocation = [self.rootView convertPoint:event.locationInWindow fromView:nil];
-  NSView *targetView = [self.rootView reactHitTest:absoluteLocation];
   CGPoint relativeLocation = [self.rootView convertPoint:absoluteLocation toView:targetView];
 
   _mouseInfo[@"pageX"] = @(RCTSanitizeNaNValue(absoluteLocation.x, @"pageX"));

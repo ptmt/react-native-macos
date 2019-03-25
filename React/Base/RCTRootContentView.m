@@ -84,15 +84,13 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder:(nonnull NSCoder *)aDecoder)
   [_bridge.uiManager setAvailableSize:self.availableSize forRootView:self];
 }
 
-- (NSView *)hitTest:(CGPoint)point withEvent:(NSEvent *)event
+- (NSView *)hitTest:(CGPoint)point
 {
-  // The root content view itself should never receive touches
-//  NSView *hitView = [super hitTest:point withEvent:event];
-//  if (_passThroughTouches && hitView == self) {
-//    return nil;
-//  }
-//  return hitView;
-  return nil;
+  // Flip the coordinate system to top-left origin.
+  NSPoint convertedPoint = [self convertPoint:point fromView:nil];
+
+  NSView *hitView = [super hitTest:convertedPoint];
+  return _passThroughTouches && hitView == self ? nil : hitView;
 }
 
 - (void)invalidate
