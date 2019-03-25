@@ -203,10 +203,10 @@ static inline BOOL hasFlag(NSUInteger flags, NSUInteger flag) {
   CGPoint absoluteLocation = [self.contentView convertPoint:event.locationInWindow toView:rootView];
   CGPoint relativeLocation = [rootView convertPoint:absoluteLocation toView:view];
 
-  _mouseInfo[@"pageX"] = @(RCTSanitizeNaNValue(absoluteLocation.x, @"touchData.pageX"));
-  _mouseInfo[@"pageY"] = @(RCTSanitizeNaNValue(absoluteLocation.y, @"touchData.pageY"));
-  _mouseInfo[@"locationX"] = @(RCTSanitizeNaNValue(relativeLocation.x, @"touchData.locationX"));
-  _mouseInfo[@"locationY"] = @(RCTSanitizeNaNValue(relativeLocation.x, @"touchData.locationY"));
+  _mouseInfo[@"pageX"] = @(RCTSanitizeNaNValue(absoluteLocation.x, @"pageX"));
+  _mouseInfo[@"pageY"] = @(RCTSanitizeNaNValue(absoluteLocation.y, @"pageY"));
+  _mouseInfo[@"locationX"] = @(RCTSanitizeNaNValue(relativeLocation.x, @"locationX"));
+  _mouseInfo[@"locationY"] = @(RCTSanitizeNaNValue(relativeLocation.y, @"locationY"));
   _mouseInfo[@"timestamp"] = @(event.timestamp * 1000); // in ms, for JS
   _mouseInfo[@"target"] = view.reactTag;
 
