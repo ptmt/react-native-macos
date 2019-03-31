@@ -95,16 +95,33 @@ function findModuleSymlinks(
 }
 
 function resolveSymlinkPaths(maybeSymlinkPaths, ignoredPaths) {
-  return maybeSymlinkPaths.reduce((links, maybeSymlinkPath) => {
-    if (fs.lstatSync(maybeSymlinkPath).isSymbolicLink()) {
-      const resolved = path.resolve(
-        path.dirname(maybeSymlinkPath),
-        fs.readlinkSync(maybeSymlinkPath),
-      );
-      if (ignoredPaths.indexOf(resolved) === -1 && fs.existsSync(resolved)) {
-        links.push(resolved);
+  return maybeSymlinkPaths.reduce((resolvedPaths, maybeSymlinkPath) => {
+    const visited = [];
+
+    let resolvedPath = maybeSymlinkPath;
+    while (fs.lstatSync(resolvedPath).isSymbolicLink()) {
+      const index = visited.indexOf(resolvedPath);
+      if (index !== -1) {
+        throw Error(
+          'Infinite symlink recursion detected:\n  ' +
+            visited.slice(index).join('\n  '),
+        );
       }
+
+      visited.push(resolvedPath);
+      resolvedPath = path.resolve(
+        path.dirname(resolvedPath),
+        fs.readlinkSync(resolvedPath),
+      );
     }
-    return links;
+
+    if (
+      resolvedPath.indexOf('/node_modules/') < 0 &&
+      ignoredPaths.indexOf(resolvedPath) < 0 &&
+      fs.existsSync(resolvedPath)
+    ) {
+      resolvedPaths.push(resolvedPath);
+    }
+    return resolvedPaths;
   }, []);
 }
