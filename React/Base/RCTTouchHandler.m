@@ -106,10 +106,13 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithTarget:(id)target action:(SEL)action
 
     NSPoint touchLocation = [touch locationInWindow];
 
-    // adjust touchLocation if our view placed inside custom PopoverWindow
     if ([[self.view window].className isEqualToString:@"_NSPopoverWindow"]) {
+      // adjust touchLocation if our view placed inside custom PopoverWindow
       NSPoint rootOrigin = [self.view window].contentView.frame.origin;
       touchLocation = NSMakePoint(touchLocation.x - rootOrigin.x, touchLocation.y - rootOrigin.y);
+    } else if (self.view.superview) {
+      // if our view has a superview, adjust the window coordinates to view coordinates.
+      touchLocation = [touch.window.contentView convertPoint:touchLocation toView:self.view.superview];
     }
 
     // TODO: get rid of explicit comparison
