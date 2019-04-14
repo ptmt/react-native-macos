@@ -659,7 +659,7 @@ const TextInput = createReactClass({
         <TextField
           ref={this._setNativeRef}
           {...props}
-          style={[{ minWidth: 100, height: NativeModules.TextFieldManager.ComponentHeight }, props.styles]}
+          style={[{ minWidth: 100, height: NativeModules.TextFieldManager.ComponentHeight }, props.style]}
           onFocus={this._onFocus}
           onBlur={this._onBlur}
           onChange={this._onChange}
