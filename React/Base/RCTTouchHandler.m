@@ -115,17 +115,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithTarget:(id)target action:(SEL)action
       touchLocation = [touch.window.contentView convertPoint:touchLocation toView:self.view.superview];
     }
 
-    // TODO: get rid of explicit comparison
-    //
-    // Check if item is becoming first responder to delete touch
     NSView *targetView = [self.view hitTest:touchLocation];
 
-    if (![targetView.className isEqualToString:@"RCTView"] &&
-        ![targetView.className isEqualToString:@"RCTTextView"] &&
-        ![targetView.className isEqualToString:@"RCTImageView"] &&
-        ![targetView.className isEqualToString:@"ARTSurfaceView"]) {
-      self.state = NSGestureRecognizerStateEnded;
-      return;
+    // Find closest React-managed touchable view
+    while (targetView) {
+      if (targetView.reactTag) {
+        break;
+      }
+      targetView = targetView.superview;
     }
 
     NSNumber *reactTag = [self.view reactTagAtPoint:CGPointMake(touchLocation.x, touchLocation.y)];
