@@ -153,14 +153,24 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (NSString *)stripAnsi:(NSString *)text
+{
+  NSError *error = nil;
+  NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\x1b\\[[0-9;]*m" options:NSRegularExpressionCaseInsensitive error:&error];
+  return [regex stringByReplacingMatchesInString:text options:0 range:NSMakeRange(0, [text length]) withTemplate:@""];
+}
+
 - (void)showErrorMessage:(NSString *)message withStack:(NSArray<RCTJSStackFrame *> *)stack isUpdate:(BOOL)isUpdate
 {
-  if (!self.isVisible || (isUpdate && [message isEqualToString:_lastErrorMessage])) {
+  // Remove ANSI color codes from the message
+  NSString *messageWithoutAnsi = [self stripAnsi:message];
+  
+  if (!self.isVisible || (isUpdate && [messageWithoutAnsi isEqualToString:_lastErrorMessage])) {
     _lastStackTrace = [stack filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(RCTJSStackFrame *stackFrame, __unused NSDictionary *bindings) {
       return stackFrame.file != nil;
     }]];
-    _lastErrorMessage = message;
-
+    _lastErrorMessage = messageWithoutAnsi;
+    
     [_stackTraceTableView reloadData];
     [_stackTraceTableView sizeToFit];
     
