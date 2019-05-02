@@ -119,4 +119,24 @@ RCT_REMAP_VIEW_PROPERTY(name, __custom__, type)         \
 RCT_REMAP_SHADOW_PROPERTY(name, __custom__, type)         \
 - (void)set_##name:(id)json forShadowView:(viewClass *)view
 
+/**
+ * This macro maps a named property to an arbitrary key path in the view's layer.
+ */
+#define RCT_REMAP_LAYER_PROPERTY(name, keyPath, type) \
+RCT_CUSTOM_VIEW_PROPERTY(name, type, RCTView)         \
+{                                                     \
+  if (json) {                                         \
+    [view ensureLayerExists];                         \
+    view.layer.keyPath = [RCTConvert type:json];      \
+  } else {                                            \
+    view.layer.keyPath = defaultView.layer.keyPath;   \
+  }                                                   \
+}
+
+/**
+ * This handles the simple case, where JS and native property names match.
+ */
+#define RCT_EXPORT_LAYER_PROPERTY(name, type) \
+RCT_REMAP_LAYER_PROPERTY(name, name, type)
+
 @end

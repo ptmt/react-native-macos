@@ -46,8 +46,6 @@
  */
 + (NSEdgeInsets)contentInsetsForView:(NSView *)curView;
 
-- (void)setBackgroundColor:(NSColor *)backgroundColor;
-
 /**
  * Layout direction of the view.
  * This is inherited from UIView+React, but we override it here
@@ -114,19 +112,17 @@
 @property (nonatomic, assign) CGFloat borderWidth;
 
 /**
- * Initial tranformation for a view which is not rendered yet
+ * Border styles.
  */
+@property (nonatomic, assign) RCTBorderStyle borderStyle;
+
+
 @property (nonatomic, assign) CATransform3D transform;
-@property (nonatomic, assign) bool shouldBeTransformed;
+@property (nonatomic, copy) NSColor *backgroundColor;
 
 @property (nonatomic, copy) RCTDirectEventBlock onDragEnter;
 @property (nonatomic, copy) RCTDirectEventBlock onDragLeave;
 @property (nonatomic, copy) RCTDirectEventBlock onDrop;
 @property (nonatomic, copy) RCTDirectEventBlock onContextMenuItemClick;
-/**
- * Border styles.
- */
-@property (nonatomic, assign) RCTBorderStyle borderStyle;
-
 
 @end

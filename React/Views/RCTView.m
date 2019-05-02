@@ -124,6 +124,7 @@ static NSString *RCTRecursiveAccessibilityLabel(NSView *view)
     _borderBottomStartRadius = -1;
     _borderBottomEndRadius = -1;
     _borderStyle = RCTBorderStyleSolid;
+    _transform = CATransform3DIdentity;
     self.clipsToBounds = NO;
   }
 
@@ -192,6 +193,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 - (void)setTransform:(CATransform3D)transform
 {
   _transform = transform;
+  [self setNeedsDisplay:YES];
 }
 
 - (NSView *)hitTest:(CGPoint)point
@@ -424,22 +426,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)setBackgroundColor:(NSColor *)backgroundColor
 {
-  if ([_backgroundColor isEqual:backgroundColor]) {
-    return;
-  }
-  if (backgroundColor == nil) {
-    [self setWantsLayer:NO];
-    self.layer = NULL;
-    return;
-  }
-  if (![self wantsLayer] || self.layer == nil) {
-    [self setWantsLayer:YES];
-    self.layer.delegate = self;
-  }
-  [self.layer setBackgroundColor:[backgroundColor CGColor]];
-  [self.layer setNeedsDisplay];
-  [self setNeedsDisplay:YES];
   _backgroundColor = backgroundColor;
+
+  [self ensureLayerExists];
+  self.layer.backgroundColor = backgroundColor.CGColor;
+  [self.layer setNeedsDisplay];
 }
 
 static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x) {
@@ -573,28 +564,29 @@ static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x) {
   [super reactSetFrame:frame];
   if (!CGSizeEqualToSize(self.bounds.size, oldSize)) {
     [self.layer setNeedsDisplay];
+  } else if (!CATransform3DIsIdentity(_transform)) {
+    [self applyTransform:self.layer];
   }
 }
 
-- (void)ensureLayerExists
+- (void)applyTransform:(CALayer *)layer
 {
-  if (!self.layer) {
-    // Set `wantsLayer` first to create a "layer-backed view" instead of a "layer-hosting view".
-    self.wantsLayer = YES;
-
-    CALayer *layer = [CALayer layer];
-    layer.delegate = self;
-    self.layer = layer;
+  if (!CATransform3DEqualToTransform(_transform, layer.transform)) {
+    layer.transform = _transform;
+    // Enable edge antialiasing in perspective transforms
+    layer.edgeAntialiasingMask = !(_transform.m34 == 0.0f);
   }
 }
 
 - (void)displayLayer:(CALayer *)layer
 {
-  if (self.shouldBeTransformed) {
-    self.layer.transform = self.transform;
-    self.shouldBeTransformed = NO;
-  }
-  
+  // Applying the transform here ensures it's not overridden by AppKit internals.
+  [self applyTransform:layer];
+
+  // Ensure the anchorPoint is in the center.
+  layer.position = (CGPoint){CGRectGetMidX(self.frame), CGRectGetMidY(self.frame)};
+  layer.anchorPoint = (CGPoint){0.5, 0.5};
+
   if (CGSizeEqualToSize(layer.bounds.size, CGSizeZero)) {
     return;
   }

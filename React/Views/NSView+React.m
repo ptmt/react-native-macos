@@ -175,10 +175,10 @@
     return;
   }
 
+  [self ensureLayerExists];
   self.frame = frame;
-  
-  // TODO: why position matters? It's only produce bugs
-  // OSX requires position and anchor point to rotate from center
+
+  // Ensure the anchorPoint is in the center.
   self.layer.position = position;
   self.layer.bounds = bounds;
   self.layer.anchorPoint = anchor;
@@ -293,6 +293,28 @@ static inline CGRect NSEdgeInsetsInsetRect(CGRect rect, NSEdgeInsets insets) {
 - (NSView *)reactAccessibilityElement
 {
   return self;
+}
+
+#pragma mark - Other
+
+- (void)ensureLayerExists
+{
+  if (!self.layer) {
+    self.wantsLayer = YES;
+    self.layer.delegate = (id<CALayerDelegate>)self;
+  }
+}
+
+- (CATransform3D)transform
+{
+  return CATransform3DIdentity;
+}
+
+- (void)setTransform:(__unused CATransform3D)transform
+{
+  // Do nothing by default.
+  // Native views must synthesize their own "transform" property,
+  // override "displayLayer:", and apply the transform there.
 }
 
 @end
