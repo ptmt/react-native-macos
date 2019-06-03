@@ -2,6 +2,12 @@
 
 Build macOS desktop applications using React Native.
 
+----
+
+**Warning**. As Apple announced Project Catalyst it does make sense to use just original React Native with macOS target. There is some chance that this project is no longer needed.
+
+----
+
 [![Build Status](https://travis-ci.org/ptmt/react-native-macos.svg)](https://travis-ci.org/ptmt/react-native-macos) [![npm version](https://badge.fury.io/js/react-native-macos.svg)](https://badge.fury.io/js/react-native-macos) [![discord #react-native-platforms](https://img.shields.io/badge/reactiflux-%23react--native--platforms-blue.svg)](http://reactiflux.com)
 
 ```jsx
