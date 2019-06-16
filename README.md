@@ -4,7 +4,9 @@ Build macOS desktop applications using React Native.
 
 ----
 
-**Warning**. As Apple announced Project Catalyst it does make sense to use just original React Native with macOS target. There is some chance that this project is no longer needed.
+## Project Catalyst (macOS 10.15+)
+
+**As Apple announced Project Catalyst it does make sense to use just the React Native with macOS target enabled. The details will come soon.**
 
 ----
 
