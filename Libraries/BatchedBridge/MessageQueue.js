@@ -219,66 +219,68 @@ class MessageQueue {
       // folly-convertible.  As a special case, if a prop value is a
       // function it is permitted here, and special-cased in the
       // conversion.
-      const seen = [];
-      const isValid = (function validate(val) {
-        if (val == null) {
-          return true;
-        }
-        const t = typeof val;
-        if (t === 'boolean' || t === 'string') {
-          return true;
-        }
-        if (t === 'number') {
-          return isFinite(val);
-        }
-        if (t === 'function' || t !== 'object') {
-          return false;
-        }
-        if (seen.indexOf(val) >= 0) {
-          return false;
-        }
-        seen.push(val);
-        if (Array.isArray(val)) {
-          return val.every(validate);
-        }
-        for (const k in val) {
-          if (!validate(val[k])) {
-            return false;
-          }
-        }
-        return true;
-      })(params);
-
-      // Stringify the invalid params for easier debugging.
-      const stringify = val => {
+      const isValid = rootVal => {
         const seen = [];
-        return JSON.stringify(params, (key, val) => {
+        return (function isValid(val) {
           if (val == null) {
-            return val;
+            return true;
           }
           const t = typeof val;
-          if (t === 'function') {
-            return '[Function' + (val.name ? ': ' + val.name : '') + ']';
+          if (t === 'boolean' || t === 'string') {
+            return true;
           }
-          if (t === 'number' && !isFinite(val)) {
-            return '[Number: ' + val + ']';
+          if (t === 'number') {
+            return isFinite(val);
           }
-          if (t !== 'object') {
-            return val;
+          if (t === 'function' || t !== 'object') {
+            return false;
           }
           if (seen.indexOf(val) >= 0) {
-            return '[Circular]';
+            return false;
           }
           seen.push(val);
-          return val;
-        });
+          if (Array.isArray(val)) {
+            return val.every(isValid);
+          }
+          for (const k in val) {
+            if (!isValid(val[k])) {
+              return false;
+            }
+          }
+          return true;
+        })(rootVal);
       };
 
-      invariant(
-        isValid,
-        'Argument to native method cannot be serialized: %s',
-        isValid || stringify(params),
-      );
+      if (!isValid(params)) {
+        console.warn(
+          'Argument to native method cannot be serialized: %s',
+          stringify(params),
+        );
+        // Stringify the invalid params for easier debugging.
+        function stringify(rootVal) {
+          const seen = [];
+          return JSON.stringify(rootVal, (key, val) => {
+            if (val == null) {
+              return val;
+            }
+            const t = typeof val;
+            if (t === 'function') {
+              return '[Function' + (val.name ? ': ' + val.name : '') + ']';
+            }
+            if (t === 'number' && !isFinite(val)) {
+              return '[Number: ' + val + ']';
+            }
+            if (t !== 'object') {
+              return val;
+            }
+            if (seen.indexOf(val) >= 0) {
+              return '[Circular]';
+            }
+            seen.push(val);
+            return val;
+          });
+        }
+      }
 
       // The params object should not be mutated after being queued
       deepFreezeAndThrowOnMutationInDev((params: any));
