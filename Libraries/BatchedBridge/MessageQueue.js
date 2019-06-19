@@ -219,67 +219,62 @@ class MessageQueue {
       // folly-convertible.  As a special case, if a prop value is a
       // function it is permitted here, and special-cased in the
       // conversion.
-      const isValid = rootVal => {
-        const seen = [];
-        return (function isValid(val) {
-          if (val == null) {
-            return true;
-          }
-          const t = typeof val;
-          if (t === 'boolean' || t === 'string') {
-            return true;
-          }
-          if (t === 'number') {
-            return isFinite(val);
-          }
-          if (t === 'function' || t !== 'object') {
-            return false;
-          }
-          if (seen.indexOf(val) >= 0) {
-            return false;
-          }
-          seen.push(val);
-          if (Array.isArray(val)) {
-            return val.every(isValid);
-          }
-          for (const k in val) {
-            if (!isValid(val[k])) {
-              return false;
-            }
-          }
+      const seen = [];
+      const path = [];
+      const validate = (val, key) => {
+        if (val == null) {
           return true;
-        })(rootVal);
-      };
-
-      if (!isValid(params)) {
-        console.warn(
-          'Argument to native method cannot be serialized: %s',
-          stringify(params),
-        );
-        // Stringify the invalid params for easier debugging.
-        function stringify(rootVal) {
-          const seen = [];
-          return JSON.stringify(rootVal, (key, val) => {
-            if (val == null) {
-              return val;
+        }
+        if (key != null) {
+          path.push(key);
+        }
+        let valid = true;
+        let error = '';
+        switch (typeof val) {
+          case 'boolean':
+          case 'string':
+            break; // No error.
+          case 'number':
+            if (!isFinite(val)) {
+              error = 'Cannot serialize an infinite number';
             }
-            const t = typeof val;
-            if (t === 'function') {
-              return '[Function' + (val.name ? ': ' + val.name : '') + ']';
-            }
-            if (t === 'number' && !isFinite(val)) {
-              return '[Number: ' + val + ']';
-            }
-            if (t !== 'object') {
-              return val;
-            }
-            if (seen.indexOf(val) >= 0) {
-              return '[Circular]';
+            break;
+          case 'bigint':
+          case 'function':
+          case 'symbol':
+            error = 'Cannot serialize a ' + typeof val;
+            break;
+          case 'object':
+            const seenIndex = seen.indexOf(val);
+            if (seenIndex >= 0) {
+              error = 'Cannot serialize the same object twice';
+              break;
             }
             seen.push(val);
-            return val;
-          });
+            valid = Array.isArray(val)
+              ? val.every(validate)
+              : Object.keys(val).every(k => validate(val[k], k));
+            break;
         }
+        if (error) {
+          console.warn(
+            error + '\nFound at this path: ',
+            path.slice(),
+            '\nin this object: ',
+            params,
+          );
+        }
+        if (key != null) {
+          path.pop();
+        }
+        return valid && !error;
+      };
+
+      if (!validate(params)) {
+        console.warn(
+          'Native method call has arguments which cannot be serialized: %O',
+          params,
+        );
       }
 
       // The params object should not be mutated after being queued
