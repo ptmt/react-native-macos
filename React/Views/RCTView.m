@@ -223,7 +223,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
     // of the hit view will return YES from -pointInside:withEvent:). See:
     //  - https://developer.apple.com/library/ios/qa/qa2013/qa1812.html
     for (NSView *subview in [sortedSubviews reverseObjectEnumerator]) {
-      CGPoint convertedPoint = [subview convertPoint:point fromView:self];
+      CGPoint convertedPoint = subview.layer
+        ? [subview.layer convertPoint:point fromLayer:subview.layer.superlayer]
+        : [subview convertPoint:point fromView:self];
+
       hitSubview = [subview hitTest:convertedPoint];
       if (hitSubview != nil) {
         break;
