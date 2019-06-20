@@ -234,8 +234,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
     }
   }
 
-  NSView *hitView = (isPointInside ? self : nil);
-  return hitSubview ?: hitView;
+  return hitSubview ?: (isPointInside ? self : nil);
 
   // TODO: implement "pointerEvents"
 //  switch (_pointerEvents) {
