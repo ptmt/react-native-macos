@@ -117,6 +117,7 @@
 
 - (void)setReactZIndex:(NSInteger)reactZIndex
 {
+  [self ensureLayerExists];
   self.layer.zPosition = reactZIndex;
 }
 
