@@ -131,7 +131,7 @@
       break;
     }
   }
-  return sortingRequired ? [self.reactSubviews sortedArrayUsingComparator:^NSComparisonResult(NSView *a, NSView *b) {
+  return sortingRequired ? [self.subviews sortedArrayUsingComparator:^NSComparisonResult(NSView *a, NSView *b) {
     if (a.reactZIndex > b.reactZIndex) {
       return NSOrderedDescending;
     } else {
