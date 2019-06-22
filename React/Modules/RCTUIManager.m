@@ -1237,7 +1237,9 @@ RCT_EXPORT_METHOD(measure:(nonnull NSNumber *)reactTag
     // By convention, all coordinates, whether they be touch coordinates, or
     // measurement coordinates are with respect to the root view.
     CGRect frame = view.frame;
-    CGRect globalBounds = [view convertRect:view.bounds toView:rootView];
+    CGRect globalBounds = view.layer
+      ? [view.layer convertRect:view.bounds toLayer:rootView.layer]
+      : [view convertRect:view.bounds toView:rootView];
 
     callback(@[
       @(frame.origin.x),
