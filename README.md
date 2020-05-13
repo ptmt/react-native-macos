@@ -1,12 +1,20 @@
+# Deprecation #
+
+The project is no longer maintained.
+
+There is an Microsoft version: [https://microsoft.github.io/react-native-windows/](https://microsoft.github.io/react-native-windows/)
+
+You can run React Native on Catalyst [https://github.com/react-native-community/discussions-and-proposals/issues/131](https://github.com/react-native-community/discussions-and-proposals/issues/131)
+
+
+
+
+
+
+
 # React Native macOS (ex react-native-desktop)
 
 Build macOS desktop applications using React Native.
-
-----
-
-## Project Catalyst (macOS 10.15+)
-
-**As Apple announced Project Catalyst it does make sense to use just the React Native with macOS target enabled. The details will come soon.**
 
 ----
 
