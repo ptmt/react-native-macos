@@ -14,7 +14,13 @@ const path = require('path');
 const findXcodeProject = require('./findXcodeProject');
 
 function runMacOS(argv, config, args) {
-  process.chdir(args.projectPath);
+  try {
+    process.chdir(args.projectPath);
+    console.log(`New directory: ${process.cwd()}`);
+  } catch (err) {
+    console.error(`chdir: ${err}`);
+  }
+  
   const xcodeProject = findXcodeProject(fs.readdirSync('.'));
   if (!xcodeProject) {
     throw new Error('Could not find Xcode project files in macos folder');
