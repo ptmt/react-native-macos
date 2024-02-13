@@ -106,23 +106,23 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithTarget:(id)target action:(SEL)action
 
     NSPoint touchLocation = [touch locationInWindow];
 
-    // adjust touchLocation if our view placed inside custom PopoverWindow
     if ([[self.view window].className isEqualToString:@"_NSPopoverWindow"]) {
+      // adjust touchLocation if our view placed inside custom PopoverWindow
       NSPoint rootOrigin = [self.view window].contentView.frame.origin;
       touchLocation = NSMakePoint(touchLocation.x - rootOrigin.x, touchLocation.y - rootOrigin.y);
+    } else if (self.view.superview) {
+      // if our view has a superview, adjust the window coordinates to view coordinates.
+      touchLocation = [touch.window.contentView convertPoint:touchLocation toView:self.view.superview];
     }
 
-    // TODO: get rid of explicit comparison
-    //
-    // Check if item is becoming first responder to delete touch
     NSView *targetView = [self.view hitTest:touchLocation];
 
-    if (![targetView.className isEqualToString:@"RCTView"] &&
-        ![targetView.className isEqualToString:@"RCTTextView"] &&
-        ![targetView.className isEqualToString:@"RCTImageView"] &&
-        ![targetView.className isEqualToString:@"ARTSurfaceView"]) {
-      self.state = NSGestureRecognizerStateEnded;
-      return;
+    // Find closest React-managed touchable view
+    while (targetView) {
+      if (targetView.reactTag) {
+        break;
+      }
+      targetView = targetView.superview;
     }
 
     NSNumber *reactTag = [self.view reactTagAtPoint:CGPointMake(touchLocation.x, touchLocation.y)];
