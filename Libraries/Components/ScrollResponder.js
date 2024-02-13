@@ -26,7 +26,6 @@ const performanceNow = require('fbjs/lib/performanceNow');
 const warning = require('fbjs/lib/warning');
 
 const { ScrollViewManager } = require('NativeModules');
-const { getInstanceFromNode } = require('ReactNativeComponentTree');
 
 /**
  * Mixin that can be integrated in order to handle scrolling that plays well
@@ -117,15 +116,6 @@ type State = {
 };
 type Event = Object;
 
-function isTagInstanceOfTextInput(tag) {
-  const instance = getInstanceFromNode(tag);
-  return instance && instance.viewConfig && (
-    instance.viewConfig.uiViewClassName === 'AndroidTextInput' ||
-    instance.viewConfig.uiViewClassName === 'RCTMultilineTextInputView' ||
-    instance.viewConfig.uiViewClassName === 'RCTSinglelineTextInputView'
-  );
-}
-
 const ScrollResponderMixin = {
   mixins: [Subscribable.Mixin],
   scrollResponderMixinGetInitialState: function(): State {
@@ -208,10 +198,7 @@ const ScrollResponderMixin = {
     const {keyboardShouldPersistTaps} = this.props;
     const keyboardNeverPersistTaps = !keyboardShouldPersistTaps ||
                                     keyboardShouldPersistTaps === 'never';
-    if (keyboardNeverPersistTaps &&
-      currentlyFocusedTextInput != null &&
-      !isTagInstanceOfTextInput(e.target)
-    ) {
+    if (keyboardNeverPersistTaps && currentlyFocusedTextInput != null) {
       return true;
     }
     return this.scrollResponderIsAnimating();

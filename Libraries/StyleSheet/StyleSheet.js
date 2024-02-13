@@ -12,7 +12,6 @@
 'use strict';
 
 const PixelRatio = require('PixelRatio');
-const ReactNativePropRegistry = require('ReactNativePropRegistry');
 const ReactNativeStyleAttributes = require('ReactNativeStyleAttributes');
 const StyleSheetValidation = require('StyleSheetValidation');
 
@@ -37,15 +36,16 @@ if (hairlineWidth === 0) {
   hairlineWidth = 1 / PixelRatio.get();
 }
 
-const absoluteFillObject = {
+const absoluteFill = {
   position: ('absolute': 'absolute'),
   left: 0,
   right: 0,
   top: 0,
   bottom: 0,
 };
-const absoluteFill: typeof absoluteFillObject =
-  ReactNativePropRegistry.register(absoluteFillObject); // This also freezes it
+if (__DEV__) {
+  Object.freeze(absoluteFill);
+}
 
 /**
  * A StyleSheet is an abstraction similar to CSS StyleSheets
@@ -132,7 +132,7 @@ module.exports = {
    *     },
    *   });
    */
-  absoluteFillObject,
+  absoluteFillObject: absoluteFill,
 
   /**
    * Combines two styles such that `style2` will override any styles in `style1`.
@@ -221,11 +221,12 @@ module.exports = {
    * Creates a StyleSheet style reference from the given object.
    */
   create<S: Styles>(obj: S): StyleSheet<S> {
-    const result = {};
-    for (const key in obj) {
-      StyleSheetValidation.validateStyle(key, obj);
-      result[key] = obj[key] && ReactNativePropRegistry.register(obj[key]);
+    if (__DEV__) {
+      for (const key in obj) {
+        StyleSheetValidation.validateStyle(key, obj);
+        Object.freeze(obj[key]);
+      }
     }
-    return result;
+    return obj;
   },
 };
